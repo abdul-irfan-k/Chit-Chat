@@ -1,5 +1,5 @@
-import Messenger from "@/components/Messenger/Messenger"
-import SignUp from "@/components/SignUp/SignUp"
+import Messenger from "@/components/messenger/messenger"
+import SignUp from "@/components/sign-up/sign-up"
 
 const SignUpPage = () => {
   return (

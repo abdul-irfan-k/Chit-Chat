@@ -1,4 +1,4 @@
-import Messenger from "@/components/Messenger/Messenger"
+import Messenger from "@/components/messenger/messenger"
 
 const MessengerPage = () => {
   return (

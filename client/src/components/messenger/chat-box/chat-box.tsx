@@ -1,4 +1,4 @@
-import TextMessage from "./TextMessage/TextMessage"
+import TextMessage from "./text-message/text-message"
 
 const ChatBox = () => {
   return (
