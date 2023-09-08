@@ -1,7 +1,7 @@
 import ChatList from "./chat-list/chat-list"
 import ChatBox from "./chat-box/chat-box"
 import ChatSort from "./chat-sort/chat-sort"
-import InputBox from "./input-box/InputBox"
+import InputBox from "./input-box/input-box"
 import Profile from "./profile/profile"
 import Recent from "./recent/recent"
 import SideMenu from "./side-menu/side-menu"
@@ -27,7 +27,7 @@ const Messenger = () => {
         </div>
       </div>
 
-      <div className="relative mt-10  gap- flex flex-col  w-[60%]">
+      <div className="relative mt-10  gap-8 flex flex-col  w-[60%] ">
         <Profile
           currentStatus="ofline"
           profileImageSrc="/Asset/avatar.jpg"
