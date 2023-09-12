@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import EmogiPicker from "@/components/shared/emogi-picker/emogi-picker"
 import {
   faMicrophone,
@@ -10,6 +10,7 @@ import {
   faStickyNote,
 } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { useSelector } from "react-redux"
 
 type inputPopUpMenuType = "emoji" | "sticker" | undefined
 
@@ -22,12 +23,14 @@ const InputBox = () => {
     setInputMessage(e.target.value)
   }
 
-  const popUpMenuButtonHandler = (val: inputPopUpMenuType) => {
-    if (val == inputPopUpMenuType) return setInputPopUpMenuType(undefined)
-    setInputPopUpMenuType(val)
+  const popUpMenuButtonHandler = (popUpMenuType: inputPopUpMenuType) => {
+    if (popUpMenuType == inputPopUpMenuType)
+      return setInputPopUpMenuType(undefined)
+    setInputPopUpMenuType(popUpMenuType)
   }
 
-
+  const socket = useSelector((state: any) => state.socket)
+  const sendButtonHandler = () => {}
 
   return (
     <div className="flex gap-3 justify-between items-center">
@@ -44,7 +47,9 @@ const InputBox = () => {
         >
           <FontAwesomeIcon icon={faFaceSmile} />
         </div>
-        {inputPopUpMenuType == "emoji" && <EmogiPicker emojiSelectHandler={setInputMessage} />}
+        {inputPopUpMenuType == "emoji" && (
+          <EmogiPicker emojiSelectHandler={setInputMessage} />
+        )}
       </div>
       <div className="w-10 flex justify-center items-center aspect-square bg-slate-300 rounded-full dark:bg-slate-800">
         <FontAwesomeIcon icon={faPlus} />
@@ -58,11 +63,14 @@ const InputBox = () => {
           className="px-4 py-2 w-full rounded-full text-slate-950  bg-slate-300 outline-none dark:text-slate-50 dark:bg-slate-800"
         />
       </div>
-      <div className="w-10 flex justify-center items-center aspect-square bg-slate-300 rounded-full dark:bg-slate-800">
-        <FontAwesomeIcon icon={faMicrophone} />
+      <div
+        onClick={sendButtonHandler}
+        className="w-10 flex justify-center items-center aspect-square bg-slate-300 rounded-full dark:bg-slate-800"
+      >
+        <FontAwesomeIcon icon={faPaperPlane} />
       </div>
       <div className="w-10 flex justify-center items-center aspect-square bg-slate-300 rounded-full dark:bg-slate-800">
-        <FontAwesomeIcon icon={faPaperPlane} />
+        <FontAwesomeIcon icon={faMicrophone} />
       </div>
     </div>
   )

@@ -1,5 +1,5 @@
-'use client'
+"use client"
 
 const StickerPicker = () => {
-    return ()
+  return <div></div>
 }

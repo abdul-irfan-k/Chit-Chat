@@ -9,7 +9,9 @@ export default function NotFound() {
       </div>
 
       <Link href="/">
-        <div className="px-10 py-3 rounded-3xl bg-blue-500 text-slate-50">Return Home</div>
+        <div className="px-10 py-3 rounded-3xl bg-blue-500 text-slate-50">
+          Return Home
+        </div>
       </Link>
     </div>
   )
