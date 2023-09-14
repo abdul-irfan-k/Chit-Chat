@@ -29,8 +29,10 @@ const InputBox = () => {
     setInputPopUpMenuType(popUpMenuType)
   }
 
-  const socket = useSelector((state: any) => state.socket)
-  const sendButtonHandler = () => {}
+  const { socket } = useSelector((state: any) => state.socket)
+  const sendButtonHandler = () => {
+    socket.emit("message/newGroupMessage", inputMessage)
+  }
 
   return (
     <div className="flex gap-3 justify-between items-center">
