@@ -29,29 +29,29 @@ export const signUpUserHandler = async (req: Request, res: Response) => {
     console.log(user)
     user.save()
 
-    const authToken = createJwtTokenHandler({
-      userId: user._id.toString(),
-      userName: user.name,
-      expiresIn: "1h",
-      tokenType: "authToken",
-    })
-    const refreshToken = createJwtTokenHandler({
-      userId: user._id.toString(),
-      userName: user.name,
-      expiresIn: "1d",
-      tokenType: "refreshToken",
-    })
+    // const authToken = createJwtTokenHandler({
+    //   userId: user._id.toString(),
+    //   userName: user.name,
+    //   expiresIn: "1h",
+    //   tokenType: "authToken",
+    // })
+    // const refreshToken = createJwtTokenHandler({
+    //   userId: user._id.toString(),
+    //   userName: user.name,
+    //   expiresIn: "1d",
+    //   tokenType: "refreshToken",
+    // })
 
-    res.cookie("authToken", authToken, {
-      httpOnly: true,
-      sameSite: "strict",
-      expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
-    })
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      sameSite: "strict",
-      expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
-    })
+    // res.cookie("authToken", authToken, {
+    //   httpOnly: true,
+    //   sameSite: "strict",
+    //   expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
+    // })
+    // res.cookie("refreshToken", refreshToken, {
+    //   httpOnly: true,
+    //   sameSite: "strict",
+    //   expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
+    // })
 
     return res.status(200).json({ isValid: true })
   } catch (error) {
@@ -77,28 +77,28 @@ export const loginUserHandler = async (req: Request, res: Response) => {
         expiresIn: "1h",
         tokenType: "authToken",
       })
-      const refreshToken = createJwtTokenHandler({
-        userId: user._id.toString(),
-        userName: user.name,
-        expiresIn: "1d",
-        tokenType: "refreshToken",
-      })
+    //   const refreshToken = createJwtTokenHandler({
+    //     userId: user._id.toString(),
+    //     userName: user.name,
+    //     expiresIn: "1d",
+    //     tokenType: "refreshToken",
+    //   })
   
-      res.cookie("authToken", authToken, {
-        httpOnly: true,
-        sameSite: "strict",
-        expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
-      })
-      res.cookie("refreshToken", refreshToken, {
-        httpOnly: true,
-        sameSite: "strict",
-        expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
-      })
+    //   res.cookie("authToken", authToken, {
+    //     httpOnly: true,
+    //     sameSite: "strict",
+    //     expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
+    //   })
+    //   res.cookie("refreshToken", refreshToken, {
+    //     httpOnly: true,
+    //     sameSite: "strict",
+    //     expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
+    //   })
 
 
       return res.status(200).json({isValid:true})
 
-  } catch () {
-
+  } catch (error) {
+console.log(error)
   }
 }

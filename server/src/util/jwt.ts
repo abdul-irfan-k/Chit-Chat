@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken"
-import { JWTERROR } from "../constants/constants"
+import { JWTERROR } from "../constants/constants.js"
 
 interface createJwtTokenHandlerArgument {
   userId: string
@@ -25,10 +25,13 @@ export const createJwtTokenHandler = async ({
       tokenType == "authToken"
         ? process.env.JWT_AUTH_TOKEN_SECRET
         : process.env.JWT_REFRESH_TOKEN_SECRET
-    const token = jwt.sign({ userName, userId }, tokenSecret, { expiresIn })
+    console.log(tokenSecret)
+    const token = await jwt.sign({ userName, userId }, tokenSecret || "", {
+      expiresIn,
+    })
 
     return { isValid: true, token }
   } catch (error) {
-    return { isValid: false, error:JWTERROR }
+    return { isValid: false, error: JWTERROR }
   }
 }
