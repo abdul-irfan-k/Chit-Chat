@@ -21,7 +21,7 @@ const SignUp = () => {
         </div>
         <input
           type="text"
-          className="px-3 py-2 border-2 border-stone-300  text-base "
+          className="px-3 py-2 border-2 border-stone-300 text-base dark:bg-slate-50 dark:text-slate-950"
         />
       </div>
       <div className="mt-5 flex flex-col gap-3">
@@ -47,7 +47,7 @@ const SignUp = () => {
         <div className="px-6 py-3 rounded-md bg-blue-500 text-slate-950   dark:text-slate-50">
           Signup
         </div>
-        <div className="px-6 py-3 rounded-md  bg-stone-900 text-slate-950   dark:text-slate-50">
+        <div className="px-6 py-3 rounded-md  bg-stone-900 text-slate-50    dark:text-slate-50">
           Login
         </div>
       </div>

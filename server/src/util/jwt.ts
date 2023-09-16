@@ -1,5 +1,4 @@
 import jwt, { VerifyErrors } from "jsonwebtoken"
-import { JWTERROR } from "../constants/constants.js"
 import { Request } from "express"
 
 interface createJwtTokenHandlerArgument {
@@ -11,7 +10,7 @@ interface createJwtTokenHandlerArgument {
 
 interface createJwtTokenHandlerReturnType {
   isValid: boolean
-  token?: string
+  token: string
   error?: string
 }
 
@@ -21,20 +20,22 @@ export const createJwtTokenHandler = async ({
   expiresIn,
   tokenType,
 }: createJwtTokenHandlerArgument): Promise<createJwtTokenHandlerReturnType> => {
-  try {
+  return new Promise((resolve, reject) => {
     const tokenSecret =
       tokenType == "authToken"
         ? process.env.JWT_AUTH_TOKEN_SECRET
         : process.env.JWT_REFRESH_TOKEN_SECRET
 
-    const token = await jwt.sign({ email, _id }, tokenSecret || "", {
-      expiresIn,
-    })
-
-    return { isValid: true, token }
-  } catch (error) {
-    return { isValid: false, error: JWTERROR }
-  }
+    jwt.sign(
+      { email, _id },
+      tokenSecret || "",
+      { expiresIn },
+      (error, token) => {
+        if (typeof token === "string") resolve({ isValid: true, token })
+        if (typeof error !== 'undefined') reject({isValid:false,error:error?.name})
+      },
+    )
+  })
 }
 
 interface verifyJwtTokenHandlerArgument {
@@ -62,9 +63,9 @@ export const verifyJwtTokenHandler = ({
 
       if (err as VerifyErrors) {
         console.log(err?.inner, err?.stack, err?.name, err?.message)
-        reject({ isValid: false })
+        reject({ isValid: false, error: err })
       }
-      return reject({ isValid: false })
+      return reject({ isValid: false, error: "not found" })
     })
   })
 }

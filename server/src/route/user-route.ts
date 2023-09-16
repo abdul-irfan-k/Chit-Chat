@@ -1,10 +1,18 @@
-import express from 'express'
-import { loginUserHandler, signUpUserHandler } from '../controller/user-controller.js'
+import express from "express"
+import {
+    checkUserIdAvilableHandler,
+  loginUserHandler,
+  signUpUserHandler,
+  verifyUserIsLogedInHandler,
+} from "../controller/user-controller.js"
+import { checkisLogedInMiddleware } from "../middleware/user-middleware.js"
 const router = express.Router()
 
+router.post("/signUp", signUpUserHandler)
+router.post("/signUp", loginUserHandler)
+router.post("/verifyUserIsLogedIn",checkisLogedInMiddleware,verifyUserIsLogedInHandler)
 
-router.post('/signUpUser',signUpUserHandler)
-router.post('/signUpUser',loginUserHandler)
-router.post('/verifyIsLogedIn')
+router.post("/checkUserIdAvilable",checkUserIdAvilableHandler)
+router.post("/verifyEmail")
 
 export default router

@@ -6,8 +6,7 @@ const userMessageSocketIo = (io: Server, socket: Socket) => {
     socket.broadcast.emit("userMessage/newMessage", "message from the server ")
   })
 
-  socket.on("message/newGroupMessage", () => {
-  })
+  socket.on("message/newGroupMessage", () => {})
 }
 
 export default userMessageSocketIo

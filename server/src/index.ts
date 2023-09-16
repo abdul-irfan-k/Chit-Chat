@@ -22,7 +22,6 @@ const io = new socketIo.Server(server, {
 io.on("connection", (socket) => {
   const ip = socket.request.connection.remoteAddress
 
-  
   userMessageSocketIo(io, socket)
   userStreamSocketIo(io, socket)
 })

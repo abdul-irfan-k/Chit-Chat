@@ -1,4 +1,4 @@
-interface userInterface {
+ interface userInterface {
   name?: string
   _id: string
   email?: string
@@ -10,3 +10,4 @@ declare module Express {
     user?: userInterface
   }
 }
+

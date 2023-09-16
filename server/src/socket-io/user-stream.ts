@@ -1,7 +1,7 @@
-import { Server, Socket } from "socket.io";
+import { Server, Socket } from "socket.io"
 
-const userStreamSocketIo = (io:Server, socket:Socket) => {
-   socket.on('userStream/intialiseStream',() => {})
+const userStreamSocketIo = (io: Server, socket: Socket) => {
+  socket.on("userStream/intialiseStream", () => {})
 }
 
 export default userStreamSocketIo
