@@ -1,9 +1,10 @@
-import jwt from "jsonwebtoken"
+import jwt, { VerifyErrors } from "jsonwebtoken"
 import { JWTERROR } from "../constants/constants.js"
+import { Request } from "express"
 
 interface createJwtTokenHandlerArgument {
-  userId: string
-  userName: string
+  _id: string
+  email: string
   expiresIn: "1h" | "1d"
   tokenType: "refreshToken" | "authToken"
 }
@@ -15,8 +16,8 @@ interface createJwtTokenHandlerReturnType {
 }
 
 export const createJwtTokenHandler = async ({
-  userId,
-  userName,
+  _id,
+  email,
   expiresIn,
   tokenType,
 }: createJwtTokenHandlerArgument): Promise<createJwtTokenHandlerReturnType> => {
@@ -25,8 +26,8 @@ export const createJwtTokenHandler = async ({
       tokenType == "authToken"
         ? process.env.JWT_AUTH_TOKEN_SECRET
         : process.env.JWT_REFRESH_TOKEN_SECRET
-    console.log(tokenSecret)
-    const token = await jwt.sign({ userName, userId }, tokenSecret || "", {
+
+    const token = await jwt.sign({ email, _id }, tokenSecret || "", {
       expiresIn,
     })
 
@@ -34,4 +35,36 @@ export const createJwtTokenHandler = async ({
   } catch (error) {
     return { isValid: false, error: JWTERROR }
   }
+}
+
+interface verifyJwtTokenHandlerArgument {
+  req: Request
+  token: string
+  tokenType: "refreshToken" | "authToken"
+}
+
+export const verifyJwtTokenHandler = ({
+  req,
+  token,
+  tokenType,
+}: verifyJwtTokenHandlerArgument) => {
+  return new Promise((resolve, reject) => {
+    const tokenSecret =
+      tokenType == "authToken"
+        ? process.env.JWT_AUTH_TOKEN_SECRET
+        : process.env.JWT_REFRESH_TOKEN_SECRET
+
+    jwt.verify(token, tokenSecret || "", (err, decoded) => {
+      if (!err && decoded && typeof decoded !== "string") {
+        req.user = { _id: decoded._id, email: decoded.email }
+        return resolve({ isValid: true })
+      }
+
+      if (err as VerifyErrors) {
+        console.log(err?.inner, err?.stack, err?.name, err?.message)
+        reject({ isValid: false })
+      }
+      return reject({ isValid: false })
+    })
+  })
 }
