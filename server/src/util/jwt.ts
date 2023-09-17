@@ -22,19 +22,12 @@ export const createJwtTokenHandler = async ({
 }: createJwtTokenHandlerArgument): Promise<createJwtTokenHandlerReturnType> => {
   return new Promise((resolve, reject) => {
     const tokenSecret =
-      tokenType == "authToken"
-        ? process.env.JWT_AUTH_TOKEN_SECRET
-        : process.env.JWT_REFRESH_TOKEN_SECRET
+      tokenType == "authToken" ? process.env.JWT_AUTH_TOKEN_SECRET : process.env.JWT_REFRESH_TOKEN_SECRET
 
-    jwt.sign(
-      { email, _id },
-      tokenSecret || "",
-      { expiresIn },
-      (error, token) => {
-        if (typeof token === "string") resolve({ isValid: true, token })
-        if (typeof error !== 'undefined') reject({isValid:false,error:error?.name})
-      },
-    )
+    jwt.sign({ email, _id }, tokenSecret || "", { expiresIn }, (error, token) => {
+      if (typeof token === "string") resolve({ isValid: true, token })
+      if (typeof error !== "undefined") reject({ isValid: false, error: error?.name })
+    })
   })
 }
 
@@ -44,16 +37,10 @@ interface verifyJwtTokenHandlerArgument {
   tokenType: "refreshToken" | "authToken"
 }
 
-export const verifyJwtTokenHandler = ({
-  req,
-  token,
-  tokenType,
-}: verifyJwtTokenHandlerArgument) => {
+export const verifyJwtTokenHandler = ({ req, token, tokenType }: verifyJwtTokenHandlerArgument) => {
   return new Promise((resolve, reject) => {
     const tokenSecret =
-      tokenType == "authToken"
-        ? process.env.JWT_AUTH_TOKEN_SECRET
-        : process.env.JWT_REFRESH_TOKEN_SECRET
+      tokenType == "authToken" ? process.env.JWT_AUTH_TOKEN_SECRET : process.env.JWT_REFRESH_TOKEN_SECRET
 
     jwt.verify(token, tokenSecret || "", (err, decoded) => {
       if (!err && decoded && typeof decoded !== "string") {

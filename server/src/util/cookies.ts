@@ -6,12 +6,7 @@ interface assignCookiesHandlerArguments {
   tokenName: "authToken" | "refreshToken"
   expires: "1h" | "1d" | Date
 }
-export const assignCookiesHandler = ({
-  res,
-  token,
-  tokenName,
-  expires,
-}: assignCookiesHandlerArguments): void => {
+export const assignCookiesHandler = ({ res, token, tokenName, expires }: assignCookiesHandlerArguments): void => {
   const expire =
     typeof expires !== "string"
       ? expires

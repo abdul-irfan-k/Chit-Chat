@@ -11,7 +11,7 @@ interface nodeMailerSendEmailerArguments {
 interface nodeMailerSendEmailerReturn {
   isValid: boolean
   isSendedEmail: boolean
-  sendedMailInfo?:SMTPTransport.SentMessageInfo
+  sendedMailInfo?: SMTPTransport.SentMessageInfo
   error?: string
 }
 
@@ -39,8 +39,13 @@ export const nodeMailerSendEmailer = ({
     }
 
     transporter.sendMail(mailContainer, async (err, info) => {
-      if (err != null) return resolve({ isValid: true, isSendedEmail: true ,sendedMailInfo:info})
-      return reject({isValid:false,isSendedEmail:false})
+      if (err != null)
+        return resolve({
+          isValid: true,
+          isSendedEmail: true,
+          sendedMailInfo: info,
+        })
+      return reject({ isValid: false, isSendedEmail: false })
     })
   })
 }

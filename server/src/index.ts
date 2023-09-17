@@ -5,13 +5,19 @@ import userMessageSocketIo from "./socket-io/user-message.js"
 import dotEnv from "dotenv"
 import userStreamSocketIo from "./socket-io/user-stream.js"
 import userRouter from "./route/user-route.js"
+import bodyParser from 'body-parser'
+import cookieParser from 'cookie-parser'
 import { connnectDB } from "./config/mongoose.js"
+
 
 dotEnv.config()
 const app: Application = express()
 const server = http.createServer(app)
 const port = process.env.PORT || 8000
 const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000"
+
+app.use(cookieParser())
+app.use(bodyParser())
 
 const io = new socketIo.Server(server, {
   cors: {
@@ -20,7 +26,7 @@ const io = new socketIo.Server(server, {
 })
 
 io.on("connection", (socket) => {
-  const ip = socket.request.connection.remoteAddress
+  // const ip = socket.request.connection.remoteAddress
 
   userMessageSocketIo(io, socket)
   userStreamSocketIo(io, socket)

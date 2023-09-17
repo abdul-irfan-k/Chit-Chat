@@ -1,21 +1,21 @@
 import mongoose from "mongoose"
 import bcrypt from "bcrypt"
 
-
-interface otpInterface {
-    otp: string
-    email?: string | undefined
-    phone?: string | undefined
-    verificationType?: "passwordReset"|"userAuthenticate"|string | undefined
-    createdAt?: Date | undefined
+interface verifyOtp {
+  verifyOtp(plainOtp: string): boolean
+}
+interface otpInterface extends verifyOtp {
+  otp: string
+  email?: string | undefined
+  phone?: string | undefined
+  verificationType?: "passwordReset" | "userAuthenticate" | string | undefined
+  createdAt?: Date | undefined
 }
 const otpSchema = new mongoose.Schema({
   email: { type: String },
   phone: { type: String },
   otp: { type: String, required: true },
-  verificationType: {
-    type: String,
-  },
+  verificationType: { type: String },
   createdAt: { type: Date, index: { expires: 300 } },
 })
 
@@ -26,9 +26,8 @@ otpSchema.pre("save", async function (next) {
 })
 
 otpSchema.methods.verifyOtp = function (plainOtp: string) {
-  bcrypt.compare(plainOtp, this.otp)
+  return bcrypt.compare(plainOtp, this.otp)
 }
 
-
-const Otp =  mongoose.model<otpInterface>("Otp",otpSchema)
+const Otp = mongoose.model<otpInterface>("Otp", otpSchema)
 export default Otp
