@@ -6,13 +6,13 @@ import VideoSvg from "/public/Asset/Icon/video.svg"
 
 import { FC } from "react"
 
-interface ProfileInstance {
+interface ChatProfileInstance {
   name: string
   profileImageSrc: string
   currentStatus: "online" | "ofline"
 }
 
-const Profile: FC<ProfileInstance> = ({
+const ChatProfile: FC<ChatProfileInstance> = ({
   name,
   profileImageSrc,
   currentStatus,
@@ -72,4 +72,4 @@ const Profile: FC<ProfileInstance> = ({
   )
 }
 
-export default Profile
+export default ChatProfile

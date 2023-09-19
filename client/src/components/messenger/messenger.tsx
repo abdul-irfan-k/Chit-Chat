@@ -1,14 +1,13 @@
-import ChatList from "./chat-list/chat-list"
-import ChatBox from "./chat-box/chat-box"
+import ChatList from "./chat/chat-list/chat-list"
 import ChatSort from "./chat-sort/chat-sort"
-import InputBox from "./input-box/input-box"
-import Profile from "./profile/profile"
 import Recent from "./recent/recent"
 import SideMenu from "./side-menu/side-menu"
+import ChatContainer from "./chat/chat-container"
+import CallLogContainer from "./call/call-log-container"
 
 const Messenger = () => {
   return (
-    <div className=" flex gap-5">
+    <div className="relative flex gap-5 ">
       <div className="relative w-14">
         <div className="absolute">
           <SideMenu />
@@ -27,16 +26,8 @@ const Messenger = () => {
         </div>
       </div>
 
-      <div className="relative mt-10  gap-8 flex flex-col  w-[60%] ">
-        <Profile
-          currentStatus="ofline"
-          profileImageSrc="/Asset/avatar.jpg"
-          name="irfan"
-        />
-
-        <ChatBox />
-        <InputBox />
-      </div>
+     {/* <ChatContainer /> */}
+      <CallLogContainer />
     </div>
   )
 }

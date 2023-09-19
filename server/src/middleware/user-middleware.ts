@@ -7,17 +7,14 @@ export const checkisLogedInMiddleware = async (req: Request, res: Response, next
     const { authToken, refreshToken } = req.cookies || {}
     if (!authToken || !refreshToken) return res.json({ isLogedin: false, errorType: TOKENNOTFOUND })
     const isCutomAuth = authToken?.length < 500
-    
-  if (authToken && isCutomAuth) {
-      verifyJwtTokenHandler({ req, token: authToken, tokenType: "authToken" })
-        .then(() => next())
-        .catch(({ error }) => console.log(error))
+
+    if (authToken && isCutomAuth) {
+       await verifyJwtTokenHandler({ req, token: authToken, tokenType: "authToken" })
     } else {
       console.log("not cutom auth")
     }
-
     next()
   } catch (error) {
-    console.log(error)
+    console.log("token error ",error)
   }
 }

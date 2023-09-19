@@ -31,13 +31,20 @@ export const createJwtTokenHandler = async ({
   })
 }
 
+
+
 interface verifyJwtTokenHandlerArgument {
   req: Request
   token: string
   tokenType: "refreshToken" | "authToken"
 }
 
-export const verifyJwtTokenHandler = ({ req, token, tokenType }: verifyJwtTokenHandlerArgument) => {
+
+interface verifyJwtTokenHandlerReturnType {
+  isValid:boolean,
+  error?:string
+}
+export const verifyJwtTokenHandler = ({ req, token, tokenType }: verifyJwtTokenHandlerArgument):Promise<verifyJwtTokenHandlerReturnType> => {
   return new Promise((resolve, reject) => {
     const tokenSecret =
       tokenType == "authToken" ? process.env.JWT_AUTH_TOKEN_SECRET : process.env.JWT_REFRESH_TOKEN_SECRET
@@ -49,7 +56,6 @@ export const verifyJwtTokenHandler = ({ req, token, tokenType }: verifyJwtTokenH
       }
 
       if (err as VerifyErrors) {
-        console.log(err?.inner, err?.stack, err?.name, err?.message)
         reject({ isValid: false, error: err })
       }
       return reject({ isValid: false, error: "not found" })

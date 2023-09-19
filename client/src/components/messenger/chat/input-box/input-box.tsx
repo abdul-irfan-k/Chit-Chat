@@ -12,7 +12,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useSelector } from "react-redux"
 
-type inputPopUpMenuType = "emoji" | "sticker" | undefined
+type inputPopUpMenuType = "emoji" | "sticker" |"media"| undefined
 
 const InputBox = () => {
   const [inputMessage, setInputMessage] = useState("")
@@ -26,6 +26,7 @@ const InputBox = () => {
   const popUpMenuButtonHandler = (popUpMenuType: inputPopUpMenuType) => {
     if (popUpMenuType == inputPopUpMenuType)
       return setInputPopUpMenuType(undefined)
+    console.log('popup menu buttion')
     setInputPopUpMenuType(popUpMenuType)
   }
 
@@ -53,7 +54,8 @@ const InputBox = () => {
           <EmogiPicker emojiSelectHandler={setInputMessage} />
         )}
       </div>
-      <div className="w-10 flex justify-center items-center aspect-square bg-slate-300 rounded-full dark:bg-slate-800">
+      <div className="w-10 flex justify-center items-center aspect-square bg-slate-300 rounded-full dark:bg-slate-800"
+      onClick={() => popUpMenuButtonHandler("media")} >
         <FontAwesomeIcon icon={faPlus} />
       </div>
 

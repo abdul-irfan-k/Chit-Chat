@@ -1,7 +1,12 @@
 import mongoose, { Document } from "mongoose"
 import bcrypt from "bcrypt"
 
-const userSchema = new mongoose.Schema<userModel>({
+
+
+
+
+
+const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true },
   userId: { type: String, required: true, unique: true },
@@ -22,14 +27,22 @@ userSchema.methods.checkIsCorrectPassword = async function (plainPassword: strin
   return isCorrectPassword
 }
 
+userSchema.methods.changePassword = async function (password:string){
+  const hashedPassword = await bcrypt.hash(password,12)
+  this.password = hashedPassword
+  return {isValid:true,isChangedPassword:true}
+}
+
 const User = mongoose.model<userDoc>("User", userSchema)
 export default User
 
-interface checkIsCorrectPassword {
+
+interface methodInterface {
   checkIsCorrectPassword(plainPassword: string): boolean
+  changePassword(password:string):{isValid:boolean,isChangedPassword:boolean}
 }
 
-export interface userModel {
+ interface userModel {
   name: string
   email: string
   userId: string
@@ -42,4 +55,5 @@ export interface userModel {
   }
 }
 
-interface userDoc extends Document, checkIsCorrectPassword, userModel {}
+
+interface userDoc extends userModel,Document,methodInterface {}

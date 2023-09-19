@@ -1,6 +1,7 @@
 "use client"
 
-import { initialiseSocket } from "@/reducers/socket-reducers/socket-reducers"
+import { addAudioCallNotification } from "@/redux/actions/notification-action/notification-action"
+import { initialiseSocket } from "@/redux/reducers/socket-reducers/socket-reducers"
 import { Socket } from "@/socket-io-client/socket"
 import { useEffect } from "react"
 import { useDispatch } from "react-redux"
@@ -10,6 +11,7 @@ const SocketIoIntialise = () => {
 
   useEffect(() => {
     dispatch(initialiseSocket(Socket))
+    // dispatch(addAudioCallNotification())
   }, [])
   return <></>
 }
