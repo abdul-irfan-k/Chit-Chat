@@ -1,3 +1,4 @@
+import { BellIcon, FileIcon, GearIcon, IdBadgeIcon, LogoutIcon, MoonIcon, StarIcon } from "@/constants/icon-contant"
 import Image from "next/image"
 import { FC } from "react"
 
@@ -8,27 +9,37 @@ const SideMenu = () => {
         <Image alt="profile-image" src={"/Asset/avatar.jpg"} fill />
       </div>
 
-      <SideMenuIcon src={"/Asset/Icon/star.svg"} />
-      <SideMenuIcon src={"/Asset/Icon/file.svg"} />
-      <SideMenuIcon src={"/Asset/Icon/id-badge.svg"} />
-      <SideMenuIcon src={"/Asset/Icon/bell.svg"} />
-      <SideMenuIcon src={"/Asset/Icon/gear.svg"} />
-      <SideMenuIcon src={"/Asset/signout.png"} />
-      <SideMenuIcon src={"/Asset/Icon/moon.svg"} />
+      <SideMenuIcon src={"/Asset/Icon/star.svg"}>
+        <StarIcon className="w-6 aspect-square" />
+      </SideMenuIcon>
+      <SideMenuIcon>
+        <FileIcon className="w-6 aspect-square" />
+      </SideMenuIcon>
+      <SideMenuIcon>
+        <IdBadgeIcon className="w-6 aspect-square" />
+      </SideMenuIcon>
+      <SideMenuIcon>
+        <BellIcon className="w-6 aspect-square" />
+      </SideMenuIcon>
+      <SideMenuIcon>
+        <GearIcon className="w-6 aspect-square" />
+      </SideMenuIcon>
+      <SideMenuIcon>
+        <LogoutIcon className="w-6 aspect-square" />
+      </SideMenuIcon>
+      <SideMenuIcon>
+        <MoonIcon className="w-6 aspect-square" />
+      </SideMenuIcon>
     </div>
   )
 }
 
 export default SideMenu
 
-interface SideMenuIconInterface {
-  src: string
-}
-
-const SideMenuIcon: FC<SideMenuIconInterface> = ({ src }) => {
+const SideMenuIcon: FC<> = ({ children }) => {
   return (
-    <div className="w-10 relative overflow-hidden flex items-center justify-center aspect-square rounded-full bg-slate-300">
-      <Image alt="profile-image" src={src} fill className="p-2" />
+    <div className="w-10 relative overflow-hidden flex items-center justify-center aspect-square rounded-full bg-slate-300 fill-slate-950 dark:fill-slate-50 dark:bg-neutral-900">
+      {children}
     </div>
   )
 }

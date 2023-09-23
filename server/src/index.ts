@@ -8,6 +8,7 @@ import userRouter from "./route/user-route.js"
 import bodyParser from 'body-parser'
 import cookieParser from 'cookie-parser'
 import { connnectDB } from "./config/mongoose.js"
+import { connectRedis, redisClient } from "./config/redis.js"
 
 
 dotEnv.config()
@@ -34,8 +35,11 @@ io.on("connection", (socket) => {
 
 app.use("/user", userRouter)
 
+
+
 connnectDB(() => {
   server.listen(port, () => {
     console.log(`server listing on http://localhost:${port}`)
   })
+  connectRedis()
 })

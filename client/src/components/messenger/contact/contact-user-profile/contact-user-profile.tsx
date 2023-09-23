@@ -2,20 +2,18 @@ import { CallIcon, ChatIcon, VideoCamIcon } from "@/constants/icon-contant"
 import Image from "next/image"
 import { FC } from "react"
 
-interface CallUserProfileProps {
+interface ContactUserProfileProps {
   name: string
   profileImageSrc: string
-  phoneNumber: string
 }
 
-const CallUserProfile: FC<CallUserProfileProps> = ({ name, profileImageSrc, phoneNumber }) => {
+const ContactUserProfile: FC<ContactUserProfileProps> = ({ name, profileImageSrc }) => {
   return (
     <div className=" gap-2 w-full  p-8 flex flex-col items-center bg-slate-200 fill-slate-950 dark:bg-neutral-950 dark:fill-slate-50">
       <div className="relative w-[50%] aspect-square">
         <Image src={profileImageSrc} alt="user-image" fill className="rounded-full" />
       </div>
       <div className="font-medium text-lg text-slate-950 dark:text-slate-50">{name}</div>
-      <div className="font-medium text-xl text-slate-700 dark:text-slate-200">{phoneNumber}</div>
       <div className="gap-3 w-full flex justify-between items-center ">
         <div className="flex flex-col gap-2 items-center">
           <div className="w-10 aspect-square flex items-center justify-center">
@@ -40,4 +38,4 @@ const CallUserProfile: FC<CallUserProfileProps> = ({ name, profileImageSrc, phon
   )
 }
 
-export default CallUserProfile
+export default ContactUserProfile
