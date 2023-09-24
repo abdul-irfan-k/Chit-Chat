@@ -9,7 +9,7 @@ const SideMenu = () => {
         <Image alt="profile-image" src={"/Asset/avatar.jpg"} fill />
       </div>
 
-      <SideMenuIcon src={"/Asset/Icon/star.svg"}>
+      <SideMenuIcon >
         <StarIcon className="w-6 aspect-square" />
       </SideMenuIcon>
       <SideMenuIcon>
@@ -36,7 +36,10 @@ const SideMenu = () => {
 
 export default SideMenu
 
-const SideMenuIcon: FC<> = ({ children }) => {
+interface SideMenuIconInterface {
+  children: React.ReactNode
+}
+const SideMenuIcon: FC<SideMenuIconInterface> = ({ children }) => {
   return (
     <div className="w-10 relative overflow-hidden flex items-center justify-center aspect-square rounded-full bg-slate-300 fill-slate-950 dark:fill-slate-50 dark:bg-neutral-900">
       {children}

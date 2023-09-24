@@ -18,6 +18,19 @@ import BellIcon from "/public/Asset/Icon/bell.svg"
 import GearIcon from "/public/Asset/Icon/gear.svg"
 import MoonIcon from "/public/Asset/Icon/moon.svg"
 import LogoutIcon from "/public/Asset/Icon/logout.svg"
+import HomeIcon from "/public/Asset/Icon/home.svg"
+import StopCircleIcon from "/public/Asset/Icon/stop-circle.svg"
+import VideoCamOffIcon from "/public/Asset/Icon/video-cam-off.svg"
+import StopIcon from "/public/Asset/Icon/stop.svg"
+import FullScreenIcon from "/public/Asset/Icon/fullscreen.svg"
+import GridViewIcon from "/public/Asset/Icon/grid-view.svg"
+import GridOnIcon from "/public/Asset/Icon/grid-on.svg"
+import PlusIcon from "/public/Asset/Icon/plus.svg"
+import VolumeLowIcon from "/public/Asset/Icon/volume-low.svg"
+import VolumeHighIcon from "/public/Asset/Icon/volume-high.svg"
+import VolumeOffIcon from "/public/Asset/Icon/volume-off.svg"
+import VolumeXMarkIcon from "/public/Asset/Icon/volume-xmark.svg"
+import VideoSlashIcon from "/public/Asset/Icon/video-slash.svg"
 
 
 export {
@@ -40,5 +53,18 @@ export {
   BellIcon,
   GearIcon,
   MoonIcon,
-  LogoutIcon
+  LogoutIcon,
+  HomeIcon,
+  VideoCamOffIcon,
+  StopCircleIcon,
+  StopIcon,
+  FullScreenIcon,
+  GridViewIcon,
+  GridOnIcon,
+  PlusIcon,
+  VolumeLowIcon,
+  VolumeHighIcon,
+  VolumeOffIcon,
+  VolumeXMarkIcon,
+  VideoSlashIcon
 }

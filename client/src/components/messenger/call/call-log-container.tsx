@@ -1,11 +1,16 @@
+"use client"
 import React from "react"
 import CallUserProfile from "./call-user-profile/call-user-profile"
 import CallSharedDocument from "./call-shared-document/call-shared-document"
 import CallHistory from "./call-history/call-history"
+import { useSelector } from "react-redux"
+import { messengerSortState } from "@/redux/reducers/messenger-reducer/messenger-reducer"
 
 const CallLogContainer = () => {
+  const { messengerSortType } = useSelector((state: { messengerSort: messengerSortState }) => state.messengerSort)
   return (
-    <div className="relative mt-10  gap-8 flex  w-[60%] overflow-y-hidden xl:h-[75vh]">
+    <>
+  {messengerSortType =="call" && <div className="relative mt-10  gap-8 flex  w-[60%] overflow-y-hidden xl:h-[75vh]">
       <div className="gap-5 flex flex-col w-[40%]">
         <CallUserProfile name="irfan" phoneNumber="123 456 789" profileImageSrc="/Asset/avatar.jpg" />
         <CallSharedDocument
@@ -30,7 +35,8 @@ const CallLogContainer = () => {
           />
         </div>
       </div>
-    </div>
+    </div>}
+    </>
   )
 }
 

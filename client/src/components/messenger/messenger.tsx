@@ -7,6 +7,10 @@ import CallLogContainer from "./call/call-log-container"
 import ContactContainer from "./contact/contact-container"
 
 const Messenger = () => {
+  // const { messengerSortType, subSelectionType } = useSelector(
+  //   (state: { messengerSort: messengerSortState }) => state.messengerSort,
+  // )
+
   return (
     <div className="relative flex gap-5 ">
       <div className="relative w-14">
@@ -26,9 +30,8 @@ const Messenger = () => {
           </div>
         </div>
       </div>
-
-     {/* <ChatContainer /> */}
-      {/* <CallLogContainer /> */}
+      <ChatContainer />
+      <CallLogContainer />
       <ContactContainer />
     </div>
   )

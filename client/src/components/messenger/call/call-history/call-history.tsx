@@ -2,7 +2,7 @@ import { CallMadeIcon, CallMissedIcon, CallReceivedIcon, DeleteIcon } from "@/co
 import React, { FC } from "react"
 
 interface CallHistoryProps {
-  callHistoryData: Array<callHistoryCard>
+  callHistoryData: Array<CallHistoryCard>
 }
 const CallHistory: FC<CallHistoryProps> = ({ callHistoryData }) => {
   return (

@@ -32,11 +32,11 @@ export const currentUsersReducer = createSlice({
       state = action.payload
     },
     updateCurrentUser: (state, action) => {},
-    removeCurrentUser: (state, action) => {
-      state = state.filter(
-        (currentUser) => currentUser?._id != action.payload._id,
-      )
-    },
+    // removeCurrentUser: (state, action) => {
+    //   state = state.filter(
+    //     (currentUser:{}) => currentUser?._id != action.payload._id,
+    //   )
+    // },
     removeAllCurrentUsers: (state) => {
       state = []
     },
