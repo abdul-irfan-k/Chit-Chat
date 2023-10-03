@@ -4,6 +4,7 @@ import VideoGroupCallHeader from "./video-group-call-header/video-group-call-hea
 import VideoGroupCallStatus from "./video-group-call-status/video-group-call-status"
 import VideoGroupCallControllBar from "./video-group-call-controllbar/video-group-call-contoll-bar"
 import VideoGroupCallViewsContainer from "./video-group-call-views/video-group-call-views-container"
+import LiveChatContainer from "./live-chat/live-chat-container"
 
 const VideoGroupCallContainer = () => {
   return (
@@ -15,13 +16,18 @@ const VideoGroupCallContainer = () => {
           </div>
         </div>
 
-        <div className="py-5 relative w-[60vw] h-screen ">
+        <div className="py-5 relative w-[65vw] h-screen ">
           <VideoGroupCallHeader />
           <VideoGroupCallStatus />
           <VideoGroupCallViewsContainer />
           <div className="absolute bottom-5 w-full ">
             <VideoGroupCallControllBar />
           </div>
+        </div>
+
+
+        <div className="py-5 px-5 flex-1">
+          <LiveChatContainer />
         </div>
       </div>
     </div>

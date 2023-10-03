@@ -1,4 +1,4 @@
-import ChatList from "./chat/chat-list/chat-list"
+import ChatList from "./chat-list/chat-list"
 import MessengerSort from "./messenger-sort/messenger-sort"
 import Recent from "./recent/recent"
 import SideMenu from "./side-menu/side-menu"

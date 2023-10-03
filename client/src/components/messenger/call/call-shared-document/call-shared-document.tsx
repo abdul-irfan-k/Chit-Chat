@@ -1,6 +1,6 @@
 "use client"
 
-import { ExpandLessIcon, ExpandMoreIcon, FolderIcon } from "@/constants/icon-contant"
+import { ExpandLessIcon, ExpandMoreIcon, FolderIcon } from "@/constants/icon-constant"
 import { FC, useState } from "react"
 
 interface SharedDocument {

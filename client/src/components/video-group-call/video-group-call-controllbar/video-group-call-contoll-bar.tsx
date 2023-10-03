@@ -1,7 +1,13 @@
-import { CallEndIcon, StopIcon, VideoSlashIcon, VolumeHighIcon } from "@/constants/icon-contant"
+"use client"
+import { CallEndIcon, StopIcon, VideoSlashIcon, VolumeHighIcon } from "@/constants/icon-constant"
 import React, { FC } from "react"
 
 const VideoGroupCallControllBar = () => {
+
+  const soundInputRangeHandler = (event:React.ChangeEvent<HTMLInputElement>) => {
+    console.log(event.target.value)
+
+  }
   return (
     <div className="mt-5 relative flex items-center">
       <div className="gap-2 absolute flex items-center">
@@ -12,6 +18,9 @@ const VideoGroupCallControllBar = () => {
           <input
             type="range"
             className="transparent h-[4px] w-full cursor-pointer appearance-none border-transparent bg-neutral-200 dark:bg-neutral-600"
+            min={0}
+            max={100}
+            onChange={soundInputRangeHandler}
           />
         </div>
       </div>

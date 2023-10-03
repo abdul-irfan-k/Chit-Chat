@@ -16,7 +16,6 @@ export const assignCookiesHandler = ({ res, token, tokenName, expires }: assignC
 
   res.cookie(tokenName, token, {
     httpOnly: true,
-    sameSite: "strict",
     expires: expire,
   })
 }

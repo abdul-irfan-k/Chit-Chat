@@ -10,7 +10,7 @@ const SocketIoIntialise = () => {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    // dispatch(initialiseSocket(Socket))
+    dispatch(initialiseSocket(Socket))
     // dispatch(addAudioCallNotification())
   }, [])
   return <></>

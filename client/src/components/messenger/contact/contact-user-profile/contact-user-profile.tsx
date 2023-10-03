@@ -1,4 +1,4 @@
-import { CallIcon, ChatIcon, VideoCamIcon } from "@/constants/icon-contant"
+import { CallIcon, ChatIcon, VideoCamIcon } from "@/constants/icon-constant"
 import Image from "next/image"
 import { FC } from "react"
 

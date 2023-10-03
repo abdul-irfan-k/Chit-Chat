@@ -1,6 +1,6 @@
 "use client"
 
-import { CallEndIcon, CallIcon, ChatIcon } from "@/constants/icon-contant"
+import { CallEndIcon, CallIcon, ChatIcon } from "@/constants/icon-constant"
 import Image from "next/image"
 
 const AudioCallFullScreenNotification = () => {

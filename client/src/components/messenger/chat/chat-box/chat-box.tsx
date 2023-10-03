@@ -1,6 +1,8 @@
+"use client"
 import TextMessage from "./text-message/text-message"
 
 const ChatBox = () => {
+
   return (
     <div className="px-10 h-[65vh]  overflow-y-scroll">
       <TextMessage

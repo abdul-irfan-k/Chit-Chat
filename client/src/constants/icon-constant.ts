@@ -31,6 +31,9 @@ import VolumeHighIcon from "/public/Asset/Icon/volume-high.svg"
 import VolumeOffIcon from "/public/Asset/Icon/volume-off.svg"
 import VolumeXMarkIcon from "/public/Asset/Icon/volume-xmark.svg"
 import VideoSlashIcon from "/public/Asset/Icon/video-slash.svg"
+import EmojiIcon from "/public/Asset/Icon/emoji.svg"
+import SendIcon from "/public/Asset/Icon/send.svg"
+import CollectionsBookmarkIcon from "/public/Asset/Icon/collections-bookmark.svg"
 
 
 export {
@@ -66,5 +69,8 @@ export {
   VolumeHighIcon,
   VolumeOffIcon,
   VolumeXMarkIcon,
-  VideoSlashIcon
+  VideoSlashIcon,
+  EmojiIcon,
+  SendIcon,
+  CollectionsBookmarkIcon
 }

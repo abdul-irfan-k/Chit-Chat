@@ -3,6 +3,8 @@ import {
   changePasswordHanldler,
   changePasswordWithOtpHandler,
   checkUserIdAvilableHandler,
+  getAllChatUsersHandler,
+  getUserDetailHandler,
   loginUserHandler,
   logoutUserHandler,
   requestChangePasswordWithOtpHandler,
@@ -16,8 +18,10 @@ const router = express.Router()
 
 router.post("/signUp", signUpUserHandler)
 router.post("/login", loginUserHandler)
-router.post("/logout",checkisLogedInMiddleware,logoutUserHandler)
+router.post("/logout", checkisLogedInMiddleware, logoutUserHandler)
+
 router.post("/verifyUserIsLogedIn", checkisLogedInMiddleware, verifyUserIsLogedInHandler)
+router.post("/getUserDetail", checkisLogedInMiddleware, getUserDetailHandler)
 
 router.post("/checkUserIdAvilable", checkUserIdAvilableHandler)
 
@@ -28,4 +32,6 @@ router.post("/changePassword", checkisLogedInMiddleware, changePasswordHanldler)
 router.post("/changePasswordWithOtp", checkisLogedInMiddleware, changePasswordWithOtpHandler)
 router.post("/requestChangePasswordWithOtp", checkisLogedInMiddleware, requestChangePasswordWithOtpHandler)
 
+
+router.post('/getAllChatUsers',checkisLogedInMiddleware,getAllChatUsersHandler)
 export default router

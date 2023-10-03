@@ -1,4 +1,4 @@
-import {  Request, Response } from "express"
+import { Request, Response } from "express"
 import User from "../model/mongoose/user-model.js"
 import {
   INVALIDCOMFIRMPASSWORD,
@@ -22,10 +22,14 @@ export const signUpUserHandler = async (req: Request, res: Response) => {
   try {
     const { name, email, userId, password, confirmPassword } = req.body
     const passwordMatched = password == confirmPassword
-    if (!passwordMatched) return res.status(400).json({ isValid: false, errorType: INVALIDCOMFIRMPASSWORD })
+    if (!passwordMatched)
+      return res
+        .status(400)
+        .json({ isValid: false, errorType: INVALIDCOMFIRMPASSWORD, errorMessage: "invalid comfirm password" })
 
     const existingUser = await User.findOne({ userId })
-    if (existingUser != null) return res.status(400).json({ isValid: false, errorType: USERALREADEXIST })
+    if (existingUser != null)
+      return res.status(400).json({ isValid: false, errorType: USERALREADEXIST, errorMessage: "user already exist" })
 
     const user = new User({ name, email, userId, password })
     await user.save()
@@ -57,7 +61,7 @@ export const signUpUserHandler = async (req: Request, res: Response) => {
       tokenName: "refreshToken",
     })
 
-    return res.status(200).json({ isValid: true })
+    return res.status(200).json({ isValid: true, name: user.name, email: user.email })
   } catch (error) {
     console.log(error)
   }
@@ -134,9 +138,20 @@ export const verifyUserIsLogedInHandler = (req: Request, res: Response) => {
   try {
     const { email, _id } = req.user as userInterface
     const isAvailableUserDetail = _id != undefined && email != undefined
-
     if (isAvailableUserDetail) return res.status(200).json({ isValid: true, isLogedIn: true })
+
     return res.status(400).json({ isValid: false, isLogedIn: false, errorType: USERNOTGLOGEDIN })
+  } catch (error) {
+    return res.status(400).json({ isValid: false })
+  }
+}
+
+export const getUserDetailHandler  = async (req: Request, res: Response) => {
+  try {
+    const {  _id } = req.user as userInterface
+    const userDetail = await User.getUserDetail(_id)
+
+    return res.status(200).json(userDetail)
   } catch (error) {
     return res.status(400).json({ isValid: false })
   }
@@ -169,9 +184,13 @@ export const sendVerifyUserEmailHandler = async (req: Request, res: Response) =>
 
     const isAvailableUserDetail = _id != undefined && email != undefined
     if (!isAvailableUserDetail)
-      return res.status(200).json({  isValid: false,  isSendedOtp: false,  errorType: USERNOTGLOGEDIN,})
+      return res.status(200).json({ isValid: false, isSendedOtp: false, errorType: USERNOTGLOGEDIN })
 
-    const generatedOtp = await otpGenerator.generate(6, {    upperCaseAlphabets: false,    specialChars: false,    lowerCaseAlphabets: false,  })
+    const generatedOtp = await otpGenerator.generate(6, {
+      upperCaseAlphabets: false,
+      specialChars: false,
+      lowerCaseAlphabets: false,
+    })
     if (typeof generatedOtp != "string") return
 
     await Otp.deleteMany({ email })
@@ -209,15 +228,15 @@ export const changePasswordHanldler = async (req: Request, res: Response) => {
 
     const userDetail = await User.findOne({ _id })
     if (userDetail == null) {
-      return res.status(400).json({  isValid: false,  isChangedPassword: false,  errorType: USERNOTGLOGEDIN,})
+      return res.status(400).json({ isValid: false, isChangedPassword: false, errorType: USERNOTGLOGEDIN })
     }
 
     const isCorrectPassword = await userDetail.checkIsCorrectPassword(oldPassword)
     if (!isCorrectPassword) {
-      return res.status(400).json({   isValid: false,   isChangedPassword: false,   errorType: INVALIDPASSWORD, })
+      return res.status(400).json({ isValid: false, isChangedPassword: false, errorType: INVALIDPASSWORD })
     }
     await userDetail.changePassword(newPassword)
-    return res.status(200).json({ isValid: true, isCorrectPassword: true ,isChnagedPassword:true})
+    return res.status(200).json({ isValid: true, isCorrectPassword: true, isChnagedPassword: true })
   } catch (error) {
     console.log("user error ", error)
   }
@@ -290,4 +309,13 @@ export const changePasswordWithOtpHandler = async (req: Request, res: Response) 
   } catch (error) {
     console.log(error)
   }
+}
+
+export const getAllChatUsersHandler = async (req: Request, res: Response) => {
+  try {
+    const { _id } = req.user as userInterface
+    const allChatUser = await User.getAllChatUser(_id)
+
+    return res.status(200).json(allChatUser)
+  } catch (error) {}
 }

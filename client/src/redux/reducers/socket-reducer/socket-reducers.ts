@@ -1,11 +1,22 @@
 import { createSlice } from "@reduxjs/toolkit"
+import { Socket } from "socket.io-client"
 
-export const socketReducer = createSlice({
-  name: "socketReducer",
-  initialState: { socket: {} },
+interface socketReducer {
+  socket: Socket | undefined,
+  isAvailableSocket:Boolean
+}
+export type socketReducerState = socketReducer 
+const socketReducerInitialState: socketReducerState = {
+  socket:null,
+  isAvailableSocket:false
+}
+export const socketClientReducer = createSlice({
+  name: "socketClient",
+  initialState: socketReducerInitialState,
   reducers: {
     initialiseSocket: (state, action) => {
       state.socket = action.payload
+      state.isAvailableSocket = true
     },
     updateSocket: (state, action) => {
       state.socket = action.payload
@@ -13,15 +24,14 @@ export const socketReducer = createSlice({
   },
 })
 
-
 export const usersReducer = createSlice({
-  name:"usersReducer",
-  initialState:[],
-  reducers:{
-    initialiseUsers:(state,action) => {
-      state= action.payload
-    }
-  }
+  name: "usersReducer",
+  initialState: [],
+  reducers: {
+    initialiseUsers: (state, action) => {
+      state = action.payload
+    },
+  },
 })
 
 export const currentUsersReducer = createSlice({
@@ -43,4 +53,4 @@ export const currentUsersReducer = createSlice({
   },
 })
 
-export const { initialiseSocket, updateSocket } = socketReducer.actions
+export const { initialiseSocket, updateSocket } = socketClientReducer.actions

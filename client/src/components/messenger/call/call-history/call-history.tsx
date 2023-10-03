@@ -1,4 +1,4 @@
-import { CallMadeIcon, CallMissedIcon, CallReceivedIcon, DeleteIcon } from "@/constants/icon-contant"
+import { CallMadeIcon, CallMissedIcon, CallReceivedIcon, DeleteIcon } from "@/constants/icon-constant"
 import React, { FC } from "react"
 
 interface CallHistoryProps {

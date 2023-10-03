@@ -1,4 +1,4 @@
-import { PlusIcon, StopIcon } from "@/constants/icon-contant"
+import { PlusIcon, StopIcon } from "@/constants/icon-constant"
 import React from "react"
 
 const VideoGroupCallStatus = () => {

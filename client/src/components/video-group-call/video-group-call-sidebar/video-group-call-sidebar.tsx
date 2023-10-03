@@ -1,5 +1,6 @@
-import { GearIcon, HomeIcon, VideoCamIcon } from "@/constants/icon-contant"
+import { GearIcon, HomeIcon, VideoCamIcon } from "@/constants/icon-constant"
 import Image from "next/image"
+import Link from "next/link"
 import React, { FC } from "react"
 
 const VideoGroupCallSidebar = () => {
@@ -9,9 +10,11 @@ const VideoGroupCallSidebar = () => {
         <Image alt="profile-image" src={"/Asset/avatar.jpg"} fill />
       </div>
       <div className="gap-7 mx-auto my-auto flex flex-col">
-        <VideoGroupCallSidebarIcon>
-          <HomeIcon className="w-6 aspect-square" />
-        </VideoGroupCallSidebarIcon>
+        <Link href={'/messenger'}>
+          <VideoGroupCallSidebarIcon>
+            <HomeIcon className="w-6 aspect-square" />
+          </VideoGroupCallSidebarIcon>
+        </Link>
         <VideoGroupCallSidebarIcon>
           <VideoCamIcon className="w-6 aspect-square" />
         </VideoGroupCallSidebarIcon>

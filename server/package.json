@@ -27,7 +27,8 @@
     "nodemailer": "^6.9.5",
     "redis": "^4.6.8",
     "socket.io": "^4.7.2",
-    "typescript": "^5.2.2"
+    "typescript": "^5.2.2",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",

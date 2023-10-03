@@ -1,7 +1,9 @@
-import { FullScreenIcon, GridOnIcon, GridViewIcon } from "@/constants/icon-contant"
+import { FullScreenIcon, GridOnIcon, GridViewIcon } from "@/constants/icon-constant"
 import React from "react"
 
 const VideoGroupCallHeader = () => {
+  
+
   return (
     <div className="gap-3 flex  items-center">
       <div className="font-medium text-xl">Web Developer Meeting</div>

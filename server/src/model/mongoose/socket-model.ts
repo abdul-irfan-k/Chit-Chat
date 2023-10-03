@@ -1,12 +1,25 @@
-import { InferSchemaType, Schema, model, Document } from "mongoose"
+import { Schema, model, Document } from "mongoose"
 
-const socketSchema = new Schema({
-  ip: { type: String, unique: true },
-  time: { type: Date, default: Date.now },
-  user: { type: Schema.Types.ObjectId, ref: "User" },
-})
+const socketSchema = new Schema(
+  {
+    ip: { type: String },
+    socketId: { type: String, required: true },
+    user: { type: Schema.Types.ObjectId, ref: "User" },
+    userId: { type: String },
+  },
+  {
+    timestamps: true,
+  },
+)
 
-const Socket = model("Socket", socketSchema)
-export default Socket
+const SocketModel = model("Socket", socketSchema)
+export default SocketModel
 
-export type SocketDocument = InferSchemaType<typeof socketSchema> & Document
+export interface socketSchemaInterface {
+  socketId: string
+  ip?: string | undefined
+  user?: Schema.Types.ObjectId | undefined
+  userId?: string | undefined;
+}
+
+export interface SocketDocument extends Document, socketSchemaInterface {}

@@ -1,4 +1,4 @@
-import { BellIcon, FileIcon, GearIcon, IdBadgeIcon, LogoutIcon, MoonIcon, StarIcon } from "@/constants/icon-contant"
+import { BellIcon, FileIcon, GearIcon, IdBadgeIcon, LogoutIcon, MoonIcon, StarIcon } from "@/constants/icon-constant"
 import Image from "next/image"
 import { FC } from "react"
 

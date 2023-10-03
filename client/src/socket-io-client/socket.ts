@@ -7,5 +7,6 @@ const serverUrl = `http://localhost:${serverPort}`
 // export const Socket = io(serverUrl)
 export const Socket = io(serverUrl)
 
-Socket.emit("userMessage/newMessage", "hello")
-Socket.on("userMessage/newMessage", (msg) => {})
+Socket.on('message:receiveMessage',(val) => {
+    console.log('message ',val)
+})
