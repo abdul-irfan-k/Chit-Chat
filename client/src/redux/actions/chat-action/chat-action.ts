@@ -1,4 +1,4 @@
-import { axiosUserInstance } from "@/constants/axios"
+import { axiosChatInstance, axiosUserInstance } from "@/constants/axios"
 import {
   chatUserListAction,
   currentChaterAction,
@@ -19,8 +19,15 @@ export const updateCurrentChaterHandler = (details: currentChaterReducerSlate) =
   dispatch(currentChaterAction.updateCurrentChater(details))
 }
 
-export const sendMessageHandler =
-  ({ message, receiverId, senderId, chatRoomId }, socket: Socket) =>
-  async (dispatch: AppDispatch) => {
+export const sendMessageHandler = ({ message, receiverId, senderId, chatRoomId }, socket: Socket) => async (dispatch: AppDispatch) => {
     socket.emit("message:newMessage", { message, receiverId, senderId, chatRoomId })
   }
+
+export const getChatRoomMessageHandler = ({chatRoomId}) => async(dispatch:AppDispatch) =>  {
+  try {
+    const {data} = await axiosChatInstance.post('/getChatRoomMessage',{chatRoomId})
+    console.log('chatroom Message',data)
+  } catch (error) {
+    console.log('chat room message request error ')
+  }
+}

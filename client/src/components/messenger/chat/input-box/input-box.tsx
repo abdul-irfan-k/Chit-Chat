@@ -10,6 +10,7 @@ import { sendMessageHandler } from "@/redux/actions/chat-action/chat-action"
 import { currentChaterReducerSlate } from "@/redux/reducers/chat-reducer/chat-reducer"
 import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 import { socketReducerState } from "@/redux/reducers/socket-reducer/socket-reducers"
+import VoiceRecorder from "@/components/shared/voice-recorder/voice-recorder"
 
 type inputPopUpMenuType = "emoji" | "sticker" | "media" | undefined
 
@@ -87,9 +88,7 @@ const InputBox = () => {
       >
         <FontAwesomeIcon icon={faPaperPlane} />
       </div>
-      <div className="w-10 flex justify-center items-center aspect-square bg-slate-300 rounded-full dark:bg-slate-800">
-        <FontAwesomeIcon icon={faMicrophone} />
-      </div>
+      <VoiceRecorder />
     </div>
   )
 }

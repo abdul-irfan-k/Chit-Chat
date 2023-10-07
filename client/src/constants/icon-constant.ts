@@ -34,6 +34,7 @@ import VideoSlashIcon from "/public/Asset/Icon/video-slash.svg"
 import EmojiIcon from "/public/Asset/Icon/emoji.svg"
 import SendIcon from "/public/Asset/Icon/send.svg"
 import CollectionsBookmarkIcon from "/public/Asset/Icon/collections-bookmark.svg"
+import MicIcon from "/public/Asset/Icon/mic.svg"
 
 
 export {
@@ -72,5 +73,6 @@ export {
   VideoSlashIcon,
   EmojiIcon,
   SendIcon,
-  CollectionsBookmarkIcon
+  CollectionsBookmarkIcon,
+  MicIcon
 }

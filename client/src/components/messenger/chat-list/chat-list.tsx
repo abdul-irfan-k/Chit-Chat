@@ -1,6 +1,6 @@
 "use client"
-import { updateCurrentChaterHandler } from "@/redux/actions/chat-action/chat-action"
-import { chatUsersListReducerState } from "@/redux/reducers/chat-reducer/chat-reducer"
+import { getChatRoomMessageHandler, updateCurrentChaterHandler } from "@/redux/actions/chat-action/chat-action"
+import { chatUsersListReducerState, currentChaterReducerSlate } from "@/redux/reducers/chat-reducer/chat-reducer"
 import { useAppDispatch } from "@/store"
 import Image from "next/image"
 import Link from "next/link"
@@ -9,14 +9,19 @@ import { FC, useEffect } from "react"
 import { useSelector } from "react-redux"
 
 const ChatList = () => {
-  const { usersDeatail ,isChanged} = useSelector((state: { chatUsersList: chatUsersListReducerState }) => state.chatUsersList)
+  const { usersDeatail, isChanged } = useSelector(
+    (state: { chatUsersList: chatUsersListReducerState }) => state.chatUsersList,
+  )
+
+  const { isChanged: isCurrentChaterChanged, userDetail: currentChaterDetail } = useSelector(
+    (state: { currentChater: currentChaterReducerSlate }) => state.currentChater,
+  )
   const dispatch = useAppDispatch()
   const router = useRouter()
 
-
   useEffect(() => {
-console.log('detai',usersDeatail)
-  },[isChanged])
+    dispatch(getChatRoomMessageHandler({ chatRoomId: currentChaterDetail?.chatRoom?.chatRoomId }))
+  }, [isCurrentChaterChanged])
   return (
     <div className="flex flex-col  mt-10 gap-5    w-full   ">
       {usersDeatail.map((userDetail, index) => {

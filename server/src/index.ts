@@ -4,6 +4,8 @@ import dotEnv from "dotenv"
 import bodyParser from "body-parser"
 import cookieParser from "cookie-parser"
 import cors from "cors"
+import path from 'path';
+import url from 'url';
 import * as socketIo from "socket.io"
 
 import userMessageSocketIo from "./socket-io/user-message.js"
@@ -22,6 +24,10 @@ const server = http.createServer(app)
 const port = process.env.PORT || 8000
 const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000"
 
+const __filename = url.fileURLToPath(import.meta.url);
+export const __dirname = path.dirname(__filename);
+
+
 const corsOptions = {
   origin: frontendUrl,
   credentials: true,
@@ -31,12 +37,12 @@ const corsOptions = {
 app.use(cookieParser())
 app.use(cors(corsOptions))
 app.use(bodyParser())
+app.use(express.static(path.join(__dirname,'..','public')))
 
 const io = new socketIo.Server(server, {
   cors: {
     origin: [frontendUrl],
   },
-  
 })
 
 io.on("connection", async (socket) => {
