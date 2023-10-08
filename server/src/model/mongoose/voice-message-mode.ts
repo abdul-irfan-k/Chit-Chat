@@ -10,13 +10,13 @@ const readByRecipientSchema = new Schema({
 })
 
 interface voiceMessageSchemaInerface {
-  chatRoomId: string
+  chatRoomId?: string
   postedByUser: string
   voiceMessageSrc: string
   readreadByRecipient?: readByRecipientSchemaInterface[]
 }
 const voiceMessageSchema = new Schema({
-  chatRoomId: { type: String, required: true },
+  chatRoomId: { type: String },
   postedByUser: { type: String, required: true },
   voiceMessageSrc: { type: String, required: true },
   readreadByRecipient: { type: [readByRecipientSchema], default: [] },
@@ -26,7 +26,7 @@ interface staticInterface extends Model<VoiceMessageDocument> {
   createNewMessageInChatRoom(details: createNewMessageInChatRoom): any
 }
 interface createNewMessageInChatRoom {
-  chatRoomId: string
+  chatRoomId?: string
   postedByUser: string
   voiceMessageSrc: string
 }
@@ -37,7 +37,7 @@ voiceMessageSchema.statics.createNewMessageInChatRoom = async function ({
   voiceMessageSrc,
 }: createNewMessageInChatRoom) {
   try {
-    const post = await this.create({ chatRoomId, postedByUser, voiceMessageSrc })
+    const post = await this.create({  postedByUser, voiceMessageSrc })
     return post
   } catch (error) {
     console.log(error)
