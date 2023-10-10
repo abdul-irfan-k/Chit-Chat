@@ -26,6 +26,21 @@ export const sendMessageHandler =
   ({ message, receiverId, senderId, chatRoomId }, socket: Socket) =>
   async (dispatch: AppDispatch) => {
     socket.emit("message:newMessage", { message, receiverId, senderId, chatRoomId })
+    dispatch(
+      chatRoomMessageAction.addSendedChatRoomMessage({
+        chatRoomId,
+        newMessage: {
+          messegeChannelType: "outgoingMessage",
+          messageData: {
+            chatRoomId,
+            message,
+            messageType: "textMessage",
+            messageSendedTime: new Date(),
+            postedByUser: "irfan",
+          },
+        },
+      }),
+    )
   }
 
 export const getChatRoomMessageHandler =

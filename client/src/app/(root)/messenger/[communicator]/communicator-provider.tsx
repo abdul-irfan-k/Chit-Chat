@@ -25,10 +25,10 @@ const CommunicatorProvider = ({ children }: { children: React.ReactNode }) => {
     const isAlreadAvailableMessage = chatRooms.some(
       (chatRoom) => chatRoom.chatRoomId == currentChaterDetail?.chatRoom?.chatRoomId,
     )
-    if (isAlreadAvailableMessage)
-      return dispatch(
-        chatRoomMessageAction.addCurrentChaterMessage({ chatRoomId: currentChaterDetail?.chatRoom?.chatRoomId }),
-      )
+    if (isAlreadAvailableMessage) {
+      dispatch(chatRoomMessageAction.addCurrentChaterMessage({ chatRoomId: currentChaterDetail?.chatRoom?.chatRoomId }))
+      return
+    }
     dispatch(
       getChatRoomMessageHandler({ chatRoomId: currentChaterDetail?.chatRoom?.chatRoomId, myUserId: userDetail?._id }),
     )

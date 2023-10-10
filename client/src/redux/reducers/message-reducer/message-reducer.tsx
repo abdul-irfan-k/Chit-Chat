@@ -53,16 +53,22 @@ export const chatRoomsMessageReducer = createSlice({
     addIntialChatRoomMessage:(state,action)=> {
       return {chatRoomMessages:[action.payload],currentChaterMessage:action.payload}
     },
-    addChatRoomMessage: (state, action) => {
-      return {chatRoomMessages:[...state.chatRoomMessages,action.payload],currentChaterMessage:action.payload}
-    },
+  
     removeCurrentChaterMessage:(state,action) => {
       return {chatRoomMessages:state.chatRoomMessages,currentChaterMessage:undefined}
     },
     addCurrentChaterMessage:(state,action) => {
-      const currentChaterMessage = state.chatRoomMessages.map((chatRoom) => chatRoom.chatRoomId == action.payload.chatRoomId)
-      console.log('current chater message ')
-      state.currentChaterMessage = currentChaterMessage
+      const currentChaterMessage = state.chatRoomMessages.filter((chatRoom) => chatRoom.chatRoomId == action.payload.chatRoomId)
+      state.currentChaterMessage = currentChaterMessage[0]
+    },
+    addSendedChatRoomMessage:(state,action) => {
+      const updatedChatRoomMessage= state.chatRoomMessages.filter((chatRoom) => {
+          if(chatRoom.chatRoomId == action.payload.chatRoomId )return  chatRoom.messages.push(action.payload.newMessage)
+          return []
+      })
+      console.log('updated Chat romm message ',updatedChatRoomMessage[0])
+      state.chatRoomMessages =  [...state.chatRoomMessages.filter(chatRoom => chatRoom.chatRoomId != action.payload.chatRoomId),updatedChatRoomMessage[0]]
+      state.currentChaterMessage = updatedChatRoomMessage[0]
     }
 
   },
