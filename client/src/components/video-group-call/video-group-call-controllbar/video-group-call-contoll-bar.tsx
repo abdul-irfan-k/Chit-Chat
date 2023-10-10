@@ -5,7 +5,7 @@ import React, { FC } from "react"
 const VideoGroupCallControllBar = () => {
 
   const soundInputRangeHandler = (event:React.ChangeEvent<HTMLInputElement>) => {
-    console.log(event.target.value)
+   
 
   }
   return (

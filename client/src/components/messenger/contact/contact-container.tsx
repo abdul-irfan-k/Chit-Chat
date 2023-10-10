@@ -3,7 +3,7 @@ import React from "react"
 import ContactUserProfile from "./contact-user-profile/contact-user-profile"
 import ContactSocialMedia from "./contact-social-media/contact-social-media"
 import ContactDetail from "./contact-detail/contact-detail"
-import { messengerSortState } from "@/redux/reducers/messenger-reducer/messenger-reducer"
+import { messengerSortState } from "@/redux/reducers/messenger-sort-reducer/messenger-sort-reducer"
 import { useSelector } from "react-redux"
 
 const ContactContainer = () => {

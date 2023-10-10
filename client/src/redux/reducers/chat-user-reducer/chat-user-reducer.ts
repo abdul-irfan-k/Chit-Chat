@@ -10,6 +10,7 @@ interface chatUserDetail {
   email: string
   profileImageUrl?: string
   chatRoom?: chatRoom
+  isStoredChatRoomMessages?: boolean
 }
 
 interface chatUsersListReducer {
@@ -28,9 +29,10 @@ export const chatUsersListReducer = createSlice({
   initialState: chatUserListInitialState,
   reducers: {
     addIntialAllUserList: (state, action) => {
-      console.log("intial")
-      state.usersDeatail = [...action.payload]
-      state.isChanged = true
+      return { isChanged: true, usersDeatail: [...action.payload] }
+    },
+    updateUser: (state, action) => {
+      // state.isChange = false
     },
   },
 })
@@ -53,8 +55,7 @@ export const currentChaterReducer = createSlice({
   initialState: currentChaterIntialState,
   reducers: {
     updateCurrentChater: (state, action) => {
-      state.isChanged = true
-      state.userDetail = action.payload.userDetail
+      return { isChanged: true, userDetail: action.payload.userDetail }
     },
   },
 })

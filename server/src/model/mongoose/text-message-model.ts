@@ -13,6 +13,7 @@ interface textMessageSchemaInterface {
   chatRoomId: string
   postedByUser: string
   message: string
+  messageType: string
   readByRecipient?: readByRecipientSchemaInterface[]
 }
 const textMessageSchema = new Schema(
@@ -20,6 +21,7 @@ const textMessageSchema = new Schema(
     chatRoomId: { type: String, required: true },
     postedByUser: { type: String, required: true },
     message: { type: String, required: true },
+    messageType: { type: String, default: "textMessage" },
     readByRecipient: { type: [readByRecipientSchema], default: [] },
   },
   {

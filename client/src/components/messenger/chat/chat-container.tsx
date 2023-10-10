@@ -4,8 +4,8 @@ import { useSelector } from "react-redux"
 import ChatBox from "./chat-box/chat-box"
 import ChatProfile from "./chat-profile/chat-profile"
 import InputBox from "./input-box/input-box"
-import { messengerSortState } from "@/redux/reducers/messenger-reducer/messenger-reducer"
-import { currentChaterReducerSlate } from "@/redux/reducers/chat-reducer/chat-reducer"
+import { messengerSortState } from "@/redux/reducers/messenger-sort-reducer/messenger-sort-reducer"
+import { currentChaterReducerSlate } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import { useEffect } from "react"
 
 const ChatContainer = () => {

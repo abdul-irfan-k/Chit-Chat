@@ -1,10 +1,11 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit"
 import { socketClientReducer } from "./redux/reducers/socket-reducer/socket-reducers"
 import { audioCallNotificationReducer } from "./redux/reducers/top-notification-reducer/top-notification-reducer"
-import { messengerSortReducer } from "./redux/reducers/messenger-reducer/messenger-reducer"
+import { messengerSortReducer } from "./redux/reducers/messenger-sort-reducer/messenger-sort-reducer"
 import { useDispatch } from "react-redux"
 import { userDetailReducer, userSignUpDetailReducer } from "./redux/reducers/user-redicer/user-reducer"
-import { chatUsersListReducer, currentChaterReducer } from "./redux/reducers/chat-reducer/chat-reducer"
+import { chatUsersListReducer, currentChaterReducer } from "./redux/reducers/chat-user-reducer/chat-user-reducer"
+import { chatRoomsMessageReducer, messageAvailableChatRooms } from "./redux/reducers/message-reducer/message-reducer"
 
 const combinedReducers = combineReducers({
   socketClient: socketClientReducer.reducer,
@@ -13,11 +14,14 @@ const combinedReducers = combineReducers({
   userSignUpDetail: userSignUpDetailReducer.reducer,
   chatUsersList: chatUsersListReducer.reducer,
   currentChater:currentChaterReducer.reducer,
-  userDetail:userDetailReducer.reducer
+  userDetail:userDetailReducer.reducer,
+  messageAvailableChatRooms:messageAvailableChatRooms.reducer,
+  chatRoomsMessageReducer:chatRoomsMessageReducer.reducer
 })
 
 export const store = configureStore({
   reducer: combinedReducers,
+  
 })
 
 export type AppDispatch = typeof store.dispatch

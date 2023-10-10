@@ -4,7 +4,7 @@ import CallUserProfile from "./call-user-profile/call-user-profile"
 import CallSharedDocument from "./call-shared-document/call-shared-document"
 import CallHistory from "./call-history/call-history"
 import { useSelector } from "react-redux"
-import { messengerSortState } from "@/redux/reducers/messenger-reducer/messenger-reducer"
+import { messengerSortState } from "@/redux/reducers/messenger-sort-reducer/messenger-sort-reducer"
 
 const CallLogContainer = () => {
   const { messengerSortType } = useSelector((state: { messengerSort: messengerSortState }) => state.messengerSort)

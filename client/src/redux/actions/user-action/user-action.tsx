@@ -6,13 +6,10 @@ import { AppRouterInstance } from "next/dist/shared/lib/app-router-context"
 
 export const loginHandler = (details: Object, router: AppRouterInstance) => async (dispatch: AppDispatch) => {
   try {
-    console.log(details)
     const { data } = await axiosUserInstance.post("/login", { ...details })
     if (data.isValid) {
-      console.log("valid")
       router.push("/messenger")
     }
-    console.log(data)
   } catch (error) {
     console.log(error)
   }

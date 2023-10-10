@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useSelector } from "react-redux"
 import { useAppDispatch } from "@/store"
 import { sendMessageHandler } from "@/redux/actions/chat-action/chat-action"
-import { currentChaterReducerSlate } from "@/redux/reducers/chat-reducer/chat-reducer"
+import { currentChaterReducerSlate } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 import { socketReducerState } from "@/redux/reducers/socket-reducer/socket-reducers"
 import VoiceRecorder from "@/components/shared/voice-recorder/voice-recorder"
@@ -31,7 +31,6 @@ const InputBox = () => {
 
   const popUpMenuButtonHandler = (popUpMenuType: inputPopUpMenuType) => {
     if (popUpMenuType == inputPopUpMenuType) return setInputPopUpMenuType(undefined)
-    console.log("popup menu buttion")
     setInputPopUpMenuType(popUpMenuType)
   }
 

@@ -1,76 +1,40 @@
 "use client"
+import { useSelector } from "react-redux"
 import TextMessage from "./text-message/text-message"
+import { chatRoomMessagesReducerSlate } from "@/redux/reducers/message-reducer/message-reducer"
+import { useEffect } from "react"
 
 const ChatBox = () => {
+  const {currentChaterMessage} = useSelector((state:{chatRoomsMessageReducer:chatRoomMessagesReducerSlate}) => state.chatRoomsMessageReducer)
 
+ useEffect(() => {
+console.log('current message ',currentChaterMessage)
+ },[])
   return (
     <div className="px-10 h-[65vh]  overflow-y-scroll">
-      <TextMessage
+
+      {currentChaterMessage?.messages.map((message) => {
+        return <>
+        {message.messageData.messageType == "textMessage" && <>
+        <TextMessage
+        
+        messageContent={message.messageData.message}
+        messegeChannelType={message.messegeChannelType}
+        time={message.messageData.messageSendedTime}
+        userImageSrc="/Asset/avatar.jpg"
+        userName="kaleel"
+      />
+        </>}
+        </>
+      })}
+      {/* <TextMessage
         messageContent="Hey, what's up?"
-        messageType="incomingMessage"
+        messegeChannelType="incomingMessage"
         time={new Date()}
         userImageSrc="/Asset/avatar.jpg"
         userName="kaleel"
-      />
-      <TextMessage
-        messageContent="Not much, just working on this project. How about you?"
-        messageType="outgoingMessage"
-        time={new Date()}
-        userImageSrc="/Asset/avatar.jpg"
-        userName="irfan"
-      />
-
-      <TextMessage
-        messageContent=" I'm just about to start working on mine. I'm feeling a little bit anxious about it."
-        messageType="incomingMessage"
-        time={new Date()}
-        userImageSrc="/Asset/avatar.jpg"
-        userName="kaleel"
-      />
-      <TextMessage
-        messageContent="Don't worry, you'll do great. Just take it one step at a time."
-        messageType="outgoingMessage"
-        time={new Date()}
-        userImageSrc="/Asset/avatar.jpg"
-        userName="irfan"
-      />
-
-      <TextMessage
-        messageContent="Thanks, I appreciate that."
-        messageType="incomingMessage"
-        time={new Date()}
-        userImageSrc="/Asset/avatar.jpg"
-        userName="kaleel"
-      />
-      <TextMessage
-        messageContent="So, what's your project about?"
-        messageType="outgoingMessage"
-        time={new Date()}
-        userImageSrc="/Asset/avatar.jpg"
-        userName="irfan"
-      />
-
-      <TextMessage
-        messageContent="It's a research paper on the impact of artificial intelligence on the workplace."
-        messageType="incomingMessage"
-        time={new Date()}
-        userImageSrc="/Asset/avatar.jpg"
-        userName="kaleel"
-      />
-      <TextMessage
-        messageContent="That sounds really interesting. I'm actually taking a class on AI right now."
-        messageType="outgoingMessage"
-        time={new Date()}
-        userImageSrc="/Asset/avatar.jpg"
-        userName="irfan"
-      />
-      <TextMessage
-        messageContent="That sounds really interesting. I'm actually taking a class on AI right now."
-        messageType="outgoingMessage"
-        time={new Date()}
-        userImageSrc="/Asset/avatar.jpg"
-        userName="irfan"
-      />
+      /> */}
+    
     </div>
   )
 }

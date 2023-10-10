@@ -34,7 +34,7 @@ interface staticInterface extends Model<ChatRoomDocument> {
   addChatConversation(details: addChatConversation): any
 }
 
-chatRoomSchema.statics.initiateChat = async function (userIds: string[], messageId, messageType) {
+chatRoomSchema.statics.initiateChat = async function (userIds: string[]) {
   // const messageObjectId = new mongoose.Types.ObjectId(messageId)
   try {
     const avilableRoom = await this.findOne({
@@ -66,25 +66,23 @@ chatRoomSchema.statics.getMessageOfChatRoom = async function (chatRoomId: string
       { $unwind: "$chatRoomConversations" },
       {
         $group: {
-          _id: "$chatRoomConversations.messageType",
-          messages: {
-            $push: {
-              type: "$chatRoomConversations.messageType",
-              id: "$chatRoomConversations.messageId",
-            },
-          },
+          _id: null,
+          messages: { $push: { type: "$chatRoomConversations.messageType", id: "$chatRoomConversations.messageId" } },
         },
       },
 
       {
         $project: {
-          textMessages: {
+          allMessages: {
             $map: {
               input: "$messages",
               as: "message",
               in: {
-                id: {
+                textMessageIds: {
                   $cond: { if: { $eq: ["$$message.type", "textMessage"] }, then: "$$message.id", else: "$$REMOVE" },
+                },
+                voiceMessageIds: {
+                  $cond: { if: { $eq: ["$$message.type", "voiceMessage"] }, then: "$$message.id", else: "$$REMOVE" },
                 },
               },
             },
@@ -95,25 +93,35 @@ chatRoomSchema.statics.getMessageOfChatRoom = async function (chatRoomId: string
       {
         $lookup: {
           from: "textmessages",
-          let: { messageIds: "$textMessages.id" },
-          pipeline: [
-            {
-              $match: {
-                $expr: { $in: ["$_id", "$$messageIds"] },
-              },
-            },
-          ],
+          let: { messageIds: "$allMessages.textMessageIds" },
+          pipeline: [{ $match: { $expr: { $in: ["$_id", "$$messageIds"] } } }],
           as: "textMessage",
         },
       },
       {
-        $unwind:'$textMessage'
+        $lookup: {
+          from: "voicemessages",
+          let: { voiceMessageIds: "$allMessages.voiceMessageIds" },
+          pipeline: [{ $match: { $expr: { $in: ["$_id", "$$voiceMessageIds"] } } }],
+          as: "voiceMessage",
+        },
+      },
+
+      {
+        $addFields: {
+          messages: { $concatArrays: ["$textMessage", "$voiceMessage"] },
+        },
       },
       {
-        $sort:{
-          "textMessage.createdAt":-1
-        }
-      }
+        $project: {
+          messages: {
+            $sortArray: {
+              input: "$messages",
+              sortBy: { createdAt: 1 },
+            },
+          },
+        },
+      },
     ])
     return allMessage
   } catch (error) {
@@ -147,139 +155,3 @@ chatRoomSchema.statics.addChatConversation = async function ({
 export interface ChatRoomDocument extends chatRoomSchemaInterface, Document {}
 const ChatRoomModel = model<ChatRoomDocument, staticInterface>("ChatRoom", chatRoomSchema)
 export default ChatRoomModel
-
-// db.users.aggregate([
-//   {
-//     $project: {
-//       val: {
-//         $switch: {
-//           branches: [{ case: { $eq: ["$userId", "irfan76"] }, then: "uppinangady" }],
-//           default: "puttur",
-//         },
-//       },
-//       name: 1,
-//       email: 1,
-//     },
-//   },
-//   {
-//     $group: {
-//       _id: "$val",
-//       detail: {
-//         $push: {
-//           type: "$val",
-//           name: "$name",
-//         },
-//         // $push: "$name",
-//       },
-//     },
-//   },
-//   {
-//     $project: {
-//       // admin: {
-//       //   $cond: { if: { $eq: ["$_id", "uppinangady"] }, then: "$val", else: "$$REMOVE" },
-//       // },
-//       // user: {
-//       //   $cond: { if: { $eq: ["$_id", "puttur"] }, then: "$val", else: "$$REMOVE" },
-//       // },
-//       // user:{
-//       //   $map: {
-//       //     input: "$places",
-//       //     as: "hobby",
-//       //     // cond: { $eq: ["_id",'uppinangady'] } ,
-//       //     in:'$$hobby'
-//       // }
-//       user: {
-//         $filter: {
-//           input: "$detail.name",
-//           as: "hobby",
-//           cond: { $eq: ["$de", "uppinangady"] },
-//           // in:'$$hobby'
-//         },
-//       },
-//     },
-//   },
-//   // {
-//   //   $unwind: "$_id",
-//   // },
-//   {
-//     $lookup: {
-//       from: "users",
-//       let: {
-//         a: "$user",
-//       },
-//       pipeline: [
-//         {
-//           $match: {
-//             // "name":"zuhair"
-//             $expr: { $in: ["$name", "$$a"] },
-//             // },
-//             // $project:{
-//             //   a:'$$a'
-//           },
-//         },
-//       ],
-//       as: "looks",
-//     },
-//   },
-// ])
-
-// db.users.aggregate([
-//   {
-//     $project: {
-//       val: {
-//         $switch: {
-//           branches: [{ case: { $eq: ["$userId", "irfan76"] }, then: "uppinangady" }],
-//           default: "puttur",
-//         },
-//       },
-//       name: 1,
-//       email: 1,
-//     },
-//   },
-//   {
-//     $group: {
-//       _id: "$val",
-//       detail: {
-//         $push: {
-//           type: "$val",
-//           name: "$name",
-//         },
-//       },
-//     },
-//   },
-//   {
-//     $project: {
-//       user: {
-//         $map: {
-//           input: "$detail",
-//           as: "hobby",
-//           in: {
-//             test: {
-//               $cond: { if: { $eq: ["$$hobby.type", "puttur"] }, then: "$$hobby.name", else: "$$REMOVE" },
-//             },
-//           },
-//         },
-//       },
-//     },
-//   },
-//   {
-//     $lookup: {
-//       from: "users",
-//       let: {
-//         a: "$user.test",
-//       },
-//       pipeline: [
-//         {
-//           $match: {
-//             // "name":"zuhair"
-//             $expr: { $in: ["$name", "$$a"] },
-//             // },
-//             // $project:{
-//             //   a:'$$a'
-//           },
-//         },
-//       ],
-//       as: "looks",
-//     },
-//   },
-// ])

@@ -52,7 +52,9 @@ const userMessageSocketIo = (io: Server, socket: Socket) => {
         })
         console.log('remove file sync')
         fs.unlinkSync(filepath)
-      } catch (error) {}
+      } catch (error) {
+        console.log(error)
+      }
     },
   )
 }

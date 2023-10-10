@@ -7,6 +7,7 @@ import cors from "cors"
 import path from 'path';
 import url from 'url';
 import * as socketIo from "socket.io"
+dotEnv.config()
 
 import userMessageSocketIo from "./socket-io/user-message.js"
 import userStreamSocketIo from "./socket-io/user-stream.js"
@@ -18,7 +19,6 @@ import chatRouter from "./route/chat-route.js"
 import { connnectDB } from "./config/mongoose.js"
 import { connectRedis } from "./config/redis.js"
 
-dotEnv.config()
 const app: Application = express()
 const server = http.createServer(app)
 const port = process.env.PORT || 8000

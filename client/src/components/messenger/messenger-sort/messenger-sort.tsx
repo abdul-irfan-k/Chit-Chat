@@ -3,7 +3,7 @@
 import MessageSvg from "/public/Asset/Icon/message.svg"
 import PhoneSvg from "/public/Asset/Icon/phone.svg"
 import IdBadge from "/public/Asset/Icon/id-badge.svg"
-import { messengerSortState } from "@/redux/reducers/messenger-reducer/messenger-reducer"
+import { messengerSortState } from "@/redux/reducers/messenger-sort-reducer/messenger-sort-reducer"
 import {  useSelector } from "react-redux"
 import { CallIcon, CallMadeIcon, CallMissedIcon, CallReceivedIcon } from "@/constants/icon-constant"
 import { changeMessengerSortState } from "@/redux/actions/messenger-action/messenger-action"

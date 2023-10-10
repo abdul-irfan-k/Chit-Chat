@@ -1,7 +1,9 @@
 "use client"
 
 import { MicIcon } from "@/constants/icon-constant"
+import { currentChaterReducerSlate } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import { socketReducerState } from "@/redux/reducers/socket-reducer/socket-reducers"
+import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 import React, { useRef, useState } from "react"
 import { useSelector } from "react-redux"
 
@@ -15,6 +17,11 @@ const VoiceRecorder = () => {
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null)
 
   const mediaRecorder = useRef<MediaRecorder | null>(null)
+
+  const { userDetail: currentChaterDeatil } = useSelector(
+    (state: { currentChater: currentChaterReducerSlate }) => state.currentChater,
+  )
+  const { userDetail } = useSelector((state: { userDetail: userDetailState }) => state.userDetail)
   const { socket } = useSelector((state: { socketClient: socketReducerState }) => state.socketClient)
 
   const getMicrophonePermission = async (): { isAllowedPermission: Boolean } => {
@@ -30,7 +37,7 @@ const VoiceRecorder = () => {
       setStream(streamData)
       return { isAllowedPermission: true }
     } catch (error) {
-      console.log("microphone permisson not allowed", error)
+      console.log(error)
     }
   }
 
@@ -64,8 +71,11 @@ const VoiceRecorder = () => {
   }
 
   const sendButtonHandler = () => {
-    console.log('auidoblob',audioBlob)
-    socket?.emit("message:newAudioMessage", { file: audioBlob })
+    socket?.emit("message:newAudioMessage", {
+      file: audioBlob,
+      postedByUser: userDetail?._id,
+      chatRoomId: currentChaterDeatil?.chatRoom?.chatRoomId,
+    })
   }
 
   return (

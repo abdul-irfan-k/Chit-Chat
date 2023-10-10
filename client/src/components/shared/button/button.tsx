@@ -6,7 +6,6 @@ interface ButtonProps {
 }
 
 const Button: FC<ButtonProps> = (props) => {
-  console.log("props", props)
   return <div></div>
 }
 
