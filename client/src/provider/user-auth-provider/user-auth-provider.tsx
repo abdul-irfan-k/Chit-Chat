@@ -1,11 +1,10 @@
 "use client"
-import { addAllChatUsers } from "@/redux/actions/chat-action/chat-action"
+import { addAllChatUsers, getIntialOnlineChatUsers } from "@/redux/actions/chat-action/chat-action"
 import { checkUserIsLogedIn } from "@/redux/actions/user-action/user-action"
 import { chatUsersListReducerState } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import { socketReducerState } from "@/redux/reducers/socket-reducer/socket-reducers"
 import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 import { useAppDispatch } from "@/store"
-import { usePathname } from "next/navigation"
 import React, { FC, useEffect } from "react"
 import { useSelector } from "react-redux"
 
@@ -26,20 +25,16 @@ const UserAuthProvider: FC<UserAuthProviderProps> = ({ children }) => {
 
   useEffect(() => {
     dispatch(addAllChatUsers())
-  }, [isChatUserListChanged])
+  }, [isChatUserListChanged,dispatch])
 
   useEffect(() => {
     if (isLogedIn) {
+      if (!isAvailableSocket) return console.log("not availbe socket", socket)
       socket.emit("socket:join", { userId: userDetails?._id })
+      dispatch(getIntialOnlineChatUsers(socket))
     }
-  }, [isChanged])
+  }, [isLogedIn, isAvailableSocket,dispatch])
 
-  useEffect(() => {
-    if (!isAvailableSocket) return console.log("not availbe socket client")
-    socket.on("message:receiveMessage", ({ message }) => {
-      console.log(message)
-    })
-  }, [isAvailableSocket])
 
   useEffect(() => {
     dispatch(checkUserIsLogedIn())

@@ -1,6 +1,9 @@
 "use client"
 import { getChatRoomMessageHandler, updateCurrentChaterHandler } from "@/redux/actions/chat-action/chat-action"
-import { chatUsersListReducerState, currentChaterReducerSlate } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
+import {
+  chatUsersListReducerState,
+  currentChaterReducerSlate,
+} from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import { useAppDispatch } from "@/store"
 import Image from "next/image"
 import Link from "next/link"
@@ -9,7 +12,7 @@ import { FC, useEffect } from "react"
 import { useSelector } from "react-redux"
 
 const ChatList = () => {
-  const { usersDeatail, isChanged,isChange } = useSelector(
+  const { usersDeatail, isChanged, isChange } = useSelector(
     (state: { chatUsersList: chatUsersListReducerState }) => state.chatUsersList,
   )
 
@@ -19,7 +22,6 @@ const ChatList = () => {
   const dispatch = useAppDispatch()
   const router = useRouter()
 
- 
   // useEffect(() => {
   //   dispatch(getChatRoomMessageHandler({ chatRoomId: currentChaterDetail?.chatRoom?.chatRoomId }))
   //   console.log("current chater",currentChaterDetail)
@@ -27,7 +29,7 @@ const ChatList = () => {
   return (
     <div className="flex flex-col  mt-10 gap-5    w-full   ">
       {usersDeatail.map((userDetail, index) => {
-        console.log('a')
+        console.log("a")
         return (
           // <Link href={`/messenger/${userDetail.userId}`} key={index}>
           <ChatListBox
@@ -39,7 +41,7 @@ const ChatList = () => {
             communicatorName={userDetail.name}
             imageSrc="/Asset/avatar.jpg"
             lastMessageTime={new Date()}
-            onlineStatus={true}
+            onlineStatus={userDetail.status?.onlineStatus == "online" ? true : false}
             currentStatus={{ isSendingMessage: false }}
             newMessage={{
               latestMessage: "hi from new account",
@@ -91,7 +93,7 @@ const ChatListBox: FC<ChatListBoxInterface> = ({
         <div
           className={
             "absolute right-0 top-0 w-4  aspect-square rounded-full border-[3px] border-slate-200 dark:border-neutral-950" +
-            " bg-yellow-300"
+            (onlineStatus ? " bg-green-500":" bg-red-500")
           }
         ></div>
       </div>

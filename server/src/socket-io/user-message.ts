@@ -15,7 +15,7 @@ const userMessageSocketIo = (io: Server, socket: Socket) => {
 
     ChatRoomModel.initiateChat([receiverId, senderId])
     if (receiver == null) return console.log("receiver not found")
-    socket.to(receiver.socketId).emit("message:receiveMessage", { message })
+    socket.to(receiver.socketId).emit("message:receiveMessage", { message,senderId, chatRoomId })
 
     const textMessage = await textMessageModel.createNewMessageInChatRoom({
       chatRoomId,

@@ -35,7 +35,7 @@ const InputBox = () => {
   }
 
   const sendButtonHandler = () => {
-    if (currentChaterDeatil == null) return console.log("user id not found")
+    if (currentChaterDeatil == null || currentChaterDeatil.chatRoom == undefined ||  userDetail == null ) return console.log("user id not found")
     dispatch(
       sendMessageHandler(
         {

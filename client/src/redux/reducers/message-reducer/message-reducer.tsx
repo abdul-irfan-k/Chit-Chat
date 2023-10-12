@@ -66,7 +66,6 @@ export const chatRoomsMessageReducer = createSlice({
           if(chatRoom.chatRoomId == action.payload.chatRoomId )return  chatRoom.messages.push(action.payload.newMessage)
           return []
       })
-      console.log('updated Chat romm message ',updatedChatRoomMessage[0])
       state.chatRoomMessages =  [...state.chatRoomMessages.filter(chatRoom => chatRoom.chatRoomId != action.payload.chatRoomId),updatedChatRoomMessage[0]]
       state.currentChaterMessage = updatedChatRoomMessage[0]
     }

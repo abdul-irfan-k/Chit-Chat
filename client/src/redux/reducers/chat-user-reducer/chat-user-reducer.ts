@@ -1,8 +1,19 @@
 import { createSlice } from "@reduxjs/toolkit"
 
+interface chatRoomNotification {
+  notificationType: "newMessage"
+  totalNotificationCount: number
+  isAvailableNewNotification: boolean
+}
 interface chatRoom {
   chatRoomId: string
 }
+
+interface ChatRoomUserStatus {
+  onlineStatus: "online" | "ofline"
+  currentUserStatus?: "typing" | "recording"
+}
+
 interface chatUserDetail {
   _id: string
   name: string
@@ -11,6 +22,8 @@ interface chatUserDetail {
   profileImageUrl?: string
   chatRoom?: chatRoom
   isStoredChatRoomMessages?: boolean
+  notification?: chatRoomNotification
+  status?: ChatRoomUserStatus
 }
 
 interface chatUsersListReducer {
@@ -33,6 +46,42 @@ export const chatUsersListReducer = createSlice({
     },
     updateUser: (state, action) => {
       // state.isChange = false
+    },
+    addintialOnlineUsers: (state, action) => {
+      const updatedUserDetail = state.usersDeatail.map((userDetail) => {
+        const onlineStatus = action.payload.onlineUsers.some((onlineUser) => onlineUser.userId == userDetail._id)
+          ? "online"
+          : "ofline"
+        return { ...userDetail, status: { onlineStatus } }
+      })
+      state.usersDeatail = updatedUserDetail
+    },
+    changeUserOnlineStatus: (state, action) => {
+      const updatedUserDetail = state.usersDeatail.map((userDetail) => {
+        if(userDetail._id == action.payload._id) return {...userDetail,status:action.payload.status}
+        else return {...userDetail}
+      })
+
+      console.log('change user status  user detail ',updatedUserDetail)
+      state.usersDeatail = updatedUserDetail
+    },
+    addUserNotification: (state, action) => {
+        const updatedUserDetail = state.usersDeatail.map((userDetail) => {
+          if(userDetail._id == action.payload._id) return {...userDetail,notification:action.payload.notification}
+          else return {...userDetail}
+        })
+
+        console.log('notfication user detail ',updatedUserDetail)
+        state.usersDeatail = updatedUserDetail
+    },
+    removeUserNotification: (state, action) => {
+      const updatedUserDetail = state.usersDeatail.map((userDetail) => {
+        if(userDetail._id == action.payload._id) return {...userDetail,notification:undefined}
+        else return {...userDetail}
+      })
+
+      console.log('notfication removed user detail ',updatedUserDetail)
+      state.usersDeatail = updatedUserDetail
     },
   },
 })

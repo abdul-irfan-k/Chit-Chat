@@ -23,7 +23,15 @@ export const updateCurrentChaterHandler = (details: currentChaterReducerSlate) =
 }
 
 export const sendMessageHandler =
-  ({ message, receiverId, senderId, chatRoomId }, socket: Socket) =>
+  (
+    {
+      message,
+      receiverId,
+      senderId,
+      chatRoomId,
+    }: { message: string; receiverId: string; senderId: string; chatRoomId: string },
+    socket: Socket,
+  ) =>
   async (dispatch: AppDispatch) => {
     socket.emit("message:newMessage", { message, receiverId, senderId, chatRoomId })
     dispatch(
@@ -44,10 +52,9 @@ export const sendMessageHandler =
   }
 
 export const getChatRoomMessageHandler =
-  ({ chatRoomId, myUserId }) =>
+  ({ chatRoomId, myUserId }: { chatRoomId: string; myUserId: string }) =>
   async (dispatch: AppDispatch) => {
     try {
-      console.log("getchatroom message handler ")
       const { data } = await axiosChatInstance.post("/getChatRoomMessage", { chatRoomId })
       if (data == undefined) return dispatch(chatRoomMessageAction.removeCurrentChaterMessage({}))
 
@@ -55,7 +62,7 @@ export const getChatRoomMessageHandler =
         const messegeChannelType = elm.postedByUser == myUserId ? "outgoingMessage" : "incomingMessage"
         return { messageData: { ...elm, messageSendedTime: new Date(elm.createdAt) }, messegeChannelType }
       })
-
+      console.log("data message", data)
       dispatch(chatRoomMessageAction.addIntialChatRoomMessage({ chatRoomId, messages: newData }))
       dispatch(messageAvailableChatRoomsAction.addMessageAvailableChatRooms({ chatRoomId }))
     } catch (error) {
@@ -63,3 +70,40 @@ export const getChatRoomMessageHandler =
       return dispatch(chatRoomMessageAction.removeCurrentChaterMessage({}))
     }
   }
+
+export const receiveMessageHandler =
+  ({ chatRoomId, message }: { chatRoomId: string, message: string }) =>
+  async (dispatch: AppDispatch) => {
+    dispatch(
+      chatRoomMessageAction.addSendedChatRoomMessage({
+        chatRoomId,
+        newMessage: {
+          messegeChannelType: "incomingMessage",
+          messageData: {
+            chatRoomId,
+            message,
+            messageType: "textMessage",
+            messageSendedTime: new Date(),
+            postedByUser: "irfan",
+          },
+        },
+      }),
+    )
+  }
+
+export const addNewMessageNotificationHandler = ({_id}:{_id:string}) => async (dispatch: AppDispatch) => {
+  dispatch(
+    chatUserListAction.addUserNotification({
+      _id,
+      notification: { notificationType: "newMessage", totalNotificationCount: 1, isAvailableNewNotification: true },
+    }),
+  )
+}
+
+export const getIntialOnlineChatUsers = (socket: Socket) => async (dispatch: AppDispatch) => {
+  try {
+    socket.emit("status:getOnlineUsers", (onlineUsers) => {
+      dispatch(chatUserListAction.addintialOnlineUsers({ onlineUsers }))
+    })
+  } catch (error) {}
+}

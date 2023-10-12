@@ -4,14 +4,15 @@ import dotEnv from "dotenv"
 import bodyParser from "body-parser"
 import cookieParser from "cookie-parser"
 import cors from "cors"
-import path from 'path';
-import url from 'url';
+import path from "path"
+import url from "url"
 import * as socketIo from "socket.io"
 dotEnv.config()
 
 import userMessageSocketIo from "./socket-io/user-message.js"
 import userStreamSocketIo from "./socket-io/user-stream.js"
 import { userSocketIntialization } from "./socket-io/user-initialise.js"
+import { userStatusSocketIo } from "./socket-io/user-status-socket-io.js"
 
 import userRouter from "./route/user-route.js"
 import chatRouter from "./route/chat-route.js"
@@ -24,9 +25,8 @@ const server = http.createServer(app)
 const port = process.env.PORT || 8000
 const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000"
 
-const __filename = url.fileURLToPath(import.meta.url);
-export const __dirname = path.dirname(__filename);
-
+const __filename = url.fileURLToPath(import.meta.url)
+export const __dirname = path.dirname(__filename)
 
 const corsOptions = {
   origin: frontendUrl,
@@ -37,7 +37,7 @@ const corsOptions = {
 app.use(cookieParser())
 app.use(cors(corsOptions))
 app.use(bodyParser())
-app.use(express.static(path.join(__dirname,'..','public')))
+app.use(express.static(path.join(__dirname, "..", "public")))
 
 const io = new socketIo.Server(server, {
   cors: {
@@ -49,6 +49,7 @@ io.on("connection", async (socket) => {
   // creating socket model
   userSocketIntialization(socket)
 
+  userStatusSocketIo(io, socket)
   userMessageSocketIo(io, socket)
   userStreamSocketIo(io, socket)
 })

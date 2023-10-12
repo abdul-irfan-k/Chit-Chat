@@ -1,14 +1,18 @@
+import { socketConnectHandler } from "@/redux/actions/socket-action/socket-action"
+import { SocketClient } from "@/socket-io-client/socket"
 import { createSlice } from "@reduxjs/toolkit"
-import { Socket } from "socket.io-client"
 
+const socket =  new SocketClient()
 interface socketReducer {
-  socket: Socket | undefined,
-  isAvailableSocket:Boolean
+  socket: SocketClient
+  isAvailableSocket: Boolean,
+  isConnectedSocket:boolean
 }
-export type socketReducerState = socketReducer 
+export type socketReducerState = socketReducer
 const socketReducerInitialState: socketReducerState = {
-  socket:null,
-  isAvailableSocket:false
+  socket: socket,
+  isAvailableSocket: false,
+  isConnectedSocket:false
 }
 export const socketClientReducer = createSlice({
   name: "socketClient",
@@ -21,36 +25,16 @@ export const socketClientReducer = createSlice({
     updateSocket: (state, action) => {
       state.socket = action.payload
     },
+    connectSocket: (state, action) => {},
   },
-})
-
-export const usersReducer = createSlice({
-  name: "usersReducer",
-  initialState: [],
-  reducers: {
-    initialiseUsers: (state, action) => {
-      state = action.payload
-    },
-  },
-})
-
-export const currentUsersReducer = createSlice({
-  name: "currentUserReducer",
-  initialState: [],
-  reducers: {
-    initialiseCurrentUsers: (state, action) => {
-      state = action.payload
-    },
-    updateCurrentUser: (state, action) => {},
-    // removeCurrentUser: (state, action) => {
-    //   state = state.filter(
-    //     (currentUser:{}) => currentUser?._id != action.payload._id,
-    //   )
-    // },
-    removeAllCurrentUsers: (state) => {
-      state = []
-    },
+  extraReducers: (builder) => {
+    builder.addCase(socketConnectHandler.fulfilled,(state,action) => {
+      state.isAvailableSocket = true
+      state.isConnectedSocket = true
+      state.socket = action.payload?.socket
+    })
   },
 })
 
 export const { initialiseSocket, updateSocket } = socketClientReducer.actions
+export const socketReducerAction = socketClientReducer.actions

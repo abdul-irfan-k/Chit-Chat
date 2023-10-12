@@ -12,7 +12,7 @@ export const getRedisSocketCached = async (receiverId: string) => {
       return jsonData
     }
 
-    // const objectId = new mongoose.Types.ObjectId(receiverId)
+    const receiverObjectId = new mongoose.Types.ObjectId(receiverId)
     const socketData = await SocketModel.findOne({ userId: receiverId })
     if (socketData == null) return console.log("no socket data found")
     await assignRedisSocketCache(`socket:${receiverId}`, socketData)

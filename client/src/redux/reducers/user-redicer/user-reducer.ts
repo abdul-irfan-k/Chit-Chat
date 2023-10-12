@@ -40,7 +40,7 @@ interface userDetail {
 }
 
 interface userDetailReducer {
-  userDetail?: userDetail | null
+  userDetail: userDetail | null
   isLogedIn: Boolean,
   isChanged:Boolean
 }
