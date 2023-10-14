@@ -1,6 +1,6 @@
 import React from "react"
 
-const VideoGroupCallSingleViews = () => {
+const VideoCallSingleViews = () => {
   return (
     <div className="gap-10  flex  flex-wrap justify-center">
       <div className=" aspect-video rounded-2xl w-[100%] bg-neutral-600"></div>
@@ -8,4 +8,4 @@ const VideoGroupCallSingleViews = () => {
   )
 }
 
-export default VideoGroupCallSingleViews
+export default VideoCallSingleViews

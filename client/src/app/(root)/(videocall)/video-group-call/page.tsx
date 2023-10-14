@@ -1,10 +1,10 @@
-import VideoGroupCallContainer from '@/components/video-group-call/video-group-call-container'
+import VideoCallContainer from '@/components/video-call/video-call-container'
 import React from 'react'
 
 const VideoGroupCallPage = () => {
   return (
     <div>
-        <VideoGroupCallContainer />
+      <VideoCallContainer />
     </div>
   )
 }

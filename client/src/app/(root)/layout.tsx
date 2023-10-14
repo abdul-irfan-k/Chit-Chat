@@ -1,6 +1,7 @@
 import Notification from "@/components/notificaton/notification"
 import SocketIoIntialise from "@/components/socket-io-intialise/socket-io-intialise"
 import ReduxProvider from "@/provider/redux-provider/redux-provider"
+import SocketIoChatUserEventProvider from "@/provider/socket-io-event-provider/socket-io-chat-user-event-provider"
 import UserAuthProvider from "@/provider/user-auth-provider/user-auth-provider"
 
 
@@ -15,6 +16,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
       <ReduxProvider>
         <UserAuthProvider>
           <SocketIoIntialise />
+          <SocketIoChatUserEventProvider />
           <Notification />
           {children}
         </UserAuthProvider>

@@ -43,10 +43,14 @@ const ChatList = () => {
             lastMessageTime={new Date()}
             onlineStatus={userDetail.status?.onlineStatus == "online" ? true : false}
             currentStatus={{ isSendingMessage: false }}
-            newMessage={{
-              latestMessage: "hi from new account",
-              totalNewMessageCount: 1,
-            }}
+            newMessage={
+              userDetail.notification?.isAvailableNewNotification
+                ? {
+                    latestMessage: "hi from new account",
+                    totalNewMessageCount: userDetail.notification.totalNotificationCount,
+                  }
+                : undefined
+            }
           />
           // </Link>
         )
@@ -65,7 +69,7 @@ interface ChatListBoxInterface {
     lastMessage: string
   }
   newMessage?: {
-    latestMessage: string
+    latestMessage?: string
     totalNewMessageCount: number
   }
   onlineStatus: Boolean
@@ -93,7 +97,7 @@ const ChatListBox: FC<ChatListBoxInterface> = ({
         <div
           className={
             "absolute right-0 top-0 w-4  aspect-square rounded-full border-[3px] border-slate-200 dark:border-neutral-950" +
-            (onlineStatus ? " bg-green-500":" bg-red-500")
+            (onlineStatus ? " bg-green-500" : " bg-red-500")
           }
         ></div>
       </div>

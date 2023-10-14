@@ -1,5 +1,5 @@
 "use client"
-import { receiveMessageHandler } from "@/redux/actions/chat-action/chat-action"
+import { addNewMessageNotificationHandler, receiveMessageHandler } from "@/redux/actions/chat-action/chat-action"
 import { currentChaterReducerSlate } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import { socketReducerState } from "@/redux/reducers/socket-reducer/socket-reducers"
 import { useAppDispatch } from "@/store"

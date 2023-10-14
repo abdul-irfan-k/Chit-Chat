@@ -58,29 +58,39 @@ export const chatUsersListReducer = createSlice({
     },
     changeUserOnlineStatus: (state, action) => {
       const updatedUserDetail = state.usersDeatail.map((userDetail) => {
-        if(userDetail._id == action.payload._id) return {...userDetail,status:action.payload.status}
-        else return {...userDetail}
+        if (userDetail._id == action.payload._id) return { ...userDetail, status: action.payload.status }
+        else return { ...userDetail }
       })
 
-      console.log('change user status  user detail ',updatedUserDetail)
+      console.log("change user status  user detail ", updatedUserDetail)
       state.usersDeatail = updatedUserDetail
     },
     addUserNotification: (state, action) => {
-        const updatedUserDetail = state.usersDeatail.map((userDetail) => {
-          if(userDetail._id == action.payload._id) return {...userDetail,notification:action.payload.notification}
-          else return {...userDetail}
-        })
+      const updatedUserDetail = state.usersDeatail.map((userDetail) => {
+        if (userDetail._id == action.payload._id)
+          return {
+            ...userDetail,
+            notification: {
+              ...action.payload.notification,
+              totalNotificationCount:
+                userDetail.notification?.totalNotificationCount != undefined
+                  ? userDetail.notification.totalNotificationCount + 1
+                  : 1,
+            },
+          }
+        else return { ...userDetail }
+      })
 
-        console.log('notfication user detail ',updatedUserDetail)
-        state.usersDeatail = updatedUserDetail
+      console.log("notfication user detail ", updatedUserDetail)
+      state.usersDeatail = updatedUserDetail
     },
     removeUserNotification: (state, action) => {
       const updatedUserDetail = state.usersDeatail.map((userDetail) => {
-        if(userDetail._id == action.payload._id) return {...userDetail,notification:undefined}
-        else return {...userDetail}
+        if (userDetail._id == action.payload._id) return { ...userDetail, notification: undefined }
+        else return { ...userDetail }
       })
 
-      console.log('notfication removed user detail ',updatedUserDetail)
+      console.log("notfication removed user detail ", updatedUserDetail)
       state.usersDeatail = updatedUserDetail
     },
   },

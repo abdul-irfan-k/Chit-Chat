@@ -35,6 +35,8 @@ import EmojiIcon from "/public/Asset/Icon/emoji.svg"
 import SendIcon from "/public/Asset/Icon/send.svg"
 import CollectionsBookmarkIcon from "/public/Asset/Icon/collections-bookmark.svg"
 import MicIcon from "/public/Asset/Icon/mic.svg"
+import PlayIcon from "/public/Asset/Icon/play-arrow.svg"
+import PauseIcon from "/public/Asset/Icon/pause.svg"
 
 
 export {
@@ -74,5 +76,7 @@ export {
   EmojiIcon,
   SendIcon,
   CollectionsBookmarkIcon,
-  MicIcon
+  MicIcon,
+  PlayIcon,
+  PauseIcon
 }

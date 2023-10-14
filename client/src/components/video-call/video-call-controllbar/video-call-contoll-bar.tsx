@@ -2,7 +2,7 @@
 import { CallEndIcon, StopIcon, VideoSlashIcon, VolumeHighIcon } from "@/constants/icon-constant"
 import React, { FC } from "react"
 
-const VideoGroupCallControllBar = () => {
+const VideoCallControllBar = () => {
 
   const soundInputRangeHandler = (event:React.ChangeEvent<HTMLInputElement>) => {
    
@@ -26,33 +26,33 @@ const VideoGroupCallControllBar = () => {
       </div>
 
       <div className="gap-8 mx-auto flex items-center">
-        <VideoGroupCallControllIcon>
+        <VideoCallControllIcon>
           <VideoSlashIcon className="aspect-square w-6" />
-        </VideoGroupCallControllIcon>
-        <VideoGroupCallControllIcon>
+        </VideoCallControllIcon>
+        <VideoCallControllIcon>
           <VideoSlashIcon className="aspect-square w-6" />
-        </VideoGroupCallControllIcon>
-        <VideoGroupCallControllIcon className="dark:bg-red-500 bg-red-500">
+        </VideoCallControllIcon>
+        <VideoCallControllIcon className="dark:bg-red-500 bg-red-500">
           <CallEndIcon className="aspect-square w-6" />
-        </VideoGroupCallControllIcon>
-        <VideoGroupCallControllIcon>
+        </VideoCallControllIcon>
+        <VideoCallControllIcon>
           <StopIcon className="aspect-square w-6" />
-        </VideoGroupCallControllIcon>
-        <VideoGroupCallControllIcon>
+        </VideoCallControllIcon>
+        <VideoCallControllIcon>
           <CallEndIcon className="aspect-square w-6" />
-        </VideoGroupCallControllIcon>
+        </VideoCallControllIcon>
       </div>
     </div>
   )
 }
 
-export default VideoGroupCallControllBar
+export default VideoCallControllBar
 
-interface VideoGroupCallControllIconProps {
+interface VideoCallControllIconProps {
   children: React.ReactNode
   className?: string
 }
-const VideoGroupCallControllIcon: FC<VideoGroupCallControllIconProps> = ({ children, className }) => {
+const VideoCallControllIcon: FC<VideoCallControllIconProps> = ({ children, className }) => {
   return (
     <div
       className={

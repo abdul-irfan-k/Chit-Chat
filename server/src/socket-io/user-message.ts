@@ -35,7 +35,7 @@ const userMessageSocketIo = (io: Server, socket: Socket) => {
         const filepath = path.join(__dirname, "..", "public", "uploader", `${randomId}.mp3`)
 
         const base64ConvertedData = file.toString("base64")
-        const newFile = await fs.appendFileSync(filepath, base64ConvertedData, "base64")
+        const newFile = await fs.writeFileSync(filepath, file)
         console.log("file", filepath)
 
         const cloudinaryUpload = await cloudinaryFileUploadHandler(filepath)
@@ -51,7 +51,7 @@ const userMessageSocketIo = (io: Server, socket: Socket) => {
           messageType: "voiceMessage",
         })
         console.log('remove file sync')
-        fs.unlinkSync(filepath)
+        // fs.unlinkSync(filepath)
       } catch (error) {
         console.log(error)
       }

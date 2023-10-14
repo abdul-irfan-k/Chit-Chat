@@ -3,7 +3,7 @@ import Image from "next/image"
 import Link from "next/link"
 import React, { FC } from "react"
 
-const VideoGroupCallSidebar = () => {
+const VideoCallSidebar = () => {
   return (
     <div className="fixed h-[100vh] top-[50%] w-16 translate-y-[-50%] flex flex-col justify-between items-center">
       <div className="mt-5 w-10 absolute overflow-hidden flex items-center justify-center aspect-square rounded-full">
@@ -11,33 +11,33 @@ const VideoGroupCallSidebar = () => {
       </div>
       <div className="gap-7 mx-auto my-auto flex flex-col">
         <Link href={'/messenger'}>
-          <VideoGroupCallSidebarIcon>
+          <VideoCallSidebarIcon>
             <HomeIcon className="w-6 aspect-square" />
-          </VideoGroupCallSidebarIcon>
+          </VideoCallSidebarIcon>
         </Link>
-        <VideoGroupCallSidebarIcon>
+        <VideoCallSidebarIcon>
           <VideoCamIcon className="w-6 aspect-square" />
-        </VideoGroupCallSidebarIcon>
-        <VideoGroupCallSidebarIcon>
+        </VideoidebarIcon>
+        <VideoCallSidebarIcon>
           <GearIcon className="w-6 aspect-square" />
-        </VideoGroupCallSidebarIcon>
-        <VideoGroupCallSidebarIcon>
+        </VideoCallSidebarIcon>
+        <VideoCallSidebarIcon>
           <GearIcon className="w-6 aspect-square" />
-        </VideoGroupCallSidebarIcon>
-        <VideoGroupCallSidebarIcon>
+        </Video
+        <VideoCallSidebarIcon>
           <GearIcon className="w-6 aspect-square" />
-        </VideoGroupCallSidebarIcon>
+        </VideoCallSidebarIcon>
       </div>
     </div>
   )
 }
 
-export default VideoGroupCallSidebar
+export default VideoCallSidebar
 
-interface VideoGroupCallSidebarIconProps {
+interface VideoCallSidebarIconProps {
   children: React.ReactNode
 }
-const VideoGroupCallSidebarIcon: FC<VideoGroupCallSidebarIconProps> = ({ children }) => {
+const VideoCallSidebarIcon: FC<VideoidebarIconProps> = ({ children }) => {
   return (
     <div className="w-10 relative overflow-hidden flex items-center justify-center aspect-square rounded-full bg-slate-300 fill-slate-950 dark:fill-slate-50 dark:bg-neutral-900">
       {children}

@@ -16,6 +16,7 @@ interface voiceMessage {
   message: string
   messageType: "voiceMessage"
   messageSendedTime:Date
+  voiceMessageSrc:string
 }
 
 interface outGoingMessage {

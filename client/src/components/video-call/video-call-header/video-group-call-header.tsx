@@ -1,7 +1,7 @@
 import { FullScreenIcon, GridOnIcon, GridViewIcon } from "@/constants/icon-constant"
 import React from "react"
 
-const VideoGroupCallHeader = () => {
+const VideoCallHeader = () => {
   
 
   return (
@@ -22,4 +22,4 @@ const VideoGroupCallHeader = () => {
   )
 }
 
-export default VideoGroupCallHeader
+export default VideoCallHeader

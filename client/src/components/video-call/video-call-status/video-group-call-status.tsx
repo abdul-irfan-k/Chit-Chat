@@ -1,7 +1,7 @@
 import { PlusIcon, StopIcon } from "@/constants/icon-constant"
 import React from "react"
 
-const VideoGroupCallStatus = () => {
+const VideoCallStatus = () => {
   return (
     <div className="mt-5 flex items-center justify-between">
       <div className="gap-2 flex items-center ">
@@ -21,4 +21,4 @@ const VideoGroupCallStatus = () => {
   )
 }
 
-export default VideoGroupCallStatus
+export default VideoCallStatus
