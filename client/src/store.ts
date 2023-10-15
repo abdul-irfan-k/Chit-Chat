@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux"
 import { userDetailReducer, userSignUpDetailReducer } from "./redux/reducers/user-redicer/user-reducer"
 import { chatUsersListReducer, currentChaterReducer } from "./redux/reducers/chat-user-reducer/chat-user-reducer"
 import { chatRoomsMessageReducer, messageAvailableChatRooms } from "./redux/reducers/message-reducer/message-reducer"
+import { callRequestReducer } from "./redux/reducers/call-request-reducer/call-request-reducer"
 
 const combinedReducers = combineReducers({
   socketClient: socketClientReducer.reducer,
@@ -16,7 +17,8 @@ const combinedReducers = combineReducers({
   currentChater:currentChaterReducer.reducer,
   userDetail:userDetailReducer.reducer,
   messageAvailableChatRooms:messageAvailableChatRooms.reducer,
-  chatRoomsMessageReducer:chatRoomsMessageReducer.reducer
+  chatRoomsMessageReducer:chatRoomsMessageReducer.reducer,
+  callRequestReducer:callRequestReducer.reducer
 })
 
 export const store = configureStore({

@@ -11,7 +11,6 @@ const ChatBox = () => {
   )
 
   useEffect(() => {
-    console.log("current message ", currentChaterMessage)
   }, [])
   return (
     <div className="px-10 h-[65vh]  overflow-y-scroll">

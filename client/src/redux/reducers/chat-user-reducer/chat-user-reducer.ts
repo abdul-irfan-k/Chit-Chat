@@ -62,7 +62,6 @@ export const chatUsersListReducer = createSlice({
         else return { ...userDetail }
       })
 
-      console.log("change user status  user detail ", updatedUserDetail)
       state.usersDeatail = updatedUserDetail
     },
     addUserNotification: (state, action) => {
@@ -81,7 +80,6 @@ export const chatUsersListReducer = createSlice({
         else return { ...userDetail }
       })
 
-      console.log("notfication user detail ", updatedUserDetail)
       state.usersDeatail = updatedUserDetail
     },
     removeUserNotification: (state, action) => {
@@ -90,7 +88,6 @@ export const chatUsersListReducer = createSlice({
         else return { ...userDetail }
       })
 
-      console.log("notfication removed user detail ", updatedUserDetail)
       state.usersDeatail = updatedUserDetail
     },
   },

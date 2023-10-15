@@ -17,13 +17,13 @@ const VideoCallSidebar = () => {
         </Link>
         <VideoCallSidebarIcon>
           <VideoCamIcon className="w-6 aspect-square" />
-        </VideoidebarIcon>
+        </VideoCallSidebarIcon>
         <VideoCallSidebarIcon>
           <GearIcon className="w-6 aspect-square" />
         </VideoCallSidebarIcon>
         <VideoCallSidebarIcon>
           <GearIcon className="w-6 aspect-square" />
-        </Video
+        </VideoCallSidebarIcon>
         <VideoCallSidebarIcon>
           <GearIcon className="w-6 aspect-square" />
         </VideoCallSidebarIcon>
@@ -37,7 +37,7 @@ export default VideoCallSidebar
 interface VideoCallSidebarIconProps {
   children: React.ReactNode
 }
-const VideoCallSidebarIcon: FC<VideoidebarIconProps> = ({ children }) => {
+const VideoCallSidebarIcon: FC<VideoCallSidebarIconProps> = ({ children }) => {
   return (
     <div className="w-10 relative overflow-hidden flex items-center justify-center aspect-square rounded-full bg-slate-300 fill-slate-950 dark:fill-slate-50 dark:bg-neutral-900">
       {children}

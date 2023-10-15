@@ -62,7 +62,6 @@ export const getChatRoomMessageHandler =
         const messegeChannelType = elm.postedByUser == myUserId ? "outgoingMessage" : "incomingMessage"
         return { messageData: { ...elm, messageSendedTime: new Date(elm.createdAt) }, messegeChannelType }
       })
-      console.log("data message", data)
       dispatch(chatRoomMessageAction.addIntialChatRoomMessage({ chatRoomId, messages: newData }))
       dispatch(messageAvailableChatRoomsAction.addMessageAvailableChatRooms({ chatRoomId }))
     } catch (error) {

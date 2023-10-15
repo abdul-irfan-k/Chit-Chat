@@ -19,6 +19,7 @@ import chatRouter from "./route/chat-route.js"
 
 import { connnectDB } from "./config/mongoose.js"
 import { connectRedis } from "./config/redis.js"
+import videoCallIntialiseSocketIo from "./socket-io/video-call-socket-intialise.js"
 
 const app: Application = express()
 const server = http.createServer(app)
@@ -49,7 +50,12 @@ io.on("connection", async (socket) => {
   // creating socket model
   userSocketIntialization(socket)
 
+  // video call
+  videoCallIntialiseSocketIo(io,socket)
+
   userStatusSocketIo(io, socket)
+
+  //message
   userMessageSocketIo(io, socket)
   userStreamSocketIo(io, socket)
 })

@@ -28,10 +28,11 @@
     "mongoose": "^7.5.2",
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.5",
+    "peer": "^1.0.1",
     "redis": "^4.6.8",
     "socket.io": "^4.7.2",
     "typescript": "^5.2.2",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",

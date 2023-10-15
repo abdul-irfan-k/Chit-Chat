@@ -1,4 +1,5 @@
 import Notification from "@/components/notificaton/notification"
+import CallRequestMenuCotainer from "@/components/shared/call/call-request-menu/call-request-menu-cotainer"
 import SocketIoIntialise from "@/components/socket-io-intialise/socket-io-intialise"
 import ReduxProvider from "@/provider/redux-provider/redux-provider"
 import SocketIoChatUserEventProvider from "@/provider/socket-io-event-provider/socket-io-chat-user-event-provider"
@@ -18,6 +19,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           <SocketIoIntialise />
           <SocketIoChatUserEventProvider />
           <Notification />
+          <CallRequestMenuCotainer />
           {children}
         </UserAuthProvider>
       </ReduxProvider>

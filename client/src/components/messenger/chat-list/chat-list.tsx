@@ -29,7 +29,7 @@ const ChatList = () => {
   return (
     <div className="flex flex-col  mt-10 gap-5    w-full   ">
       {usersDeatail.map((userDetail, index) => {
-        console.log("a")
+  
         return (
           // <Link href={`/messenger/${userDetail.userId}`} key={index}>
           <ChatListBox

@@ -16,7 +16,7 @@ const SocketIoChatUserEventProvider = () => {
   useEffect(() => {
     if (!isAvailableSocket) return console.log("not availbe socket client", socket)
 
-    socket.on("message:receiveMessage", (messageResponse) => {
+    socket?.on("message:receiveMessage", (messageResponse) => {
       if(currentChaterDetail?._id != messageResponse.senderId) dispatch(addNewMessageNotificationHandler({_id:messageResponse.senderId}))
       dispatch(receiveMessageHandler(messageResponse))
     })

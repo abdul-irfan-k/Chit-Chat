@@ -11,7 +11,6 @@ export async function middleware(request: NextRequest) {
     })
     const data = await result.json()
 
-    console.log(result.ok)
     if (!result.ok) return NextResponse.redirect(new URL('/login',request.url))
     return NextResponse.next()
   } catch (error) {

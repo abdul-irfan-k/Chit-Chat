@@ -10,7 +10,6 @@ export class SocketClient {
     socket?:Socket
     connect():Promise<{socket:Socket}>{
 
-        console.log('connect of class ')
         return new Promise((resolve,reject)  => {
             this.socket =  io(serverUrl)
 

@@ -11,19 +11,23 @@ import voiceMessageModel from "../model/mongoose/voice-message-mode.js"
 
 const userMessageSocketIo = (io: Server, socket: Socket) => {
   socket.on("message:newMessage", async ({ message, receiverId, senderId, chatRoomId }) => {
-    const receiver = await getRedisSocketCached(receiverId)
+    try {
+      const receiver = await getRedisSocketCached(receiverId)
 
-    ChatRoomModel.initiateChat([receiverId, senderId])
-    if (receiver == null) return console.log("receiver not found")
-    socket.to(receiver.socketId).emit("message:receiveMessage", { message,senderId, chatRoomId })
+      ChatRoomModel.initiateChat([receiverId, senderId])
+      if (receiver == null) return console.log("receiver not found")
+      socket.to(receiver.socketId).emit("message:receiveMessage", { message, senderId, chatRoomId })
 
-    const textMessage = await textMessageModel.createNewMessageInChatRoom({
-      chatRoomId,
-      message,
-      postedByUser: senderId,
-    })
-    console.log(textMessage._id)
-    await ChatRoomModel.addChatConversation({ chatRoomId, messageId: textMessage._id, messageType: "textMessage" })
+      const textMessage = await textMessageModel.createNewMessageInChatRoom({
+        chatRoomId,
+        message,
+        postedByUser: senderId,
+      })
+      console.log(textMessage._id)
+      await ChatRoomModel.addChatConversation({ chatRoomId, messageId: textMessage._id, messageType: "textMessage" })
+    } catch (error) {
+      
+    }
   })
 
   socket.on(
@@ -50,7 +54,7 @@ const userMessageSocketIo = (io: Server, socket: Socket) => {
           messageId: voiceMessage._id,
           messageType: "voiceMessage",
         })
-        console.log('remove file sync')
+        console.log("remove file sync")
         // fs.unlinkSync(filepath)
       } catch (error) {
         console.log(error)
