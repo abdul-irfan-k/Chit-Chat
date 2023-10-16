@@ -1,11 +1,12 @@
 "use client"
 
 import { callRequestReducerSlate } from "@/redux/reducers/call-request-reducer/call-request-reducer"
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
+import VideoCallRequestMenuFullSize from "./video-call-request-menu-full-size/video-call-request-menu-full-size"
 
 const CallRequestMenuCotainer = () => {
-  const [isPopUpedRequest, setIsPopUpedRequest] = useEffect<boolean>()
+  const [isHideFullScreenMenu, setIsHideFullScreenMenu] = useState<boolean>()
   const { isCalling, callRequestData } = useSelector(
     (state: { callRequestReducer: callRequestReducerSlate }) => state.callRequestReducer,
   )
@@ -14,7 +15,19 @@ const CallRequestMenuCotainer = () => {
     console.log("request data is changed ")
   }, [callRequestData])
 
-  return <div></div>
+  return (
+    <div>
+      {isCalling && (
+        <>
+          {callRequestData?.callType == "videoCall" && (
+            <>
+              <VideoCallRequestMenuFullSize userDetail={callRequestData.userDetail} />
+            </>
+          )}
+        </>
+      )}
+    </div>
+  )
 }
 
 export default CallRequestMenuCotainer

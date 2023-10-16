@@ -1,14 +1,14 @@
 import { Model, Schema, model } from "mongoose"
 
 interface videoCallRoomSchemaInterface {
-  chatRoomId: string
+  chatRoomId: string[]
   userIds: string
   callCurrentStatus?: string
   callIntiatorUserId?: string
 }
 const videoCallRoomSchema = new Schema(
   {
-    userIds: { type: String, default: [] },
+    userIds: { type: [String], default: [] },
     chatRoomId: { type: String, required: true },
     callCurrentStatus: { type: String },
     callIntiatorUserId: { type: String },

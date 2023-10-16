@@ -3,16 +3,18 @@ import { getRedisSocketCached } from "../model/redis/redis.js"
 import VideoCallRoomModel from "../model/mongoose/video-call-room-model.js"
 
 const videoCallIntialiseSocketIo = (io: Server, socket: Socket) => {
-  socket.on("videoCall:intialise", async (chatRoomId, userId, userName, receiverId) => {
+  socket.on("videoCall:intialise", async ({chatRoomId, userDetail, userName, receiverId}) => {
     try {
-      const videoCallRoom = await VideoCallRoomModel.initiateVideoCallRoom({ chatRoomId, userId })
+      const videoCallRoom = await VideoCallRoomModel.initiateVideoCallRoom({ chatRoomId, userId:userDetail._id})
       const reciever = await getRedisSocketCached(receiverId)
-      socket.to(receiverId.socketId).emit("videoCall:requestCallAccept", {
+      socket.to(reciever.socketId).emit("videoCall:requestCallAccept", {
         callRoomId: videoCallRoom._id,
         chatRoomId,
-        callRequestorDetail: { chatRoomId, userId },
+        userDetail ,
       })
-    } catch (error) {}
+    } catch (error) {
+      console.log('error',error)
+    }
   })
 
   socket.on("videoCall:rejectRequest", async (chatRoomId, userId) => {})

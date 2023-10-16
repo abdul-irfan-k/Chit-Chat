@@ -1,14 +1,24 @@
 import { createSlice } from "@reduxjs/toolkit"
 
+interface userDetail {
+  _id:string
+  name: string
+  userId: string
+  email: string
+  profileImageUrl?: string
+}
+
 interface voiceCallRequest {
   callType: "voiceCall"
   chatRoomId: string
   callRoomId: string
+  userDetail?:userDetail
 }
 interface videoCallRequest {
-  callType: "voiceCall"
+  callType: "videoCall"
   chatRoomId: string
   callRoomId: string
+  userDetail?:userDetail
 }
 
 interface callRequest {
@@ -18,7 +28,7 @@ interface callRequest {
 
 export type callRequestReducerSlate = callRequest
 export const callRequestIntialState: callRequestReducerSlate = {
-  isCalling: false,
+  isCalling: false
 }
 
 export const callRequestReducer = createSlice({
@@ -37,4 +47,4 @@ export const callRequestReducer = createSlice({
   },
 })
 
-export const callRedcuerAction = callRequestReducer.actions
+export const callRequestRedcuerAction = callRequestReducer.actions
