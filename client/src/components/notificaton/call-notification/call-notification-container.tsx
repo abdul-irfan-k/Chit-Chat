@@ -16,7 +16,7 @@ const CallNotificationContainer = () => {
 
   useEffect(() => {
     if (isAvailableCallNotification) {
-    console.log('available call notifcation ',callNotificationData?.userDetail?.name)
+    console.log('available call notifcation ',callNotificationData)
       return setIsPopUpedNotification(true)
     }
     else setIsPopUpedNotification(false)
