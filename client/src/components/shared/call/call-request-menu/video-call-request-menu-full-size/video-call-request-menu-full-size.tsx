@@ -17,6 +17,7 @@ interface VideoCallRequestMenuFullSizeProps {
 const VideoCallRequestMenuFullSize: FC<VideoCallRequestMenuFullSizeProps> = ({ userDetail }) => {
   const dispatch = useAppDispatch()
   const callEndIconClickHandler = () => {
+    
     dispatch(videoCallRequestRemoveHandler())
   }
 

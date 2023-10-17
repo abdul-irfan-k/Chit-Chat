@@ -18,7 +18,7 @@ export class peerJsClient extends peerjsIntialise {
   myPeerId
   camaraDeviceId?: string
 
-  myVideoRef?: React.MutableRefObject<HTMLVideoElement >
+  myVideoRef
   communicatorsVideoRef:Array<communicatorsVideoRef> = []
 
   constructor({ myPeerId, myVideoRef }) {

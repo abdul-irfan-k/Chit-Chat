@@ -25,9 +25,14 @@ const SocketIoChatUserEventProvider = () => {
     })
 
     socket.on("videoCall:requestCallAccept", (data) => {
-      console.log('video call request call accept request ')
       dispatch(callRequestNotificationReducerAction.addCallNotification(data))
     })
+
+
+    socket.on("videoCall:start",() => {
+      
+    })
+
   }, [isAvailableSocket, dispatch])
   return <div></div>
 }

@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useRef, useState } from "react"
+import React, { useContext, useEffect, useRef, useState } from "react"
 import VideoCallSidebar from "./video-call-sidebar/video-group-call-sidebar"
 import VideoCallHeader from "./video-call-header/video-group-call-header"
 import VideoCallStatus from "./video-call-status/video-group-call-status"
@@ -14,31 +14,30 @@ import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 
 const VideoCallContainer = () => {
   const myVideoRef = useRef<HTMLVideoElement>()
-  const communicatorVideoRefArray = useRef<Array<HTMLVideoElement>>([])
+  // const communicatorVideoRefArray = useRef<Array<HTMLVideoElement>>([])
   
-  const { socket, isAvailableSocket } = useSelector((state: { socketClient: socketReducerState }) => state.socketClient)
-  const { userDetail,isChanged } = useSelector((state: { userDetail: userDetailState }) => state.userDetail)
+  // const { socket, isAvailableSocket } = useSelector((state: { socketClient: socketReducerState }) => state.socketClient)
+  // const { userDetail,isChanged } = useSelector((state: { userDetail: userDetailState }) => state.userDetail)
 
+  // const [peerJsObj, setPeerJsObj] = useState<peerJsClient>()
 
-  const [peerJsObj, setPeerJsObj] = useState<peerJsClient>()
+ 
+  // useEffect(() => {
+  //   const obj = new peerJsClient({ myPeerId: "irfanasdf", myVideoRef, socket })
+  //   setPeerJsObj(obj)
+  // }, [])
 
-  useEffect(() => {
-    console.log("my video ref ", myVideoRef)
-    const obj = new peerJsClient({ myPeerId: "irfanasdf", myVideoRef, socket })
-    setPeerJsObj(obj)
-  }, [])
-
-  useEffect(() => {
-    if(userDetail == null) return console.log('user detail not found')
-    console.log('video call start request ')
-    socket?.emit('videocall:startRequest',userDetail._id)
+  // useEffect(() => {
+  //   if(userDetail == null) return console.log('user detail not found')
+  //   console.log('video call start request ')
+  //   socket?.emit('videocall:startRequest',userDetail._id)
    
-    socket?.on('videocall:start',(userIds) => {
-      const receiverId = userIds.filter((userId) => userId != userDetail._id )[0]
-      console.log('video call start event ',receiverId)
-      peerJsObj?.connectToNewUser({userId:receiverId})
-    })
-  }, [isChanged])
+  //   socket?.on('videocall:start',(userIds) => {
+  //     const receiverId = userIds.filter((userId) => userId != userDetail._id )[0]
+  //     console.log('video call start event ',receiverId)
+  //     peerJsObj?.connectToNewUser({userId:receiverId})
+  //   })
+  // }, [isChanged])
 
 
 

@@ -17,6 +17,11 @@ const videoCallIntialiseSocketIo = (io: Server, socket: Socket) => {
     }
   })
 
+  
+  socket.on("videoCall:selfEnd",async() => {
+    
+  })
+
   socket.on("videoCall:rejectRequest", async (chatRoomId, userId) => {})
 
   socket.on("videoCall:acceptRequest", async (chatRoomId, userId) => {

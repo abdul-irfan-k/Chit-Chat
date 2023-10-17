@@ -7,6 +7,8 @@ export const redisClient = createClient({
 export const connectRedis = async () => {
   try {
     await redisClient.connect()
+    const developmentBuild = process.env.NODE_ENV == "DEVELOPMENT"
+    if( developmentBuild) redisClient.flushAll()
     console.log("connected redis server")
   } catch (error) {
     console.log("redis error ", error)
