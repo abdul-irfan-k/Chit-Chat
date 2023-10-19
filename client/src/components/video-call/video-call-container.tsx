@@ -1,27 +1,19 @@
-"use client"
-
-import React, { useContext, useEffect, useRef, useState } from "react"
+import React from "react"
 import VideoCallSidebar from "./video-call-sidebar/video-group-call-sidebar"
 import VideoCallHeader from "./video-call-header/video-group-call-header"
 import VideoCallStatus from "./video-call-status/video-group-call-status"
 import VideoCallViewsContainer from "./video-call-views/video-call-views-container"
 import VideoCallControllBar from "./video-call-controllbar/video-call-contoll-bar"
 import LiveChatContainer from "./live-chat/live-chat-container"
-import { peerJsClient } from "@/util/peer-js/peer-js-client"
-import { useSelector } from "react-redux"
-import { socketReducerState } from "@/redux/reducers/socket-reducer/socket-reducers"
-import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 
 const VideoCallContainer = () => {
-  const myVideoRef = useRef<HTMLVideoElement>()
   // const communicatorVideoRefArray = useRef<Array<HTMLVideoElement>>([])
-  
+
   // const { socket, isAvailableSocket } = useSelector((state: { socketClient: socketReducerState }) => state.socketClient)
   // const { userDetail,isChanged } = useSelector((state: { userDetail: userDetailState }) => state.userDetail)
 
   // const [peerJsObj, setPeerJsObj] = useState<peerJsClient>()
 
- 
   // useEffect(() => {
   //   const obj = new peerJsClient({ myPeerId: "irfanasdf", myVideoRef, socket })
   //   setPeerJsObj(obj)
@@ -31,7 +23,7 @@ const VideoCallContainer = () => {
   //   if(userDetail == null) return console.log('user detail not found')
   //   console.log('video call start request ')
   //   socket?.emit('videocall:startRequest',userDetail._id)
-   
+
   //   socket?.on('videocall:start',(userIds) => {
   //     const receiverId = userIds.filter((userId) => userId != userDetail._id )[0]
   //     console.log('video call start event ',receiverId)
@@ -39,8 +31,9 @@ const VideoCallContainer = () => {
   //   })
   // }, [isChanged])
 
-
-
+  // useEffect(() => {
+  //   // myVideoRef.current.srcObject = peerVideoContext?.videoStream
+  // }, [peerVideoContext?.videoStream])
 
   return (
     <div>
@@ -51,11 +44,13 @@ const VideoCallContainer = () => {
           </div>
         </div>
 
-        <div className="py-5 relative w-[65vw] h-screen ">
+        <div className="py-5  relative flex flex-col w-[65vw] h-screen ">
           <VideoCallHeader />
           <VideoCallStatus />
-          <VideoCallViewsContainer userVideoRef={myVideoRef} />
-          <div className="absolute bottom-5 w-full ">
+
+            <VideoCallViewsContainer />
+=
+          <div className="relative bottom-5 w-full ">
             <VideoCallControllBar />
           </div>
         </div>

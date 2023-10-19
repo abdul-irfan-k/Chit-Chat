@@ -1,20 +1,20 @@
-import React from "react"
-import VideoCallQuadViews from "./video-call-quad-views/video-call-quad-views"
-import VideoCallDoubleViews from "./video-call-double-views/video-call-double-views"
-import VideoCallSingleViews from "./video-call-single-views/video-call-single-views"
+"use client"
+import React, { useContext, useEffect, useState } from "react"
+import VideoCallViews from "./video-call-views/video-call-views"
+import { PeerMyVideoRefContext } from "@/provider/peer-js-video-provider.tsx/peer-js-video-provider"
 
-const VideoCallViewsContainer = (props) => {
+const VideoCallViewsContainer = () => {
+  const peerVideoContext = useContext(PeerMyVideoRefContext)
+  const [isShowingLiveChat, setIsShowingliveChat] = useState<boolean>(false)
+
+    useEffect(() => {
+    // myVideoRef.current.srcObject = peerVideoContext?.videoStream
+  }, [peerVideoContext?.videoStream])
+
   return (
-    <div className="mt-5">
-      <div className="gap-10  flex  flex-wrap justify-center">
-        <div className=" aspect-video rounded-2xl w-[100%] bg-neutral-600">
-          <video autoPlay ref={props.userVideoRef} className="w-full h-full" />
-        </div>
-      </div>
-      {/* <VideoCallQuadViews />  */}
-      {/* <VideoCallDoubleViews />  */}
-      {/* <VideoCallSingleViews /> */}
-    </div>
+    <>
+      <VideoCallViews myVideoRef={peerVideoContext.videoStream} setIsShowingliveChat={setIsShowingliveChat} />
+    </>
   )
 }
 

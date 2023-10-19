@@ -1,4 +1,5 @@
 "use client"
+import { addInitialCallDataHandler } from "@/redux/actions/call-action/call-action"
 import { addNewMessageNotificationHandler, receiveMessageHandler } from "@/redux/actions/chat-action/chat-action"
 import { currentChaterReducerSlate } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import { socketReducerState } from "@/redux/reducers/socket-reducer/socket-reducers"
@@ -24,14 +25,14 @@ const SocketIoChatUserEventProvider = () => {
       dispatch(receiveMessageHandler(messageResponse))
     })
 
-    socket.on("videoCall:requestCallAccept", (data) => {
+    socket?.on("videoCall:requestCallAccept", (data) => {
       dispatch(callRequestNotificationReducerAction.addCallNotification(data))
     })
 
-
-    socket.on("videoCall:start",() => {
-      
+    socket?.on("videoCall:start", (data) => {
+      dispatch(addInitialCallDataHandler(data))
     })
+
 
   }, [isAvailableSocket, dispatch])
   return <div></div>

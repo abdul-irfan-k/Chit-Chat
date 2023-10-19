@@ -46,8 +46,8 @@ const AudioCallNotification: FC<AudioCallNotificationProps> = ({ outSideClickHan
           </div>
 
           <div className="mt-5 gap-10 flex text-slate-50">
-            <div className="py-2 flex-1 rounded-xl text-center bg-red-500" onClick={callAcceptHandler} >Decline</div>
-            <div className="py-2 flex-1 rounded-xl text-center bg-green-500" onClick={callDeclineHandler} >Accept</div>
+            <div className="py-2 flex-1 rounded-xl text-center bg-red-500" onClick={callDeclineHandler} >Decline</div>
+            <div className="py-2 flex-1 rounded-xl text-center bg-green-500" onClick={callAcceptHandler} >Accept</div>
           </div>
         </div>
     </div>
