@@ -2,7 +2,6 @@ import "./globals.css"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "@fortawesome/fontawesome-svg-core/styles.css"
-import PeerContextProvider from "@/provider/peer-js-provider/peer-js-context-provider"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -14,9 +13,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} dark:bg-black text-slate-950 dark:text-slate-50`}>
-        <PeerContextProvider>{children}</PeerContextProvider>
-      </body>
+      <body className={`${inter.className} dark:bg-black text-slate-950 dark:text-slate-50`}>{children}</body>
     </html>
   )
 }

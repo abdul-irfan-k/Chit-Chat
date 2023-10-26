@@ -19,5 +19,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/","/messenger","/messenger/:path*"],
+  matcher: ["/","/messenger","/messenger/:path*","/create-video-call"],
 }

@@ -1,23 +1,27 @@
 "use client"
-import { addInitialCallDataHandler } from "@/redux/actions/call-action/call-action"
+import { addCallSettingHandler, addInitialCallDataHandler } from "@/redux/actions/call-action/call-action"
 import { addNewMessageNotificationHandler, receiveMessageHandler } from "@/redux/actions/chat-action/chat-action"
-import { currentChaterReducerSlate } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
+import { chatUsersListReducerState } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import { socketReducerState } from "@/redux/reducers/socket-reducer/socket-reducers"
 import { callRequestNotificationReducerAction } from "@/redux/reducers/top-notification-reducer/call-notification-reducer"
+import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 import { useAppDispatch } from "@/store"
 import React, { useEffect } from "react"
 import { useSelector } from "react-redux"
-
+import { useRouter } from "next/navigation"
+import { callRequestRedcuerAction } from "@/redux/reducers/call-request-reducer/call-request-reducer"
 const SocketIoChatUserEventProvider = () => {
   const dispatch = useAppDispatch()
+  const router = useRouter()
 
   const { socket, isAvailableSocket } = useSelector((state: { socketClient: socketReducerState }) => state.socketClient)
-  const { userDetail: currentChaterDetail } = useSelector(
-    (state: { currentChater: currentChaterReducerSlate }) => state.currentChater,
+  const { currentChaterDetail } = useSelector(
+    (state: { chatUsersList: chatUsersListReducerState }) => state.chatUsersList,
   )
+  const { userDetail, isLogedIn } = useSelector((state: { userDetail: userDetailState }) => state.userDetail)
 
   useEffect(() => {
-    if (!isAvailableSocket) return console.log("not availbe socket client", socket)
+    if (!isAvailableSocket || !isLogedIn) return console.log("not availbe socket client", socket)
 
     socket?.on("message:receiveMessage", (messageResponse) => {
       if (currentChaterDetail?._id != messageResponse.senderId)
@@ -29,12 +33,14 @@ const SocketIoChatUserEventProvider = () => {
       dispatch(callRequestNotificationReducerAction.addCallNotification(data))
     })
 
-    socket?.on("videoCall:start", (data) => {
-      dispatch(addInitialCallDataHandler(data))
+    socket?.on("videoCall:start", async (data) => {
+      await dispatch(addInitialCallDataHandler(data, userDetail?._id))
+      router.push("/video-call")
+      dispatch(addCallSettingHandler())
+      await dispatch(callRequestRedcuerAction.removeCallRequest())
+      await dispatch(callRequestNotificationReducerAction.removeCallNotification())
     })
-
-
-  }, [isAvailableSocket, dispatch])
+  }, [isAvailableSocket, dispatch, isLogedIn])
   return <div></div>
 }
 

@@ -25,9 +25,7 @@ const userMessageSocketIo = (io: Server, socket: Socket) => {
       })
       console.log(textMessage._id)
       await ChatRoomModel.addChatConversation({ chatRoomId, messageId: textMessage._id, messageType: "textMessage" })
-    } catch (error) {
-      
-    }
+    } catch (error) {}
   })
 
   socket.on(

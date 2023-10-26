@@ -1,8 +1,6 @@
 import { axiosChatInstance, axiosUserInstance } from "@/constants/axios"
 import {
   chatUserListAction,
-  currentChaterAction,
-  currentChaterReducerSlate,
 } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import {
   chatRoomMessageAction,
@@ -18,8 +16,8 @@ export const addAllChatUsers = () => async (dispatch: AppDispatch) => {
   } catch (error) {}
 }
 
-export const updateCurrentChaterHandler = (details: currentChaterReducerSlate) => async (dispatch: AppDispatch) => {
-  dispatch(currentChaterAction.updateCurrentChater(details))
+export const updateCurrentChaterHandler = (details) => async (dispatch: AppDispatch) => {
+  dispatch(chatUserListAction.updateCurrentUser(details))
 }
 
 export const sendMessageHandler =
@@ -63,7 +61,7 @@ export const getChatRoomMessageHandler =
         return { messageData: { ...elm, messageSendedTime: new Date(elm.createdAt) }, messegeChannelType }
       })
       dispatch(chatRoomMessageAction.addIntialChatRoomMessage({ chatRoomId, messages: newData }))
-      dispatch(messageAvailableChatRoomsAction.addMessageAvailableChatRooms({ chatRoomId }))
+      dispatch(chatRoomMessageAction.addMessageAvailableChatRooms({ chatRoomId }))
     } catch (error) {
       console.log(error)
       return dispatch(chatRoomMessageAction.removeCurrentChaterMessage({}))

@@ -11,7 +11,7 @@ const ContactContainer = () => {
   return (
     <>
       {messengerSortType == "contact" && (
-        <div className="relative mt-10  gap-8 flex  w-[60%]">
+        <div className="relative mt-10  gap-8 flex  w-[90%]">
           <div className="gap-5 flex flex-col w-[40%]">
             <ContactUserProfile name="irfan" profileImageSrc="/Asset/avatar.jpg" />
             <ContactSocialMedia

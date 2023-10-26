@@ -1,3 +1,4 @@
+import SideMenu from "@/components/messenger/side-menu/side-menu"
 import Notification from "@/components/notificaton/notification"
 import CallRequestMenuCotainer from "@/components/shared/call/call-request-menu/call-request-menu-cotainer"
 import SocketIoIntialise from "@/components/socket-io-intialise/socket-io-intialise"
@@ -13,16 +14,23 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <div className="relative">
       <ReduxProvider>
-          <UserAuthProvider>
-
+        <UserAuthProvider>
+          <PeerContextProvider>
             <SocketIoIntialise />
             <SocketIoChatUserEventProvider />
             <Notification />
             <CallRequestMenuCotainer />
+            <div className="flex w-screen overflow-hidden">
+              <div className="relative w-14 h-screen flex items-center">
+                <SideMenu />
+              </div>
+              <div className="relative flex w-full ">
+              {children}
+              </div>
+            </div>
             {/* <PeerContextProvider /> */}
-
-            {children}
-          </UserAuthProvider>
+          </PeerContextProvider>
+        </UserAuthProvider>
       </ReduxProvider>
     </div>
   )

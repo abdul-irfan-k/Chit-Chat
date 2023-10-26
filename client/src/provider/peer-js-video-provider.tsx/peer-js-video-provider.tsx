@@ -1,12 +1,18 @@
 "use client"
 import React, { useState } from "react"
 
-export const PeerMyVideoRefContext = React.createContext(undefined)
-export const VideoCallCommunicatorsVideoRefContext = React.createContext(undefined)
+interface PeerVideoRefContext {
+  videoStream: MediaStream | undefined
+  setVideoStream: React.Dispatch<React.SetStateAction<MediaStream | undefined>>
+  communicatorsVideoStream: communicatorVideoState[]
+  setCommunicatorsVideoStream: React.Dispatch<React.SetStateAction<communicatorVideoState[]>>
+}
+export const PeerVideoRefContext = React.createContext<PeerVideoRefContext>(undefined)
 
 interface communicatorVideoState {
   id: string
   videoSrc: MediaStream
+  screenVideoSrc?:MediaStream
 }
 
 const PeerVideoProvider = ({ children }: { children: React.ReactNode }) => {
@@ -15,9 +21,11 @@ const PeerVideoProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <>
-      <PeerMyVideoRefContext.Provider value={{ videoStream, setVideoStream,communicatorsVideoStream,setCommunicatorsVideoStream }}>
+      <PeerVideoRefContext.Provider
+        value={{ videoStream, setVideoStream, communicatorsVideoStream, setCommunicatorsVideoStream }}
+      >
         {children}
-      </PeerMyVideoRefContext.Provider>
+      </PeerVideoRefContext.Provider>
     </>
   )
 }

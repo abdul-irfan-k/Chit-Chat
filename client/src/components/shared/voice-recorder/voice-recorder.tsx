@@ -1,7 +1,7 @@
 "use client"
 
 import { MicIcon } from "@/constants/icon-constant"
-import { currentChaterReducerSlate } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
+import { chatUsersListReducerState } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import { socketReducerState } from "@/redux/reducers/socket-reducer/socket-reducers"
 import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 import React, { useRef, useState } from "react"
@@ -18,8 +18,8 @@ const VoiceRecorder = () => {
 
   const mediaRecorder = useRef<MediaRecorder | null>(null)
 
-  const { userDetail: currentChaterDeatil } = useSelector(
-    (state: { currentChater: currentChaterReducerSlate }) => state.currentChater,
+  const {  currentChaterDetail } = useSelector(
+    (state: { chatUsersList: chatUsersListReducerState }) => state.chatUsersList,
   )
   const { userDetail } = useSelector((state: { userDetail: userDetailState }) => state.userDetail)
   const { socket } = useSelector((state: { socketClient: socketReducerState }) => state.socketClient)
@@ -74,7 +74,7 @@ const VoiceRecorder = () => {
     socket?.emit("message:newAudioMessage", {
       file: audioBlob,
       postedByUser: userDetail?._id,
-      chatRoomId: currentChaterDeatil?.chatRoom?.chatRoomId,
+      chatRoomId: currentChaterDetail?.chatRoom?.chatRoomId,
     })
   }
 

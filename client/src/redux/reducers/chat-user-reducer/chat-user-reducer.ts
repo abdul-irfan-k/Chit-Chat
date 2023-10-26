@@ -29,12 +29,16 @@ interface chatUserDetail {
 interface chatUsersListReducer {
   usersDeatail: chatUserDetail[]
   isChanged: Boolean
+  isCurentChaterChanged: boolean
+  currentChaterDetail: null | chatUserDetail
 }
 
 export type chatUsersListReducerState = chatUsersListReducer
 const chatUserListInitialState: chatUsersListReducerState = {
   usersDeatail: [],
   isChanged: false,
+  isCurentChaterChanged: false,
+  currentChaterDetail: null,
 }
 
 export const chatUsersListReducer = createSlice({
@@ -44,9 +48,7 @@ export const chatUsersListReducer = createSlice({
     addIntialAllUserList: (state, action) => {
       return { isChanged: true, usersDeatail: [...action.payload] }
     },
-    updateUser: (state, action) => {
-      // state.isChange = false
-    },
+
     addintialOnlineUsers: (state, action) => {
       const updatedUserDetail = state.usersDeatail.map((userDetail) => {
         const onlineStatus = action.payload.onlineUsers.some((onlineUser) => onlineUser.userId == userDetail._id)
@@ -90,30 +92,11 @@ export const chatUsersListReducer = createSlice({
 
       state.usersDeatail = updatedUserDetail
     },
-  },
-})
-
-export const chatUserListAction = chatUsersListReducer.actions
-
-// current chat user detail
-interface currentChaterReducer {
-  userDetail: chatUserDetail | null
-  isChanged: Boolean
-}
-export type currentChaterReducerSlate = currentChaterReducer
-const currentChaterIntialState: currentChaterReducerSlate = {
-  isChanged: false,
-  userDetail: null,
-}
-
-export const currentChaterReducer = createSlice({
-  name: "currentChaterReducer",
-  initialState: currentChaterIntialState,
-  reducers: {
-    updateCurrentChater: (state, action) => {
-      return { isChanged: true, userDetail: action.payload.userDetail }
+    updateCurrentUser: (state, action) => {
+      state.currentChaterDetail = action.payload.userDetail
+      state.isCurentChaterChanged = true
     },
   },
 })
 
-export const currentChaterAction = currentChaterReducer.actions
+export const chatUserListAction = chatUsersListReducer.actions

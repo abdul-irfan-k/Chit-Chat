@@ -16,7 +16,7 @@ export const sendMessageToUserHandler = async (req: Request, res: Response) => {
 export const getChatRoomMessageHandler = async (req: Request, res: Response) => {
   try {
     const { chatRoomId } = req.body
-    console.log('chatRoomId',chatRoomId)
+    console.log("chatRoomId", chatRoomId)
     const chatRoomMessages = await ChatRoomModel.getMessageOfChatRoom(chatRoomId)
     return res.status(200).json(chatRoomMessages)
   } catch (error) {

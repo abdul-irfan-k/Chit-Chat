@@ -10,7 +10,7 @@ router.all("*", (req, res, next) => {
 
 router.post("/getUserChatRoomId")
 router.post("/getAllChatRoom")
-router.post("/getChatRoomMessage",checkisLogedInMiddleware, getChatRoomMessageHandler)
+router.post("/getChatRoomMessage", checkisLogedInMiddleware, getChatRoomMessageHandler)
 
 router.post("/sendMessageToUser")
 router.post("/sendMessageToGroup")

@@ -4,7 +4,7 @@ import { Request } from "express"
 interface createJwtTokenHandlerArgument {
   _id: string
   email: string
-  expiresIn: "1h" | "1d"
+  expiresIn: "1h" | "1 days" | "7 days"
   tokenType: "refreshToken" | "authToken"
 }
 

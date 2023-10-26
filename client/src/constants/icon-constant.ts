@@ -37,6 +37,12 @@ import CollectionsBookmarkIcon from "/public/Asset/Icon/collections-bookmark.svg
 import MicIcon from "/public/Asset/Icon/mic.svg"
 import PlayIcon from "/public/Asset/Icon/play-arrow.svg"
 import PauseIcon from "/public/Asset/Icon/pause.svg"
+import ScreenShareIcon from "/public/Asset/Icon/screen-share.svg"
+import StopScreenShareIcon from "/public/Asset/Icon/stop-screen-share.svg"
+import MicSlashIcon from "/public/Asset/Icon/mic-slash.svg"
+import SchoolIcon from "/public/Asset/Icon/school.svg"
+import GroupIcon from "/public/Asset/Icon/groups.svg"
+import PersonIcon from "/public/Asset/Icon/person.svg"
 
 
 export {
@@ -78,5 +84,11 @@ export {
   CollectionsBookmarkIcon,
   MicIcon,
   PlayIcon,
-  PauseIcon
+  PauseIcon,
+  ScreenShareIcon,
+  StopScreenShareIcon,
+  MicSlashIcon,
+  SchoolIcon,
+  GroupIcon,
+  PersonIcon
 }

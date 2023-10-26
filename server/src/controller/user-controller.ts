@@ -37,13 +37,13 @@ export const signUpUserHandler = async (req: Request, res: Response) => {
     const { token: authToken } = await createJwtTokenHandler({
       _id: user._id.toString(),
       email: user.email,
-      expiresIn: "1h",
+      expiresIn: "1 days",
       tokenType: "authToken",
     })
     const { token: refreshToken } = await createJwtTokenHandler({
       _id: user._id.toString(),
       email: user.email,
-      expiresIn: "1d",
+      expiresIn: "1 days",
       tokenType: "refreshToken",
     })
 
@@ -70,7 +70,7 @@ export const signUpUserHandler = async (req: Request, res: Response) => {
 export const loginUserHandler = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body
-console.log(req.body)
+    console.log(req.body)
     const user = await User.findOne({ email })
 
     if (user == null) return res.status(400).json({ isValid: false, errorType: USERNOTFOUND })
@@ -82,13 +82,13 @@ console.log(req.body)
     const { token: authToken } = await createJwtTokenHandler({
       _id: user._id.toString(),
       email: user.email,
-      expiresIn: "1h",
+      expiresIn: "1 days",
       tokenType: "authToken",
     })
     const { token: refreshToken } = await createJwtTokenHandler({
       _id: user._id.toString(),
       email: user.email,
-      expiresIn: "1d",
+      expiresIn: "1 days",
       tokenType: "refreshToken",
     })
 
@@ -146,9 +146,9 @@ export const verifyUserIsLogedInHandler = (req: Request, res: Response) => {
   }
 }
 
-export const getUserDetailHandler  = async (req: Request, res: Response) => {
+export const getUserDetailHandler = async (req: Request, res: Response) => {
   try {
-    const {  _id } = req.user as userInterface
+    const { _id } = req.user as userInterface
     const userDetail = await User.getUserDetail(_id)
 
     return res.status(200).json(userDetail)
@@ -317,5 +317,7 @@ export const getAllChatUsersHandler = async (req: Request, res: Response) => {
     const allChatUser = await User.getAllChatUser(_id)
 
     return res.status(200).json(allChatUser)
-  } catch (error) {}
+  } catch (error) {
+    console.log(error)
+  }
 }

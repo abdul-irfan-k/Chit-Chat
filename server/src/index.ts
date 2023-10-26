@@ -51,7 +51,7 @@ io.on("connection", async (socket) => {
   userSocketIntialization(socket)
 
   // video call
-  videoCallIntialiseSocketIo(io,socket)
+  videoCallIntialiseSocketIo(io, socket)
 
   userStatusSocketIo(io, socket)
 

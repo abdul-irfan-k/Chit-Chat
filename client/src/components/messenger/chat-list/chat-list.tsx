@@ -2,7 +2,6 @@
 import { getChatRoomMessageHandler, updateCurrentChaterHandler } from "@/redux/actions/chat-action/chat-action"
 import {
   chatUsersListReducerState,
-  currentChaterReducerSlate,
 } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import { useAppDispatch } from "@/store"
 import Image from "next/image"
@@ -16,9 +15,7 @@ const ChatList = () => {
     (state: { chatUsersList: chatUsersListReducerState }) => state.chatUsersList,
   )
 
-  // const { isChanged: isCurrentChaterChanged, userDetail: currentChaterDetail } = useSelector(
-  //   (state: { currentChater: currentChaterReducerSlate }) => state.currentChater,
-  // )
+  
   const dispatch = useAppDispatch()
   const router = useRouter()
 

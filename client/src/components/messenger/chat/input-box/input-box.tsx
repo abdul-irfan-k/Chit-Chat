@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useSelector } from "react-redux"
 import { useAppDispatch } from "@/store"
 import { sendMessageHandler } from "@/redux/actions/chat-action/chat-action"
-import { currentChaterReducerSlate } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
+import { chatUsersListReducerState } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 import { socketReducerState } from "@/redux/reducers/socket-reducer/socket-reducers"
 import VoiceRecorder from "@/components/shared/voice-recorder/voice-recorder"
@@ -20,8 +20,8 @@ const InputBox = () => {
   const [inputPopUpMenuType, setInputPopUpMenuType] = useState<inputPopUpMenuType>(undefined)
 
   const { socket } = useSelector((state: { socketClient: socketReducerState }) => state.socketClient)
-  const { userDetail: currentChaterDeatil } = useSelector(
-    (state: { currentChater: currentChaterReducerSlate }) => state.currentChater,
+  const {  currentChaterDetail } = useSelector(
+    (state: { chatUsersList: chatUsersListReducerState }) => state.chatUsersList,
   )
   const { userDetail } = useSelector((state: { userDetail: userDetailState }) => state.userDetail)
 
@@ -35,14 +35,14 @@ const InputBox = () => {
   }
 
   const sendButtonHandler = () => {
-    if (currentChaterDeatil == null || currentChaterDeatil.chatRoom == undefined ||  userDetail == null ) return console.log("user id not found")
+    if (currentChaterDetail == null || currentChaterDetail.chatRoom == undefined ||  userDetail == null ) return console.log("user id not found")
     dispatch(
       sendMessageHandler(
         {
           message: inputMessage,
-          receiverId: currentChaterDeatil._id,
+          receiverId: currentChaterDetail._id,
           senderId: userDetail?._id,
-          chatRoomId: currentChaterDeatil.chatRoom?.chatRoomId,
+          chatRoomId: currentChaterDetail.chatRoom?.chatRoomId,
         },
         socket,
       ),
@@ -50,7 +50,7 @@ const InputBox = () => {
   }
 
   return (
-    <div className="flex gap-3 justify-between items-center">
+    <div className="mt-auto flex gap-3 justify-between items-center">
       <div
         className="relative w-10 flex justify-center items-center aspect-square bg-slate-300 rounded-full dark:bg-slate-800"
         onClick={() => setInputPopUpMenuType("sticker")}

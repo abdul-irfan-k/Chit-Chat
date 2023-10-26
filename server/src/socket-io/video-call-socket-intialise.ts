@@ -22,9 +22,9 @@ const videoCallIntialiseSocketIo = (io: Server, socket: Socket) => {
 
   socket.on("videoCall:rejectRequest", async (chatRoomId, userId) => {})
 
-  socket.on("videoCall:acceptRequest", async ({ chatRoomId, userId }) => {
+  socket.on("videoCall:acceptRequest", async ({ callRoomId, userId }) => {
     try {
-      const updatedVideoCallRoom = await VideoCallRoomModel.addVideoCallRoomUser({ chatRoomId, userId })
+      const updatedVideoCallRoom = await VideoCallRoomModel.addVideoCallRoomUser({ callRoomId, userId })
       if (updatedVideoCallRoom == null) return console.log("no room found")
 
       const chatRoomUserDetails = await updatedVideoCallRoom.userIds.map((userId: string) => {
@@ -34,17 +34,15 @@ const videoCallIntialiseSocketIo = (io: Server, socket: Socket) => {
           peerId,
         }
       })
-
       updatedVideoCallRoom?.userIds?.forEach(async (userId: string) => {
         const receiver = await getRedisSocketCached(userId)
-        console.log("user ids ", userId, receiver.socketId, receiver)
 
         if (receiver.socketId == socket.id) {
           socket.emit("videoCall:start", {
             callRoomId: updatedVideoCallRoom._id,
             chatRoomId: updatedVideoCallRoom.chatRoomId,
-            callType:  "videoCall",
-            callChannelType: "single" ,
+            callType: "videoCall",
+            callChannelType: "single",
             callRoomUserDetails: chatRoomUserDetails,
           })
         } else {

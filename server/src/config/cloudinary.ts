@@ -1,6 +1,5 @@
 import { v2 as cloudinary } from "cloudinary"
 
-
 interface cloudinaryFileUploadHandlerReturn {
   isSuccess: Boolean
   imageUrl?: string
@@ -16,10 +15,9 @@ export const cloudinaryFileUploadHandler = (file: string): Promise<cloudinaryFil
       })
 
       console.log(process.env.CLOUDINARY_API_KEY)
-      const cloudinaryFileUploadResponseData = await cloudinary.uploader.upload(file,{resource_type:"raw"})
+      const cloudinaryFileUploadResponseData = await cloudinary.uploader.upload(file, { resource_type: "raw" })
       const { url } = cloudinaryFileUploadResponseData
 
-      
       if (!url) return reject({ isSuccess: false })
       return resolve({ isSuccess: true, imageUrl: url })
     } catch (error) {

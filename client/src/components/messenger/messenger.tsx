@@ -7,32 +7,22 @@ import CallLogContainer from "./call/call-log-container"
 import ContactContainer from "./contact/contact-container"
 
 const Messenger = () => {
-  // const { messengerSortType, subSelectionType } = useSelector(
-  //   (state: { messengerSort: messengerSortState }) => state.messengerSort,
-  // )
-
   return (
-    <div className="relative flex gap-5 ">
-      <div className="relative w-14">
-        <div className="absolute">
-          <SideMenu />
-        </div>
-      </div>
-
+    <div className="relative flex gap-5 w-full flex-1 ">
       <div className="relative  md:w-[50%] lg:w-[35%] xl:w-[27%] ">
-        <div className="absolute ">
-          <div className="fixed flex flex-col px-10 pt-14 h-[100vh]  bg-slate-200 dark:bg-neutral-950 md:w-[50%] lg:w-[35%] xl:w-[27%] ">
-            <Recent />
-            <div className="mt-10 flex flex-col overflow-y-scroll no-scrollbar">
-              <MessengerSort />
-              <ChatList />
-            </div>
+        <div className="relative flex flex-col px-10 pt-14 h-[100vh]  bg-slate-200 dark:bg-neutral-950  ">
+          <Recent />
+          <div className="mt-10 flex flex-col overflow-y-scroll no-scrollbar">
+            <MessengerSort />
+            <ChatList />
           </div>
         </div>
       </div>
-      <ChatContainer />
-      <CallLogContainer />
-      <ContactContainer />
+      <div className=" w-full">
+        <ChatContainer />
+        <CallLogContainer />
+        <ContactContainer />
+      </div>
     </div>
   )
 }

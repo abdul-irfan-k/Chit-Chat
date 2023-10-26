@@ -10,7 +10,7 @@ const CallLogContainer = () => {
   const { messengerSortType } = useSelector((state: { messengerSort: messengerSortState }) => state.messengerSort)
   return (
     <>
-  {messengerSortType =="call" && <div className="relative mt-10  gap-8 flex  w-[60%] overflow-y-hidden xl:h-[75vh]">
+  {messengerSortType =="call" && <div className="relative mt-10  gap-8 flex  w-[90%] overflow-y-hidden xl:h-[75vh]">
       <div className="gap-5 flex flex-col w-[40%]">
         <CallUserProfile name="irfan" phoneNumber="123 456 789" profileImageSrc="/Asset/avatar.jpg" />
         <CallSharedDocument

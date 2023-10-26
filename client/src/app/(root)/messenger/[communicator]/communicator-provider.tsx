@@ -1,7 +1,8 @@
 "use client"
 import { getChatRoomMessageHandler } from "@/redux/actions/chat-action/chat-action"
-import { currentChaterReducerSlate } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
-import { chatRoomMessageAction, messageAvailableChatRoomsSlate } from "@/redux/reducers/message-reducer/message-reducer"
+import { chatUsersListReducerState  
+ } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
+import { chatRoomMessageAction, chatRoomMessagesReducerSlate } from "@/redux/reducers/message-reducer/message-reducer"
 import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 import { useAppDispatch } from "@/store"
 import { usePathname } from "next/navigation"
@@ -13,18 +14,19 @@ const CommunicatorProvider = ({ children }: { children: React.ReactNode }) => {
   const dispatch = useAppDispatch()
 
   const { userDetail } = useSelector((state: { userDetail: userDetailState }) => state.userDetail)
-  const { userDetail: currentChaterDetail } = useSelector(
-    (state: { currentChater: currentChaterReducerSlate }) => state.currentChater,
+  const { currentChaterDetail } = useSelector(
+    (state: { chatUsersList: chatUsersListReducerState }) => state.chatUsersList,
   )
 
-  const { chatRooms } = useSelector(
-    (state: { messageAvailableChatRooms: messageAvailableChatRoomsSlate }) => state.messageAvailableChatRooms,
+  const { messageAvailableChatRoom } = useSelector(
+    (state: { chatRoomsMessageReducer: chatRoomMessagesReducerSlate }) => state.chatRoomsMessageReducer,
   )
 
   useEffect(() => {
-    const isAlreadAvailableMessage = chatRooms.some(
+    const isAlreadAvailableMessage = messageAvailableChatRoom.some(
       (chatRoom) => chatRoom.chatRoomId == currentChaterDetail?.chatRoom?.chatRoomId,
     )
+    console.log('isAlre',isAlreadAvailableMessage)
     if (isAlreadAvailableMessage) {
       dispatch(chatRoomMessageAction.addCurrentChaterMessage({ chatRoomId: currentChaterDetail?.chatRoom?.chatRoomId }))
       return

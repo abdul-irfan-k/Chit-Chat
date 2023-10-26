@@ -27,7 +27,7 @@ const CallNotificationContainer = () => {
 
   const callAcceptHandler = () => {
     if (!isAvailableSocket || userDetail == null) return
-    socket.emit("videoCall:acceptRequest", { chatRoomId: callNotificationData?.chatRoomId, userId: userDetail._id })
+    socket.emit("videoCall:acceptRequest", { callRoomId: callNotificationData?.callRoomId, userId: userDetail._id })
   }
   const callDeclineHandler = () => {}
 

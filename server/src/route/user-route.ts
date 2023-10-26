@@ -32,6 +32,5 @@ router.post("/changePassword", checkisLogedInMiddleware, changePasswordHanldler)
 router.post("/changePasswordWithOtp", checkisLogedInMiddleware, changePasswordWithOtpHandler)
 router.post("/requestChangePasswordWithOtp", checkisLogedInMiddleware, requestChangePasswordWithOtpHandler)
 
-
-router.post('/getAllChatUsers',checkisLogedInMiddleware,getAllChatUsersHandler)
+router.post("/getAllChatUsers", checkisLogedInMiddleware, getAllChatUsersHandler)
 export default router

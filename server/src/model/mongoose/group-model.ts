@@ -1,20 +1,17 @@
-import mongoose, { Schema } from "mongoose"
+import { Schema } from "mongoose"
 
-const groupSchema = new Schema({
-  name: {
-    type: String,
-    required: true,
-  },
-  users: {
-    type: [mongoose.Types.ObjectId],
-    default: [],
-  },
-  discription: {
-    type: String,
-  },
-  setting: {
-    isAdminOnlySendMessage: {
-      type: String,
+const groupChatRoomModel = new Schema(
+  {
+    name: { type: String, required: true },
+    discription: { type: String },
+    adminsDetail: {},
+    usersDetail: {},
+    setting: {
+      isAdminOnlySendMessage: { type: Boolean, default: false },
+      isAllowedJoinByUrl: { type: Boolean, default: true },
     },
   },
-})
+  {
+    timestamps: true,
+  },
+)
