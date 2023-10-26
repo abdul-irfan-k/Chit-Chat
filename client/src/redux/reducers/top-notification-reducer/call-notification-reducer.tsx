@@ -31,7 +31,7 @@ export const callNotificationInitialState: callNotificationReducerSlate = {
   isAvailableCallNotification: false,
 }
 
-export const callNotificationReducer = createSlice({
+export const notificationReducer = createSlice({
   name: "audioCallNotificationReducer",
   initialState: callNotificationInitialState,
   reducers: {
@@ -44,4 +44,4 @@ export const callNotificationReducer = createSlice({
   },
 })
 
-export const callRequestNotificationReducerAction = callNotificationReducer.actions
+export const callRequestNotificationReducerAction = notificationReducer.actions

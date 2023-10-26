@@ -16,8 +16,6 @@ const groupCallSocketIo = (io: Server, socket: Socket) => {
     },
   )
 
-  socket.on("groupCall:joinRequestRejected", () => {})
-
   socket.on("groupCall:joinRequestAccepted",(
     {    acceptedJoinRequestUserDetail,    userDetail,    referenceId  }
        :{    acceptedJoinRequestUserDetail: { userName: string; userId: string }
@@ -26,12 +24,12 @@ const groupCallSocketIo = (io: Server, socket: Socket) => {
         GroupCallRoomModel.findOneAndUpdate({referenceId},{
           $push:{callRoomAllUsers:{userId:acceptedJoinRequestUserDetail.userId}}
         })
-        socket.emit("groupCall:joinRequestAccepted",{})
+        const receiverSocket = getRedisSocketCached(acceptedJoinRequestUserDetail.userId)
+        socket.to(receiverSocket.socketId).emit("groupCall:joinRequestAccepted",{referenceId})
       } catch (error) {}
     },
   )
 
-  socket.on("groupCall:joinCallRequest", () => {})
   //   socket.on("groupCall:joinRequestRejected",() => {})
 }
 

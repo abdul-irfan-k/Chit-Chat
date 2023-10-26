@@ -40,6 +40,16 @@ const SocketIoChatUserEventProvider = () => {
       await dispatch(callRequestRedcuerAction.removeCallRequest())
       await dispatch(callRequestNotificationReducerAction.removeCallNotification())
     })
+
+ 
+    socket.on("groupCall:joinRequestRejected",() =>{
+
+    })
+
+    socket.on("groupCall:joinRequestAccepted",({referenceId}) => {
+      router.push(`/video-call/${referenceId}`)
+    })
+
   }, [isAvailableSocket, dispatch, isLogedIn])
   return <div></div>
 }

@@ -6,8 +6,8 @@ import { userDetailReducer, userSignUpDetailReducer } from "./redux/reducers/use
 import { chatUsersListReducer } from "./redux/reducers/chat-user-reducer/chat-user-reducer"
 import { chatRoomsMessageReducer } from "./redux/reducers/message-reducer/message-reducer"
 import { callRequestReducer } from "./redux/reducers/call-request-reducer/call-request-reducer"
-import { callNotificationReducer } from "./redux/reducers/top-notification-reducer/call-notification-reducer"
 import { callRedcuer } from "./redux/reducers/call-reducer/call-reducer"
+import { notificationReducer } from "./redux/reducers/top-notification-reducer/call-notification-reducer"
 
 const combinedReducers = combineReducers({
   socketClient: socketClientReducer.reducer,
@@ -17,7 +17,7 @@ const combinedReducers = combineReducers({
   userDetail: userDetailReducer.reducer,
   chatRoomsMessageReducer: chatRoomsMessageReducer.reducer,
   callRequestReducer: callRequestReducer.reducer,
-  callNotificationReducer: callNotificationReducer.reducer,
+  notificationReducer: notificationReducer.reducer,
   callRedcuer: callRedcuer.reducer,
 })
 

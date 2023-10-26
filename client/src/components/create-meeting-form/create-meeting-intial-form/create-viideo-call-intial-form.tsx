@@ -40,7 +40,8 @@ const CreateMeetingInitialForm: FC<CreateGroupMeetingFormProps> = ({ setMeetingF
               onChange={(e) => setMeetingCode(e.target.value)}
             />
           </div>
-          <div className="ml-3 px-8 py-2 select-auto text-base  rounded-full bg-blue-500">join</div>
+          <div className="ml-3 px-8 py-2 select-auto text-base  rounded-full bg-blue-500" 
+          onClick={joinButtonHandler}>join</div>
         </div>
 
         <div className="my-10 text-2xl font-medium">Create New Meeting</div>

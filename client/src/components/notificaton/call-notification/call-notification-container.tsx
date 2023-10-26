@@ -9,7 +9,7 @@ import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 const CallNotificationContainer = () => {
   const [isPopUpedNotification, setIsPopUpedNotification] = useState(false)
   const { isAvailableCallNotification, callNotificationData } = useSelector(
-    (state: { callNotificationReducer: callNotificationReducerSlate }) => state.callNotificationReducer,
+    (state: { notificationReducer: callNotificationReducerSlate }) => state.notificationReducer,
   )
   const { socket, isAvailableSocket } = useSelector((state: { socketClient: socketReducerState }) => state.socketClient)
   const { userDetail } = useSelector((state: { userDetail: userDetailState }) => state.userDetail)

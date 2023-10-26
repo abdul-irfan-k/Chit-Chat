@@ -29,11 +29,12 @@ interface communicatorsDetail {
   videoStatus: "inActive" | "active"
   camaraStatus: "inActive" | "active"
 }
-interface callRedcuer {
+
+interface callDetail {
   callRoomId: string
   chatRoomId: string
   callType: "audioCall" | "videoCall"
-  callChannelType: "single" | "multiple"
+  callChannelType: "single"
   avilableTotalUserCount?: number
   myDetail: {
     peerId: string
@@ -42,8 +43,19 @@ interface callRedcuer {
   communicatorsDetail: communicatorsDetail[]
 }
 
+interface groupCallDetail {
+  callRoomId: string
+  referenceId: string
+  callChannelType: "group"
+  myDetail: {
+    peerId: string
+    userId: string
+  }
+  communicatorsDetail: communicatorsDetail[]
+}
+
 export type callReducerSlate = {
-  callDetail?: callRedcuer
+  callDetail?: callDetail | groupCallDetail
   isChanged: boolean
   callStatus?: "active" | "inActive"
   isAvailableCallRoom: boolean
