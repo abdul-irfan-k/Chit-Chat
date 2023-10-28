@@ -54,16 +54,26 @@ interface groupCallDetail {
   communicatorsDetail: communicatorsDetail[]
 }
 
+interface peerDetail {
+  userId: string
+  peerId: string
+}
 export type callReducerSlate = {
   callDetail?: callDetail | groupCallDetail
   isChanged: boolean
   callStatus?: "active" | "inActive"
   isAvailableCallRoom: boolean
   callSetting?: callSetting
+
+  connectionRequiredPeers?: {
+    latestPeer?: peerDetail
+    allPeers: peerDetail[]
+    isInitialPeer: boolean
+  }
 }
 const callReducerIntialState: callReducerSlate = {
   callDetail: undefined,
-  isChanged: true,
+  isChanged: false,
   isAvailableCallRoom: false,
 }
 
@@ -73,6 +83,9 @@ export const callRedcuer = createSlice({
   reducers: {
     addIntialCallData: (state, action: { payload: callReducerSlate; type: string }) => {
       return { ...state, ...action.payload, isChanged: true }
+    },  
+    addCallData: (state, action) => {
+       return {...state,...action.payload}
     },
     removeUserFromCall: (state, action) => {
       const updatedCommunicatorDetails = state.callDetail?.communicatorsDetail.filter(

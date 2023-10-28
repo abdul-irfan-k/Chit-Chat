@@ -7,8 +7,8 @@ import LiveChatBox from "./live-chat-box/live-chat-box"
 const LiveChatContainer = () => {
   return (
     <div className="w-[100%] ">
-      <LiveChatTopBar />
-      <LiveChatUserList />
+      {/* <LiveChatTopBar /> */}
+      {/* <LiveChatUserList /> */}
       <LiveChatBox />
       <LiveChatInputBox />
     </div>

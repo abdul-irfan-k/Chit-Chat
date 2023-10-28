@@ -43,7 +43,11 @@ import MicSlashIcon from "/public/Asset/Icon/mic-slash.svg"
 import SchoolIcon from "/public/Asset/Icon/school.svg"
 import GroupIcon from "/public/Asset/Icon/groups.svg"
 import PersonIcon from "/public/Asset/Icon/person.svg"
-
+import PersonAddIcon from "/public/Asset/Icon/person-add.svg"
+import InfoIcon from "/public/Asset/Icon/info.svg"
+import XMarkIcon from "/public/Asset/Icon/xmark.svg"
+import CopyIcon from "/public/Asset/Icon/copy.svg"
+import SearchIcon from "/public/Asset/Icon/search.svg"
 
 export {
   IdBadgeIcon,
@@ -90,5 +94,10 @@ export {
   MicSlashIcon,
   SchoolIcon,
   GroupIcon,
-  PersonIcon
+  PersonIcon,
+  PersonAddIcon,
+  InfoIcon,
+  XMarkIcon,
+  CopyIcon,
+  SearchIcon
 }

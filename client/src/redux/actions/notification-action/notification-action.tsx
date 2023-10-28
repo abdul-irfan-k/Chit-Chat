@@ -1,4 +1,4 @@
-import { activateCallNotification } from "@/redux/reducers/top-notification-reducer/top-notification-reducer"
+import { activateCallNotification } from "@/redux/reducers/notification-reducer/notification-reducer"
 import { AppDispatch } from "@/store"
 
 export const addAudioCallNotification = () => (dispatch:AppDispatch) => {

@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react"
 import AudioCallNotification from "./audio-call-notification/audio-call-notification"
 import { useSelector } from "react-redux"
-import { callNotificationReducerSlate } from "@/redux/reducers/top-notification-reducer/call-notification-reducer"
+import { callNotificationReducerSlate } from "@/redux/reducers/notification-reducer/notification-reducer"
 import { socketReducerState } from "@/redux/reducers/socket-reducer/socket-reducers"
 import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 

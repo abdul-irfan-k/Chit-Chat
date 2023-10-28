@@ -1,5 +1,5 @@
 "use client"
-import React, { FC, useState } from "react"
+import React, { FC, useEffect, useState } from "react"
 
 interface VideoCallViewsProps {
   myVideoRef: React.MutableRefObject<HTMLVideoElement | undefined>
@@ -14,15 +14,23 @@ interface communicatorVideo {
 
 const VideoCallViews: FC<VideoCallViewsProps> = ({ myVideoRef, setIsShowingliveChat, communicatorVideos }) => {
   const [isPinnedVideo, setIsPinnedVideo] = useState<boolean>(false)
-  const [videoSize, setVideoSize] = useState<{ width: number; height: number }>({ height: 45, width: 40 })
+  const [videoSize, setVideoSize] = useState<{ width: number; height: number }>({ width: 50, height: 60 })
   const videoOnClickHandler = () => {
     setIsPinnedVideo(true)
-    setVideoSize({ width: 100, height: 100 })
+    setVideoSize({ width: 85, height: 100 })
     setIsShowingliveChat(false)
   }
+
+  useEffect(() => {
+    console.log('video added ')
+    const isEmptyVideo = communicatorVideos.length < 1
+    if(isEmptyVideo){
+      setVideoSize({width:85,height:50})
+    }
+  },[communicatorVideos])
   return (
     <div className="mt-5 flex-1">
-      <div className="relative gap-5  flex  flex-wrap justify-center  h-full">
+      <div className="relative gap-5  flex  flex-wrap items-center justify-center  h-[78vh]  overflow-hidden ">
         {communicatorVideos?.map((communicatorVideo, index) => {
           console.log("communicator video ref ", communicatorVideo)
           return (
@@ -39,7 +47,8 @@ const VideoCallViews: FC<VideoCallViewsProps> = ({ myVideoRef, setIsShowingliveC
         })}
 
         <div
-          className={`h-[${videoSize.height}%] rounded-2xl w-[${videoSize.width}%] bg-neutral-600 `}
+          className={` rounded-2xl    `}
+          style={{ width: `${videoSize.width}%`, aspectRatio: "16/9" }}
           onClick={videoOnClickHandler}
         >
           <video

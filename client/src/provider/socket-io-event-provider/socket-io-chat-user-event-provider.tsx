@@ -1,9 +1,13 @@
 "use client"
-import { addCallSettingHandler, addInitialCallDataHandler } from "@/redux/actions/call-action/call-action"
+import {
+  addCallDataHandler,
+  addCallSettingHandler,
+  addInitialCallDataHandler,
+} from "@/redux/actions/call-action/call-action"
 import { addNewMessageNotificationHandler, receiveMessageHandler } from "@/redux/actions/chat-action/chat-action"
 import { chatUsersListReducerState } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import { socketReducerState } from "@/redux/reducers/socket-reducer/socket-reducers"
-import { callRequestNotificationReducerAction } from "@/redux/reducers/top-notification-reducer/call-notification-reducer"
+import { callRequestNotificationReducerAction } from "@/redux/reducers/notification-reducer/notification-reducer"
 import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 import { useAppDispatch } from "@/store"
 import React, { useEffect } from "react"
@@ -41,15 +45,12 @@ const SocketIoChatUserEventProvider = () => {
       await dispatch(callRequestNotificationReducerAction.removeCallNotification())
     })
 
- 
-    socket.on("groupCall:joinRequestRejected",() =>{
+    socket.on("groupCall:joinRequestRejected", () => {})
 
+    socket.on("groupCall:joinRequestAccepted", (details) => {
+      dispatch(addCallDataHandler({ ...details, userId: userDetail?._id }))
+      router.push(`/video-call`)
     })
-
-    socket.on("groupCall:joinRequestAccepted",({referenceId}) => {
-      router.push(`/video-call/${referenceId}`)
-    })
-
   }, [isAvailableSocket, dispatch, isLogedIn])
   return <div></div>
 }

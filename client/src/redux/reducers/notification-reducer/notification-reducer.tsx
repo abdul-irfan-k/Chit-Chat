@@ -22,11 +22,17 @@ interface videoCallNotification {
   userDetail?: userDetail
 }
 
-interface callNotification {
+interface callJoinRequestNotification {
+  userId: string
+}
+
+interface notification {
   isAvailableCallNotification: boolean
   callNotificationData?: voiceCallNotificaton | videoCallNotification
+  callJoinRequestNotification?: callJoinRequestNotification[]
 }
-export type callNotificationReducerSlate = callNotification
+
+export type callNotificationReducerSlate = notification
 export const callNotificationInitialState: callNotificationReducerSlate = {
   isAvailableCallNotification: false,
 }

@@ -70,13 +70,11 @@ export const signUpUserHandler = async (req: Request, res: Response) => {
 export const loginUserHandler = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body
-    console.log(req.body)
     const user = await User.findOne({ email })
 
     if (user == null) return res.status(400).json({ isValid: false, errorType: USERNOTFOUND })
 
     const isCorrectPassword = await user.checkIsCorrectPassword(password)
-    console.log(isCorrectPassword)
     if (!isCorrectPassword) return res.status(400).json({ isValid: false, errorType: INVALIDPASSWORD })
 
     const { token: authToken } = await createJwtTokenHandler({

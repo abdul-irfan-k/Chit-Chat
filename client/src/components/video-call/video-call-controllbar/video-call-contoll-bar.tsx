@@ -1,6 +1,9 @@
 "use client"
 import {
   CallEndIcon,
+  ChatIcon,
+  GroupIcon,
+  InfoIcon,
   MicIcon,
   MicSlashIcon,
   ScreenShareIcon,
@@ -14,11 +17,15 @@ import {
   addScreenSharingHandler,
   changeCallSettingHandler,
   removeScreenSharingHandler,
-} from "@/redux/actions/call-setting-action/call-setting-action"
+} from "@/redux/actions/call-action/call-action"
+
 import { useAppDispatch } from "@/store"
 import React, { FC, useState } from "react"
 
-const VideoCallControllBar = () => {
+interface VideoCallControllBarProps {
+  onMenuChangeHandler(menuType: "liveMessage" | "info" | "userList"):void
+}
+const VideoCallControllBar:FC<VideoCallControllBarProps> = ({onMenuChangeHandler}) => {
   const [isScreenSharing, setIsScreenSharing] = useState<boolean>(false)
   const [isVideoRecording, setIsVideoRecording] = useState<boolean>(false)
   const [isAudioRecording, setIsAudioRecording] = useState<boolean>(false)
@@ -46,7 +53,7 @@ const VideoCallControllBar = () => {
   }
 
   return (
-    <div className="mt-5 relative flex items-center">
+    <div className="mt-5  relative flex items-center">
       <div className="gap-2 absolute flex items-center">
         <div className="w-6 relative overflow-hidden flex items-center justify-center aspect-square rounded-full  fill-slate-950 dark:fill-slate-50">
           <VolumeHighIcon className="aspect-square w-6" />
@@ -89,6 +96,18 @@ const VideoCallControllBar = () => {
         </VideoCallControllIcon>
         <VideoCallControllIcon className="dark:bg-red-500 bg-red-500" onClickHandler={callEndButtonHandler}>
           <CallEndIcon className="aspect-square w-6" />
+        </VideoCallControllIcon>
+      </div>
+
+      <div className="gap-2 right-0 absolute  pr-4 flex items-center fill-slate-950 dark:fill-slate-50">
+        <VideoCallControllIcon onClickHandler={() => onMenuChangeHandler("info")}>
+          <InfoIcon className="w-6 aspect-square" height="" width="" />
+        </VideoCallControllIcon>
+        <VideoCallControllIcon onClickHandler={() => onMenuChangeHandler("userList")}>
+          <GroupIcon className="w-6 aspect-square" height="" width="" />
+        </VideoCallControllIcon>
+        <VideoCallControllIcon onClickHandler={() => onMenuChangeHandler("liveMessage")}>
+          <ChatIcon className="w-6 aspect-square" height="" width="" />
         </VideoCallControllIcon>
       </div>
     </div>

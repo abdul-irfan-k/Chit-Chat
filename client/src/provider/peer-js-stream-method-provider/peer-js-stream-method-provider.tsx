@@ -15,7 +15,7 @@ const PeerJsStreamMethodProvider = () => {
 
   const dispatch = useAppDispatch()
 
-  const { isAvailableCallRoom, callDetail, callSetting } = useSelector(
+  const { isAvailableCallRoom, callDetail, callSetting, connectionRequiredPeers } = useSelector(
     (state: { callRedcuer: callReducerSlate }) => state.callRedcuer,
   )
 
@@ -24,8 +24,7 @@ const PeerJsStreamMethodProvider = () => {
   useEffect(() => {
     if (!isAvailableCallRoom) return
     if (peerContext.isAvailablePeer) {
-      getAudioVideoStream()
-      getAvailableMediaDevices()
+      setNavigatorStream()
     }
   }, [peerContext?.isAvailablePeer, isAvailableCallRoom])
 
@@ -59,17 +58,32 @@ const PeerJsStreamMethodProvider = () => {
     }
   }, [callSetting?.isAllowedMicrophone])
 
-  const getAudioVideoStream = () => {
-    navigator.mediaDevices
-      .getUserMedia({
-        video: { aspectRatio: { ideal: 16 / 9 } },
-        audio: false,
-      })
-      .then((stream) => {
-        setPeerListeners(stream)
-        addVideoStream(callDetail?.myDetail.peerId, stream)
-        connectToNewUser(callDetail?.communicatorsDetail[0], stream)
-      })
+
+
+
+  useEffect(() => {
+    if (connectionRequiredPeers?.isInitialPeer) {
+      connectToNewUser({ peerId: connectionRequiredPeers.latestPeer?.peerId }, videoContext.videoStream)
+    }
+  }, [connectionRequiredPeers?.latestPeer])
+
+
+
+
+  const getAudioVideoStream = (): Promise<MediaStream> => {
+    return new Promise((resolve, reject) => {
+      navigator.mediaDevices
+        .getUserMedia({
+          video: { aspectRatio: { ideal: 16 / 9 } },
+          audio: false,
+        })
+        .then((stream) => {
+          return resolve(stream)
+        })
+        .catch((err) => {
+          return reject()
+        })
+    })
   }
 
   const stopAudioStream = () => {
@@ -81,11 +95,17 @@ const PeerJsStreamMethodProvider = () => {
     videoContext.videoStream?.getVideoTracks()[0].stop()
   }
 
-  const getDisplayMediaStream = () => {
-    navigator.mediaDevices.getDisplayMedia({ video: true }).then((stream) => {
-      // videoContext.setVideoStream(stream)
-      // connectToNewUser(callDetail?.communicatorsDetail[0], stream)
-      // replaceStreamTrack(stream)
+  const getDisplayMediaStream = (): Promise<MediaStream> => {
+    return new Promise((resolve, reject) => {
+      navigator.mediaDevices
+        .getDisplayMedia({ video: true })
+        .then((stream) => {
+          resolve(stream)
+          videoContext.setVideoStream(stream)
+          // connectToNewUser(callDetail?.communicatorsDetail[0], stream)
+          replaceStreamTrack(stream)
+        })
+        .catch((err) => reject())
     })
   }
 
@@ -102,6 +122,22 @@ const PeerJsStreamMethodProvider = () => {
     })
 
     dispatch(addAvailableMediaDevices({ audioDevices, videoDevices }))
+  }
+
+  const setNavigatorStream = () => {
+    getAudioVideoStream().then((stream) => {
+      addVideoStream(callDetail?.myDetail.peerId, stream)
+      setPeerListeners(stream)
+
+      if (callDetail?.callChannelType == "single") {
+        connectToNewUser(callDetail?.communicatorsDetail[0], stream)
+      }
+      if (callDetail?.callChannelType == "group") {
+        callDetail.communicatorsDetail.map((userDetail) => {
+          connectToNewUser({ peerId: userDetail.peerId }, stream)
+        })
+      }
+    })
   }
 
   const addVideoStream = (peerId: string, stream: MediaStream) => {

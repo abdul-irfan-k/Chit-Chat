@@ -1,5 +1,7 @@
-import { callReducerAction } from "@/redux/reducers/call-reducer/call-reducer"
+import { axiosMeetingInstance } from "@/constants/axios"
+import { callReducerAction, callReducerSlate } from "@/redux/reducers/call-reducer/call-reducer"
 import { AppDispatch } from "@/store"
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context"
 
 export const addInitialCallDataHandler = (data: any, id: string) => async (dispatch: AppDispatch) => {
   const myDetail = data.callRoomUserDetails.filter((userDetail) => userDetail.userId === id)[0]
@@ -55,3 +57,43 @@ export const addCallSettingHandler = (data) => async (dispatch: AppDispatch) => 
     }),
   )
 }
+
+export const addCallDataHandler =
+  ({ referenceId, adminDetail, callRoomId, callInitiator, pinnedUsers, callRoomAvailableUsers, peerId, userId }) =>
+  async (dispatch: AppDispatch) => {
+    dispatch(
+      callReducerAction.addCallData({
+        isAvailableCallRoom: true,
+        callDetail: {
+          callChannelType: "group",
+          callRoomId,
+          communicatorsDetail: [...callRoomAvailableUsers],
+          myDetail: {
+            peerId,
+            userId,
+          },
+        },
+      }),
+    )
+  }
+
+export const createGroupMeetingHandler =
+  (meetingDetail, router: AppRouterInstance) => async (dispatch: AppDispatch) => {
+    try {
+      const { data } = await axiosMeetingInstance.post("/createGroupVideoCall", meetingDetail)
+      await dispatch(
+        callReducerAction.addIntialCallData({
+          isAvailableCallRoom: true,
+          isChanged: true,
+          callDetail: {
+            callChannelType: "group",
+            callRoomId: data.callRoomId,
+            communicatorsDetail: [],
+            myDetail: { peerId: data.peerId, userId: meetingDetail.userId },
+            referenceId: data.referenceId,
+          },
+        }),
+      )
+      router.push("/video-call")
+    } catch (error) {}
+  }

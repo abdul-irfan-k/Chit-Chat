@@ -9,3 +9,7 @@ export const axiosChatInstance = axios.create({
   baseURL: "http://localhost:8000/chat/",
   withCredentials: true,
 })
+export const axiosMeetingInstance = axios.create({
+  baseURL: "http://localhost:8000/meeting/",
+  withCredentials: true,
+})

@@ -16,6 +16,7 @@ import { userStatusSocketIo } from "./socket-io/user-status-socket-io.js"
 
 import userRouter from "./route/user-route.js"
 import chatRouter from "./route/chat-route.js"
+import meetingRouter from "./route/meeting-route.js"
 
 import { connnectDB } from "./config/mongoose.js"
 import { connectRedis } from "./config/redis.js"
@@ -62,6 +63,7 @@ io.on("connection", async (socket) => {
 
 app.use("/user", userRouter)
 app.use("/chat", chatRouter)
+app.use("/meeting",meetingRouter)
 
 connnectDB(() => {
   server.listen(port, () => {

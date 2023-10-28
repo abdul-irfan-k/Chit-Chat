@@ -1,6 +1,21 @@
-import React from "react"
+"use client"
+import { createGroupMeetingHandler } from "@/redux/actions/call-action/call-action"
+import { useAppDispatch } from "@/store"
+import React, { useState } from "react"
+import { useRouter } from "next/navigation"
+import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
+import { useSelector } from "react-redux"
 
 const CreateGroupMeetingForm = () => {
+  const dispatch = useAppDispatch()
+  const [meetingName, setMeetingName] = useState<string>("")
+  const router = useRouter()
+  const { userDetail } = useSelector((state: { userDetail: userDetailState }) => state.userDetail)
+
+
+  const createMeetingButtonHandler = () => {
+    dispatch(createGroupMeetingHandler({ meetingName ,userId:userDetail._id}, router))
+  }
   return (
     <div className="px-10 py-10 bg-slate-200 h-[90%] w-[80%]  rounded-2xl dark:bg-neutral-950">
       <div className="w-[40%]">
@@ -13,9 +28,17 @@ const CreateGroupMeetingForm = () => {
             type="text"
             className="px-4 py-2 w-full rounded-sm border-none text-base font-medium bg-slate-300  dark:bg-neutral-900"
             placeholder="enter the meeting name "
+            onChange={(e) => {
+              setMeetingName(e.target.value)
+            }}
           />
         </div>
-        <div className="py-2 mt-10 w-full rounded-full flex  items-center justify-center bg-blue-500 ">Create Meeting</div>
+        <div
+          className="py-2 mt-10 w-full rounded-full flex  items-center justify-center bg-blue-500 "
+          onClick={createMeetingButtonHandler}
+        >
+          Create Meeting
+        </div>
       </div>
     </div>
   )

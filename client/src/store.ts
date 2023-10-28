@@ -7,7 +7,7 @@ import { chatUsersListReducer } from "./redux/reducers/chat-user-reducer/chat-us
 import { chatRoomsMessageReducer } from "./redux/reducers/message-reducer/message-reducer"
 import { callRequestReducer } from "./redux/reducers/call-request-reducer/call-request-reducer"
 import { callRedcuer } from "./redux/reducers/call-reducer/call-reducer"
-import { notificationReducer } from "./redux/reducers/top-notification-reducer/call-notification-reducer"
+import { notificationReducer } from "./redux/reducers/notification-reducer/notification-reducer"
 
 const combinedReducers = combineReducers({
   socketClient: socketClientReducer.reducer,
