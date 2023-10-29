@@ -6,10 +6,10 @@ import { v4 as uuidv4 } from "uuid"
 const groupCallSocketIo = (io: Server, socket: Socket) => {
   socket.on(
     "groupCall:joinRequest",
-    ({ userId, referenceId }: { userId: string; referenceId: string; userName: string }) => {
+    async ({ userId, referenceId, userName }: { userId: string; referenceId: string; userName: string }) => {
       try {
         const adminDetail = await GroupCallRoomModel.getAdminDetail({ referenceId })
-        const adminSocket = getRedisSocketCached(adminDetail.userId)
+        const adminSocket = await getRedisSocketCached(adminDetail.userId)
         socket
           .to(adminSocket.socketId)
           .emit("groupCall:userJoinRequest", { joinRequestedUserDetail: { userName, userId } })
@@ -18,7 +18,7 @@ const groupCallSocketIo = (io: Server, socket: Socket) => {
   )
 
   socket.on(
-    "groupCall:joinRequestAccepted",
+    "groupCall:joinRequestAccept",
     async ({
       acceptedJoinRequestUserDetail,
       userDetail,
@@ -42,26 +42,26 @@ const groupCallSocketIo = (io: Server, socket: Socket) => {
         )
         if (groupCallRoom == null) return
 
-        const receiverSocket = getRedisSocketCached(acceptedJoinRequestUserDetail.userId)
+        const receiverSocket = await getRedisSocketCached(acceptedJoinRequestUserDetail.userId)
         socket.join(`groupCall:${referenceId}`)
         socket.to(receiverSocket.socketId).emit("groupCall:joinRequestAccepted", {
           referenceId,
           peerId,
-          adminDetail: groupCallRoom.adminDetail,
+          adminId: groupCallRoom.adminId,
           callRoomId: groupCallRoom.callRoomId,
           callInitiator: groupCallRoom.callInitiator,
           pinnedUsers: groupCallRoom.pinnedUsers,
-          callRoomAvailableUsers: groupCallRoom.callRoomAvailableUsers,
+          callRoomAvailableUsers: groupCallRoom.callRoomCurrentUsers,
         })
 
         socket
-          .to(`groupCall:${referenceId}`)
-          .emit("groupCall:newuserJoined", { newUserDetail: { acceptedJoinRequestUserDetail } })
+        .emit("groupCall:newUserJoined", { newUserDetail: { ...acceptedJoinRequestUserDetail, peerId } })
+          // .to(`groupCall:${referenceId}`)
       } catch (error) {}
     },
   )
 
-  //   socket.on("groupCall:joinRequestRejected",() => {})
+  socket.on("groupCall:joinRequestReject", () => {})
 }
 
 export default groupCallSocketIo

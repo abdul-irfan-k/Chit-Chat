@@ -2,26 +2,24 @@ import { Model, Schema, model } from "mongoose"
 
 interface groupCallRoomSchemaInterface {
   referenceId: string
-  adminDetail?: {
-    userId: string
-  }
+  adminId: string
   callRoomId: string
   callInitiator: string
   pinnedUsers: {
-    userId: { type: string }
+    userId: string
   }[]
   callRoomAllUsers: {
-    userId: { type: string }
+    userId: string
   }[]
-  callRoomAvailableUsers: {
-    userId: { type: string }
-    peerId: { type: String }
+  callRoomCurrentUsers: {
+    userId: string
+    peerId: string
   }[]
 }
 
 const groupCallRoomSchema = new Schema({
   referenceId: { type: String, required: true },
-  adminDetail: { id: { type: String } },
+  adminId: { type: String, required: true },
   callRoomId: { type: String, required: true },
   callInitiator: { type: String, required: true },
   pinnedUsers: [
@@ -34,7 +32,12 @@ const groupCallRoomSchema = new Schema({
       userId: { type: String },
     },
   ],
-  callRoomAvailableUsers: [{ userId: { type: String }, peerId: { type: String } }],
+  callRoomCurrentUsers: [
+    {
+      userId: { type: String },
+      peerId: { type: String },
+    },
+  ],
 })
 
 interface createVideoCallRoomArgument {
@@ -50,16 +53,15 @@ groupCallRoomSchema.statics.createVideoCallRoom = function ({
   callRoomId,
 }: createVideoCallRoomArgument) {
   return new Promise(async (resolve, reject) => {
+    console.log("peer id", peerId)
     const newVideoCallRoom = new this({
       referenceId,
-      adminDetail: {
-        userId,
-      },
+      adminId: userId,
       callRoomId,
       callInitiator: userId,
       pinnedUsers: [{ userId }],
       callRoomAllUsers: [{ userId }],
-      callRoomAvailableusers: [{ userId, peerId }],
+      callRoomCurrentUsers: [{ peerId, userId }],
     })
     await newVideoCallRoom.save()
     return resolve({})
@@ -70,7 +72,7 @@ groupCallRoomSchema.statics.getAdminDetail = function ({ referenceId }: { refere
   return new Promise(async (resolve, reject) => {
     const groupCallRoom = await this.findOne({ referenceId })
     if (groupCallRoom == null) return reject()
-    return resolve(groupCallRoom.adminDetail)
+    return resolve({ userId: groupCallRoom.adminId })
   })
 }
 
