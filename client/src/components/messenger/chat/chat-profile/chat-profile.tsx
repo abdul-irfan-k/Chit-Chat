@@ -27,17 +27,16 @@ const ChatProfile: FC<ChatProfileInstance> = ({ name, profileImageSrc, currentSt
   const dispatch = useAppDispatch()
 
   const videoCallIconClickHandler = () => {
-    console.log("current user deatil", currentUserDetail?.chatRoom?.chatRoomId, "user", userDetail)
     socket.emit("videoCall:intialise", {
       userDetail: userDetail,
-      chatRoomId: currentUserDetail?.chatRoom?.chatRoomId,
-      receiverId: currentUserDetail?._id,
+      chatRoomId: currentChaterDetail?.chatRoom?.chatRoomId,
+      receiverId: currentChaterDetail?._id,
     })
     dispatch(
       videoCallRequestHandler({
         callType: "videoCall",
-        chatRoomId: currentUserDetail?.chatRoom?.chatRoomId,
-        userDetail: currentUserDetail,
+        chatRoomId: currentChaterDetail?.chatRoom?.chatRoomId,
+        userDetail: currentChaterDetail,
       }),
     )
   }
