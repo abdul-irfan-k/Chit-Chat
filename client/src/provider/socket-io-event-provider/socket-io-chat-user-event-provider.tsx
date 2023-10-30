@@ -2,7 +2,10 @@
 import {
   addCallDataHandler,
   addCallSettingHandler,
+  addGroupCallConnectionRequiredPeers,
+  addGroupCallJoinRequestedUser,
   addInitialCallDataHandler,
+  joinGroupCallHandler,
 } from "@/redux/actions/call-action/call-action"
 import { addNewMessageNotificationHandler, receiveMessageHandler } from "@/redux/actions/chat-action/chat-action"
 import { chatUsersListReducerState } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
@@ -47,9 +50,18 @@ const SocketIoChatUserEventProvider = () => {
 
     socket.on("groupCall:joinRequestRejected", () => {})
 
-    socket.on("groupCall:joinRequestAccepted", (details) => {
-      dispatch(addCallDataHandler({ ...details, userId: userDetail?._id }))
+    socket.on("groupCall:joinRequestAccepted", async (details) => {
+      await dispatch(joinGroupCallHandler({ ...details, userId: userDetail?._id }))
       router.push(`/video-call`)
+    })
+
+    socket.on("groupCall:userJoinRequest", (details) => {
+      dispatch(addGroupCallJoinRequestedUser({ ...details }))
+    })
+
+    socket.on("groupCall:newUserJoined", async (details) => {
+      console.log("new user joined ")
+      dispatch(addGroupCallConnectionRequiredPeers({ ...details.newUserDetail, userId: userDetail?._id }))
     })
   }, [isAvailableSocket, dispatch, isLogedIn])
   return <div></div>

@@ -1,21 +1,23 @@
 "use client"
+import BreakPoint from "@/components/responsive-utilities/breakpoint/breakpoint"
 import { getChatRoomMessageHandler, updateCurrentChaterHandler } from "@/redux/actions/chat-action/chat-action"
-import {
-  chatUsersListReducerState,
-} from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
+import { chatUsersListReducerState } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import { useAppDispatch } from "@/store"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { FC, useEffect } from "react"
+import { FC, useEffect, useState } from "react"
 import { useSelector } from "react-redux"
+import MobileChatContainer from "../chat/mobile-chat-container/mobile-chat-container"
+import MobileBreakPoint from "@/components/responsive-utilities/breakpoint/mobile-breakpoint/mobile-breakpoint"
+import useMediaQuery from "@/hooks/user-media-query/use-media-query"
 
 const ChatList = () => {
   const { usersDeatail, isChanged, isChange } = useSelector(
     (state: { chatUsersList: chatUsersListReducerState }) => state.chatUsersList,
   )
 
-  
+  const [isSelectedUser, setIsSelectedUser] = useState<boolean>(false)
   const dispatch = useAppDispatch()
   const router = useRouter()
 
@@ -23,17 +25,23 @@ const ChatList = () => {
   //   dispatch(getChatRoomMessageHandler({ chatRoomId: currentChaterDetail?.chatRoom?.chatRoomId }))
   //   console.log("current chater",currentChaterDetail)
   // }, [isCurrentChaterChanged])
+
+  const isMobile = useMediaQuery(768)
+  const mobileBackButtonHandler = () => {
+    setIsSelectedUser(false)
+  }
+
   return (
     <div className="flex flex-col  mt-10 gap-5    w-full   ">
+      {console.log("page renderd")}
       {usersDeatail.map((userDetail, index) => {
-  
         return (
           // <Link href={`/messenger/${userDetail.userId}`} key={index}>
           <ChatListBox
             key={index}
             onClickHandler={() => {
               dispatch(updateCurrentChaterHandler({ userDetail, isChanged: true }))
-              router.push(`/messenger/${userDetail.userId}`)
+              setIsSelectedUser(true)
             }}
             communicatorName={userDetail.name}
             imageSrc="/Asset/avatar.jpg"
@@ -52,6 +60,7 @@ const ChatList = () => {
           // </Link>
         )
       })}
+      {isMobile && isSelectedUser && <MobileChatContainer backButtonHandler={mobileBackButtonHandler} />}
     </div>
   )
 }
@@ -89,7 +98,7 @@ const ChatListBox: FC<ChatListBoxInterface> = ({
 }) => {
   return (
     <div className="gap-3 relative flex  items-center" onClick={onClickHandler}>
-      <div className="relative w-[20%]  aspect-square ">
+      <div className="relative  w-14 aspect-square md:w-[20%] ">
         <Image src={imageSrc} alt="user-image" fill className="rounded-3xl" />
         <div
           className={

@@ -48,6 +48,9 @@ import InfoIcon from "/public/Asset/Icon/info.svg"
 import XMarkIcon from "/public/Asset/Icon/xmark.svg"
 import CopyIcon from "/public/Asset/Icon/copy.svg"
 import SearchIcon from "/public/Asset/Icon/search.svg"
+import PhoneIcon from "/public/Asset/Icon/phone.svg"
+import VideoIcon from "/public/Asset/Icon/video.svg"
+import ArrowLeftIcon from "/public/Asset/Icon/arrow-left.svg"
 
 export {
   IdBadgeIcon,
@@ -99,5 +102,8 @@ export {
   InfoIcon,
   XMarkIcon,
   CopyIcon,
-  SearchIcon
+  SearchIcon,
+  PhoneIcon,
+  VideoIcon,
+  ArrowLeftIcon
 }

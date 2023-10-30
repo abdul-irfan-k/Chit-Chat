@@ -33,6 +33,7 @@ interface communicatorsDetail {
 interface callDetail {
   callRoomId: string
   chatRoomId: string
+  referenceId?: string
   callType: "audioCall" | "videoCall"
   callChannelType: "single"
   avilableTotalUserCount?: number
@@ -58,6 +59,11 @@ interface peerDetail {
   userId: string
   peerId: string
 }
+
+interface joinRequestedUserDetail {
+  userName: string
+  userId: string
+}
 export type callReducerSlate = {
   callDetail?: callDetail | groupCallDetail
   isChanged: boolean
@@ -69,6 +75,10 @@ export type callReducerSlate = {
     latestPeer?: peerDetail
     allPeers: peerDetail[]
     isInitialPeer: boolean
+  }
+  joinRequestedUsers?: {
+    latestJoinRequestor?: joinRequestedUserDetail
+    allJoinRequestors: joinRequestedUserDetail[]
   }
 }
 const callReducerIntialState: callReducerSlate = {
@@ -83,9 +93,9 @@ export const callRedcuer = createSlice({
   reducers: {
     addIntialCallData: (state, action: { payload: callReducerSlate; type: string }) => {
       return { ...state, ...action.payload, isChanged: true }
-    },  
+    },
     addCallData: (state, action) => {
-       return {...state,...action.payload}
+      return { ...state, ...action.payload }
     },
     removeUserFromCall: (state, action) => {
       const updatedCommunicatorDetails = state.callDetail?.communicatorsDetail.filter(
@@ -107,6 +117,35 @@ export const callRedcuer = createSlice({
     },
     changeCallSetting: (state, action) => {
       return { ...state, callSetting: { ...state.callSetting, ...action.payload } }
+    },
+
+    addConnectionRequiredPeers: (state, action) => {
+      if (state.connectionRequiredPeers != undefined) {
+        state.connectionRequiredPeers.allPeers = [...state.connectionRequiredPeers?.allPeers, action.payload]
+        state.connectionRequiredPeers.latestPeer = { ...action.payload }
+      } else {
+        state.connectionRequiredPeers = {
+          allPeers: [action.payload],
+          isInitialPeer: false,
+          latestPeer: { ...action.payload },
+        }
+      }
+    },
+
+    
+    addJoinRequestedUser: (state, action) => {
+      if (state.joinRequestedUsers != undefined) {
+        state.joinRequestedUsers = {
+          allJoinRequestors: [...state.joinRequestedUsers?.allJoinRequestors, action.payload],
+          latestJoinRequestor: { ...action.payload },
+        }
+      }
+      if (state.joinRequestedUsers == undefined) {
+        state.joinRequestedUsers = {
+          allJoinRequestors: [action.payload],
+          latestJoinRequestor: { ...action.payload },
+        }
+      }
     },
   },
 })

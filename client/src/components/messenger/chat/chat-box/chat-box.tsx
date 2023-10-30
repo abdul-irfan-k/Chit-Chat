@@ -13,7 +13,7 @@ const ChatBox = () => {
   useEffect(() => {
   }, [])
   return (
-    <div className="px-10 h-[70vh]  overflow-y-scroll">
+    <div className="px-10 h-full  overflow-y-scroll md:h-[70vh]">
       {currentChaterMessage?.messages.map((message) => {
         return (
           <>

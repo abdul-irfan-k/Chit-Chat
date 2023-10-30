@@ -20,7 +20,7 @@ const InputBox = () => {
   const [inputPopUpMenuType, setInputPopUpMenuType] = useState<inputPopUpMenuType>(undefined)
 
   const { socket } = useSelector((state: { socketClient: socketReducerState }) => state.socketClient)
-  const {  currentChaterDetail } = useSelector(
+  const { currentChaterDetail } = useSelector(
     (state: { chatUsersList: chatUsersListReducerState }) => state.chatUsersList,
   )
   const { userDetail } = useSelector((state: { userDetail: userDetailState }) => state.userDetail)
@@ -35,7 +35,8 @@ const InputBox = () => {
   }
 
   const sendButtonHandler = () => {
-    if (currentChaterDetail == null || currentChaterDetail.chatRoom == undefined ||  userDetail == null ) return console.log("user id not found")
+    if (currentChaterDetail == null || currentChaterDetail.chatRoom == undefined || userDetail == null)
+      return console.log("user id not found")
     dispatch(
       sendMessageHandler(
         {
@@ -50,12 +51,14 @@ const InputBox = () => {
   }
 
   return (
-    <div className="mt-auto flex gap-3 justify-between items-center">
-      <div
-        className="relative w-10 flex justify-center items-center aspect-square bg-slate-300 rounded-full dark:bg-slate-800"
-        onClick={() => setInputPopUpMenuType("sticker")}
-      >
-        <FontAwesomeIcon icon={faStickyNote} />
+    <div className="mt-auto flex  justify-between items-center md:gap-3">
+      <div className="hidden md:block">
+        <div
+          className="relative w-10 flex justify-center items-center aspect-square bg-slate-300 rounded-full dark:bg-slate-800"
+          onClick={() => setInputPopUpMenuType("sticker")}
+        >
+          <FontAwesomeIcon icon={faStickyNote} />
+        </div>
       </div>
       <div className="relative">
         <div
@@ -73,7 +76,7 @@ const InputBox = () => {
         <FontAwesomeIcon icon={faPlus} />
       </div>
 
-      <div className="flex-1 px-5">
+      <div className="flex-1 px-1 md:px-5">
         <input
           type="text"
           value={inputMessage}

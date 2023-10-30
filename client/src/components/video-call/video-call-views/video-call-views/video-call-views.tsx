@@ -22,14 +22,17 @@ const VideoCallViews: FC<VideoCallViewsProps> = ({ myVideoRef, setIsShowingliveC
   }
 
   useEffect(() => {
-    console.log('video added ')
-    const isEmptyVideo = communicatorVideos.length < 1
-    if(isEmptyVideo){
-      setVideoSize({width:85,height:50})
-    }
-  },[communicatorVideos])
+    console.log("my video ref changed ")
+  }, [myVideoRef?.current])
+  // useEffect(() => {
+  //   console.log('video added ')
+  //   const isEmptyVideo = communicatorVideos.length < 1
+  //   if(isEmptyVideo){
+  //     setVideoSize({width:85,height:50})
+  //   }
+  // },[communicatorVideos])
   return (
-    <div className="mt-5 flex-1">
+    <div className="mt-5 flex-1 ">
       <div className="relative gap-5  flex  flex-wrap items-center justify-center  h-[78vh]  overflow-hidden ">
         {communicatorVideos?.map((communicatorVideo, index) => {
           console.log("communicator video ref ", communicatorVideo)
@@ -48,7 +51,8 @@ const VideoCallViews: FC<VideoCallViewsProps> = ({ myVideoRef, setIsShowingliveC
 
         <div
           className={` rounded-2xl    `}
-          style={{ width: `${videoSize.width}%`, aspectRatio: "16/9" }}
+          style={{ width: `${videoSize.width}%`, aspectRatio: "16/9", display: "flex", alignItems: "center" }}
+          // style={{ width: `60%`, aspectRatio: "16/9" }}
           onClick={videoOnClickHandler}
         >
           <video

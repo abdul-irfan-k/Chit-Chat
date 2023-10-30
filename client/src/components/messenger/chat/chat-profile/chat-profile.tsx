@@ -1,9 +1,5 @@
 "use client"
 import Image from "next/image"
-import VolumeHighSvg from "/public/Asset/Icon/volume-high.svg"
-import SearchSvg from "/public/Asset/Icon/magnifying-glass.svg"
-import PhoneSvg from "/public/Asset/Icon/phone.svg"
-import VideoSvg from "/public/Asset/Icon/video.svg"
 
 import { FC, useEffect } from "react"
 import { socketReducerState } from "@/redux/reducers/socket-reducer/socket-reducers"
@@ -12,14 +8,16 @@ import { useAppDispatch } from "@/store"
 import { videoCallRequestHandler } from "@/redux/actions/call-request-action/call-request-action"
 import { chatUsersListReducerState } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
+import { ArrowLeftIcon, PhoneIcon, SearchIcon, VideoIcon, VolumeHighIcon } from "@/constants/icon-constant"
 
 interface ChatProfileInstance {
   name: string
   profileImageSrc: string
   currentStatus: "online" | "ofline"
+  backButtonHandler?(): void
 }
 
-const ChatProfile: FC<ChatProfileInstance> = ({ name, profileImageSrc, currentStatus }) => {
+const ChatProfile: FC<ChatProfileInstance> = ({ name, profileImageSrc, currentStatus, backButtonHandler }) => {
   const { socket } = useSelector((state: { socketClient: socketReducerState }) => state.socketClient)
   const { currentChaterDetail } = useSelector(
     (state: { chatUsersList: chatUsersListReducerState }) => state.chatUsersList,
@@ -44,10 +42,17 @@ const ChatProfile: FC<ChatProfileInstance> = ({ name, profileImageSrc, currentSt
     )
   }
 
-
   return (
-    <div className=" px-5 py-5   rounded-md flex items-center bg-slate-200 fill-slate-950 dark:bg-neutral-950 dark:fill-slate-50">
-      <div className="relative w-[8%]  aspect-square ">
+    <div className="w-full py-4 px-4    rounded-md flex items-center bg-slate-200 fill-slate-950 dark:bg-neutral-950 dark:fill-slate-50 md:p-5">
+      <div className="block md:hidden">
+        <div
+          className=" relative flex items-center justify-center w-10 aspect-square bg-slate-300 rounded-full dark:bg-slate-800"
+          onClick={backButtonHandler}
+        >
+          <ArrowLeftIcon className="aspect-square w-7" width="" height="" />
+        </div>
+      </div>
+      <div className="ml-2 relative   w-[10%]   aspect-square md:w-[8%] md:ml-0">
         <Image src={profileImageSrc} alt="user-image" fill className="rounded-3xl" />
         <div
           className={
@@ -56,33 +61,34 @@ const ChatProfile: FC<ChatProfileInstance> = ({ name, profileImageSrc, currentSt
           }
         ></div>
       </div>
-      <div className="gap-2 flex flex-col ml-5 ">
-        <div className="font-medium text-slate-950 dark:text-slate-50">{name}</div>
-        {currentStatus == "online" && (
-          <div className="px-3 py-2 flex items-center justify-center rounded-full bg-green-500 ">online</div>
-        )}
-        {currentStatus == "ofline" && (
-          <div className="px-3 py-1 flex items-center justify-center rounded-full bg-pink-500">ofline</div>
-        )}
+      <div className="gap-2 flex flex-col ml-3 ">
+        <div className="font-medium text-lg  text-slate-950 dark:text-slate-50 ">{name}</div>
+        <div className="hidden md:block">
+          {currentStatus == "online" && (
+            <div className="px-3 py-2 flex items-center justify-center rounded-full bg-green-500 ">online</div>
+          )}
+          {currentStatus == "ofline" && (
+            <div className="px-3 py-1 flex items-center justify-center rounded-full bg-pink-500">ofline</div>
+          )}
+        </div>
       </div>
 
-      <div className="relative flex items-center justify-center w-10 aspect-square bg-slate-300 rounded-full dark:bg-slate-800">
-        <VolumeHighSvg className="aspect-square p-3" />
+      <div className="hidden md:block">
+        <div className="ml-3 relative flex items-center justify-center w-10 aspect-square bg-slate-300 rounded-full dark:bg-slate-800">
+          <VolumeHighIcon className="aspect-square p-3" />
+        </div>
       </div>
-      <div className="relative flex items-center justify-center w-10 aspect-square bg-slate-300 rounded-full dark:bg-slate-800">
-        <SearchSvg className="aspect-square p-3" />
+      <div className="ml-auto relative flex items-center justify-center w-10 aspect-square bg-slate-300 rounded-full dark:bg-slate-800">
+        <SearchIcon className="aspect-square p-3" />
       </div>
-      <div className="relative ml-auto flex items-center justify-center bg-slate-300 rounded-full dark:bg-slate-800">
-        <PhoneSvg className="aspect-square p-3" />
-      </div>
-      <div className="relative flex items-center justify-center w-10 aspect-square bg-slate-300 rounded-full dark:bg-slate-800">
-        <PhoneSvg className="aspect-square p-3" />
+      <div className="ml-3 relative flex items-center justify-center w-10 aspect-square bg-slate-300 rounded-full dark:bg-slate-800">
+        <PhoneIcon className="aspect-square p-3" />
       </div>
       <div
         onClick={videoCallIconClickHandler}
-        className="relative flex items-center justify-center w-10 aspect-square bg-slate-300 rounded-full dark:bg-slate-800"
+        className="ml-3 relative flex items-center justify-center w-10 aspect-square bg-slate-300 rounded-full dark:bg-slate-800"
       >
-        <VideoSvg className="aspect-square p-3" />
+        <VideoIcon className="aspect-square p-3" />
       </div>
     </div>
   )

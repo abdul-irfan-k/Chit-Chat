@@ -23,14 +23,15 @@ import { useAppDispatch } from "@/store"
 import React, { FC, useState } from "react"
 
 interface VideoCallControllBarProps {
-  onMenuChangeHandler(menuType: "liveMessage" | "info" | "userList"):void
-}
+  onMenuChangeHandler():void
+} 
+
 const VideoCallControllBar:FC<VideoCallControllBarProps> = ({onMenuChangeHandler}) => {
   const [isScreenSharing, setIsScreenSharing] = useState<boolean>(false)
   const [isVideoRecording, setIsVideoRecording] = useState<boolean>(false)
   const [isAudioRecording, setIsAudioRecording] = useState<boolean>(false)
   const dispatch = useAppDispatch()
-
+  
   const soundInputRangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {}
   const screenShareButtonHandler = () => {
     if (isScreenSharing) dispatch(removeScreenSharingHandler())
@@ -53,7 +54,7 @@ const VideoCallControllBar:FC<VideoCallControllBarProps> = ({onMenuChangeHandler
   }
 
   return (
-    <div className="mt-5  relative flex items-center">
+    <div className="mt-5 px-4 relative flex items-center">
       <div className="gap-2 absolute flex items-center">
         <div className="w-6 relative overflow-hidden flex items-center justify-center aspect-square rounded-full  fill-slate-950 dark:fill-slate-50">
           <VolumeHighIcon className="aspect-square w-6" />

@@ -7,7 +7,7 @@ interface VideoCallInfoProps {
 }
 const VideoCallInfo: FC<VideoCallInfoProps> = ({ onCloseButtonHandler,referenceId }) => {
   return (
-    <div className="px-5 py-3 rounded-sm w-full h-full bg-slate-200 dark:bg-slate-900">
+    <div className="px-5 py-3 rounded-sm w-full h-full bg-slate-200 dark:bg-neutral-950">
       <div className="flex items-center justify-between">
         <div className="font-medium text-lg">Meeting details</div>
         <div onClick={onCloseButtonHandler}>

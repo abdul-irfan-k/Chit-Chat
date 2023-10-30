@@ -58,16 +58,17 @@ const PeerJsStreamMethodProvider = () => {
     }
   }, [callSetting?.isAllowedMicrophone])
 
-
-
-
   useEffect(() => {
-    if (connectionRequiredPeers?.isInitialPeer) {
+    // console.log('connect to new user')
+    // if (connectionRequiredPeers?.isInitialPeer) {
+    if (connectionRequiredPeers?.latestPeer != undefined) {
+
+      setPeerListeners(videoContext.videoStream)
       connectToNewUser({ peerId: connectionRequiredPeers.latestPeer?.peerId }, videoContext.videoStream)
+      setPeerListeners(videoContext.videoStream)
     }
+    // }
   }, [connectionRequiredPeers?.latestPeer])
-
-
 
 
   const getAudioVideoStream = (): Promise<MediaStream> => {
@@ -134,9 +135,11 @@ const PeerJsStreamMethodProvider = () => {
       }
       if (callDetail?.callChannelType == "group") {
         callDetail.communicatorsDetail.map((userDetail) => {
+          console.log("connect",userDetail)
           connectToNewUser({ peerId: userDetail.peerId }, stream)
         })
       }
+      setPeerListeners(stream)
     })
   }
 
@@ -148,11 +151,13 @@ const PeerJsStreamMethodProvider = () => {
       const isAlreadyAvailableStream = videoContext.communicatorsVideoStream.some(
         (videoStream) => videoStream.id == peerId,
       )
-      if (!isAlreadyAvailableStream)
+      if (!isAlreadyAvailableStream) {
+        console.log("is already available stream ", stream)
         videoContext.setCommunicatorsVideoStream([
           ...videoContext.communicatorsVideoStream,
           { id: peerId, videoSrc: stream },
         ])
+      }
     }
   }
 
@@ -161,7 +166,7 @@ const PeerJsStreamMethodProvider = () => {
       console.log("peer connection event ")
     })
     peerContext.peer.on("call", (call) => {
-      console.log("call event call ", call)
+      console.log("call event call ", call,videoContext.videoStream)
       setPeerConnection(call)
       call.answer(stream)
       call.on("stream", (userVideoStream) => {
@@ -180,7 +185,7 @@ const PeerJsStreamMethodProvider = () => {
     const call = peerContext?.peer.call(peerId, stream, { metadata: { id: callDetail?.myDetail.peerId } })
     setPeerConnection(call)
     call?.on("stream", (userVideoStream) => {
-      console.log("user video stream", userVideoStream)
+      console.log("user video stream", userVideoStream, call.peer)
       addVideoStream(call.peer, userVideoStream)
     })
 

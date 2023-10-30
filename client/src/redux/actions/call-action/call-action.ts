@@ -97,3 +97,45 @@ export const createGroupMeetingHandler =
       router.push("/video-call")
     } catch (error) {}
   }
+
+export const addGroupCallConnectionRequiredPeers =
+  ({ peerId, userId, userName }: { userName: string; userId: string; peerId: string }) =>
+  async (dispatch: AppDispatch) => {
+    dispatch(callReducerAction.addConnectionRequiredPeers({ peerId, userId }))
+  }
+export const joinGroupCallHandler =
+  (details: {
+    referenceId: string
+    peerId: string
+    userId: string
+    adminId: string
+    callRoomId: string
+    callInitiator: string
+    pinnedUsers: Array<{ userId: string }>
+    callRoomAvailableUsers: Array<{ userId: string; peerId: string }>
+  }) =>
+  async (dispatch: AppDispatch) => {
+    dispatch(
+      callReducerAction.addIntialCallData({
+        isAvailableCallRoom: true,
+        isChanged: true,
+        callDetail: {
+          callChannelType: "group",
+          callRoomId: details.callRoomId,
+          communicatorsDetail: details.callRoomAvailableUsers,
+          myDetail: { peerId: details.peerId, userId: details.userId },
+          referenceId: details.referenceId,
+        },
+        connectionRequiredPeers: {
+          allPeers: details.callRoomAvailableUsers,
+          isInitialPeer: true,
+        },
+      }),
+    )
+  }
+
+export const addGroupCallJoinRequestedUser =
+  ({ joinRequestedUserDetail: { userName, userId } }) =>
+  async (dispatch: AppDispatch) => {
+    dispatch(callReducerAction.addJoinRequestedUser({ userName, userId }))
+  }

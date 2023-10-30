@@ -26,7 +26,6 @@ const CommunicatorProvider = ({ children }: { children: React.ReactNode }) => {
     const isAlreadAvailableMessage = messageAvailableChatRoom.some(
       (chatRoom) => chatRoom.chatRoomId == currentChaterDetail?.chatRoom?.chatRoomId,
     )
-    console.log('isAlre',isAlreadAvailableMessage)
     if (isAlreadAvailableMessage) {
       dispatch(chatRoomMessageAction.addCurrentChaterMessage({ chatRoomId: currentChaterDetail?.chatRoom?.chatRoomId }))
       return
@@ -34,7 +33,19 @@ const CommunicatorProvider = ({ children }: { children: React.ReactNode }) => {
     dispatch(
       getChatRoomMessageHandler({ chatRoomId: currentChaterDetail?.chatRoom?.chatRoomId, myUserId: userDetail?._id }),
     )
-  }, [router])
+  }, [currentChaterDetail?._id])
+  // useEffect(() => {
+  //   const isAlreadAvailableMessage = messageAvailableChatRoom.some(
+  //     (chatRoom) => chatRoom.chatRoomId == currentChaterDetail?.chatRoom?.chatRoomId,
+  //   )
+  //   if (isAlreadAvailableMessage) {
+  //     dispatch(chatRoomMessageAction.addCurrentChaterMessage({ chatRoomId: currentChaterDetail?.chatRoom?.chatRoomId }))
+  //     return
+  //   }
+  //   dispatch(
+  //     getChatRoomMessageHandler({ chatRoomId: currentChaterDetail?.chatRoom?.chatRoomId, myUserId: userDetail?._id }),
+  //   )
+  // }, [router])
   return <>{children}</>
 }
 

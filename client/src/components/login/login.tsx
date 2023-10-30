@@ -1,4 +1,5 @@
 "use client"
+import { ArrowLeftIcon } from "@/constants/icon-constant"
 import { loginHandler } from "@/redux/actions/user-action/user-action"
 import { useAppDispatch } from "@/store"
 import Link from "next/link"
@@ -21,11 +22,8 @@ const Login = () => {
         <div className="font-bold text-xl text-slate-950 dark:text-slate-50 md:text-2xl xl:text-4xl">CHITCHAT</div>
       </div>
 
-      <div className="mt-5 font-medium text-slate-950 text-base  dark:text-slate-50 md:text-lg">
-        Hello Everyone. We are Chidlren
-      </div>
       <div className="font-light text-slate-800 text-sm dark:text-slate-200 md:text-base ">
-        Welcome chitchat please login account
+        Welcome chitchat please login account 
       </div>
 
       <div className="mt-5 flex flex-col gap-3">

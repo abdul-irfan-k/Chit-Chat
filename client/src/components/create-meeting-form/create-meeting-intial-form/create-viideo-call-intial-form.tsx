@@ -21,7 +21,7 @@ const CreateMeetingInitialForm: FC<CreateGroupMeetingFormProps> = ({ setMeetingF
   }
 
   return (
-    <div className="px-10 py-10 bg-slate-200 h-[90%] w-[80%]  rounded-2xl dark:bg-neutral-950">
+    <div className="px-10 py-10 bg-slate-200 h-[90%] w-full  rounded-2xl dark:bg-neutral-950 md:w-[80%]">
       <div className="w-[40%]">
         <div className="text-4xl font-bold ">Meeting</div>
         <div className="my-5 text-2xl font-medium">premimum video meeting now free for everyone</div>

@@ -26,32 +26,34 @@ const SideMenu = () => {
   }
 
   return (
-    <div className="  py-20 h-[90vh]  w-16  flex flex-col justify-between items-center">
-      <div className="w-10 relative overflow-hidden flex items-center justify-center aspect-square rounded-full">
-        <Image alt="profile-image" src={"/Asset/avatar.jpg"} fill />
-      </div>
+    <div className="hidden  py-20 h-[90vh]  md:block   ">
+      <div className="  h-full w-16  flex flex-col justify-between items-center   ">
+        <div className="w-10 relative overflow-hidden flex items-center justify-center aspect-square rounded-full ">
+          <Image alt="profile-image" src={"/Asset/avatar.jpg"} fill />
+        </div>
 
-      <SideMenuIcon onClickHandler={() => router.push('/messenger')}>
-        <ChatIcon className="w-6 aspect-square" />
-      </SideMenuIcon>
-      <SideMenuIcon onClickHandler={videoCallButtonHandler}>
-        <VideoCamIcon className="w-6 aspect-square" />
-      </SideMenuIcon>
-      <SideMenuIcon>
-        <IdBadgeIcon className="w-6 aspect-square" />
-      </SideMenuIcon>
-      <SideMenuIcon>
-        <BellIcon className="w-6 aspect-square" />
-      </SideMenuIcon>
-      <SideMenuIcon>
-        <GearIcon className="w-6 aspect-square" />
-      </SideMenuIcon>
-      <SideMenuIcon>
-        <LogoutIcon className="w-6 aspect-square" />
-      </SideMenuIcon>
-      <SideMenuIcon>
-        <MoonIcon className="w-6 aspect-square" />
-      </SideMenuIcon>
+        <SideMenuIcon onClickHandler={() => router.push("/messenger")}>
+          <ChatIcon className="w-6 aspect-square" />
+        </SideMenuIcon>
+        <SideMenuIcon onClickHandler={videoCallButtonHandler}>
+          <VideoCamIcon className="w-6 aspect-square" />
+        </SideMenuIcon>
+        <SideMenuIcon>
+          <IdBadgeIcon className="w-6 aspect-square" />
+        </SideMenuIcon>
+        <SideMenuIcon>
+          <BellIcon className="w-6 aspect-square" />
+        </SideMenuIcon>
+        <SideMenuIcon>
+          <GearIcon className="w-6 aspect-square" />
+        </SideMenuIcon>
+        <SideMenuIcon>
+          <LogoutIcon className="w-6 aspect-square" />
+        </SideMenuIcon>
+        <SideMenuIcon>
+          <MoonIcon className="w-6 aspect-square" />
+        </SideMenuIcon>
+      </div>
     </div>
   )
 }
