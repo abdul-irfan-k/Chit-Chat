@@ -52,7 +52,9 @@ const videoCallIntialiseSocketIo = (io: Server, socket: Socket) => {
           })
         }
       })
-    } catch (error) {}
+    } catch (error) {
+      console.log(error)
+    }
   })
 }
 

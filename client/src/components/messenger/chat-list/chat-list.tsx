@@ -33,7 +33,6 @@ const ChatList = () => {
 
   return (
     <div className="flex flex-col  mt-10 gap-5    w-full   ">
-      {console.log("page renderd")}
       {usersDeatail.map((userDetail, index) => {
         return (
           // <Link href={`/messenger/${userDetail.userId}`} key={index}>

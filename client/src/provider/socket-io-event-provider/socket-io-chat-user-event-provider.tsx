@@ -61,7 +61,7 @@ const SocketIoChatUserEventProvider = () => {
 
     socket.on("groupCall:newUserJoined", async (details) => {
       console.log("new user joined ")
-      dispatch(addGroupCallConnectionRequiredPeers({ ...details.newUserDetail, userId: userDetail?._id }))
+      dispatch(addGroupCallConnectionRequiredPeers({ ...details.newUserDetail }))
     })
   }, [isAvailableSocket, dispatch, isLogedIn])
   return <div></div>

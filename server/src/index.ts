@@ -22,7 +22,8 @@ import { connectRedis } from "./config/redis.js"
 import { userSocketIntialization } from "./socket-io/user-initialise.js"
 import { userStatusSocketIo } from "./socket-io/user-status-socket-io.js"
 import videoCallIntialiseSocketIo from "./socket-io/video-call-socket-intialise.js"
-import GroupCallSocketIo from './socket-io/group-call-socket-io.js'
+import GroupCallSocketIo from "./socket-io/group-call-socket-io.js"
+import callPeerHandlerSocketIo from "./socket-io/call-peer-handler-socket-io.js"
 
 const app: Application = express()
 const server = http.createServer(app)
@@ -54,8 +55,9 @@ io.on("connection", async (socket) => {
   userSocketIntialization(socket)
 
   // video call
+  callPeerHandlerSocketIo(io, socket)
   videoCallIntialiseSocketIo(io, socket)
-GroupCallSocketIo(io,socket)
+  GroupCallSocketIo(io, socket)
 
   userStatusSocketIo(io, socket)
 
@@ -66,7 +68,7 @@ GroupCallSocketIo(io,socket)
 
 app.use("/user", userRouter)
 app.use("/chat", chatRouter)
-app.use("/meeting",meetingRouter)
+app.use("/meeting", meetingRouter)
 
 connnectDB(() => {
   server.listen(port, () => {

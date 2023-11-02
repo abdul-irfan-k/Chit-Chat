@@ -41,6 +41,9 @@ interface callDetail {
     peerId: string
     userId: string
   }
+  callInitiator?: {
+    userId: string
+  }
   communicatorsDetail: communicatorsDetail[]
 }
 
@@ -50,6 +53,12 @@ interface groupCallDetail {
   callChannelType: "group"
   myDetail: {
     peerId: string
+    userId: string
+  }
+  adminDetail?: {
+    userId: string
+  }
+  callIntiator?: {
     userId: string
   }
   communicatorsDetail: communicatorsDetail[]
@@ -132,7 +141,6 @@ export const callRedcuer = createSlice({
       }
     },
 
-    
     addJoinRequestedUser: (state, action) => {
       if (state.joinRequestedUsers != undefined) {
         state.joinRequestedUsers = {

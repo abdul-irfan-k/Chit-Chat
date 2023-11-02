@@ -12,9 +12,15 @@ export const createGroupVideoCallHandler = async (req: Request, res: Response) =
     const callRoomId = uuidv4()
 
     await GroupCallRoomModel.createVideoCallRoom({ callRoomId, peerId, referenceId, userId })
-    return res.status(200).json({ isCreated: true, callRoomId, peerId, referenceId })
+    return res.status(200).json({
+      isCreated: true,
+      callRoomId,
+      peerId,
+      referenceId,
+      adminDetail: { userId: userId },
+      callInitiator: { userId: userId },
+    })
   } catch (error) {
     return res.status(400).json({ isValid: false })
   }
 }
- 

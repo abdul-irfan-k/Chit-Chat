@@ -10,7 +10,7 @@ const CreateMeetingFormContainer = () => {
   >(undefined)
 
   return (
-    <div className="px-5 flex items-center w-full  h-full">
+    <div className="px-5 flex items-center w-full  h-full ">
       {meetingFormType == undefined && <CreateMeetingInitialForm setMeetingFormType={setMeetingFormType} />}
       {meetingFormType == "freindMeeting" && <CreateMeetingWithFriendForm />}
       {meetingFormType == "groupMeeting" && <CreateGroupMeetingForm />}

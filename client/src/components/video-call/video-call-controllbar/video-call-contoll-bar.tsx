@@ -20,18 +20,18 @@ import {
 } from "@/redux/actions/call-action/call-action"
 
 import { useAppDispatch } from "@/store"
-import React, { FC, useState } from "react"
+import React, { FC, useEffect, useState } from "react"
 
 interface VideoCallControllBarProps {
-  onMenuChangeHandler():void
-} 
+  onMenuChangeHandler(): void
+}
 
-const VideoCallControllBar:FC<VideoCallControllBarProps> = ({onMenuChangeHandler}) => {
+const VideoCallControllBar: FC<VideoCallControllBarProps> = ({ onMenuChangeHandler }) => {
   const [isScreenSharing, setIsScreenSharing] = useState<boolean>(false)
-  const [isVideoRecording, setIsVideoRecording] = useState<boolean>(false)
-  const [isAudioRecording, setIsAudioRecording] = useState<boolean>(false)
+  const [isVideoRecording, setIsVideoRecording] = useState<boolean>(true)
+  const [isAudioRecording, setIsAudioRecording] = useState<boolean>(true)
   const dispatch = useAppDispatch()
-  
+
   const soundInputRangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {}
   const screenShareButtonHandler = () => {
     if (isScreenSharing) dispatch(removeScreenSharingHandler())
@@ -55,7 +55,7 @@ const VideoCallControllBar:FC<VideoCallControllBarProps> = ({onMenuChangeHandler
 
   return (
     <div className="mt-5 px-4 relative flex items-center">
-      <div className="gap-2 absolute flex items-center">
+      <div className="hidden gap-2 absolute  items-center md:flex">
         <div className="w-6 relative overflow-hidden flex items-center justify-center aspect-square rounded-full  fill-slate-950 dark:fill-slate-50">
           <VolumeHighIcon className="aspect-square w-6" />
         </div>
@@ -80,9 +80,9 @@ const VideoCallControllBar:FC<VideoCallControllBarProps> = ({onMenuChangeHandler
         </VideoCallControllIcon>
         <VideoCallControllIcon onClickHandler={videoButtonHandler}>
           {isVideoRecording ? (
-            <VideoSlashIcon className="aspect-square w-6" />
-          ) : (
             <VideoCamIcon className="aspect-square w-6" />
+          ) : (
+            <VideoSlashIcon className="aspect-square w-6" />
           )}
         </VideoCallControllIcon>
         <VideoCallControllIcon onClickHandler={screenShareButtonHandler}>
@@ -100,7 +100,7 @@ const VideoCallControllBar:FC<VideoCallControllBarProps> = ({onMenuChangeHandler
         </VideoCallControllIcon>
       </div>
 
-      <div className="gap-2 right-0 absolute  pr-4 flex items-center fill-slate-950 dark:fill-slate-50">
+      <div className="hidden  gap-2 right-0 absolute  pr-4  items-center fill-slate-950 dark:fill-slate-50 md:flex">
         <VideoCallControllIcon onClickHandler={() => onMenuChangeHandler("info")}>
           <InfoIcon className="w-6 aspect-square" height="" width="" />
         </VideoCallControllIcon>

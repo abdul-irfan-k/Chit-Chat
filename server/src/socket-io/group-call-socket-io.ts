@@ -49,6 +49,9 @@ const groupCallSocketIo = (io: Server, socket: Socket) => {
           peerId,
           adminId: groupCallRoom.adminId,
           callRoomId: groupCallRoom.callRoomId,
+          adminDetail: {
+            userId: groupCallRoom.adminId
+          },
           callInitiator: groupCallRoom.callInitiator,
           pinnedUsers: groupCallRoom.pinnedUsers,
           callRoomAvailableUsers: groupCallRoom.callRoomCurrentUsers,

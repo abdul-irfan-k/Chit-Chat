@@ -9,7 +9,7 @@ import ContactContainer from "./contact/contact-container"
 const Messenger = () => {
   return (
     <div className="relative flex gap-5 w-full flex-1 ">
-      <div className="relative  w-full md:w-[50%] lg:w-[35%] xl:w-[30%] ">
+      <div className="relative  w-full md:w-[50%] lg:w-[35%] xl:w-[34%] ">
         <div className="relative flex flex-col px-5 pt-4  h-[100vh]  bg-slate-200 dark:bg-neutral-950 md:pt-14 ">
           <Recent />
           <div className="mt-10 flex flex-col overflow-y-scroll no-scrollbar">

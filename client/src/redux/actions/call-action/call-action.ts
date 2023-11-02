@@ -91,11 +91,15 @@ export const createGroupMeetingHandler =
             communicatorsDetail: [],
             myDetail: { peerId: data.peerId, userId: meetingDetail.userId },
             referenceId: data.referenceId,
+            adminDetail: data.adminDetail,
+            callInitiator: {userId:data.callInitiator.userId},
           },
         }),
       )
       router.push("/video-call")
-    } catch (error) {}
+    } catch (error) {
+      console.log(error)
+    }
   }
 
 export const addGroupCallConnectionRequiredPeers =

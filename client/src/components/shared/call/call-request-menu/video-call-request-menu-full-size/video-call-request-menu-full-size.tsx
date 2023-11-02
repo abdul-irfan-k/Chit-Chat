@@ -3,7 +3,7 @@ import { CallEndIcon, FullScreenIcon, MicIcon, VideoCamIcon } from "@/constants/
 import { videoCallRequestRemoveHandler } from "@/redux/actions/call-request-action/call-request-action"
 import { useAppDispatch } from "@/store"
 import Image from "next/image"
-import React, { FC } from "react"
+import React, { FC, useState } from "react"
 
 interface VideoCallRequestMenuFullSizeProps {
   userDetail?: {
@@ -15,9 +15,11 @@ interface VideoCallRequestMenuFullSizeProps {
   }
 }
 const VideoCallRequestMenuFullSize: FC<VideoCallRequestMenuFullSizeProps> = ({ userDetail }) => {
+  const [isAllowedVideoRecording, setIsAllowedVideoRecording] = useState<boolean>(false)
+  const [isAllowedVoiceRecording, setIsAllowedVoiceRecording] = useState<boolean>(false)
+
   const dispatch = useAppDispatch()
   const callEndIconClickHandler = () => {
-    
     dispatch(videoCallRequestRemoveHandler())
   }
 
@@ -45,8 +47,9 @@ const VideoCallRequestMenuFullSize: FC<VideoCallRequestMenuFullSizeProps> = ({ u
               <div className="w-14 relative overflow-hidden flex items-center justify-center aspect-square rounded-full bg-slate-300 fill-slate-950 dark:fill-slate-50 dark:bg-neutral-900">
                 <MicIcon height="" width="" className="w-8 aspect-square" />
               </div>
-              <div className="w-14 relative overflow-hidden flex items-center justify-center aspect-square rounded-full bg-red-500 fill-slate-950 dark:fill-slate-50 "
-              onClick={callEndIconClickHandler}
+              <div
+                className="w-14 relative overflow-hidden flex items-center justify-center aspect-square rounded-full bg-red-500 fill-slate-950 dark:fill-slate-50 "
+                onClick={callEndIconClickHandler}
               >
                 <CallEndIcon height="" width="" className="w-8 aspect-square" />
               </div>
