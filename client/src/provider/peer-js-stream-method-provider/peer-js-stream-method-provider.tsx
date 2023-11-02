@@ -229,26 +229,29 @@ const PeerJsStreamMethodProvider = () => {
     console.log("socket", isAvailableSocket)
     if (!isAvailableSocket || !isLogedIn) return
     socket.on("call:peer:getOfferPeer", async ({ receiverId, peerSdp, senderId }) => {
-      getDisplayMediaStream().then(async (stream) => {
-        addMyVideoStreamToContext(stream)
-        console.log("get offer peer event", senderId)
-        await createPeer(senderId, stream)
-        const peerConnection = await getPeerConnectionById(senderId)
-        console.log("peer connectino is ", peerConnection)
-        setRemoteDescription(peerConnection, { type: "offer", sdp: peerSdp })
-        const sessionDescription = await createAndSetAnswer(peerConnection)
+      const stream = await getDisplayMediaStream()
+      addMyVideoStreamToContext(stream)
+      await createPeer(senderId, stream)
+      const peerConnection = await getPeerConnectionById(senderId)
+      setRemoteDescription(peerConnection, { type: "offer", sdp: peerSdp })
+      const sessionDescription = await createAndSetAnswer(peerConnection)
 
-        sendRtcSessionCallOfferValue(senderId, userDetail?._id, sessionDescription)
-        //   const peerConnection =  getPeerConnectionById(senderId)
-        //  setRemoteDescription(peerConnection,{type:"offer",sdp:peerSdp})
-      })
+      sendRtcSessionCallOfferValue(senderId, userDetail?._id, sessionDescription)
+      //   const peerConnection =  getPeerConnectionById(senderId)
+      //  setRemoteDescription(peerConnection,{type:"offer",sdp:peerSdp})
     })
 
     socket.on("call:peer:getOfferAnswerPeer", async ({ receiverId, senderId, peerSdp }) => {
       console.log("get answer offer peer event ")
       const peerConnection = await getPeerConnectionById(senderId)
-      console.log("peer connection by id ", peerConnection)
       setRemoteDescription(peerConnection, { type: "answer", sdp: peerSdp })
+    })
+
+    socket.on("call:peer:getIceCandidate", async ({ receiverId, senderId, iceCandidate }) => {
+      console.log("get ice candidate event", receiverId, senderId, iceCandidate)
+      console.log("all peer connection", peerRef)
+      const peerConnection = await getPeerConnectionById(senderId)
+      setIceCandidate(peerConnection, iceCandidate)
     })
   }, [isAvailableSocket, isLogedIn])
 
@@ -354,25 +357,26 @@ const PeerJsStreamMethodProvider = () => {
     peerRef.current = [...peerRef.current, { peerConnection, peerid: id }]
 
     peerConnection.onicecandidate = (event) => {
-      handleIceCandidate(event, peerConnection)
+      handleIceCandidate(event, peerConnection, id)
     }
 
-    video.getTracks().forEach((mediaStreamTrack) => {
-      peerConnection.addTrack(mediaStreamTrack)
-    })
+    addUserMediaTrack(peerConnection, video.getTracks())
 
     peerConnection.ontrack = (event) => {
-       handleTrack(event,id)
+      handleTrack(event, id)
     }
     peerConnection.ondatachannel = handleDataChannel
     peerConnection.oniceconnectionstatechange = () => console.log("ice connectino state change event ")
     peerConnection.onicecandidateerror = () => console.log("ice candidate error   event ")
   }
 
-  const handleIceCandidate = (event: RTCPeerConnectionIceEvent, connection: RTCPeerConnection) => {
-    console.log("handler ice candidate event ", event)
+  const handleIceCandidate = (event: RTCPeerConnectionIceEvent, connection: RTCPeerConnection, id: string) => {
+    // console.log("handler ice candidate event ", event.candidate)
+    console.log("handler ice candidate event ")
 
     const answer = connection.localDescription
+
+    if (event.candidate) sendIceCandidateHandler(id, userDetail?._id, event.candidate)
   }
 
   const handleTrack = (event: RTCTrackEvent, id: string) => {
@@ -382,6 +386,12 @@ const PeerJsStreamMethodProvider = () => {
 
   const handleDataChannel = (event: RTCDataChannelEvent) => {
     console.log("handler data channel event", event)
+  }
+
+  const addUserMediaTrack = (connection: RTCPeerConnection, tracks: MediaStreamTrack[]): RTCRtpSender => {
+    return tracks.map((track) => {
+      return connection.addTrack(track)
+    })
   }
 
   // data channel
@@ -428,10 +438,15 @@ const PeerJsStreamMethodProvider = () => {
   }
 
   // ice candiate
-  const setIceCandidate = (connection: RTCPeerConnection, candidate: RTCIceCandidateInit[]) => {
-    candidate.forEach(async (candidate) => {
-      await connection.addIceCandidate(candidate)
-    })
+  const setIceCandidate = (connection: RTCPeerConnection, candidate: RTCIceCandidateInit) => {
+    // candidate.forEach(async (candidate) => {
+     connection.addIceCandidate(candidate)
+    // })
+  }
+
+  const sendIceCandidateHandler = (receiverId: string, senderId: string, iceCandidate: RTCIceCandidate) => {
+    console.log("emit event ", receiverId, senderId, iceCandidate)
+    socket.emit("call:peer:sendIceCandidate", { receiverId, senderId, iceCandidate })
   }
 
   return <></>

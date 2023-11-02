@@ -20,6 +20,9 @@ export const addInitialCallDataHandler = (data: any, id: string) => async (dispa
       },
       callStatus: "active",
       isAvailableCallRoom: true,
+      connectionRequiredPeers:{
+        allPeers:communicatorsDetail
+      }
     }),
   )
 }
