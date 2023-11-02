@@ -226,17 +226,35 @@ const PeerJsStreamMethodProvider = () => {
   const [peer, setPeer] = useState<Array<{ peerid: string; peerConnection: RTCPeerConnection }>>([])
 
   useEffect(() => {
+console.log("peer changed ",peer)
+  },[peer])
+
+  useEffect(() => {
     console.log("socket", isAvailableSocket)
     if (!isAvailableSocket || !isLogedIn) return
-    socket.on("call:peer:getOfferPeer", ({ receiverId, peerSdp, senderId }) => {
+    socket.on("call:peer:getOfferPeer", async ({ receiverId, peerSdp, senderId }) => {
       console.log("offer peer event", peerSdp)
 
-      createPeer(senderId)
-
+      const peerConnection = await createPeer(senderId)
+      setRemoteDescription(peerConnection, { type: "offer", sdp: peerSdp })
+      const sessionDescription = await createAndSetAnswer(peerConnection)
+    
+      setTimeout(() => {
+        console.log("timeout runned ", peer)
+        sendRtcSessionCallOfferValue(senderId, userDetail?._id, sessionDescription)
+      }, 5000)
       //   const peerConnection =  getPeerConnectionById(senderId)
       //  setRemoteDescription(peerConnection,{type:"offer",sdp:peerSdp})
     })
+
+    socket.on("call:peer:getOfferAnswerPeer", async ({ receiverId, senderId, peerSdp }) => {
+      console.log("offer get  peer answer peer is emitted", peerSdp, senderId, peer)
+      // const peerConnection = await getPeerConnectionById(senderId)
+      // setRemoteDescription(peerConnection, { type: "answer", sdp: peerSdp })
+    })
   }, [isAvailableSocket, isLogedIn])
+
+ 
 
   useEffect(() => {
     console.log("effect")
@@ -244,7 +262,11 @@ const PeerJsStreamMethodProvider = () => {
     console.log("call Intiator", callDetail?.callInitiator, userDetail?._id)
     const isCallInitiator = callDetail?.callInitiator?.userId == userDetail?._id
     if (isCallInitiator && connectionRequiredPeers?.latestPeer != undefined) {
-      createPeer(connectionRequiredPeers.latestPeer.userId)
+      createPeer(connectionRequiredPeers.latestPeer.userId).then((peerConnection) => {
+        createAndSetOffer(peerConnection).then((sessionDescription) => {
+          sendRtcSessionOffer(connectionRequiredPeers?.latestPeer.userId, sessionDescription)
+        })
+      })
     }
   }, [isAvailableCallRoom, connectionRequiredPeers?.latestPeer])
 
@@ -305,22 +327,24 @@ const PeerJsStreamMethodProvider = () => {
   }
 
   const getPeerConnectionById = (id: string): RTCPeerConnection => {
+    console.log("id", id, peer)
     const peerObj = peer.filter((peer) => peer.peerid == id)[0]
     return peerObj.peerConnection
   }
 
   const createPeer = async (id: string): Promise<RTCPeerConnection> => {
-    console.log("create peer")
+    console.log("create peer",id)
     const peerConnection = createPeerConnection()
 
-    setPeer([...peer, { peerConnection, peerid: id }])
+    await setPeer([{ peerConnection, peerid: id }])
 
-    // peerConnection.onicecandidate = (event) => {
-    //   handleIceCandidate(event)
-    // }
-    // peerConnection.ontrack = handleTrack
-    // peerConnection.ondatachannel = handleDataChannel
-    return RTCPeerConnection
+    peerConnection.onicecandidate = (event) => {
+      console.log("peer connection on ice candidate ")
+      handleIceCandidate(event)
+    }
+    peerConnection.ontrack = handleTrack
+    peerConnection.ondatachannel = handleDataChannel
+    return peerConnection
   }
 
   const handleIceCandidate = (event: RTCPeerConnectionIceEvent) => {
@@ -368,8 +392,18 @@ const PeerJsStreamMethodProvider = () => {
     socket.emit("call:peer:offerPeer", { receiverId, peerSdp, senderId: userDetail?._id })
   }
 
+  const sendRtcSessionCallOfferValue = async (
+    receiverId: string,
+    senderId: string,
+    sessionDescription: RTCSessionDescriptionInit,
+  ) => {
+    console.log("call session description", sessionDescription)
+
+    socket.emit("call:peer:offerAnswerPeer", { receiverId, senderId, peerSdp: sessionDescription.sdp })
+  }
+
   // ice candiate
-  const setIceCandidate = (connection: RTCPeerConnection, candidate: RTCSessionDescriptionInit[]) => {
+  const setIceCandidate = (connection: RTCPeerConnection, candidate: RTCIceCandidateInit[]) => {
     candidate.forEach(async (candidate) => {
       await connection.addIceCandidate(candidate)
     })

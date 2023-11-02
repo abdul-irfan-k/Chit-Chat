@@ -6,9 +6,20 @@ const callPeerHandlerSocketIo = (io: Server, socket: Socket) => {
     "call:peer:offerPeer",
     async ({ receiverId, peerSdp, senderId }: { receiverId: string; peerSdp: string; senderId: string }) => {
       try {
-        console.log("offer peer ",receiverId)
         const reciverSocket = await getRedisSocketCached(receiverId)
         socket.to(reciverSocket.socketId).emit("call:peer:getOfferPeer", { peerSdp, senderId })
+      } catch (error) {
+        console.log(error)
+      }
+    },
+  )
+
+  socket.on(
+    "call:peer:offerAnswerPeer",
+    async ({ receiverId, senderId, peerSdp }: { receiverId: string; senderId: string; peerSdp: string }) => {
+      try {
+        const reciverSocket = await getRedisSocketCached(receiverId)
+        socket.to(reciverSocket.socketId).emit("call:peer:getOfferAnswerPeer", { peerSdp, senderId })
       } catch (error) {
         console.log(error)
       }
