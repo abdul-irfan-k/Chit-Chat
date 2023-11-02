@@ -1,5 +1,5 @@
 "use client"
-import React, { useContext, useEffect, useState } from "react"
+import React, { useContext, useEffect, useRef, useState } from "react"
 import { PeerContext } from "../peer-js-provider/peer-js-context-provider"
 import { PeerVideoRefContext } from "../peer-js-video-provider.tsx/peer-js-video-provider"
 import Peer, { MediaConnection } from "peerjs"
@@ -223,59 +223,61 @@ const PeerJsStreamMethodProvider = () => {
   const videoContext = useContext(PeerVideoRefContext)
   const peerContext = useContext(PeerContext)
 
-  const [peer, setPeer] = useState<Array<{ peerid: string; peerConnection: RTCPeerConnection }>>([])
-
-  useEffect(() => {
-console.log("peer changed ",peer)
-  },[peer])
+  const peerRef = useRef<Array<{ peerid: string; peerConnection: RTCPeerConnection }>>([])
 
   useEffect(() => {
     console.log("socket", isAvailableSocket)
     if (!isAvailableSocket || !isLogedIn) return
     socket.on("call:peer:getOfferPeer", async ({ receiverId, peerSdp, senderId }) => {
-      console.log("offer peer event", peerSdp)
+      getDisplayMediaStream().then(async (stream) => {
+        addMyVideoStreamToContext(stream)
+        console.log("get offer peer event", senderId)
+        await createPeer(senderId, stream)
+        const peerConnection = await getPeerConnectionById(senderId)
+        console.log("peer connectino is ", peerConnection)
+        setRemoteDescription(peerConnection, { type: "offer", sdp: peerSdp })
+        const sessionDescription = await createAndSetAnswer(peerConnection)
 
-      const peerConnection = await createPeer(senderId)
-      setRemoteDescription(peerConnection, { type: "offer", sdp: peerSdp })
-      const sessionDescription = await createAndSetAnswer(peerConnection)
-    
-      setTimeout(() => {
-        console.log("timeout runned ", peer)
         sendRtcSessionCallOfferValue(senderId, userDetail?._id, sessionDescription)
-      }, 5000)
-      //   const peerConnection =  getPeerConnectionById(senderId)
-      //  setRemoteDescription(peerConnection,{type:"offer",sdp:peerSdp})
+        //   const peerConnection =  getPeerConnectionById(senderId)
+        //  setRemoteDescription(peerConnection,{type:"offer",sdp:peerSdp})
+      })
     })
 
     socket.on("call:peer:getOfferAnswerPeer", async ({ receiverId, senderId, peerSdp }) => {
-      console.log("offer get  peer answer peer is emitted", peerSdp, senderId, peer)
-      // const peerConnection = await getPeerConnectionById(senderId)
-      // setRemoteDescription(peerConnection, { type: "answer", sdp: peerSdp })
+      console.log("get answer offer peer event ")
+      const peerConnection = await getPeerConnectionById(senderId)
+      console.log("peer connection by id ", peerConnection)
+      setRemoteDescription(peerConnection, { type: "answer", sdp: peerSdp })
     })
   }, [isAvailableSocket, isLogedIn])
 
- 
-
   useEffect(() => {
-    console.log("effect")
-    if (!isAvailableCallRoom) return
-    console.log("call Intiator", callDetail?.callInitiator, userDetail?._id)
-    const isCallInitiator = callDetail?.callInitiator?.userId == userDetail?._id
-    if (isCallInitiator && connectionRequiredPeers?.latestPeer != undefined) {
-      createPeer(connectionRequiredPeers.latestPeer.userId).then((peerConnection) => {
-        createAndSetOffer(peerConnection).then((sessionDescription) => {
-          sendRtcSessionOffer(connectionRequiredPeers?.latestPeer.userId, sessionDescription)
+    if (isAvailableCallRoom) {
+      const isCallInitiator = callDetail?.callInitiator?.userId == userDetail?._id
+      if (isCallInitiator && connectionRequiredPeers?.latestPeer != undefined) {
+        console.log("creating peer user id", connectionRequiredPeers.latestPeer.userId)
+
+        getWebCamStream().then(async (stream) => {
+          addMyVideoStreamToContext(stream)
+          createPeer(connectionRequiredPeers.latestPeer.userId, stream)
+
+          const peerConnection = getPeerConnectionById(connectionRequiredPeers.latestPeer.userId)
+          console.log("== peer connectin", peerConnection)
+          createAndSetOffer(peerConnection).then((sessionDescription) => {
+            sendRtcSessionOffer(connectionRequiredPeers?.latestPeer.userId, sessionDescription)
+          })
         })
-      })
+      }
     }
   }, [isAvailableCallRoom, connectionRequiredPeers?.latestPeer])
 
   useEffect(() => {
     if (!isAvailableCallRoom) return
     if (isAvailableCallRoom) {
-      getWebCamStream().then((stream) => {
-        addMyVideoStreamToContext(stream)
-      })
+      // getWebCamStream().then((stream) => {
+      //   addMyVideoStreamToContext(stream)
+      // })
     }
   }, [isAvailableCallRoom])
 
@@ -292,6 +294,17 @@ console.log("peer changed ",peer)
         .catch((err) => {
           return reject()
         })
+    })
+  }
+
+  const getDisplayMediaStream = (): Promise<MediaStream> => {
+    return new Promise((resolve, reject) => {
+      navigator.mediaDevices
+        .getDisplayMedia({ video: true })
+        .then((stream) => {
+          resolve(stream)
+        })
+        .catch((err) => reject())
     })
   }
 
@@ -327,32 +340,44 @@ console.log("peer changed ",peer)
   }
 
   const getPeerConnectionById = (id: string): RTCPeerConnection => {
-    console.log("id", id, peer)
-    const peerObj = peer.filter((peer) => peer.peerid == id)[0]
+    const peerObj = peerRef.current.filter((peer) => peer.peerid == id)[0]
     return peerObj.peerConnection
   }
 
-  const createPeer = async (id: string): Promise<RTCPeerConnection> => {
-    console.log("create peer",id)
-    const peerConnection = createPeerConnection()
+  const createPeer = async (id: string, video: MediaStream) => {
+    console.log("create peer", id)
+    const peerConnection = createPeerConnection({
+      iceServers: [{ urls: ["stun:stun1.l.google.com:19302", "stun:stun2.l.google.com:19302"] }],
+      iceCandidatePoolSize: 10,
+    })
 
-    await setPeer([{ peerConnection, peerid: id }])
+    peerRef.current = [...peerRef.current, { peerConnection, peerid: id }]
 
     peerConnection.onicecandidate = (event) => {
-      console.log("peer connection on ice candidate ")
-      handleIceCandidate(event)
+      handleIceCandidate(event, peerConnection)
     }
-    peerConnection.ontrack = handleTrack
+
+    video.getTracks().forEach((mediaStreamTrack) => {
+      peerConnection.addTrack(mediaStreamTrack)
+    })
+
+    peerConnection.ontrack = (event) => {
+       handleTrack(event,id)
+    }
     peerConnection.ondatachannel = handleDataChannel
-    return peerConnection
+    peerConnection.oniceconnectionstatechange = () => console.log("ice connectino state change event ")
+    peerConnection.onicecandidateerror = () => console.log("ice candidate error   event ")
   }
 
-  const handleIceCandidate = (event: RTCPeerConnectionIceEvent) => {
+  const handleIceCandidate = (event: RTCPeerConnectionIceEvent, connection: RTCPeerConnection) => {
     console.log("handler ice candidate event ", event)
+
+    const answer = connection.localDescription
   }
 
-  const handleTrack = (event: RTCTrackEvent) => {
+  const handleTrack = (event: RTCTrackEvent, id: string) => {
     console.log("on tarck event ", event, event.streams)
+    videoContext.setCommunicatorsVideoStream([{ id, videoSrc: event.streams[0] }])
   }
 
   const handleDataChannel = (event: RTCDataChannelEvent) => {
