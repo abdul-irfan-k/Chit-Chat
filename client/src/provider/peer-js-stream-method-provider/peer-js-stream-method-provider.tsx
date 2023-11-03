@@ -250,8 +250,8 @@ const PeerJsStreamMethodProvider = () => {
     socket.on("call:peer:getIceCandidate", async ({ receiverId, senderId, iceCandidate }) => {
       console.log("get ice candidate event", receiverId, senderId, iceCandidate)
       console.log("all peer connection", peerRef)
-      const peerConnection = await getPeerConnectionById(senderId)
-      setIceCandidate(peerConnection, iceCandidate)
+      // const peerConnection = await getPeerConnectionById(senderId)
+      setIceCandidate(peerRef.current[0].peerConnection, iceCandidate)
     })
   }, [isAvailableSocket, isLogedIn])
 
@@ -370,13 +370,20 @@ const PeerJsStreamMethodProvider = () => {
     peerConnection.onicecandidateerror = () => console.log("ice candidate error   event ")
   }
 
+  const iceRef = useRef()
   const handleIceCandidate = (event: RTCPeerConnectionIceEvent, connection: RTCPeerConnection, id: string) => {
     // console.log("handler ice candidate event ", event.candidate)
-    console.log("handler ice candidate event ")
+    const offer = connection.localDescription
+    console.log("handler ice candidate event ", event.candidate)
+    if(iceRef.current == undefined)iceRef.current = event.candidate
 
-    const answer = connection.localDescription
+    if (!event.candidate) {
+      console.log("event candidate ", event.candidate, iceRef.current)
 
-    if (event.candidate) sendIceCandidateHandler(id, userDetail?._id, event.candidate)
+      setTimeout(() => {
+        sendIceCandidateHandler(id, userDetail?._id, iceRef.current)
+      }, 15000)
+    }
   }
 
   const handleTrack = (event: RTCTrackEvent, id: string) => {
@@ -440,7 +447,7 @@ const PeerJsStreamMethodProvider = () => {
   // ice candiate
   const setIceCandidate = (connection: RTCPeerConnection, candidate: RTCIceCandidateInit) => {
     // candidate.forEach(async (candidate) => {
-     connection.addIceCandidate(candidate)
+    connection.addIceCandidate(candidate)
     // })
   }
 
