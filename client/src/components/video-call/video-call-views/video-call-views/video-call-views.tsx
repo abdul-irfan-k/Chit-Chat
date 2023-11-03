@@ -22,8 +22,8 @@ const VideoCallViews: FC<VideoCallViewsProps> = ({ myVideoRef, setIsShowingliveC
   }
 
   useEffect(() => {
-    console.log("my video ref changed ")
-  }, [myVideoRef?.current])
+    console.log("my video ref changed ",myVideoRef,communicatorVideos)
+  }, [myVideoRef?.current,communicatorVideos])
   // useEffect(() => {
   //   console.log('video added ')
   //   const isEmptyVideo = communicatorVideos.length < 1

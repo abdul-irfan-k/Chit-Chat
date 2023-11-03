@@ -321,7 +321,7 @@ const PeerJsStreamMethodProvider = () => {
     try {
       const mediaStream = await getWebCamStream()
       if (peer.length > 0) {
-        addUserMediaTracks(peer[0], mediaStream.getTracks())
+        addUserMediaTracks(peer[0], mediaStream)
       } else {
         console.log("not have peer connection")
       }
@@ -348,7 +348,7 @@ const PeerJsStreamMethodProvider = () => {
   }
 
   const createPeer = async (id: string, video: MediaStream) => {
-    console.log("create peer", id)
+    console.log("create peer", id,video.getTracks())
     const peerConnection = createPeerConnection({
       iceServers: [{ urls: ["stun:stun1.l.google.com:19302", "stun:stun2.l.google.com:19302"] }],
       iceCandidatePoolSize: 10,
@@ -360,11 +360,13 @@ const PeerJsStreamMethodProvider = () => {
       handleIceCandidate(event, peerConnection, id)
     }
 
-    addUserMediaTrack(peerConnection, video.getTracks())
+    addUserMediaTrack(peerConnection, video)
 
     peerConnection.ontrack = (event) => {
       handleTrack(event, id)
     }
+
+  
     peerConnection.ondatachannel = handleDataChannel
     peerConnection.oniceconnectionstatechange = () => console.log("ice connectino state change event ")
     peerConnection.onicecandidateerror = () => console.log("ice candidate error   event ")
@@ -387,17 +389,20 @@ const PeerJsStreamMethodProvider = () => {
   }
 
   const handleTrack = (event: RTCTrackEvent, id: string) => {
-    console.log("on tarck event ", event, event.streams)
-    videoContext.setCommunicatorsVideoStream([{ id, videoSrc: event.streams[0] }])
+    console.log("on tarck event ", event, event.streams[0],event.streams[0].getTracks())
+    const newStream = new MediaStream()
+    newStream.addTrack(event.streams[0].getTracks()[0])
+    videoContext.setCommunicatorsVideoStream([{ id:"asdf", videoSrc:newStream }])
+    // videoContext.setVideoStream(event.streams[0])
   }
 
   const handleDataChannel = (event: RTCDataChannelEvent) => {
     console.log("handler data channel event", event)
   }
 
-  const addUserMediaTrack = (connection: RTCPeerConnection, tracks: MediaStreamTrack[]): RTCRtpSender => {
-    return tracks.map((track) => {
-      return connection.addTrack(track)
+  const addUserMediaTrack = (connection: RTCPeerConnection, mediaStream: MediaStream): RTCRtpSender => {
+    return mediaStream.getTracks().map((track) => {
+      return connection.addTrack(track,mediaStream)
     })
   }
 
