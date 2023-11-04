@@ -1,5 +1,6 @@
 "use client"
-import React, { FC, useEffect, useState } from "react"
+import { PeerVideoRefContext } from "@/provider/peer-js-video-provider.tsx/peer-js-video-provider"
+import React, { FC, useContext, useEffect, useRef, useState } from "react"
 
 interface VideoCallViewsProps {
   myVideoRef: React.MutableRefObject<HTMLVideoElement | undefined>
@@ -12,7 +13,10 @@ interface communicatorVideo {
   videoSrc: MediaStream
 }
 
+
+
 const VideoCallViews: FC<VideoCallViewsProps> = ({ myVideoRef, setIsShowingliveChat, communicatorVideos }) => {
+  const peerVideoContext = useContext(PeerVideoRefContext)
   const [isPinnedVideo, setIsPinnedVideo] = useState<boolean>(false)
   const [videoSize, setVideoSize] = useState<{ width: number; height: number }>({ width: 50, height: 60 })
   const videoOnClickHandler = () => {
@@ -21,9 +25,8 @@ const VideoCallViews: FC<VideoCallViewsProps> = ({ myVideoRef, setIsShowingliveC
     setIsShowingliveChat(false)
   }
 
-  useEffect(() => {
-    console.log("my video ref changed ",myVideoRef,communicatorVideos)
-  }, [myVideoRef?.current,communicatorVideos])
+
+  
   // useEffect(() => {
   //   console.log('video added ')
   //   const isEmptyVideo = communicatorVideos.length < 1
@@ -31,8 +34,9 @@ const VideoCallViews: FC<VideoCallViewsProps> = ({ myVideoRef, setIsShowingliveC
   //     setVideoSize({width:85,height:50})
   //   }
   // },[communicatorVideos])
+
   return (
-    <div className="mt-5 flex-1 ">
+    <div className="mt-5 flex-1 "> 
       <div className="relative gap-5  flex  flex-wrap items-center justify-center  h-[78vh]  overflow-hidden ">
         {communicatorVideos?.map((communicatorVideo, index) => {
           console.log("communicator video ref ", communicatorVideo)
@@ -42,6 +46,7 @@ const VideoCallViews: FC<VideoCallViewsProps> = ({ myVideoRef, setIsShowingliveC
                 autoPlay
                 className="w-full h-full"
                 ref={(ref) => {
+                  console.log("communicator video src",communicatorVideo.videoSrc.getTracks())
                   if (ref != null) ref.srcObject = communicatorVideo.videoSrc
                 }}
               />
