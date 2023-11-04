@@ -47,7 +47,7 @@ export const addScreenSharingHandler = () => async (dispatch: AppDispatch) => {
 }
 
 export const removeScreenSharingHandler = () => async (dispatch: AppDispatch) => {
-  dispatch(callSettingReducerAction.changeCallSetting({ isAllowedScreenShare: false }))
+  dispatch(callReducerAction.changeCallSetting({ isAllowedScreenShare: false }))
 }
 
 export const addCallSettingHandler = (data) => async (dispatch: AppDispatch) => {

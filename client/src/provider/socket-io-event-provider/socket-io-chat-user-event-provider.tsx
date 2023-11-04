@@ -52,7 +52,13 @@ const SocketIoChatUserEventProvider = () => {
 
     socket.on("groupCall:joinRequestAccepted", async (details) => {
       await dispatch(joinGroupCallHandler({ ...details, userId: userDetail?._id }))
-      router.push(`/video-call`)
+
+
+      setTimeout(() => {
+        console.log("router push ")
+        router.push(`/video-call`)
+        
+      },10000)
     })
 
     socket.on("groupCall:userJoinRequest", (details) => {

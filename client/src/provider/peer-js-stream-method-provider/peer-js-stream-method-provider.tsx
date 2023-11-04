@@ -225,33 +225,137 @@ const PeerJsStreamMethodProvider = () => {
 
   const peerRef = useRef<Array<{ peerid: string; peerConnection: RTCPeerConnection }>>([])
 
+  const [isReadyForCall, setIsReadyForCall] = useState<boolean>(false)
+  const [isPageLoaded, setIsPageLoaded] = useState<boolean>(false)
+  const [remoteSessionDescription, setRemoteSessionDescripition] =
+    useState<Array<{ sessionDescription: RTCSessionDescriptionInit; userId: string }>>()
+  const [remoteIceCandidate, setRemoteIceCandidate] = useState<
+    Array<{ userId: string; iceCandidate: RTCIceCandidateInit }>
+  >([])
+
+  useEffect(() => {
+    if (remoteIceCandidate?.length < 1 || !isReadyForCall) return
+    if (isReadyForCall) {
+      const peerConnection = getPeerConnectionById(remoteIceCandidate[0].userId)
+      setIceCandidate(peerConnection, remoteIceCandidate[0])
+    }
+  }, [remoteIceCandidate, isReadyForCall])
+
+  useEffect(() => {}, [])
+  useEffect(() => {
+    if (!isReadyForCall) return console.log("not ready for call ")
+    const remoteSessionOnChangeHandler = async () => {
+      remoteSessionDescription?.forEach(async (remoteSession) => {
+        try {
+          console.log("get web cam stream", peerRef.current, remoteSession)
+          // const stream = isReadyForCall == false ? await getWebCamStream() : new MediaStream()
+          // console.log("stream is ", stream)
+
+          // if (videoContext.videoStream == undefined) videoContext.setVideoStream(stream)
+          const peerObj = await getPeerConnectionById(remoteSession.userId)
+          const peerConnection = peerObj
+
+          setRemoteDescription(peerConnection, remoteSession.sessionDescription)
+
+          if (remoteSession.sessionDescription.type == "offer") {
+            const locaSessionDescription = await createAndSetAnswer(peerConnection)
+            sendRtcSessionCallOfferValue(remoteSession.userId, userDetail?._id, locaSessionDescription)
+          }
+        } catch (error) {
+          console.log("error", error)
+        }
+      })
+    }
+    remoteSessionOnChangeHandler()
+  }, [remoteSessionDescription, isReadyForCall])
+
+  useEffect(() => {
+    if (isReadyForCall) return
+    if (connectionRequiredPeers == undefined) return
+    const isCallInitiator = callDetail?.callInitiator?.userId == userDetail?._id
+    if (isCallInitiator) return
+    console.log("get web cam stream ")
+    getWebCamStream().then((stream) => {
+      videoContext.setVideoStream(stream)
+      createPeer(connectionRequiredPeers?.allPeers[0].userId, stream)
+      setIsReadyForCall(true)
+    })
+  }, [connectionRequiredPeers?.allPeers])
+
+  useEffect(() => {
+    if (callSetting?.isAllowedCamara == undefined) return
+    if (!callSetting?.isAllowedCamara) {
+      const videoStream = videoContext.videoStream
+      stopStreamTrack(videoStream)
+    }
+
+    getWebCamStream().then((stream) => {
+      console.log("2")
+      const oldStream = videoContext.videoStream
+      videoContext.setVideoStream(stream)
+      stopStreamTrack(oldStream)
+      peerRef.current.forEach((peer) => {
+        replaceStreamTrack(peer.peerConnection, stream)
+      })
+    })
+  }, [callSetting?.isAllowedCamara])
+
+  useEffect(() => {
+    if (!isAvailableCallRoom) return
+    getWebCamStream().then((stream) => {
+      // videoContext.setVideoStream(stream)
+    })
+  }, [isAvailableCallRoom])
+
+  useEffect(() => {
+    if (callSetting?.isAllowedScreenShare == undefined) return
+    if (!callSetting?.isAllowedScreenShare) {
+      const videoStream = videoContext.videoStream
+      stopStreamTrack(videoStream)
+    }
+
+    getDisplayMediaStream().then((stream) => {
+      const oldStream = videoContext.videoStream
+      videoContext.setVideoStream(stream)
+      stopStreamTrack(oldStream)
+      peerRef.current.forEach((peer) => {
+        replaceStreamTrack(peer.peerConnection, stream)
+      })
+    })
+  }, [callSetting?.isAllowedScreenShare])
+
   useEffect(() => {
     console.log("socket", isAvailableSocket)
     if (!isAvailableSocket || !isLogedIn) return
     socket.on("call:peer:getOfferPeer", async ({ receiverId, peerSdp, senderId }) => {
-      const stream = await getDisplayMediaStream()
-      addMyVideoStreamToContext(stream)
-      await createPeer(senderId, stream)
-      const peerConnection = await getPeerConnectionById(senderId)
-      setRemoteDescription(peerConnection, { type: "offer", sdp: peerSdp })
-      const sessionDescription = await createAndSetAnswer(peerConnection)
+      console.log("get offer peer event ", receiverId, senderId, userDetail?._id)
+      // const stream = await getDisplayMediaStream()
+      // addMyVideoStreamToContext(stream)
+      // await createPeer(senderId, stream)
+      // const peerConnection = await getPeerConnectionById(senderId)
+      // setRemoteDescription(peerConnection, { type: "offer", sdp: peerSdp })
+      // const sessionDescription = await createAndSetAnswer(peerConnection)
 
-      sendRtcSessionCallOfferValue(senderId, userDetail?._id, sessionDescription)
+      // sendRtcSessionCallOfferValue(senderId, userDetail?._id, sessionDescription)
       //   const peerConnection =  getPeerConnectionById(senderId)
       //  setRemoteDescription(peerConnection,{type:"offer",sdp:peerSdp})
+
+      setRemoteSessionDescripition([{ sessionDescription: { type: "offer", sdp: peerSdp }, userId: senderId }])
     })
 
     socket.on("call:peer:getOfferAnswerPeer", async ({ receiverId, senderId, peerSdp }) => {
-      console.log("get answer offer peer event ")
-      const peerConnection = await getPeerConnectionById(senderId)
-      setRemoteDescription(peerConnection, { type: "answer", sdp: peerSdp })
+      console.log("get answer offer peer event ", receiverId, senderId)
+      // const peerConnection = await getPeerConnectionById(senderId)
+      // setRemoteDescription(peerConnection, { type: "answer", sdp: peerSdp })
+      setRemoteSessionDescripition([{ sessionDescription: { type: "answer", sdp: peerSdp }, userId: senderId }])
     })
 
     socket.on("call:peer:getIceCandidate", async ({ receiverId, senderId, iceCandidate }) => {
       console.log("get ice candidate event", receiverId, senderId, iceCandidate)
       console.log("all peer connection", peerRef)
       // const peerConnection = await getPeerConnectionById(senderId)
-      setIceCandidate(peerRef.current[0].peerConnection, iceCandidate)
+      // setIceCandidate(peerRef.current[0].peerConnection, iceCandidate)
+      setRemoteIceCandidate([{ iceCandidate: iceCandidate, userId: senderId }])
     })
   }, [isAvailableSocket, isLogedIn])
 
@@ -262,9 +366,11 @@ const PeerJsStreamMethodProvider = () => {
         console.log("creating peer user id", connectionRequiredPeers.latestPeer.userId)
 
         getWebCamStream().then(async (stream) => {
+          console.log("3")
           addMyVideoStreamToContext(stream)
           createPeer(connectionRequiredPeers.latestPeer.userId, stream)
 
+          setIsReadyForCall(true)
           const peerConnection = getPeerConnectionById(connectionRequiredPeers.latestPeer.userId)
           console.log("== peer connectin", peerConnection)
           createAndSetOffer(peerConnection).then((sessionDescription) => {
@@ -275,16 +381,8 @@ const PeerJsStreamMethodProvider = () => {
     }
   }, [isAvailableCallRoom, connectionRequiredPeers?.latestPeer])
 
-  useEffect(() => {
-    if (!isAvailableCallRoom) return
-    if (isAvailableCallRoom) {
-      // getWebCamStream().then((stream) => {
-      //   addMyVideoStreamToContext(stream)
-      // })
-    }
-  }, [isAvailableCallRoom])
-
   const getWebCamStream = (): Promise<MediaStream> => {
+    console.log("called web cam stream functin ")
     return new Promise((resolve, reject) => {
       navigator.mediaDevices
         .getUserMedia({
@@ -295,6 +393,7 @@ const PeerJsStreamMethodProvider = () => {
           return resolve(stream)
         })
         .catch((err) => {
+          console.log("get web cam stream error ", err)
           return reject()
         })
     })
@@ -317,6 +416,16 @@ const PeerJsStreamMethodProvider = () => {
     })
   }
 
+  const stopStreamTrack = (videoStream: MediaStream) => {
+    console.log("web cam steram", videoContext.videoStream)
+
+    const videoTracks = videoStream.getVideoTracks()
+    videoTracks?.forEach((videoTrack) => videoTrack.stop())
+
+    const audioTracks = videoStream.getAudioTracks()
+    audioTracks?.forEach((audioTrack) => audioTrack.stop())
+  }
+
   const setNavigatorStream = async () => {
     try {
       const mediaStream = await getWebCamStream()
@@ -331,8 +440,19 @@ const PeerJsStreamMethodProvider = () => {
   }
 
   const addMyVideoStreamToContext = (stream: MediaStream) => {
-    if (videoContext.videoStream == undefined) videoContext.setVideoStream(stream)
-    else console.log("alread added video stream")
+    videoContext.setVideoStream(stream)
+  }
+
+  const replaceStreamTrack = (connection: RTCPeerConnection, mediaStream: MediaStream) => {
+    connection.getSenders().forEach((sender) => {
+      console.log("sender ", sender)
+
+      if (sender.track.kind == "video" && videoContext?.videoStream?.getVideoTracks()?.length > 0) {
+        const [track] = mediaStream.getVideoTracks()
+        sender.replaceTrack(track)
+        // sender.replaceTrack(track,)
+      }
+    })
   }
 
   // peer
@@ -342,34 +462,37 @@ const PeerJsStreamMethodProvider = () => {
     return peerConnection
   }
 
-  const getPeerConnectionById = (id: string): RTCPeerConnection => {
+  const getPeerConnectionById = (id: string): RTCPeerConnection | undefined => {
+    if (peerRef.current.length < 1) return undefined
     const peerObj = peerRef.current.filter((peer) => peer.peerid == id)[0]
     return peerObj.peerConnection
   }
 
-  const createPeer = async (id: string, video: MediaStream) => {
-    console.log("create peer", id,video.getTracks())
-    const peerConnection = createPeerConnection({
-      iceServers: [{ urls: ["stun:stun1.l.google.com:19302", "stun:stun2.l.google.com:19302"] }],
-      iceCandidatePoolSize: 10,
-    })
-
+  const createPeer = async (id: string, video?: MediaStream): RTCPeerConnection => {
+    console.log("create peer", id, video)
+    const peerConnection = createPeerConnection()
+    // {
+    //   iceServers: [{ urls: ["stun:stun1.l.google.com:19302", "stun:stun2.l.google.com:19302"] }],
+    //   iceCandidatePoolSize: 10,
+    // }
     peerRef.current = [...peerRef.current, { peerConnection, peerid: id }]
 
     peerConnection.onicecandidate = (event) => {
       handleIceCandidate(event, peerConnection, id)
     }
 
-    addUserMediaTrack(peerConnection, video)
+    console.log("media stream", videoContext.videoStream, video)
+    const mediaStream = videoContext.videoStream != undefined ? videoContext.videoStream : video
+    addUserMediaTrack(peerConnection, mediaStream)
 
     peerConnection.ontrack = (event) => {
       handleTrack(event, id)
     }
 
-  
     peerConnection.ondatachannel = handleDataChannel
     peerConnection.oniceconnectionstatechange = () => console.log("ice connectino state change event ")
     peerConnection.onicecandidateerror = () => console.log("ice candidate error   event ")
+    return peerConnection
   }
 
   const iceRef = useRef()
@@ -377,22 +500,20 @@ const PeerJsStreamMethodProvider = () => {
     // console.log("handler ice candidate event ", event.candidate)
     const offer = connection.localDescription
     console.log("handler ice candidate event ", event.candidate)
-    if(iceRef.current == undefined)iceRef.current = event.candidate
+    if (iceRef.current == undefined) iceRef.current = event.candidate
 
     if (!event.candidate) {
       console.log("event candidate ", event.candidate, iceRef.current)
 
-      setTimeout(() => {
-        sendIceCandidateHandler(id, userDetail?._id, iceRef.current)
-      }, 15000)
+      sendIceCandidateHandler(id, userDetail?._id, iceRef.current)
     }
   }
 
   const handleTrack = (event: RTCTrackEvent, id: string) => {
-    console.log("on tarck event ", event, event.streams[0],event.streams[0].getTracks())
+    console.log("on tarck event ", event, event.streams[0], event.streams[0].getTracks())
     const newStream = new MediaStream()
     newStream.addTrack(event.streams[0].getTracks()[0])
-    videoContext.setCommunicatorsVideoStream([{ id:"asdf", videoSrc:newStream }])
+    videoContext.setCommunicatorsVideoStream([{ id: "asdf", videoSrc: newStream }])
     // videoContext.setVideoStream(event.streams[0])
   }
 
@@ -402,7 +523,7 @@ const PeerJsStreamMethodProvider = () => {
 
   const addUserMediaTrack = (connection: RTCPeerConnection, mediaStream: MediaStream): RTCRtpSender => {
     return mediaStream.getTracks().map((track) => {
-      return connection.addTrack(track,mediaStream)
+      return connection.addTrack(track, mediaStream)
     })
   }
 
@@ -412,7 +533,7 @@ const PeerJsStreamMethodProvider = () => {
     console.log("data Channel", dataChannel)
 
     dataChannel.onmessage = (event) => {
-      console.log("data Channel on message event")
+      console.log("data Channel on message event")  
     }
   }
 
@@ -451,6 +572,7 @@ const PeerJsStreamMethodProvider = () => {
 
   // ice candiate
   const setIceCandidate = (connection: RTCPeerConnection, candidate: RTCIceCandidateInit) => {
+    console.log("set ice candidate")
     // candidate.forEach(async (candidate) => {
     connection.addIceCandidate(candidate)
     // })
