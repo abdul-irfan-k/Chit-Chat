@@ -19,15 +19,6 @@ const Recent = () => {
         <RecentCard imageSrc="/Asset/avatar.jpg" name="irfan" status="online" />
         <RecentCard imageSrc="/Asset/avatar.jpg" name="irfan" status="online" />
       </div>
-      {videoContext.communicatorsVideoStream.map((elm,index) => {
-        return (
-          <div className="fixed top-0 left-[200px] w-[500px] h-[400px] border-4 z-[100] bg-red-200" key={index}>
-            <video className="w-full h-full w-[500px]" ref={ref =>  {
-              if(ref != null) ref.srcObject = elm.videoSrc
-            }}></video>
-          </div>
-        )
-        })}
     </div>
   )
 }

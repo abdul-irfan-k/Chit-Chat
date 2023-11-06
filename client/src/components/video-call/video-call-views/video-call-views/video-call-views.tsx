@@ -74,14 +74,6 @@ const VideoCallViews: FC<VideoCallViewsProps> = ({ myVideoRef, setIsShowingliveC
           />
         </div>
        
-        <div
-          onClick={() => {
-            setTest(!test)
-            console.log("video ref src ", peerVideoContext.communicatorsVideoStream, videoRef.current)
-          }}
-        >
-          button
-        </div>
         {/* <div className=" aspect-video rounded-2xl w-[40%] bg-neutral-600">
           <video autoPlay ref={props.userVideoRef} className="w-full h-full"  />
         </div>
