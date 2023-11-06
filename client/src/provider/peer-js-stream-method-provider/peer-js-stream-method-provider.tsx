@@ -34,21 +34,22 @@ const PeerJsStreamMethodProvider = () => {
   const [localRemoteVideoStreams, setLocalRemoteVideoStreams] = useState<Array<{ id: string; videoSrc: MediaStream }>>(
     [],
   )
+  const [isUpdatedRemoteSesssion, setIsUpdatedRemoteSession] = useState<boolean>(false)
 
   useEffect(() => {
-    if (remoteIceCandidate?.length < 1 || !isReadyForCall) return
+    if (remoteIceCandidate?.length < 1 || !isReadyForCall || !isUpdatedRemoteSesssion) return
     if (isReadyForCall) {
       const peerConnection = getPeerConnectionById(remoteIceCandidate[0].userId)
       setIceCandidate(peerConnection, remoteIceCandidate[0])
       console.log("user video ", videoContext.communicatorsVideoStream)
     }
-    setIsReloadVideoRef(true)
-  }, [remoteIceCandidate, isReadyForCall])
- 
+    // setIsReloadVideoRef(true)
+  }, [remoteIceCandidate, isReadyForCall, isUpdatedRemoteSesssion])
+
   useEffect(() => {
     if (!isRealoadVideoRef) return
-    console.log("remote video steram",localRemoteVideoStreams)
-    videoContext.setCommunicatorsVideoStream(localRemoteVideoStreams)
+    // console.log("remote video steram",localRemoteVideoStreams)
+    // videoContext.setCommunicatorsVideoStream(localRemoteVideoStreams)
   }, [isRealoadVideoRef])
 
   useEffect(() => {
@@ -70,6 +71,7 @@ const PeerJsStreamMethodProvider = () => {
             const locaSessionDescription = await createAndSetAnswer(peerConnection)
             sendRtcSessionCallOfferValue(remoteSession.userId, userDetail?._id, locaSessionDescription)
           }
+          setIsUpdatedRemoteSession(true)
         } catch (error) {
           console.log("error", error)
         }
@@ -85,9 +87,12 @@ const PeerJsStreamMethodProvider = () => {
     if (isCallInitiator) return
     console.log("get web cam stream ")
     getWebCamStream().then((stream) => {
-      videoContext.setVideoStream(stream)
-      createPeer(connectionRequiredPeers?.allPeers[0].userId, stream)
-      setIsReadyForCall(true)
+      setTimeout(() => {
+
+        videoContext.setVideoStream(stream)
+        createPeer(connectionRequiredPeers?.allPeers[0].userId, stream)
+        setIsReadyForCall(true)
+      },10000)
     })
   }, [connectionRequiredPeers?.allPeers])
 
@@ -168,8 +173,11 @@ const PeerJsStreamMethodProvider = () => {
     })
   }, [isAvailableSocket, isLogedIn])
 
+  const [tests,setTests] = useState<boolean>(false)
   useEffect(() => {
+    console.log('use Effect')
     if (isAvailableCallRoom) {
+      console.log("is available call room")
       const isCallInitiator = callDetail?.callInitiator?.userId == userDetail?._id
       if (isCallInitiator && connectionRequiredPeers?.latestPeer != undefined) {
         console.log("creating peer user id", connectionRequiredPeers.latestPeer.userId)
@@ -188,7 +196,7 @@ const PeerJsStreamMethodProvider = () => {
         })
       }
     }
-  }, [isAvailableCallRoom, connectionRequiredPeers?.latestPeer])
+  }, [isAvailableCallRoom, connectionRequiredPeers?.latestPeer,tests])  
 
   const getWebCamStream = (): Promise<MediaStream> => {
     console.log("called web cam stream functin ")
@@ -284,15 +292,12 @@ const PeerJsStreamMethodProvider = () => {
     //   iceServers: [{ urls: ["stun:stun1.l.google.com:19302", "stun:stun2.l.google.com:19302"] }],
     //   iceCandidatePoolSize: 10,
     // }
-    peerRef.current = [...peerRef.current, { peerConnection, peerid: id }]
-
-    peerConnection.onicecandidate = (event) => {
-      handleIceCandidate(event, peerConnection, id)
-    }
-
-    console.log("media stream", videoContext.videoStream, video)
     const mediaStream = videoContext.videoStream != undefined ? videoContext.videoStream : video
     addUserMediaTrack(peerConnection, mediaStream)
+    peerRef.current = [...peerRef.current, { peerConnection, peerid: id }]
+
+    console.log("media stream", videoContext.videoStream, mediaStream, video)
+    // replaceStreamTrack(peerConnection, mediaStream)
 
     peerConnection.ontrack = (event) => {
       handleTrack(event, id)
@@ -305,9 +310,14 @@ const PeerJsStreamMethodProvider = () => {
 
     peerConnection.onicegatheringstatechange = (val) => {
       console.log("one ice gathering change event ", val, videoContext.communicatorsVideoStream)
-      
+      setIsReloadVideoRef(true)
     }
     peerConnection.onicecandidateerror = () => console.log("ice candidate error   event ")
+
+    peerConnection.onicecandidate = (event) => {
+      handleIceCandidate(event, peerConnection, id)
+    }
+
     return peerConnection
   }
 
@@ -330,8 +340,9 @@ const PeerJsStreamMethodProvider = () => {
     const newStream = new MediaStream()
     newStream.addTrack(event.streams[0].getTracks()[0])
 
-    setLocalRemoteVideoStreams([{ id: "asdf", videoSrc: newStream }])
-    // videoContext.setCommunicatorsVideoStream([{ id: "asdf", videoSrc: event.streams[0] }])
+
+    // setLocalRemoteVideoStreams([{ id: "asdf", videoSrc: newStream }])
+    videoContext.setCommunicatorsVideoStream([{ id: "asdf", videoSrc: newStream }])
     // videoContext.setVideoStream(event.streams[0])
   }
 
@@ -390,9 +401,12 @@ const PeerJsStreamMethodProvider = () => {
 
   // ice candiate
   const setIceCandidate = (connection: RTCPeerConnection, candidate: RTCIceCandidateInit) => {
-    console.log("set ice candidate")
+    // setTimeout(() => {
+      setTests(true)
+    console.log("set ice candidate", connection)
     // candidate.forEach(async (candidate) => {
     connection.addIceCandidate(candidate)
+    // }, 10000)
     // })
   }
 

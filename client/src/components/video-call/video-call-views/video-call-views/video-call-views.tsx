@@ -13,8 +13,6 @@ interface communicatorVideo {
   videoSrc: MediaStream
 }
 
-
-
 const VideoCallViews: FC<VideoCallViewsProps> = ({ myVideoRef, setIsShowingliveChat, communicatorVideos }) => {
   const peerVideoContext = useContext(PeerVideoRefContext)
   const [isPinnedVideo, setIsPinnedVideo] = useState<boolean>(false)
@@ -25,8 +23,8 @@ const VideoCallViews: FC<VideoCallViewsProps> = ({ myVideoRef, setIsShowingliveC
     setIsShowingliveChat(false)
   }
 
+  const [test, setTest] = useState(false)
 
-  
   // useEffect(() => {
   //   console.log('video added ')
   //   const isEmptyVideo = communicatorVideos.length < 1
@@ -35,8 +33,10 @@ const VideoCallViews: FC<VideoCallViewsProps> = ({ myVideoRef, setIsShowingliveC
   //   }
   // },[communicatorVideos])
 
+  const videoRef = useRef<HTMLVideoElement | undefined>(undefined)
+
   return (
-    <div className="mt-5 flex-1 "> 
+    <div className="mt-5 flex-1 ">
       <div className="relative gap-5  flex  flex-wrap items-center justify-center  h-[78vh]  overflow-hidden ">
         {communicatorVideos?.map((communicatorVideo, index) => {
           console.log("communicator video ref ", communicatorVideo)
@@ -46,8 +46,8 @@ const VideoCallViews: FC<VideoCallViewsProps> = ({ myVideoRef, setIsShowingliveC
                 autoPlay
                 className="w-full h-full"
                 ref={(ref) => {
-                  console.log("communicator video src",communicatorVideo.videoSrc.getTracks())
-                  if (ref != null) ref.srcObject = communicatorVideo.videoSrc
+                  console.log("communicator video src ", communicatorVideo.videoSrc.getTracks())
+                  if (ref != null && test) ref.srcObject = communicatorVideo.videoSrc
                 }}
               />
             </div>
@@ -67,6 +67,15 @@ const VideoCallViews: FC<VideoCallViewsProps> = ({ myVideoRef, setIsShowingliveC
             }}
             className="w-full h-full"
           />
+        </div>
+       
+        <div
+          onClick={() => {
+            setTest(!test)
+            console.log("video ref src ", peerVideoContext.communicatorsVideoStream, videoRef.current)
+          }}
+        >
+          button
         </div>
         {/* <div className=" aspect-video rounded-2xl w-[40%] bg-neutral-600">
           <video autoPlay ref={props.userVideoRef} className="w-full h-full"  />

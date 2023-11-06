@@ -18,7 +18,7 @@ interface communicatorVideoState {
 const PeerVideoProvider = ({ children }: { children: React.ReactNode }) => {
   const [videoStream, setVideoStream] = useState<MediaStream>()
   const [communicatorsVideoStream, setCommunicatorsVideoStream] = useState<Array<communicatorVideoState>>([])
-
+  
   return (
     <>
       <PeerVideoRefContext.Provider

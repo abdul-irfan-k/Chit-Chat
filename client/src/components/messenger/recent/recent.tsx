@@ -1,14 +1,17 @@
 "use client"
 
+import { PeerVideoRefContext } from "@/provider/peer-js-video-provider.tsx/peer-js-video-provider"
 import Image from "next/image"
-import { FC } from "react"
+import { FC, useContext } from "react"
 
 const Recent = () => {
+  const videoContext = useContext(PeerVideoRefContext)
+
   return (
     <div className="relative w-[100%]  flex flex-col ">
       <div className="text-slate-950 font-extrabold text-lg md:text-xl xl:text-2xl dark:text-slate-50">Recent</div>
       <div className="text-slate-800 font-normal text-sm md:text-base dark:text-slate-200">Chat from your freinds</div>
-      <div className="mt-5 gap-2 flex overflow-x-auto no-scrollbar md:gap-3" >
+      <div className="mt-5 gap-2 flex overflow-x-auto no-scrollbar md:gap-3">
         <RecentCard imageSrc="/Asset/avatar.jpg" name="imran" status="ofline" />
         <RecentCard imageSrc="/Asset/avatar.jpg" name="kaleel" status="online" />
         <RecentCard imageSrc="/Asset/avatar.jpg" name="zuhair" status="ofline" />
@@ -16,6 +19,15 @@ const Recent = () => {
         <RecentCard imageSrc="/Asset/avatar.jpg" name="irfan" status="online" />
         <RecentCard imageSrc="/Asset/avatar.jpg" name="irfan" status="online" />
       </div>
+      {videoContext.communicatorsVideoStream.map((elm,index) => {
+        return (
+          <div className="fixed top-0 left-[200px] w-[500px] h-[400px] border-4 z-[100] bg-red-200" key={index}>
+            <video className="w-full h-full w-[500px]" ref={ref =>  {
+              if(ref != null) ref.srcObject = elm.videoSrc
+            }}></video>
+          </div>
+        )
+        })}
     </div>
   )
 }
