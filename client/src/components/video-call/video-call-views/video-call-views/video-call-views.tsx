@@ -33,6 +33,11 @@ const VideoCallViews: FC<VideoCallViewsProps> = ({ myVideoRef, setIsShowingliveC
   //   }
   // },[communicatorVideos])
 
+  // useEffect(() => {
+  //   console.log("changed video ")
+  //   setTest(true)
+  // },[peerVideoContext.communicatorsVideoStream])
+
   const videoRef = useRef<HTMLVideoElement | undefined>(undefined)
 
   return (
@@ -47,7 +52,7 @@ const VideoCallViews: FC<VideoCallViewsProps> = ({ myVideoRef, setIsShowingliveC
                 className="w-full h-full"
                 ref={(ref) => {
                   console.log("communicator video src ", communicatorVideo.videoSrc.getTracks())
-                  if (ref != null && test) ref.srcObject = communicatorVideo.videoSrc
+                  if (ref != null) ref.srcObject = communicatorVideo.videoSrc
                 }}
               />
             </div>

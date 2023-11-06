@@ -87,12 +87,10 @@ const PeerJsStreamMethodProvider = () => {
     if (isCallInitiator) return
     console.log("get web cam stream ")
     getWebCamStream().then((stream) => {
-      setTimeout(() => {
 
         videoContext.setVideoStream(stream)
         createPeer(connectionRequiredPeers?.allPeers[0].userId, stream)
         setIsReadyForCall(true)
-      },10000)
     })
   }, [connectionRequiredPeers?.allPeers])
 
