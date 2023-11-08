@@ -40,6 +40,9 @@ const UserAuthProvider: FC<UserAuthProviderProps> = ({ children }) => {
     dispatch(checkUserIsLogedIn())
   }, [])
 
+
+  
+
   return <>{children}</>
 }
 

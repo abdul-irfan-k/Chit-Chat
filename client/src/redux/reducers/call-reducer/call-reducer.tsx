@@ -8,16 +8,12 @@ interface videoDevice {
   deviceName: string
 }
 
-interface callSetting {
+export interface callSetting {
   callType: "videoCall" | "voiceCall"
   availabeAudioDevices?: audioDevice[]
   availabeVideoDevices?: videoDevice[]
-  currentSelectedAudioDevice?: {
-    deviceId: string
-  }
-  currentSelectedVideoDevice?: {
-    deviceId: string
-  }
+  currentSelectedAudioDevice?: audioDevice
+  currentSelectedVideoDevice?: videoDevice
   isAllowedScreenShare: boolean
   isAllowedCamara: boolean
   isAllowedMicrophone: boolean

@@ -51,6 +51,8 @@ import SearchIcon from "/public/Asset/Icon/search.svg"
 import PhoneIcon from "/public/Asset/Icon/phone.svg"
 import VideoIcon from "/public/Asset/Icon/video.svg"
 import ArrowLeftIcon from "/public/Asset/Icon/arrow-left.svg"
+import CorrectIcon from "/public/Asset/Icon/correct.svg"
+
 
 export {
   IdBadgeIcon,
@@ -105,5 +107,6 @@ export {
   SearchIcon,
   PhoneIcon,
   VideoIcon,
-  ArrowLeftIcon
+  ArrowLeftIcon,
+  CorrectIcon
 }

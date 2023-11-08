@@ -12,6 +12,8 @@ import { socketReducerState } from "@/redux/reducers/socket-reducer/socket-reduc
 import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 
 const PeerJsStreamMethodProvider = () => {
+  const dispatch = useAppDispatch()
+
   const { socket, isAvailableSocket } = useSelector((state: { socketClient: socketReducerState }) => state.socketClient)
   const { isAvailableCallRoom, callDetail, callSetting, connectionRequiredPeers } = useSelector(
     (state: { callRedcuer: callReducerSlate }) => state.callRedcuer,
@@ -25,15 +27,12 @@ const PeerJsStreamMethodProvider = () => {
   const peerRef = useRef<Array<{ peerid: string; peerConnection: RTCPeerConnection }>>([])
 
   const [isReadyForCall, setIsReadyForCall] = useState<boolean>(false)
-  const [isRealoadVideoRef, setIsReloadVideoRef] = useState<boolean>(false)
   const [remoteSessionDescription, setRemoteSessionDescripition] =
     useState<Array<{ sessionDescription: RTCSessionDescriptionInit; userId: string }>>()
   const [remoteIceCandidate, setRemoteIceCandidate] = useState<
     Array<{ userId: string; iceCandidate: RTCIceCandidateInit }>
   >([])
-  const [localRemoteVideoStreams, setLocalRemoteVideoStreams] = useState<Array<{ id: string; videoSrc: MediaStream }>>(
-    [],
-  )
+
   const [isUpdatedRemoteSesssion, setIsUpdatedRemoteSession] = useState<boolean>(false)
 
   useEffect(() => {
@@ -45,12 +44,6 @@ const PeerJsStreamMethodProvider = () => {
     }
     // setIsReloadVideoRef(true)
   }, [remoteIceCandidate, isReadyForCall, isUpdatedRemoteSesssion])
-
-  useEffect(() => {
-    if (!isRealoadVideoRef) return
-    // console.log("remote video steram",localRemoteVideoStreams)
-    // videoContext.setCommunicatorsVideoStream(localRemoteVideoStreams)
-  }, [isRealoadVideoRef])
 
   useEffect(() => {
     if (!isReadyForCall) return console.log("not ready for call ")
@@ -87,30 +80,59 @@ const PeerJsStreamMethodProvider = () => {
     if (isCallInitiator) return
     console.log("get web cam stream ")
     getWebCamStream().then((stream) => {
-
-        videoContext.setVideoStream(stream)
-        createPeer(connectionRequiredPeers?.allPeers[0].userId, stream)
-        setIsReadyForCall(true)
+      videoContext.setVideoStream(stream)
+      createPeer(connectionRequiredPeers?.allPeers[0].userId, stream)
+      setIsReadyForCall(true)
     })
   }, [connectionRequiredPeers?.allPeers])
 
   useEffect(() => {
     if (callSetting?.isAllowedCamara == undefined) return
     if (!callSetting?.isAllowedCamara) {
-      const videoStream = videoContext.videoStream
-      stopStreamTrack(videoStream)
-    }
+      const stream = videoContext.videoStream
+      if (stream != undefined) stopStreamTrack(stream, "video")
+    } else {
+      getWebCamStream({
+        audio: callSetting.isAllowedMicrophone,
+        video: { aspectRatio: { ideal: 16 / 9 } },
+      }).then((stream) => {
+        const oldStream = videoContext.videoStream
+        videoContext.setVideoStream(stream)
 
-    getWebCamStream().then((stream) => {
-      console.log("2")
-      const oldStream = videoContext.videoStream
-      videoContext.setVideoStream(stream)
-      stopStreamTrack(oldStream)
-      peerRef.current.forEach((peer) => {
-        replaceStreamTrack(peer.peerConnection, stream)
+        if (oldStream != undefined) stopStreamTrack(oldStream, "video")
+
+        peerRef.current.forEach((peer) => {
+          replaceStreamTrack(peer.peerConnection, stream)
+        })
       })
-    })
+    }
   }, [callSetting?.isAllowedCamara])
+
+  useEffect(() => {
+    if (callSetting?.isAllowedMicrophone == undefined) return
+    if (!callSetting?.isAllowedMicrophone) {
+      const stream = videoContext.videoStream
+      if (stream != undefined) stopStreamTrack(stream, "audio")
+    } else {
+      const videoPermission: boolean | MediaTrackConstraints = callSetting.isAllowedCamara
+        ? { aspectRatio: { ideal: 16 / 9 } }
+        : false
+
+      getWebCamStream({
+        audio: callSetting.isAllowedMicrophone,
+        video: videoPermission,
+      }).then((stream) => {
+        const oldStream = videoContext.videoStream
+        videoContext.setVideoStream(stream)
+
+        if (oldStream != undefined) stopStreamTrack(oldStream, "audio")
+
+        peerRef.current.forEach((peer) => {
+          replaceStreamTrack(peer.peerConnection, stream)
+        })
+      })
+    }
+  }, [callSetting?.isAllowedMicrophone])
 
   useEffect(() => {
     if (!isAvailableCallRoom) return
@@ -123,13 +145,13 @@ const PeerJsStreamMethodProvider = () => {
     if (callSetting?.isAllowedScreenShare == undefined) return
     if (!callSetting?.isAllowedScreenShare) {
       const videoStream = videoContext.videoStream
-      stopStreamTrack(videoStream)
+      if (videoStream != undefined) stopStreamTrack(videoStream, "video")
     }
 
     getDisplayMediaStream().then((stream) => {
       const oldStream = videoContext.videoStream
       videoContext.setVideoStream(stream)
-      stopStreamTrack(oldStream)
+      stopStreamTrack(oldStream, "video")
       peerRef.current.forEach((peer) => {
         replaceStreamTrack(peer.peerConnection, stream)
       })
@@ -141,16 +163,6 @@ const PeerJsStreamMethodProvider = () => {
     if (!isAvailableSocket || !isLogedIn) return
     socket.on("call:peer:getOfferPeer", async ({ receiverId, peerSdp, senderId }) => {
       console.log("get offer peer event ", receiverId, senderId, userDetail?._id)
-      // const stream = await getDisplayMediaStream()
-      // addMyVideoStreamToContext(stream)
-      // await createPeer(senderId, stream)
-      // const peerConnection = await getPeerConnectionById(senderId)
-      // setRemoteDescription(peerConnection, { type: "offer", sdp: peerSdp })
-      // const sessionDescription = await createAndSetAnswer(peerConnection)
-
-      // sendRtcSessionCallOfferValue(senderId, userDetail?._id, sessionDescription)
-      //   const peerConnection =  getPeerConnectionById(senderId)
-      //  setRemoteDescription(peerConnection,{type:"offer",sdp:peerSdp})
 
       setRemoteSessionDescripition([{ sessionDescription: { type: "offer", sdp: peerSdp }, userId: senderId }])
     })
@@ -171,9 +183,9 @@ const PeerJsStreamMethodProvider = () => {
     })
   }, [isAvailableSocket, isLogedIn])
 
-  const [tests,setTests] = useState<boolean>(false)
+  const [tests, setTests] = useState<boolean>(false)
   useEffect(() => {
-    console.log('use Effect')
+    console.log("use Effect")
     if (isAvailableCallRoom) {
       console.log("is available call room")
       const isCallInitiator = callDetail?.callInitiator?.userId == userDetail?._id
@@ -194,16 +206,29 @@ const PeerJsStreamMethodProvider = () => {
         })
       }
     }
-  }, [isAvailableCallRoom, connectionRequiredPeers?.latestPeer,tests])  
+  }, [isAvailableCallRoom, connectionRequiredPeers?.latestPeer, tests])
 
-  const getWebCamStream = (): Promise<MediaStream> => {
-    console.log("called web cam stream functin ")
+  useEffect(() => {
+    getAvailableMediaDevices()
+  }, [])
+
+  const getAvailableMediaDevices = async () => {
+    const devices = await navigator.mediaDevices.enumerateDevices()
+    const audioDevices: Array<{ deviceId: string; deviceName: string }> = []
+    const videoDevices: Array<{ deviceId: string; deviceName: string }> = []
+    devices.forEach((mediaDeviceInfo) => {
+      const label = mediaDeviceInfo.label.split(" ")
+      const deviceName = label[0] + " " + (label.length > 1 ? label[1] : "")
+      if (mediaDeviceInfo.kind == "videoinput") videoDevices.push({ deviceId: mediaDeviceInfo.deviceId, deviceName })
+      if (mediaDeviceInfo.kind == "audioinput") audioDevices.push({ deviceId: mediaDeviceInfo.deviceId, deviceName })
+    })
+    dispatch(addAvailableMediaDevices(audioDevices, videoDevices))
+  }
+
+  const getWebCamStream = (constraints?: MediaStreamConstraints): Promise<MediaStream> => {
     return new Promise((resolve, reject) => {
       navigator.mediaDevices
-        .getUserMedia({
-          video: { aspectRatio: { ideal: 16 / 9 } },
-          audio: false,
-        })
+        .getUserMedia(constraints)
         .then((stream) => {
           return resolve(stream)
         })
@@ -231,14 +256,17 @@ const PeerJsStreamMethodProvider = () => {
     })
   }
 
-  const stopStreamTrack = (videoStream: MediaStream) => {
-    console.log("web cam steram", videoContext.videoStream)
+  const stopStreamTrack = (stream: MediaStream, requiredStopSource: "video" | "audio" | "both") => {
 
-    const videoTracks = videoStream.getVideoTracks()
-    videoTracks?.forEach((videoTrack) => videoTrack.stop())
+    if (requiredStopSource == "video" || requiredStopSource == "both") {
+      const videoTracks = stream.getVideoTracks()
+      videoTracks?.forEach((videoTrack) => videoTrack.stop())
+    }
 
-    const audioTracks = videoStream.getAudioTracks()
-    audioTracks?.forEach((audioTrack) => audioTrack.stop())
+    if (requiredStopSource == "audio" || requiredStopSource == "both") {
+      const audioTracks = stream.getAudioTracks()
+      audioTracks?.forEach((audioTrack) => audioTrack.stop())
+    }
   }
 
   const setNavigatorStream = async () => {
@@ -308,7 +336,6 @@ const PeerJsStreamMethodProvider = () => {
 
     peerConnection.onicegatheringstatechange = (val) => {
       console.log("one ice gathering change event ", val, videoContext.communicatorsVideoStream)
-      setIsReloadVideoRef(true)
     }
     peerConnection.onicecandidateerror = () => console.log("ice candidate error   event ")
 
@@ -337,7 +364,6 @@ const PeerJsStreamMethodProvider = () => {
     console.log("on tarck event ", event, event.streams[0], event.streams[0].getTracks())
     const newStream = new MediaStream()
     newStream.addTrack(event.streams[0].getTracks()[0])
-
 
     // setLocalRemoteVideoStreams([{ id: "asdf", videoSrc: newStream }])
     videoContext.setCommunicatorsVideoStream([{ id: "asdf", videoSrc: newStream }])
@@ -400,7 +426,7 @@ const PeerJsStreamMethodProvider = () => {
   // ice candiate
   const setIceCandidate = (connection: RTCPeerConnection, candidate: RTCIceCandidateInit) => {
     // setTimeout(() => {
-      setTests(true)
+    setTests(true)
     console.log("set ice candidate", connection)
     // candidate.forEach(async (candidate) => {
     connection.addIceCandidate(candidate)
