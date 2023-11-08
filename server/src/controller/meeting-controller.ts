@@ -24,3 +24,9 @@ export const createGroupVideoCallHandler = async (req: Request, res: Response) =
     return res.status(400).json({ isValid: false })
   }
 }
+
+export const findMeetingByCodeHandler = (req: Request, res: Response) => {
+  try {
+    const {} = req.body
+  } catch (error) {}
+}

@@ -5,5 +5,6 @@ import { createGroupVideoCallHandler } from "../controller/meeting-controller.js
 const router = express.Router()
 
 router.post("/createGroupVideoCall", checkisLogedInMiddleware, createGroupVideoCallHandler)
+router.post("/findMeetingByCode",checkisLogedInMiddleware)
 
 export default router

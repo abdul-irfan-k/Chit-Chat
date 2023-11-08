@@ -71,6 +71,7 @@ const VideoCallViews: FC<VideoCallViewsProps> = ({ myVideoRef, setIsShowingliveC
               if (myVideoRef != undefined && myVideoRef != null && ref != null) ref.srcObject = myVideoRef
             }}
             className="w-full h-full"
+            muted={true}
           />
         </div>
        

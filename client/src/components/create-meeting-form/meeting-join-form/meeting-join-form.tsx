@@ -7,21 +7,30 @@ import MediaSourceSelector from "./media-source-selector"
 import { useAppDispatch } from "@/store"
 import { changeCallSettingHandler } from "@/redux/actions/call-action/call-action"
 import { PeerVideoRefContext } from "@/provider/peer-js-video-provider.tsx/peer-js-video-provider"
+import { socketReducerState } from "@/redux/reducers/socket-reducer/socket-reducers"
+import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 
 interface MeetingJoinFormProps {
   meetingCode: string
 }
 
 const MeetingJoinForm: FC<MeetingJoinFormProps> = ({ meetingCode }) => {
- 
   const dispatch = useAppDispatch()
   const videoContext = useContext(PeerVideoRefContext)
 
+  const { socket } = useSelector((state: { socketClient: socketReducerState }) => state.socketClient)
+  const { userDetail } = useSelector((state: { userDetail: userDetailState }) => state.userDetail)
 
   const [isVideoRecording, setIsVideoRecording] = useState<boolean>(false)
   const [isAudioRecording, setIsAudioRecording] = useState<boolean>(false)
 
-  const joinRequestButtonHandler = () => {}
+  const joinRequestButtonHandler = () => {
+    socket.emit("groupCall:joinRequest", {
+      userId: userDetail?._id,
+      referenceId: meetingCode,
+      userName: userDetail?.name,
+    })
+  }
   const cancelButtonHandler = () => {}
 
   const { callSetting } = useSelector((state: { callRedcuer: callReducerSlate }) => state.callRedcuer)
@@ -49,9 +58,15 @@ const MeetingJoinForm: FC<MeetingJoinFormProps> = ({ meetingCode }) => {
         <div className="relative w-[50%] ">
           <div className="relative first-letter: w-full">
             <div className="w-full  aspect-video bg-slate-300  dark:bg-neutral-700">
-            {videoContext.videoStream != undefined && isVideoRecording && <video autoPlay className="w-full h-full" ref={ref => {
-              if(ref != null) ref.srcObject = videoContext.videoStream
-            }} />}
+              {videoContext.videoStream != undefined && isVideoRecording && (
+                <video
+                  autoPlay
+                  className="w-full h-full"
+                  ref={(ref) => {
+                    if (ref != null) ref.srcObject = videoContext.videoStream
+                  }}
+                />
+              )}
             </div>
 
             <div className="gap-3 left-0 w-full absolute bottom-2 flex-1 flex justify-center items-center ">
@@ -60,7 +75,7 @@ const MeetingJoinForm: FC<MeetingJoinFormProps> = ({ meetingCode }) => {
                 onClick={changeAudioDevicePermissionHandler}
               >
                 {isAudioRecording ? (
-                  <MicIcon className="aspect-square w-6" width="" height=""  />
+                  <MicIcon className="aspect-square w-6" width="" height="" />
                 ) : (
                   <MicSlashIcon className="aspect-square w-6" width="" height="" />
                 )}
@@ -116,10 +131,16 @@ const MeetingJoinForm: FC<MeetingJoinFormProps> = ({ meetingCode }) => {
           <div className="text-xl">Ready to join?</div>
           <div className="text-base font-medium">No one else is here </div>
           <div className="gap-3  flex ">
-            <div className="px-4 py-2 flex items-center justify-center rounded-full bg-red-500" onClick={cancelButtonHandler}>
+            <div
+              className="px-4 py-2 flex items-center justify-center rounded-full bg-red-500"
+              onClick={cancelButtonHandler}
+            >
               cancel
             </div>
-            <div className="px-4 py-2 flex items-center justify-center rounded-full bg-blue-500" onClick={joinRequestButtonHandler}>
+            <div
+              className="px-4 py-2 flex items-center justify-center rounded-full bg-blue-500"
+              onClick={joinRequestButtonHandler}
+            >
               join now
             </div>
           </div>
