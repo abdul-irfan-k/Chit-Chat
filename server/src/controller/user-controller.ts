@@ -1,6 +1,7 @@
 import { Request, Response } from "express"
 import User from "../model/mongoose/user-model.js"
 import {
+  ACESSTOKENNOTPROIVIDED,
   INVALIDCOMFIRMPASSWORD,
   INVALIDOTP,
   INVALIDPASSWORD,
@@ -16,6 +17,8 @@ import otpGenerator from "otp-generator"
 import { nodeMailerSendEmailer } from "../util/node-mailer.js"
 import { getOtpEmailSubject } from "../util/email-subject.js"
 import { getOtpEmailTemplate } from "../util/email-template.js"
+import axios from "axios"
+import jwt from "jsonwebtoken"
 // import { mongo } from "mongoose"
 
 export const signUpUserHandler = async (req: Request, res: Response) => {
@@ -315,6 +318,159 @@ export const getAllChatUsersHandler = async (req: Request, res: Response) => {
     const allChatUser = await User.getAllChatUser(_id)
 
     return res.status(200).json(allChatUser)
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export const googleLoginWithAcessTokenHandler = async (req: Request, res: Response) => {
+  try {
+    console.log(req.url)
+    const { acessToken } = req.body
+    if (acessToken == undefined) return res.status(400).json({ isValid: false, errorType: ACESSTOKENNOTPROIVIDED })
+    console.log("acess token", acessToken)
+    const { data: fetchedUserData } = await axios.get("https://www.googleapis.com/oauth2/v1/userinfo", {
+      headers: { Authorization: `Bearer ${acessToken}` },
+    })
+
+    console.log("fetchedUserData ", fetchedUserData)
+
+    const userDetails = await User.findOne({ email: fetchedUserData.email })
+    if (userDetails == null) return res.status(400).json({ isValid: false, errorType: USERNOTFOUND })
+
+    const { token: authToken } = await createJwtTokenHandler({
+      _id: userDetails._id.toString(),
+      email: userDetails.email,
+      expiresIn: "1 days",
+      tokenType: "authToken",
+    })
+    const { token: refreshToken } = await createJwtTokenHandler({
+      _id: userDetails._id.toString(),
+      email: userDetails.email,
+      expiresIn: "1 days",
+      tokenType: "refreshToken",
+    })
+
+    assignCookiesHandler({
+      res,
+      token: authToken,
+      expires: "1d",
+      tokenName: "authToken",
+    })
+
+    assignCookiesHandler({
+      res,
+      token: refreshToken,
+      expires: "1d",
+      tokenName: "refreshToken",
+    })
+    console.log("user detail", userDetails)
+    return res.status(200).json({ isValid: true })
+  } catch (error) {
+    console.log("error")
+    return res.status(400).json({ isValid: false })
+  }
+}
+
+export const loginWithGoogleWithCredintialsHandler = async (req: Request, res: Response) => {
+  try {
+    const { credential } = req.body
+    const decodedData = jwt.decode(credential)
+    console.log("decoded data", decodedData)
+
+    if (decodedData == null || typeof decodedData === "string") return res.status(400).json({ isValid: false })
+    const userDetail = await User.findOne({ email: decodedData.email })
+    if (userDetail == null) return res.status(400).json({ isVaild: false, errorType: USERNOTFOUND })
+
+    const { token: authToken } = await createJwtTokenHandler({
+      _id: userDetail._id.toString(),
+      email: userDetail.email,
+      expiresIn: "1 days",
+      tokenType: "authToken",
+    })
+    const { token: refreshToken } = await createJwtTokenHandler({
+      _id: userDetail._id.toString(),
+      email: userDetail.email,
+      expiresIn: "1 days",
+      tokenType: "refreshToken",
+    })
+
+    assignCookiesHandler({
+      res,
+      token: authToken,
+      expires: "1d",
+      tokenName: "authToken",
+    })
+
+    assignCookiesHandler({
+      res,
+      token: refreshToken,
+      expires: "1d",
+      tokenName: "refreshToken",
+    })
+
+    return res.status(200).json({ isValid: true })
+  } catch (error) {
+    console.log(error)
+    
+  }
+}
+
+export const loginWithGithubHandler = async (req: Request, res: Response) => {
+  try {
+    const { code } = req.body
+    console.log('login with github',code)
+    const { GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, FRONTEND_URL } = process.env
+
+    axios
+      .post("https://github.com/login/oauth/access_token", {
+        client_id: GITHUB_CLIENT_ID,
+        client_secret: GITHUB_CLIENT_SECRET,
+        redirect_uri: `${FRONTEND_URL+"/authentication" || "http://localhost:3000/authentication"}`,
+        code,
+      })
+      .then(({ data }) => {
+        const params = Object.fromEntries(new URLSearchParams(data))
+        if (!params.access_token) return res.status(400).json({})
+
+        axios
+          .get("https://api.github.com/user/emails", { headers: { Authorization: `token ${params.access_token}` } })
+          .then(async ({ data }) => {
+
+            const userDetail = await User.findOne({ email: data[0].email })
+            if (userDetail == null) return res.status(400).json({ isValid: false, errorType: USERNOTFOUND })
+
+            const { token: authToken } = await createJwtTokenHandler({
+              _id: userDetail._id.toString(),
+              email: userDetail.email,
+              expiresIn: "1 days",
+              tokenType: "authToken",
+            })
+            const { token: refreshToken } = await createJwtTokenHandler({
+              _id: userDetail._id.toString(),
+              email: userDetail.email,
+              expiresIn: "1 days",
+              tokenType: "refreshToken",
+            })
+
+            assignCookiesHandler({
+              res,
+              token: authToken,
+              expires: "1d",
+              tokenName: "authToken",
+            })
+
+            assignCookiesHandler({
+              res,
+              token: refreshToken,
+              expires: "1d",
+              tokenName: "refreshToken",
+            })
+
+            return res.status(200).json({ isValid: true })
+          })
+          .catch(err => console.log(err))
+      })
   } catch (error) {
     console.log(error)
   }

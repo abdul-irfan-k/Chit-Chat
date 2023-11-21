@@ -44,3 +44,32 @@ export const checkUserIsLogedIn = () => async (dispatch: AppDispatch) => {
     dispatch(userDetailAction.setUserDetail({ isLogedIn: false, isChanged: true }))
   }
 }
+
+export const loginWithGoogleHandler = (data: Object, router: AppRouterInstance) => async (dispatch: AppDispatch) => {
+  try {
+    console.log("login with google ")
+    const { data: response } = await axiosUserInstance.post("/loginWithGoogleWithCredintials", data)
+    if (response.isValid) {
+      router.push("/messenger")
+    }
+  } catch (error) {}
+}
+
+export const loginWithGoogleWithAcessToken =
+  (data: Object, router: AppRouterInstance) => async (dispatch: AppDispatch) => {
+    try {
+      const { data: response } = await axiosUserInstance.post("/googleLoginWithAcessToken", data)
+      if (response.isValid) {
+        router.push("/messenger")
+      }
+    } catch (error) {}
+  }
+
+export const loginWithGithubHandler = (data: Object, router: AppRouterInstance) => async (dispatch: AppDispatch) => {
+  try {
+    const { data: response } = await axiosUserInstance.post("/loginWithGithub", data)
+    if (response.isValid) {
+      router.push("/messenger")
+    }
+  } catch (error) {}
+}

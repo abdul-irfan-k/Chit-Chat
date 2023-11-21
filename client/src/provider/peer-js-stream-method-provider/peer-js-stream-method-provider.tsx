@@ -75,7 +75,6 @@ const PeerJsStreamMethodProvider = () => {
 
   const [tests, setTests] = useState<boolean>(false)
   useEffect(() => {
-    console.log("use", tests)
     ;(async () => {
       if (isReadyForCall) {
         const peerConnection = await getPeerConnectionById(connectionRequiredPeers?.allPeers[0].userId)

@@ -21,3 +21,6 @@ export type JWTERROR = "JWTERROR"
 
 export type OTPRECORDNOTFOUND = "OTPRECORDNOTFOUND"
 export type INVALIDOTP = "INVALIDOTP"
+
+// social media login error 
+export const ACESSTOKENNOTPROIVIDED = "ACESSTOKENNOTPROIVIDED"

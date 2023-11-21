@@ -10,6 +10,14 @@ declare namespace NodeJS {
     CLOUDINARY_API_KEY: string
     CLOUDINARY_API_SECRET: string
     NODE_ENV: "PRODUCTION" | "DEVELOPMENT"
+
+    GOOGLE_CLIENT_ID: string
+    GOOGLE_CLIENT_SECRET: string
+    GITHUB_CLIENT_ID: string
+    GITHUB_CLIENT_SECRET: string
+    LINKEDIN_CLIENT_ID: string
+    LINKEDIN_CLIENT_SECRET: string
+
     // add more environment variables and their types here
   }
 }

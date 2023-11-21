@@ -5,7 +5,10 @@ import {
   checkUserIdAvilableHandler,
   getAllChatUsersHandler,
   getUserDetailHandler,
+  googleLoginWithAcessTokenHandler,
   loginUserHandler,
+  loginWithGithubHandler,
+  loginWithGoogleWithCredintialsHandler,
   logoutUserHandler,
   requestChangePasswordWithOtpHandler,
   sendVerifyUserEmailHandler,
@@ -33,4 +36,12 @@ router.post("/changePasswordWithOtp", checkisLogedInMiddleware, changePasswordWi
 router.post("/requestChangePasswordWithOtp", checkisLogedInMiddleware, requestChangePasswordWithOtpHandler)
 
 router.post("/getAllChatUsers", checkisLogedInMiddleware, getAllChatUsersHandler)
+
+// login with google 
+
+router.post("/googleLoginWithAcessToken",googleLoginWithAcessTokenHandler)
+router.post("/loginWithGoogleWithCredintials",loginWithGoogleWithCredintialsHandler)
+
+router.post("/loginWithGithub",loginWithGithubHandler)
+
 export default router
