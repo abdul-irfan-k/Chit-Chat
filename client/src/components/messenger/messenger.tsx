@@ -5,6 +5,7 @@ import SideMenu from "./side-menu/side-menu"
 import ChatContainer from "./chat/chat-container"
 import CallLogContainer from "./call/call-log-container"
 import ContactContainer from "./contact/contact-container"
+import AddButton from "./add-button/add-buttton"
 
 const Messenger = () => {
   return (
@@ -16,6 +17,7 @@ const Messenger = () => {
             <MessengerSort />
             <ChatList />
           </div>
+        <AddButton />
         </div>
       </div>
       <div className="hidden w-full md:block">
