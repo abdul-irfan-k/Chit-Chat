@@ -1,16 +1,19 @@
 import express from "express"
 import {
+  acceptFreindRequestHandler,
   changePasswordHanldler,
   changePasswordWithOtpHandler,
   checkUserIdAvilableHandler,
   getAllChatUsersHandler,
   getUserDetailHandler,
+  getUserDetailsByUserIdHandler,
   googleLoginWithAcessTokenHandler,
   loginUserHandler,
   loginWithGithubHandler,
   loginWithGoogleWithCredintialsHandler,
   logoutUserHandler,
   requestChangePasswordWithOtpHandler,
+  sendFreindRequestHandler,
   sendVerifyUserEmailHandler,
   signUpUserHandler,
   verifyUserEmailHandler,
@@ -35,13 +38,19 @@ router.post("/changePassword", checkisLogedInMiddleware, changePasswordHanldler)
 router.post("/changePasswordWithOtp", checkisLogedInMiddleware, changePasswordWithOtpHandler)
 router.post("/requestChangePasswordWithOtp", checkisLogedInMiddleware, requestChangePasswordWithOtpHandler)
 
+// fetching chat user list
 router.post("/getAllChatUsers", checkisLogedInMiddleware, getAllChatUsersHandler)
+// fetching the user list in search bar
+router.post("/getUserDetailByUserId",getUserDetailsByUserIdHandler)
 
-// login with google 
+// login with social media
+router.post("/googleLoginWithAcessToken", googleLoginWithAcessTokenHandler)
+router.post("/loginWithGoogleWithCredintials", loginWithGoogleWithCredintialsHandler)
+router.post("/loginWithGithub", loginWithGithubHandler)
 
-router.post("/googleLoginWithAcessToken",googleLoginWithAcessTokenHandler)
-router.post("/loginWithGoogleWithCredintials",loginWithGoogleWithCredintialsHandler)
-
-router.post("/loginWithGithub",loginWithGithubHandler)
+// send the freind list
+router.post("/sendFreindRequest", checkisLogedInMiddleware, sendFreindRequestHandler)
+router.post("/acceptFreindRequest", checkisLogedInMiddleware,acceptFreindRequestHandler) // accept the freind request
+router.post("/rejectFreindRequest",checkisLogedInMiddleware) // reject freind request
 
 export default router

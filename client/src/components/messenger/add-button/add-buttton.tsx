@@ -1,6 +1,7 @@
 "use client"
 import { ChatIcon, GroupIcon, PersonAddIcon, PlusIcon } from "@/constants/icon-constant"
 import React, { useState } from "react"
+import SearchBar from "../search-bar/search-bar"
 
 const AddButton = () => {
   const [isButtonClicked, setIsButtonClicked] = useState<boolean>(false)
@@ -51,7 +52,7 @@ const AddButton = () => {
       </div>
 
 
-      
+      <SearchBar />
     </div>
   )
 }

@@ -19,6 +19,9 @@ import { getOtpEmailSubject } from "../util/email-subject.js"
 import { getOtpEmailTemplate } from "../util/email-template.js"
 import axios from "axios"
 import jwt from "jsonwebtoken"
+import ConnectionModel from "../model/mongoose/connections-model.js"
+import mongoose from "mongoose"
+import UserModel from "../model/mongoose/user-model.js"
 // import { mongo } from "mongoose"
 
 export const signUpUserHandler = async (req: Request, res: Response) => {
@@ -36,6 +39,9 @@ export const signUpUserHandler = async (req: Request, res: Response) => {
 
     const user = new User({ name, email, userId, password })
     await user.save()
+
+    const userConnection = new ConnectionModel({ userId: user._id })
+    await userConnection.save()
 
     const { token: authToken } = await createJwtTokenHandler({
       _id: user._id.toString(),
@@ -333,8 +339,6 @@ export const googleLoginWithAcessTokenHandler = async (req: Request, res: Respon
       headers: { Authorization: `Bearer ${acessToken}` },
     })
 
-    console.log("fetchedUserData ", fetchedUserData)
-
     const userDetails = await User.findOne({ email: fetchedUserData.email })
     if (userDetails == null) return res.status(400).json({ isValid: false, errorType: USERNOTFOUND })
 
@@ -376,7 +380,6 @@ export const loginWithGoogleWithCredintialsHandler = async (req: Request, res: R
   try {
     const { credential } = req.body
     const decodedData = jwt.decode(credential)
-    console.log("decoded data", decodedData)
 
     if (decodedData == null || typeof decodedData === "string") return res.status(400).json({ isValid: false })
     const userDetail = await User.findOne({ email: decodedData.email })
@@ -412,21 +415,20 @@ export const loginWithGoogleWithCredintialsHandler = async (req: Request, res: R
     return res.status(200).json({ isValid: true })
   } catch (error) {
     console.log(error)
-    
   }
 }
 
 export const loginWithGithubHandler = async (req: Request, res: Response) => {
   try {
     const { code } = req.body
-    console.log('login with github',code)
+    console.log("login with github", code)
     const { GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, FRONTEND_URL } = process.env
 
     axios
       .post("https://github.com/login/oauth/access_token", {
         client_id: GITHUB_CLIENT_ID,
         client_secret: GITHUB_CLIENT_SECRET,
-        redirect_uri: `${FRONTEND_URL+"/authentication" || "http://localhost:3000/authentication"}`,
+        redirect_uri: `${FRONTEND_URL + "/authentication" || "http://localhost:3000/authentication"}`,
         code,
       })
       .then(({ data }) => {
@@ -436,7 +438,6 @@ export const loginWithGithubHandler = async (req: Request, res: Response) => {
         axios
           .get("https://api.github.com/user/emails", { headers: { Authorization: `token ${params.access_token}` } })
           .then(async ({ data }) => {
-
             const userDetail = await User.findOne({ email: data[0].email })
             if (userDetail == null) return res.status(400).json({ isValid: false, errorType: USERNOTFOUND })
 
@@ -469,9 +470,127 @@ export const loginWithGithubHandler = async (req: Request, res: Response) => {
 
             return res.status(200).json({ isValid: true })
           })
-          .catch(err => console.log(err))
+          .catch((err) => console.log(err))
       })
   } catch (error) {
     console.log(error)
+  }
+}
+
+// send freind request to another user
+export const sendFreindRequestHandler = async (req: Request, res: Response) => {
+  try {
+    const { _id } = req.user as userInterface
+
+    const { requestedFreindUserId } = req.body
+    if (requestedFreindUserId == undefined) return
+
+    const userObjectId = new mongoose.Types.ObjectId(_id)
+    const requestedFreindUserObjectId = new mongoose.Types.ObjectId(requestedFreindUserId)
+
+    // adding request sender user database
+    await ConnectionModel.updateOne(
+      {
+        _id: userObjectId,
+        sendedFreindRequest: { $not: { $elemMatch: { userId: requestedFreindUserObjectId } } },
+      },
+      {
+        $push: { sendedFreindRequest: { userId: requestedFreindUserObjectId } },
+      },
+    )
+    // adding to record to the request receiver database
+    await ConnectionModel.updateOne(
+      {
+        _id: requestedFreindUserObjectId,
+        receivedFreindRequest: { $not: { $elemMatch: { userId: userObjectId } } },
+      },
+      {
+        $push: { receivedFreindRequest: { userId: userObjectId } },
+      },
+    )
+  } catch (error) {
+    return res.status(400).json({})
+  }
+}
+
+// accept the freind request
+export const acceptFreindRequestHandler = async (req: Request, res: Response) => {
+  try {
+    const { _id } = req.user as userInterface
+    const { acceptedFreindUserId } = req.body
+    if (acceptedFreindUserId == undefined) return res.status(400).json({})
+
+    const userObjectId = new mongoose.Types.ObjectId(_id)
+    const acceptedFreindUserObjectId = new mongoose.Types.ObjectId(acceptedFreindUserId)
+
+    await ConnectionModel.updateOne(
+      {
+        _id: userObjectId,
+      },
+      {
+        $pull: { receivedFreindRequest: { userId: acceptedFreindUserObjectId } },
+        $push: { freinds: { userId: acceptedFreindUserObjectId } },
+      },
+    )
+
+    await ConnectionModel.updateOne(
+      {
+        _id: acceptedFreindUserObjectId,
+      },
+      {
+        $pull: { sendedFreindRequest: { userId: userObjectId } },
+        $push: { freinds: { userId: userObjectId } },
+      },
+    )
+  } catch (error) {
+    return res.status(400).json({})
+  }
+}
+
+// reject the freind request
+;async (req: Request, res: Response) => {
+  try {
+    const { _id } = req.user as userInterface
+    const { acceptedFreindUserId } = req.body
+    if (acceptedFreindUserId == undefined) return res.status(400).json({})
+
+    const userObjectId = new mongoose.Types.ObjectId(_id)
+    const acceptedFreindUserObjectId = new mongoose.Types.ObjectId(acceptedFreindUserId)
+
+    await ConnectionModel.updateOne(
+      {
+        _id: userObjectId,
+      },
+      {
+        $pull: { receivedFreindRequest: { userId: acceptedFreindUserObjectId } },
+      },
+    )
+
+    await ConnectionModel.updateOne(
+      {
+        _id: acceptedFreindUserObjectId,
+      },
+      {
+        $pull: { sendedFreindRequest: { userId: userObjectId } },
+      },
+    )
+  } catch (error) {
+    return res.status(400).json({})
+  }
+}
+
+// get user details on search
+export const getUserDetailsByUserIdHandler = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.body
+    const usersDetails = await UserModel.aggregate([
+      { $match: { userId: userId } },
+      { $project: { name: 1, email: 1, userId: 1 } },
+    ])
+
+    // debugger; 
+    return res.status(200).json(usersDetails)
+  } catch (error) {
+    return res.status(400).json({})
   }
 }

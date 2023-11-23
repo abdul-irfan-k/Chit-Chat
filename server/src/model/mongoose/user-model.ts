@@ -95,5 +95,5 @@ interface staticInterface extends Model<UserDoc> {
 }
 
 export interface UserDoc extends userSchema, Document, methodInterface {}
-const User = mongoose.model<UserDoc, staticInterface>("User", userSchema)
-export default User
+const UserModel = mongoose.model<UserDoc, staticInterface>("User", userSchema)
+export default UserModel
