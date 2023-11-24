@@ -25,3 +25,11 @@ export const getChatRoomMessageHandler = async (req: Request, res: Response) => 
     // console.log(error)
   }
 }
+
+// creating the group
+export const createGroupHandler = (req: Request, res: Response) => {
+  try {
+  } catch (error) {
+    return res.status(400).json({})
+  }
+}

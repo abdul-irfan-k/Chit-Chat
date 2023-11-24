@@ -22,6 +22,5 @@ export const JWTERROR = "JWTERROR"
 export const OTPRECORDNOTFOUND = "OTPRECORDNOTFOUND"
 export const INVALIDOTP = "INVALIDOTP"
 
-
 // social media login error
 export const ACESSTOKENNOTPROIVIDED = "ACESSTOKENNOTPROIVIDED"

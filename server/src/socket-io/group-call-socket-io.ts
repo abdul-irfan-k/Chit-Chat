@@ -50,16 +50,15 @@ const groupCallSocketIo = (io: Server, socket: Socket) => {
           adminId: groupCallRoom.adminId,
           callRoomId: groupCallRoom.callRoomId,
           adminDetail: {
-            userId: groupCallRoom.adminId
+            userId: groupCallRoom.adminId,
           },
           callInitiator: groupCallRoom.callInitiator,
           pinnedUsers: groupCallRoom.pinnedUsers,
           callRoomAvailableUsers: groupCallRoom.callRoomCurrentUsers,
         })
 
-        socket
-        .emit("groupCall:newUserJoined", { newUserDetail: { ...acceptedJoinRequestUserDetail, peerId } })
-          // .to(`groupCall:${referenceId}`)
+        socket.emit("groupCall:newUserJoined", { newUserDetail: { ...acceptedJoinRequestUserDetail, peerId } })
+        // .to(`groupCall:${referenceId}`)
       } catch (error) {}
     },
   )

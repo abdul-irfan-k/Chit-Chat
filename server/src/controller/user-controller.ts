@@ -588,7 +588,7 @@ export const getUserDetailsByUserIdHandler = async (req: Request, res: Response)
       { $project: { name: 1, email: 1, userId: 1 } },
     ])
 
-    // debugger; 
+    // debugger;
     return res.status(200).json(usersDetails)
   } catch (error) {
     return res.status(400).json({})

@@ -2,6 +2,7 @@
 import { ChatIcon, GroupIcon, PersonAddIcon, PlusIcon } from "@/constants/icon-constant"
 import React, { useState } from "react"
 import SearchBar from "../search-bar/search-bar"
+import GroupCreationForm from "../form/group-creation-form/group-creation-form"
 
 const AddButton = () => {
   const [isButtonClicked, setIsButtonClicked] = useState<boolean>(false)
@@ -52,7 +53,8 @@ const AddButton = () => {
       </div>
 
 
-      <SearchBar />
+      {/* <SearchBar /> */}
+      <GroupCreationForm />
     </div>
   )
 }

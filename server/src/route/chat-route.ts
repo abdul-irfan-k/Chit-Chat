@@ -14,4 +14,10 @@ router.post("/getChatRoomMessage", checkisLogedInMiddleware, getChatRoomMessageH
 
 router.post("/sendMessageToUser")
 router.post("/sendMessageToGroup")
+
+// create the group 
+router.post("/createGroup",checkisLogedInMiddleware)
+
+
+
 export default router

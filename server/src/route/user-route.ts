@@ -41,7 +41,7 @@ router.post("/requestChangePasswordWithOtp", checkisLogedInMiddleware, requestCh
 // fetching chat user list
 router.post("/getAllChatUsers", checkisLogedInMiddleware, getAllChatUsersHandler)
 // fetching the user list in search bar
-router.post("/getUserDetailByUserId",getUserDetailsByUserIdHandler)
+router.post("/getUserDetailByUserId", getUserDetailsByUserIdHandler)
 
 // login with social media
 router.post("/googleLoginWithAcessToken", googleLoginWithAcessTokenHandler)
@@ -50,7 +50,7 @@ router.post("/loginWithGithub", loginWithGithubHandler)
 
 // send the freind list
 router.post("/sendFreindRequest", checkisLogedInMiddleware, sendFreindRequestHandler)
-router.post("/acceptFreindRequest", checkisLogedInMiddleware,acceptFreindRequestHandler) // accept the freind request
-router.post("/rejectFreindRequest",checkisLogedInMiddleware) // reject freind request
+router.post("/acceptFreindRequest", checkisLogedInMiddleware, acceptFreindRequestHandler) // accept the freind request
+router.post("/rejectFreindRequest", checkisLogedInMiddleware) // reject freind request
 
 export default router
