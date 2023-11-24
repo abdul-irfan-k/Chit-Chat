@@ -582,9 +582,12 @@ export const acceptFreindRequestHandler = async (req: Request, res: Response) =>
 // get user details on search
 export const getUserDetailsByUserIdHandler = async (req: Request, res: Response) => {
   try {
-    const { userId } = req.body
+    const { _id } = req.user as userInterface
+    // const { userId } = req.body
+    const userObjectId = new mongoose.Types.ObjectId(_id)
+
     const usersDetails = await UserModel.aggregate([
-      { $match: { userId: userId } },
+      { $match: { userId: { $ne: userObjectId } } },
       { $project: { name: 1, email: 1, userId: 1 } },
     ])
 

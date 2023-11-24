@@ -9,6 +9,11 @@ const AddButton = () => {
   const [popUpForm, setPopUpForm] = useState<"newChat" | "newGroup" | "newContact" | undefined>(undefined)
 
   const addButtonClickHandler = () => setIsButtonClicked(!isButtonClicked)
+  const popUpFromSelectHandler = (selectedFrom: "newChat" | "newGroup" | "newContact" | undefined) => {
+    if (popUpForm == selectedFrom) return setPopUpForm(undefined)
+    else setPopUpForm(selectedFrom)
+  }
+
   return (
     <div>
       <div
@@ -26,6 +31,7 @@ const AddButton = () => {
               <div
                 className="relative w-10 flex justify-center items-center aspect-square rounded-full"
                 style={{ background: "rgba(28,157,234,.15)" }}
+                onClick={() => popUpFromSelectHandler("newChat")}
               >
                 <ChatIcon className="w-6 aspect-square" width="" height="" />
               </div>
@@ -35,6 +41,7 @@ const AddButton = () => {
               <div
                 className="relative w-10 flex justify-center items-center aspect-square rounded-full"
                 style={{ background: "rgba(28,157,234,.15)" }}
+                onClick={() => popUpFromSelectHandler("newGroup")}
               >
                 <GroupIcon className="w-6 aspect-square" width="" height="" />
               </div>
@@ -44,6 +51,7 @@ const AddButton = () => {
               <div
                 className="relative w-10 flex justify-center items-center aspect-square rounded-full"
                 style={{ background: "rgba(28,157,234,.15)" }}
+                onClick={() => popUpFromSelectHandler("newContact")}
               >
                 <PersonAddIcon className="w-6 aspect-square" width="" height="" />
               </div>
@@ -52,9 +60,8 @@ const AddButton = () => {
         )}
       </div>
 
-
       {/* <SearchBar /> */}
-      <GroupCreationForm />
+      {popUpForm == "newGroup" && <GroupCreationForm />}
     </div>
   )
 }

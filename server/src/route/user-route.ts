@@ -41,7 +41,7 @@ router.post("/requestChangePasswordWithOtp", checkisLogedInMiddleware, requestCh
 // fetching chat user list
 router.post("/getAllChatUsers", checkisLogedInMiddleware, getAllChatUsersHandler)
 // fetching the user list in search bar
-router.post("/getUserDetailByUserId", getUserDetailsByUserIdHandler)
+router.post("/getUserDetailByUserId",checkisLogedInMiddleware, getUserDetailsByUserIdHandler)
 
 // login with social media
 router.post("/googleLoginWithAcessToken", googleLoginWithAcessTokenHandler)

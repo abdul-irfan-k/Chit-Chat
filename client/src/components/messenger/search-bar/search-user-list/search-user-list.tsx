@@ -3,7 +3,7 @@ import React, { FC } from "react"
 
 const SearchUserList = () => {
   return <div>
-    <div className="mt-3 gap-3 flex flex-col">
+    <div className="mt-3 gap-3 flex flex-col h-[60vh]">
         <SearchUserCard profileImageSrc="/Asset/avatar.jpg" userId="irfan" userName="irfan" isHovered />
         <SearchUserCard profileImageSrc="/Asset/avatar.jpg" userId="irfan" userName="irfan" />
         <SearchUserCard profileImageSrc="/Asset/avatar.jpg" userId="irfan" userName="irfan" />

@@ -8,7 +8,7 @@ const SearchBar = () => {
       // style={{ background: "rgba(0,0,0,.4 )", backdropFilter: "blur(0.5px)" }}
 
       style={{
-        background: "rgba(0,0,0,0.9 )",
+        background: "rgba(0,0,0,0.97 )",
         // backdropFilter: "blur(1px)",
       }}
     >
