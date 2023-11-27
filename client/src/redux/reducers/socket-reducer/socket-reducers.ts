@@ -23,15 +23,15 @@ export const socketClientReducer = createSlice({
       state.isAvailableSocket = true
     },
     updateSocket: (state, action) => {
-      state.socket = action.payload
+      return {...state,...action.payload}
     },
     connectSocket: (state, action) => {},
   },
   extraReducers: (builder) => {
     builder.addCase(socketConnectHandler.fulfilled,(state,action) => {
-      state.isAvailableSocket = true
-      state.isConnectedSocket = true
-      state.socket = action.payload?.socket
+      // state.isAvailableSocket = true
+      // state.isConnectedSocket = true
+      // state.socket = action.payload?.socket
     })
   },
 })

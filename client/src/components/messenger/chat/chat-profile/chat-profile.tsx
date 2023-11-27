@@ -9,6 +9,7 @@ import { videoCallRequestHandler } from "@/redux/actions/call-request-action/cal
 import { chatUsersListReducerState } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 import { ArrowLeftIcon, PhoneIcon, SearchIcon, VideoIcon, VolumeHighIcon } from "@/constants/icon-constant"
+import { useSocketIoContext } from "@/provider/socket-io-provider/socket-io-provider"
 
 interface ChatProfileInstance {
   name: string
@@ -18,7 +19,8 @@ interface ChatProfileInstance {
 }
 
 const ChatProfile: FC<ChatProfileInstance> = ({ name, profileImageSrc, currentStatus, backButtonHandler }) => {
-  const { socket } = useSelector((state: { socketClient: socketReducerState }) => state.socketClient)
+  const {socket} = useSocketIoContext()
+  // const { socket } = useSelector((state: { socketClient: socketReducerState }) => state.socketClient)
   const { currentChaterDetail } = useSelector(
     (state: { chatUsersList: chatUsersListReducerState }) => state.chatUsersList,
   )

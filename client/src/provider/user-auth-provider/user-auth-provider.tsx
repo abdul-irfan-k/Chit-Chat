@@ -7,6 +7,7 @@ import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 import { useAppDispatch } from "@/store"
 import React, { FC, useEffect } from "react"
 import { useSelector } from "react-redux"
+import { useSocketIoContext } from "../socket-io-provider/socket-io-provider"
 
 interface UserAuthProviderProps {
   children: React.ReactNode
@@ -21,7 +22,8 @@ const UserAuthProvider: FC<UserAuthProviderProps> = ({ children }) => {
     isChanged,
     isLogedIn,
   } = useSelector((state: { userDetail: userDetailState }) => state.userDetail)
-  const { socket, isAvailableSocket } = useSelector((state: { socketClient: socketReducerState }) => state.socketClient)
+  const {socket} = useSocketIoContext()
+  const {  isAvailableSocket } = useSelector((state: { socketClient: socketReducerState }) => state.socketClient)
 
   useEffect(() => {
     dispatch(addAllChatUsers())

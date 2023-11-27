@@ -5,13 +5,15 @@ import { useSelector } from "react-redux"
 import { callNotificationReducerSlate } from "@/redux/reducers/notification-reducer/notification-reducer"
 import { socketReducerState } from "@/redux/reducers/socket-reducer/socket-reducers"
 import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
+import { useSocketIoContext } from "@/provider/socket-io-provider/socket-io-provider"
 
 const CallNotificationContainer = () => {
   const [isPopUpedNotification, setIsPopUpedNotification] = useState(false)
   const { isAvailableCallNotification, callNotificationData } = useSelector(
     (state: { notificationReducer: callNotificationReducerSlate }) => state.notificationReducer,
   )
-  const { socket, isAvailableSocket } = useSelector((state: { socketClient: socketReducerState }) => state.socketClient)
+  const {socket} = useSocketIoContext()
+  const {  isAvailableSocket } = useSelector((state: { socketClient: socketReducerState }) => state.socketClient)
   const { userDetail } = useSelector((state: { userDetail: userDetailState }) => state.userDetail)
 
   const outSideClickHandler = () => {

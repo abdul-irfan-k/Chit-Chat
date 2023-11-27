@@ -7,14 +7,14 @@ import { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 
 const SocketIoIntialise = () => { 
-  const dispatch = useDispatch()
-  const {socket} = useSelector((state:{socketClient:socketReducerState}) => state.socketClient)
+  // const dispatch = useDispatch()
+  // const {socket} = useSelector((state:{socketClient:socketReducerState}) => state.socketClient)
    
   useEffect(() => {
     // dispatch(initialiseSocket(Sockets))
     // dispatch(addAudioCallNotification())
 
-    dispatch(socketConnectHandler(socket))
+    // dispatch(socketConnectHandler(socket))
   }, [])
   return <></>
 }

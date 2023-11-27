@@ -11,6 +11,7 @@ import { chatUsersListReducerState } from "@/redux/reducers/chat-user-reducer/ch
 import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 import { socketReducerState } from "@/redux/reducers/socket-reducer/socket-reducers"
 import VoiceRecorder from "@/components/shared/voice-recorder/voice-recorder"
+import { useSocketIoContext } from "@/provider/socket-io-provider/socket-io-provider"
 
 type inputPopUpMenuType = "emoji" | "sticker" | "media" | undefined
 
@@ -19,7 +20,8 @@ const InputBox = () => {
   const [inputMessage, setInputMessage] = useState("")
   const [inputPopUpMenuType, setInputPopUpMenuType] = useState<inputPopUpMenuType>(undefined)
 
-  const { socket } = useSelector((state: { socketClient: socketReducerState }) => state.socketClient)
+  const {socket} = useSocketIoContext()
+  // const { socket } = useSelector((state: { socketClient: socketReducerState }) => state.socketClient)
   const { currentChaterDetail } = useSelector(
     (state: { chatUsersList: chatUsersListReducerState }) => state.chatUsersList,
   )

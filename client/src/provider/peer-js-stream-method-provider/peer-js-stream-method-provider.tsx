@@ -10,11 +10,13 @@ import { useAppDispatch } from "@/store"
 import { addAvailableMediaDevices } from "@/redux/actions/call-action/call-action"
 import { socketReducerState } from "@/redux/reducers/socket-reducer/socket-reducers"
 import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
+import { useSocketIoContext } from "../socket-io-provider/socket-io-provider"
 
 const PeerJsStreamMethodProvider = () => {
   const dispatch = useAppDispatch()
 
-  const { socket, isAvailableSocket } = useSelector((state: { socketClient: socketReducerState }) => state.socketClient)
+  const {socket} = useSocketIoContext()
+  const {  isAvailableSocket } = useSelector((state: { socketClient: socketReducerState }) => state.socketClient)
   const { isAvailableCallRoom, callDetail, callSetting, connectionRequiredPeers } = useSelector(
     (state: { callRedcuer: callReducerSlate }) => state.callRedcuer,
   )

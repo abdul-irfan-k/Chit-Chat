@@ -1,6 +1,7 @@
 "use client"
 
 import { MicIcon } from "@/constants/icon-constant"
+import { useSocketIoContext } from "@/provider/socket-io-provider/socket-io-provider"
 import { chatUsersListReducerState } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import { socketReducerState } from "@/redux/reducers/socket-reducer/socket-reducers"
 import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
@@ -18,12 +19,12 @@ const VoiceRecorder = () => {
 
   const mediaRecorder = useRef<MediaRecorder | null>(null)
 
-  const {  currentChaterDetail } = useSelector(
+  const { currentChaterDetail } = useSelector(
     (state: { chatUsersList: chatUsersListReducerState }) => state.chatUsersList,
   )
   const { userDetail } = useSelector((state: { userDetail: userDetailState }) => state.userDetail)
-  const { socket } = useSelector((state: { socketClient: socketReducerState }) => state.socketClient)
-
+  // const { socket } = useSelector((state: { socketClient: socketReducerState }) => state.socketClient)
+  const { socket } = useSocketIoContext()
   const getMicrophonePermission = async (): { isAllowedPermission: Boolean } => {
     try {
       const constraints = {

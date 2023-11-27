@@ -9,7 +9,7 @@ import { usePathname } from "next/navigation"
 import React, { useEffect } from "react"
 import { useSelector } from "react-redux"
 
-const CommunicatorProvider = ({ children }: { children: React.ReactNode }) => {
+const CommunicatorProvider = () => {
   const router = usePathname()
   const dispatch = useAppDispatch()
 
@@ -46,7 +46,7 @@ const CommunicatorProvider = ({ children }: { children: React.ReactNode }) => {
   //     getChatRoomMessageHandler({ chatRoomId: currentChaterDetail?.chatRoom?.chatRoomId, myUserId: userDetail?._id }),
   //   )
   // }, [router])
-  return <>{children}</>
+  return <></>
 }
 
 export default CommunicatorProvider

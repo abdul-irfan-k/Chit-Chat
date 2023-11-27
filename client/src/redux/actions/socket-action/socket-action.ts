@@ -4,7 +4,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit"
 export const socketConnectHandler = createAsyncThunk("socket/connect", async (socketClient: SocketClient) => {
   try {
     const { socket } = await socketClient.connect()
-    return { socket }
+    return {}
   } catch (error) {
     console.log("error", error)
   }

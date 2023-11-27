@@ -1,4 +1,5 @@
 import { PersonAddIcon, SearchIcon, XMarkIcon } from "@/constants/icon-constant"
+import { useSocketIoContext } from "@/provider/socket-io-provider/socket-io-provider"
 import { callReducerSlate } from "@/redux/reducers/call-reducer/call-reducer"
 import { socketReducerState } from "@/redux/reducers/socket-reducer/socket-reducers"
 import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
@@ -13,7 +14,8 @@ const VideoCallUserList: FC<VideoCallUserListProps> = ({ onCloseButtonHandler })
     (state: { callRedcuer: callReducerSlate }) => state.callRedcuer,
   )
 
-  const { socket } = useSelector((state: { socketClient: socketReducerState }) => state.socketClient)
+  const {socket} = useSocketIoContext()
+  // const { socket } = useSelector((state: { socketClient: socketReducerState }) => state.socketClient)
   const { userDetail } = useSelector((state: { userDetail: userDetailState }) => state.userDetail)
 
   const addButtonClickHandler = ({ userName, userId }: { userName: string; userId: string }) => {
