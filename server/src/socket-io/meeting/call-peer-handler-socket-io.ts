@@ -1,5 +1,5 @@
 import { Server, Socket } from "socket.io"
-import { getRedisSocketCached } from "../model/redis/redis.js"
+import { getRedisSocketCached } from "../../model/redis/redis.js"
 
 const callPeerHandlerSocketIo = (io: Server, socket: Socket) => {
   socket.on(

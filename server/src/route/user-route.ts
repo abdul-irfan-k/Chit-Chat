@@ -4,7 +4,6 @@ import {
   changePasswordHanldler,
   changePasswordWithOtpHandler,
   checkUserIdAvilableHandler,
-  getAllChatUsersHandler,
   getUserDetailHandler,
   getUserDetailsByUserIdHandler,
   googleLoginWithAcessTokenHandler,
@@ -38,8 +37,6 @@ router.post("/changePassword", checkisLogedInMiddleware, changePasswordHanldler)
 router.post("/changePasswordWithOtp", checkisLogedInMiddleware, changePasswordWithOtpHandler)
 router.post("/requestChangePasswordWithOtp", checkisLogedInMiddleware, requestChangePasswordWithOtpHandler)
 
-// fetching chat user list
-router.post("/getAllChatUsers", checkisLogedInMiddleware, getAllChatUsersHandler)
 // fetching the user list in search bar
 router.post("/getUserDetailByUserId",checkisLogedInMiddleware, getUserDetailsByUserIdHandler)
 

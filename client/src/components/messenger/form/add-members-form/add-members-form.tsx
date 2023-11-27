@@ -5,10 +5,10 @@ import React, { FC, useEffect, useState } from "react"
 
 interface AddMembersFormProps {
   selectedGroupMembers: { userId: string; _id: string }[]
-  setGroupMember: React.Dispatch<React.SetStateAction<{ userId: string; _id: string }[]>>
+  setGroupMembers: React.Dispatch<React.SetStateAction<{ userId: string; _id: string }[]>>
   onCloseHandler(): void
 }
-const AddMembersFrom: FC<AddMembersFormProps> = ({ selectedGroupMembers, setGroupMember, onCloseHandler }) => {
+const AddMembersFrom: FC<AddMembersFormProps> = ({ selectedGroupMembers, setGroupMembers, onCloseHandler }) => {
   const [searchInput, setSearchInput] = useState<String>("")
   const [searchResult, setSearchResult] = useState<Array<{ name: string; userId: string; _id: string }>>([])
 
@@ -16,10 +16,10 @@ const AddMembersFrom: FC<AddMembersFormProps> = ({ selectedGroupMembers, setGrou
     if (selected) {
       const isAlreadyAvailableMember = selectedGroupMembers.some((member) => member._id == userDetail._id)
       if (isAlreadyAvailableMember) return
-      setGroupMember([...selectedGroupMembers, { _id: userDetail._id, userId: userDetail.userId }])
+      setGroupMembers([...selectedGroupMembers, { _id: userDetail._id, userId: userDetail.userId }])
     } else {
       const updatedMembers = selectedGroupMembers.filter((member) => member._id != userDetail._id)
-      setGroupMember(updatedMembers)
+      setGroupMembers(updatedMembers)
     }
   }
 
@@ -125,7 +125,7 @@ const AddMembersFrom: FC<AddMembersFormProps> = ({ selectedGroupMembers, setGrou
               <div
                 className="px-5 py-2 flex  items-center justify-center rounded-full text-lg border-2 border-red-500 text-red-500"
                 onClick={() => {
-                  setGroupMember([])
+                  setGroupMembers([])
                   onCloseHandler()
                 }}
               >

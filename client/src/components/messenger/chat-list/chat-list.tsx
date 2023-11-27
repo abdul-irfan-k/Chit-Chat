@@ -1,6 +1,6 @@
 "use client"
 import BreakPoint from "@/components/responsive-utilities/breakpoint/breakpoint"
-import { getChatRoomMessageHandler, updateCurrentChaterHandler } from "@/redux/actions/chat-action/chat-action"
+import { getChatRoomMessageHandler, updateCurrentChaterHandler, updateCurrentChatingGroupHandler } from "@/redux/actions/chat-action/chat-action"
 import { chatUsersListReducerState } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import { useAppDispatch } from "@/store"
 import Image from "next/image"
@@ -11,20 +11,19 @@ import { useSelector } from "react-redux"
 import MobileChatContainer from "../chat/mobile-chat-container/mobile-chat-container"
 import MobileBreakPoint from "@/components/responsive-utilities/breakpoint/mobile-breakpoint/mobile-breakpoint"
 import useMediaQuery from "@/hooks/user-media-query/use-media-query"
+import { messengerSortState } from "@/redux/reducers/messenger-sort-reducer/messenger-sort-reducer"
+import ChatListBox from "./chat-list-box/chat-list-box"
 
 const ChatList = () => {
-  const { usersDeatail, isChanged, isChange } = useSelector(
+  const { usersDeatail,groupDetail} = useSelector(
     (state: { chatUsersList: chatUsersListReducerState }) => state.chatUsersList,
   )
-
+  const { messengerSortType, subSelectionType } = useSelector(
+    (state: { messengerSort: messengerSortState }) => state.messengerSort,
+  )
   const [isSelectedUser, setIsSelectedUser] = useState<boolean>(false)
   const dispatch = useAppDispatch()
-  const router = useRouter()
 
-  // useEffect(() => {
-  //   dispatch(getChatRoomMessageHandler({ chatRoomId: currentChaterDetail?.chatRoom?.chatRoomId }))
-  //   console.log("current chater",currentChaterDetail)
-  // }, [isCurrentChaterChanged])
 
   const isMobile = useMediaQuery(768)
   const mobileBackButtonHandler = () => {
@@ -33,7 +32,7 @@ const ChatList = () => {
 
   return (
     <div className="flex flex-col  mt-10 gap-5    w-full   ">
-      {usersDeatail.map((userDetail, index) => {
+      {messengerSortType == "chat" && subSelectionType == "direct" && usersDeatail.map((userDetail, index) => {
         return (
           // <Link href={`/messenger/${userDetail.userId}`} key={index}>
           <ChatListBox
@@ -59,86 +58,38 @@ const ChatList = () => {
           // </Link>
         )
       })}
+      {messengerSortType == "chat" && subSelectionType == "group" && groupDetail.map((groupDetail, index) => {
+        return (
+          // <Link href={`/messenger/${groupDetail.userId}`} key={index}>
+          <ChatListBox
+            key={index}
+            onClickHandler={() => {
+              console.log('current chating group detaail',groupDetail)
+              
+              dispatch(updateCurrentChatingGroupHandler({ groupDetail:groupDetail, isChanged: true }))
+
+              setIsSelectedUser(true)
+            }}
+            communicatorName={groupDetail.name}
+            imageSrc="/Asset/avatar.jpg"
+            lastMessageTime={new Date()}
+            onlineStatus={groupDetail.status?.onlineStatus == "online" ? true : false}
+            currentStatus={{ isSendingMessage: false }}
+            newMessage={
+              groupDetail.notification?.isAvailableNewNotification
+                ? {
+                    latestMessage: "hi from new account",
+                    totalNewMessageCount: groupDetail.notification.totalNotificationCount,
+                  }
+                : undefined
+            }
+          />
+          // </Link>
+        )
+      })}
       {isMobile && isSelectedUser && <MobileChatContainer backButtonHandler={mobileBackButtonHandler} />}
     </div>
   )
 }
 
 export default ChatList
-
-interface ChatListBoxInterface {
-  imageSrc: string
-  communicatorName: string
-  lastMessageTime: Date
-  lastConversation?: {
-    lastMessage: string
-  }
-  newMessage?: {
-    latestMessage?: string
-    totalNewMessageCount: number
-  }
-  onlineStatus: Boolean
-  currentStatus?: {
-    isSendingMessage: Boolean
-    sendingMessageType?: "textMessage" | "voiceMessage"
-  }
-  onClickHandler(): void
-}
-
-const ChatListBox: FC<ChatListBoxInterface> = ({
-  imageSrc,
-  communicatorName,
-  lastMessageTime,
-  lastConversation,
-  newMessage,
-  onlineStatus,
-  currentStatus,
-  onClickHandler,
-}) => {
-  return (
-    <div className="gap-3 relative flex  items-center" onClick={onClickHandler}>
-      <div className="relative  w-14 aspect-square md:w-[20%] ">
-        <Image src={imageSrc} alt="user-image" fill className="rounded-3xl" />
-        <div
-          className={
-            "absolute right-0 top-0 w-4  aspect-square rounded-full border-[3px] border-slate-200 dark:border-neutral-950" +
-            (onlineStatus ? " bg-green-500" : " bg-red-500")
-          }
-        ></div>
-      </div>
-
-      <div className="gap-1 flex flex-col  justify-center ">
-        <div className="font-medium text-base ">{communicatorName}</div>
-        {!currentStatus?.isSendingMessage && (
-          <div className="text-sm text-slate-800 dark:text-slate-200">
-            {lastConversation != undefined && lastConversation.lastMessage}
-          </div>
-        )}
-
-        {newMessage != undefined && <div className="text-sm text-blue-500">{newMessage.latestMessage}</div>}
-
-        {currentStatus?.isSendingMessage && (
-          <div className="text-sm text-slate-800 dark:text-slate-200">
-            {currentStatus.sendingMessageType == "textMessage" && "typing..."}
-            {currentStatus.sendingMessageType == "voiceMessage" && "recording..."}
-          </div>
-        )}
-      </div>
-
-      <div className="gap-1 ml-auto flex flex-col  justify-center items-end">
-        <div className="text-xs text-slate-800 dark:text-slate-200">{lastMessageTime.toLocaleDateString()}</div>
-        <div className="text-base">
-          {newMessage != undefined && (
-            <div className="p-2  w-8 text-sm aspect-square flex items-center justify-center  bg-blue-500 rounded-full">
-              {newMessage.totalNewMessageCount}
-            </div>
-          )}
-
-          {newMessage == undefined && currentStatus?.isSendingMessage == undefined && (
-            <div className="text-green-500">seen</div>
-          )}
-        </div>
-      </div>
-    </div>
-  )
-}

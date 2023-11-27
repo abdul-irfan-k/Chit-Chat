@@ -2,11 +2,11 @@
   "name": "video-conferencing-web-application-server",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/index.js",
+  "main": "dist/server.js",
   "type": "module",
   "scripts": {
     "build": "tsc ",
-    "dev": "nodemon  --watch src  -e ts --exec  ts-node-esm src/index.ts",
+    "dev": "nodemon  --watch src  -e ts --exec  ts-node-esm src/server.ts",
     "format": "npm run prettier",
     "start": "node .",
     "test": "echo \"Error: no test specified\" && exit 1",

@@ -26,19 +26,37 @@ interface chatUserDetail {
   status?: ChatRoomUserStatus
 }
 
+interface currentChaterUserDetail extends chatUserDetail {
+  currentChaterType: "user"
+}
+interface chatGroupDetails {
+  _id: string
+  name: string
+  groupImageUrl?: string
+  chatRoomId?: string
+  isAdmin: boolean
+}
+
+interface currentChatingGroupDetail extends chatGroupDetails {
+  currentChaterType: "group"
+}
+
+type currentChaterDetailType = null | currentChaterUserDetail | currentChatingGroupDetail
 interface chatUsersListReducer {
   usersDeatail: chatUserDetail[]
+  groupDetail: chatGroupDetails[]
   isChanged: Boolean
-  isCurentChaterChanged: boolean
-  currentChaterDetail: null | chatUserDetail
+  currentChaterDetail: currentChaterDetailType
+  isCurrentChatingWithGroup: boolean
 }
 
 export type chatUsersListReducerState = chatUsersListReducer
 const chatUserListInitialState: chatUsersListReducerState = {
   usersDeatail: [],
+  groupDetail: [],
   isChanged: false,
-  isCurentChaterChanged: false,
   currentChaterDetail: null,
+  isCurrentChatingWithGroup: false,
 }
 
 export const chatUsersListReducer = createSlice({
@@ -46,7 +64,17 @@ export const chatUsersListReducer = createSlice({
   initialState: chatUserListInitialState,
   reducers: {
     addIntialAllUserList: (state, action) => {
-      return { isChanged: true, usersDeatail: [...action.payload] }
+      // return { isChanged: true, usersDeatail: [...action.payload] }
+    },
+    addIntialAllUserAndGroupList: (state, action) => {
+      // console.log('action',action.payload)
+      return {
+        isChanged: true,
+        usersDeatail: [...action.payload.usersDeatail],
+        groupDetail: [...action.payload.groupDetail],
+        currentChaterDetail: null,
+        isCurrentChatingWithGroup: true,
+      }
     },
 
     addintialOnlineUsers: (state, action) => {
@@ -94,7 +122,12 @@ export const chatUsersListReducer = createSlice({
     },
     updateCurrentUser: (state, action) => {
       state.currentChaterDetail = action.payload.userDetail
-      state.isCurentChaterChanged = true
+      state.isCurrentChatingWithGroup = false
+    },
+
+    updateCurrentChatingGroup: (state, action) => {
+      state.currentChaterDetail = action.payload.groupDetail
+      state.isCurrentChatingWithGroup = true
     },
   },
 })

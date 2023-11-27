@@ -11,6 +11,13 @@ const connectionSchema = new Schema({
       chatRoomId: { type: Schema.Types.ObjectId },
     },
   ],
+  groups: [
+    {
+      groupId: { type: Schema.Types.ObjectId },
+      chatRoomId: { type: Schema.Types.ObjectId },
+    },
+  ],
+
   sendedFreindRequest: [
     {
       userId: { type: Schema.Types.ObjectId },
@@ -44,6 +51,10 @@ interface connectionSchemaInterface {
   }[]
   chatRooms: {
     chatRoomId?: Types.ObjectId | undefined
+  }[]
+  groups: {
+    chatRoomId?: Types.ObjectId | undefined
+    groupId?: Types.ObjectId | undefined
   }[]
 }
 

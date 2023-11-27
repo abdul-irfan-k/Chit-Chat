@@ -11,14 +11,16 @@ import {
   VideoCamIcon,
 } from "@/constants/icon-constant"
 import Image from "next/image"
-import { FC } from "react"
+import { FC, useState } from "react"
 import { useRouter } from "next/navigation"
 import { useSelector } from "react-redux"
 import { callReducerSlate } from "@/redux/reducers/call-reducer/call-reducer"
+import FullScreenNotification from "@/components/notificaton/full-screen-notification/full-screen-notification"
 
 const SideMenu = () => {
   const { isAvailableCallRoom } = useSelector((state: { callRedcuer: callReducerSlate }) => state.callRedcuer)
   const router = useRouter()
+  const [showNotification,setShowNotification] = useState<boolean>(false)
 
   const videoCallButtonHandler = () => {
     if (isAvailableCallRoom) return router.push("/video-call")
@@ -41,7 +43,7 @@ const SideMenu = () => {
         <SideMenuIcon>
           <IdBadgeIcon className="w-6 aspect-square" />
         </SideMenuIcon>
-        <SideMenuIcon>
+        <SideMenuIcon onClickHandler={() => setShowNotification(!showNotification)}>
           <BellIcon className="w-6 aspect-square" />
         </SideMenuIcon>
         <SideMenuIcon>
@@ -54,6 +56,7 @@ const SideMenu = () => {
           <MoonIcon className="w-6 aspect-square" />
         </SideMenuIcon>
       </div>
+      {showNotification &&  <FullScreenNotification />}
     </div>
   )
 }

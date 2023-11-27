@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit"
 
 interface chatSort {
   messengerSortType: "chat"
-  subSelectionType: "direct" | "group"
+  subSelectionType: "direct" | "group" | "all"
 }
 
 interface callSort {

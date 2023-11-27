@@ -1,7 +1,7 @@
 "use client"
 import Image from "next/image"
 
-import { FC, useEffect } from "react"
+import { FC, MouseEvent, useEffect } from "react"
 import { socketReducerState } from "@/redux/reducers/socket-reducer/socket-reducers"
 import { useSelector } from "react-redux"
 import { useAppDispatch } from "@/store"
@@ -26,7 +26,8 @@ const ChatProfile: FC<ChatProfileInstance> = ({ name, profileImageSrc, currentSt
 
   const dispatch = useAppDispatch()
 
-  const videoCallIconClickHandler = () => {
+  const videoCallIconClickHandler = (e: MouseEvent<HTMLDivElement, MouseEvent>) => {
+    e.stopPropagation()
     socket.emit("videoCall:intialise", {
       userDetail: userDetail,
       chatRoomId: currentChaterDetail?.chatRoom?.chatRoomId,
@@ -51,7 +52,7 @@ const ChatProfile: FC<ChatProfileInstance> = ({ name, profileImageSrc, currentSt
           <ArrowLeftIcon className="aspect-square w-7" width="" height="" />
         </div>
       </div>
-      <div className="ml-2 relative   w-[10%]   aspect-square md:w-[8%] md:ml-0">
+      <div className="ml-2 relative   w-[10%]   aspect-square md:w-[6%] md:ml-0">
         <Image src={profileImageSrc} alt="user-image" fill className="rounded-3xl" />
         <div
           className={
@@ -63,11 +64,9 @@ const ChatProfile: FC<ChatProfileInstance> = ({ name, profileImageSrc, currentSt
       <div className="gap-2 flex flex-col ml-3 ">
         <div className="font-medium text-lg  text-slate-950 dark:text-slate-50 ">{name}</div>
         <div className="hidden md:block">
-          {currentStatus == "online" && (
-            <div className="px-3 py-2 flex items-center justify-center rounded-full bg-green-500 ">online</div>
-          )}
+          {currentStatus == "online" && <div className="  flex items-center justify-center rounded-full ">online</div>}
           {currentStatus == "ofline" && (
-            <div className="px-3 py-1 flex items-center justify-center rounded-full bg-pink-500">ofline</div>
+            <div className="  flex items-center justify-center rounded-full text-green-500 ">online</div>
           )}
         </div>
       </div>

@@ -1,5 +1,5 @@
 "use client"
-import { addAllChatUsers, getIntialOnlineChatUsers } from "@/redux/actions/chat-action/chat-action"
+import { addAllChatGroups, addAllChatUsers, getIntialOnlineChatUsers } from "@/redux/actions/chat-action/chat-action"
 import { checkUserIsLogedIn } from "@/redux/actions/user-action/user-action"
 import { chatUsersListReducerState } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import { socketReducerState } from "@/redux/reducers/socket-reducer/socket-reducers"
@@ -25,6 +25,7 @@ const UserAuthProvider: FC<UserAuthProviderProps> = ({ children }) => {
 
   useEffect(() => {
     dispatch(addAllChatUsers())
+    dispatch(addAllChatGroups())
   }, [isChatUserListChanged,dispatch])
 
   useEffect(() => {

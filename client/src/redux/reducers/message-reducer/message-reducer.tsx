@@ -1,5 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit"
 
+
+
 interface textMessage {
   _id: string
   chatRoomId: string
@@ -30,6 +32,8 @@ interface incomingMessage {
   messageData: textMessage | voiceMessage
 }
 
+
+
 interface chatRoomMessages {
   chatRoomId: string
   messages: Array<outGoingMessage | incomingMessage>
@@ -39,7 +43,6 @@ interface allChatRoomMessages {
   chatRoomMessages: chatRoomMessages[]
   currentChaterMessage?: chatRoomMessages
   messageAvailableChatRoom: availabeChatRoom[]
-  isIisIntialData: boolean
 }
 
 interface availabeChatRoom {
@@ -85,7 +88,6 @@ export const chatRoomsMessageReducer = createSlice({
         (chatRoom) => chatRoom.chatRoomId == action.payload.chatRoomId,
       )
       if (isAlreadAvailableMessage) return { ...state }
-      state.isIisIntialData = false
       state.messageAvailableChatRoom = [...state.messageAvailableChatRoom, action.payload]
     },
   },

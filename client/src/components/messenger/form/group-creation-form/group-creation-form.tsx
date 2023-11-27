@@ -1,14 +1,24 @@
 "use client"
 import React, { useState } from "react"
 import AddMembersFrom from "../add-members-form/add-members-form"
+import { useAppDispatch } from "@/store"
+import { createGroupHandler } from "@/redux/actions/chat-action/chat-action"
 
 const GroupCreationForm = () => {
+  const dispatch = useAppDispatch()
   const [groupName, setGroupName] = useState<string>("")
-  const [groupMember, setGroupMember] = useState<Array<{ userId: string; _id: string }>>([])
+  const [groupMembers, setGroupMembers] = useState<Array<{ userId: string; _id: string }>>([])
   const [isPopUpedAddMemberFrom, setIsPopUpedAddMemberFrom] = useState<boolean>(false)
 
   const onMemberSelectHandler = () => {}
   const closePopUpedMemberFormHandler = () => setIsPopUpedAddMemberFrom(false)
+  const createGroupButtonHandler = () => {
+    const members = groupMembers.map((member) => {
+      return { userId: member._id }
+    })
+    console.log("members",members)
+    dispatch(createGroupHandler({ groupName, groupMembers: members }))
+  }
 
   return (
     <>
@@ -28,7 +38,7 @@ const GroupCreationForm = () => {
             </div>
 
             <div className="px-4 py-4 gap-2  mt-10 flex flex-wrap border-[1px] rounded-xl">
-              {groupMember.map((member, index) => {
+              {groupMembers.map((member, index) => {
                 return (
                   <div className="mt-3 px-4 py-2 rounded-full bg-slate-300 dark:bg-neutral-800" key={index}>
                     {member.userId}
@@ -44,7 +54,10 @@ const GroupCreationForm = () => {
               <div className="px-5 py-2 flex flex-1 items-center justify-center rounded-full text-lg border-2 border-red-500 text-red-500">
                 Cancel
               </div>
-              <div className="px-5 py-2 flex flex-1 items-center justify-center rounded-full text-lg bg-blue-500">
+              <div
+                className="px-5 py-2 flex flex-1 items-center justify-center rounded-full text-lg bg-blue-500"
+                onClick={createGroupButtonHandler}
+              >
                 Create Group
               </div>
             </div>
@@ -52,7 +65,13 @@ const GroupCreationForm = () => {
         </div>
       )}
 
-      {isPopUpedAddMemberFrom && <AddMembersFrom selectedGroupMembers={groupMember} setGroupMember={setGroupMember} onCloseHandler={closePopUpedMemberFormHandler} />}
+      {isPopUpedAddMemberFrom && (
+        <AddMembersFrom
+          selectedGroupMembers={groupMembers}
+          setGroupMembers={setGroupMembers}
+          onCloseHandler={closePopUpedMemberFormHandler}
+        />
+      )}
     </>
   )
 }

@@ -1,7 +1,5 @@
 import { axiosChatInstance, axiosUserInstance } from "@/constants/axios"
-import {
-  chatUserListAction,
-} from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
+import { chatUserListAction } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import {
   chatRoomMessageAction,
   messageAvailableChatRoomsAction,
@@ -11,14 +9,35 @@ import { Socket } from "socket.io-client"
 
 export const addAllChatUsers = () => async (dispatch: AppDispatch) => {
   try {
-    const { data } = await axiosUserInstance.post("/getAllChatUsers")
-    dispatch(chatUserListAction.addIntialAllUserList(data))
+    const { data: usersDeatail } = await axiosChatInstance.post("/getAllChatUsers")
+    // dispatch(chatUserListAction.addIntialAllUserList(usersDeatail))
+    const { data: groupDetail } = await axiosChatInstance.post("/getAllChatGroups")
+    console.log("group details",groupDetail)
+    // console.log("all chat groups", data)
+    dispatch(chatUserListAction.addIntialAllUserAndGroupList({ usersDeatail, groupDetail }))
+  } catch (error) {}
+}
+
+export const addAllChatGroups = () => async (dispatch: AppDispatch) => {
+  try {
+    // const { data } = await axiosChatInstance.post("/getAllChatGroups")
+    // console.log("all chat groups", data)
+  } catch (error) {}
+}
+
+export const createGroupHandler = (details: Object) => async (dispatch: AppDispatch) => {
+  try {
+    const { data } = await axiosChatInstance.post("/createGroup", details)
   } catch (error) {}
 }
 
 export const updateCurrentChaterHandler = (details) => async (dispatch: AppDispatch) => {
   dispatch(chatUserListAction.updateCurrentUser(details))
 }
+export const updateCurrentChatingGroupHandler = (details) => async (dispatch: AppDispatch) => {
+  dispatch(chatUserListAction.updateCurrentChatingGroup(details))
+}
+
 
 export const sendMessageHandler =
   (
@@ -69,7 +88,7 @@ export const getChatRoomMessageHandler =
   }
 
 export const receiveMessageHandler =
-  ({ chatRoomId, message }: { chatRoomId: string, message: string }) =>
+  ({ chatRoomId, message }: { chatRoomId: string; message: string }) =>
   async (dispatch: AppDispatch) => {
     dispatch(
       chatRoomMessageAction.addSendedChatRoomMessage({
@@ -88,14 +107,16 @@ export const receiveMessageHandler =
     )
   }
 
-export const addNewMessageNotificationHandler = ({_id}:{_id:string}) => async (dispatch: AppDispatch) => {
-  dispatch(
-    chatUserListAction.addUserNotification({
-      _id,
-      notification: { notificationType: "newMessage", totalNotificationCount: 1, isAvailableNewNotification: true },
-    }),
-  )
-}
+export const addNewMessageNotificationHandler =
+  ({ _id }: { _id: string }) =>
+  async (dispatch: AppDispatch) => {
+    dispatch(
+      chatUserListAction.addUserNotification({
+        _id,
+        notification: { notificationType: "newMessage", totalNotificationCount: 1, isAvailableNewNotification: true },
+      }),
+    )
+  }
 
 export const getIntialOnlineChatUsers = (socket: Socket) => async (dispatch: AppDispatch) => {
   try {

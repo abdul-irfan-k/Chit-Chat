@@ -9,8 +9,6 @@ import url from "url"
 import * as socketIo from "socket.io"
 dotEnv.config()
 
-import userMessageSocketIo from "./socket-io/user-message.js"
-import userStreamSocketIo from "./socket-io/user-stream.js"
 
 import userRouter from "./route/user-route.js"
 import chatRouter from "./route/chat-route.js"
@@ -19,11 +17,13 @@ import meetingRouter from "./route/meeting-route.js"
 import { connnectDB } from "./config/mongoose.js"
 import { connectRedis } from "./config/redis.js"
 
-import { userSocketIntialization } from "./socket-io/user-initialise.js"
-import { userStatusSocketIo } from "./socket-io/user-status-socket-io.js"
-import videoCallIntialiseSocketIo from "./socket-io/video-call-socket-intialise.js"
-import GroupCallSocketIo from "./socket-io/group-call-socket-io.js"
-import callPeerHandlerSocketIo from "./socket-io/call-peer-handler-socket-io.js"
+import userMessageSocketIo from "./socket-io/message/user-message-socket-io.js"
+import groupMessageSocketIo from "./socket-io/message/group-message-socket-io.js"
+import { userSocketIntialization } from "./socket-io/user/user-initialise.js"
+import { userStatusSocketIo } from "./socket-io/user/user-status-socket-io.js"
+import videoCallIntialiseSocketIo from "./socket-io/meeting/video-call-socket-intialise.js"
+import GroupCallSocketIo from "./socket-io/meeting/group-call-socket-io.js"
+import callPeerHandlerSocketIo from "./socket-io/meeting/call-peer-handler-socket-io.js"
 
 const app: Application = express()
 const server = http.createServer(app)
@@ -57,13 +57,13 @@ io.on("connection", async (socket) => {
   // video call
   callPeerHandlerSocketIo(io, socket)
   videoCallIntialiseSocketIo(io, socket)
-  GroupCallSocketIo(io, socket)
+  GroupCallSocketIo(io, socket) 
 
   userStatusSocketIo(io, socket)
 
   //message
   userMessageSocketIo(io, socket)
-  userStreamSocketIo(io, socket)
+  groupMessageSocketIo(socket)
 })
 
 app.use("/user", userRouter)

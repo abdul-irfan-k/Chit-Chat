@@ -4,7 +4,7 @@ import MessageSvg from "/public/Asset/Icon/message.svg"
 import PhoneSvg from "/public/Asset/Icon/phone.svg"
 import IdBadge from "/public/Asset/Icon/id-badge.svg"
 import { messengerSortState } from "@/redux/reducers/messenger-sort-reducer/messenger-sort-reducer"
-import {  useSelector } from "react-redux"
+import { useSelector } from "react-redux"
 import { CallIcon, CallMadeIcon, CallMissedIcon, CallReceivedIcon } from "@/constants/icon-constant"
 import { changeMessengerSortState } from "@/redux/actions/messenger-action/messenger-action"
 import { useAppDispatch } from "@/store"
@@ -26,7 +26,7 @@ const MessengerSort = () => {
       dispatch(changeMessengerSortState({ messengerSortType: "contact", subSelectionType: "all" }))
   }
 
-  const chatSubSortHandler = (subSort: "direct" | "group") => {
+  const chatSubSortHandler = (subSort: "direct" | "group" | "all") => {
     dispatch(changeMessengerSortState({ messengerSortType: "chat", subSelectionType: subSort }))
   }
   const callSubSortHandler = (subSort: "allCall" | "incomingCall" | "outgoingCall" | "missedCall") => {
@@ -45,7 +45,10 @@ const MessengerSort = () => {
 
       <div className="mt-10 gap-5 flex justify-between items-center  fill-slate-950 font-medium text-base  dark:fill-slate-50">
         <div
-          className={"gap-1 py-2 w-full rounded-full flex justify-center items-center "+(messengerSortType == "chat" ? "dark:bg-blue-500" : "bg-slate-300 dark:bg-neutral-800")}
+          className={
+            "gap-1 py-2 w-full rounded-full flex justify-center items-center " +
+            (messengerSortType == "chat" ? "dark:bg-blue-500" : "bg-slate-300 dark:bg-neutral-800")
+          }
           onClick={() => messengerPrimarySortHandler("chat")}
         >
           <div className="relative w-5 ">
@@ -54,7 +57,10 @@ const MessengerSort = () => {
           <div className=""> Chat</div>
         </div>
         <div
-          className={"gap-1 py-2 w-full rounded-full flex justify-center items-center "+(messengerSortType == "call" ? "dark:bg-blue-500" : "bg-slate-300 dark:bg-neutral-800")}
+          className={
+            "gap-1 py-2 w-full rounded-full flex justify-center items-center " +
+            (messengerSortType == "call" ? "dark:bg-blue-500" : "bg-slate-300 dark:bg-neutral-800")
+          }
           onClick={() => messengerPrimarySortHandler("call")}
         >
           <div className="relative w-5">
@@ -63,7 +69,10 @@ const MessengerSort = () => {
           <div className=""> Call</div>
         </div>
         <div
-          className={"gap-1 py-2 w-full rounded-full flex justify-center items-center "+(messengerSortType == "contact" ? "dark:bg-blue-500" : "bg-slate-300 dark:bg-neutral-800")}
+          className={
+            "gap-1 py-2 w-full rounded-full flex justify-center items-center " +
+            (messengerSortType == "contact" ? "dark:bg-blue-500" : "bg-slate-300 dark:bg-neutral-800")
+          }
           onClick={() => messengerPrimarySortHandler("contact")}
         >
           <div className="relative w-5 ">
@@ -77,6 +86,18 @@ const MessengerSort = () => {
         <div className="gap-5 mt-5  flex justify-between items-center fill-slate-950 font-medium text-base dark:fill-slate-50">
           <div
             className={
+              "gap-1  py-2  w-[50%] rounded-full flex justify-center items-center " +
+              (subSelectionType == "all" ? "dark:bg-blue-500" : "bg-slate-300 dark:bg-neutral-800")
+            }
+            onClick={() => chatSubSortHandler("all")}
+          >
+            {/* <div className="relative w-5 ">
+              <IdBadge className="aspect-square" />
+            </div> */}
+            <div className="">All</div>
+          </div>
+          <div
+            className={
               "gap-1  py-2 w-full rounded-full flex justify-center items-center " +
               (subSelectionType == "direct" ? "dark:bg-blue-500" : "bg-slate-300 dark:bg-neutral-800")
             }
@@ -85,7 +106,7 @@ const MessengerSort = () => {
             <div className="relative w-5 ">
               <IdBadge className="aspect-square" />
             </div>
-            <div className=""> Direct</div>
+            <div className=""> Person</div>
           </div>
           <div
             className={

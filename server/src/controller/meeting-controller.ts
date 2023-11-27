@@ -1,5 +1,5 @@
 import { Request, Response } from "express"
-import GroupCallRoomModel from "../model/mongoose/video-group-call-room-model.js"
+import GroupCallRoomModel from "../model/mongoose/meeting-model/video-group-call-room-model.js"
 import { generateRandomUUID } from "../util/random-text-generator.js"
 import { v4 as uuidv4 } from "uuid"
 

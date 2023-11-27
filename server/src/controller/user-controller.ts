@@ -318,17 +318,6 @@ export const changePasswordWithOtpHandler = async (req: Request, res: Response) 
   }
 }
 
-export const getAllChatUsersHandler = async (req: Request, res: Response) => {
-  try {
-    const { _id } = req.user as userInterface
-    const allChatUser = await User.getAllChatUser(_id)
-
-    return res.status(200).json(allChatUser)
-  } catch (error) {
-    console.log(error)
-  }
-}
-
 export const googleLoginWithAcessTokenHandler = async (req: Request, res: Response) => {
   try {
     console.log(req.url)
@@ -585,9 +574,9 @@ export const getUserDetailsByUserIdHandler = async (req: Request, res: Response)
     const { _id } = req.user as userInterface
     // const { userId } = req.body
     const userObjectId = new mongoose.Types.ObjectId(_id)
-
+    console.log("user object id", userObjectId)
     const usersDetails = await UserModel.aggregate([
-      { $match: { userId: { $ne: userObjectId } } },
+      { $match: { _id: { $ne: userObjectId } } },
       { $project: { name: 1, email: 1, userId: 1 } },
     ])
 

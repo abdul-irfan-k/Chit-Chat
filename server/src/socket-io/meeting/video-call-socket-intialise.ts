@@ -1,6 +1,6 @@
 import { Server, Socket } from "socket.io"
-import { getRedisSocketCached } from "../model/redis/redis.js"
-import VideoCallRoomModel from "../model/mongoose/video-call-room-model.js"
+import { getRedisSocketCached } from "../../model/redis/redis.js"
+import VideoCallRoomModel from "../../model/mongoose/meeting-model/video-call-room-model.js"
 import { v4 as uuidv4 } from "uuid"
 
 const videoCallIntialiseSocketIo = (io: Server, socket: Socket) => {
