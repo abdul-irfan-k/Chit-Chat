@@ -7,7 +7,11 @@ import {
   addInitialCallDataHandler,
   joinGroupCallHandler,
 } from "@/redux/actions/call-action/call-action"
-import { addNewMessageNotificationHandler, receiveMessageHandler } from "@/redux/actions/chat-action/chat-action"
+import {
+  addNewMessageNotificationHandler,
+  receiveMessageHandler,
+  recieveNewImageMessageHandler,
+} from "@/redux/actions/chat-action/chat-action"
 import { chatUsersListReducerState } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import { socketReducerState } from "@/redux/reducers/socket-reducer/socket-reducers"
 import { callRequestNotificationReducerAction } from "@/redux/reducers/notification-reducer/notification-reducer"
@@ -36,6 +40,15 @@ const SocketIoChatUserEventProvider = () => {
       if (currentChaterDetail?._id != messageResponse.senderId)
         dispatch(addNewMessageNotificationHandler({ _id: messageResponse.senderId }))
       dispatch(receiveMessageHandler(messageResponse))
+    })
+
+    socket.on("message:recieveNewImageMessage", (messageResponse) => {
+      console.log("new image message",messageResponse)
+      if (currentChaterDetail != null && currentChaterDetail._id != messageResponse.senderId)
+        dispatch(addNewMessageNotificationHandler({ _id: messageResponse.senderId }))
+      dispatch(
+        recieveNewImageMessageHandler({ chatRoomId: messageResponse.chatRoomId, message: messageResponse.message }),
+      )
     })
 
     socket.on("videoCall:requestCallAccept", (data) => {

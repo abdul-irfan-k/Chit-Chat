@@ -73,7 +73,7 @@ io.on("connection", async (socket) => {
 app.use("/user", userRouter)
 app.use("/chat", chatRouter)
 app.use("/meeting", meetingRouter)
-app.use("/", uploadRouter)
+app.use("/upload", uploadRouter)
 
 connnectDB(() => {
   server.listen(port, () => {

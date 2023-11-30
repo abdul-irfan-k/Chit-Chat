@@ -5,7 +5,7 @@ interface messageSourceAndDestinationDetail {
 }
 interface newImageMessageInterface extends messageSourceAndDestinationDetail {
   message: {
-    filePath: string
+    imageMessageSrc: string
   }
 }
 interface newMessageInterface extends messageSourceAndDestinationDetail {

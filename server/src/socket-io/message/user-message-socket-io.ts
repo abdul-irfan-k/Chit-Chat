@@ -9,6 +9,7 @@ import { v4 as uuidv4 } from "uuid"
 import { __dirname } from "../../server.js"
 import voiceMessageModel from "../../model/mongoose/message-model/voice-message-mode.js"
 import { SocketIo } from "../../types/socket-io/socket-io.js"
+import ImageMessageModel from "../../model/mongoose/message-model/image-message-model.js"
 
 const userMessageSocketIo = (io: Server, socket: SocketIo) => {
   socket.on("message:newMessage", async ({ message, receiverId, senderId, chatRoomId }) => {
@@ -61,9 +62,28 @@ const userMessageSocketIo = (io: Server, socket: SocketIo) => {
     }
   })
 
-  // socket.on("message:newImageMessage", ({ chatRoomId, message, receiverId, senderId }) => {
+  socket.on("message:newImageMessage", async ({ chatRoomId, message, receiverId, senderId }) => {
+    console.log("new message", receiverId)
+    const newMessage = new ImageMessageModel({
+      chatRoomId,
+      postedByUser: senderId,
+      imageMessageSrc: [message.imageMessageSrc],
+      messageType: "imageMessage",
+    })
+    await newMessage.save()
 
-  // })
+    if (newMessage == null) return
+    const receiver = await getRedisSocketCached(receiverId)
+    if (receiver != null) {
+      socket.to(receiver.socketId).emit("message:recieveNewImageMessage", { chatRoomId, message, receiverId, senderId })
+    }
+
+    ChatRoomModel.addChatConversation({
+      chatRoomId,
+      messageId: newMessage._id,
+      messageType: "imageMessage",
+    })
+  })
 }
 
 export default userMessageSocketIo

@@ -12,7 +12,7 @@ export const addAllChatUsers = () => async (dispatch: AppDispatch) => {
     const { data: usersDeatail } = await axiosChatInstance.post("/getAllChatUsers")
     // dispatch(chatUserListAction.addIntialAllUserList(usersDeatail))
     const { data: groupDetail } = await axiosChatInstance.post("/getAllChatGroups")
-    console.log("group details",groupDetail)
+    console.log("group details", groupDetail)
     // console.log("all chat groups", data)
     dispatch(chatUserListAction.addIntialAllUserAndGroupList({ usersDeatail, groupDetail }))
   } catch (error) {}
@@ -37,7 +37,6 @@ export const updateCurrentChaterHandler = (details) => async (dispatch: AppDispa
 export const updateCurrentChatingGroupHandler = (details) => async (dispatch: AppDispatch) => {
   dispatch(chatUserListAction.updateCurrentChatingGroup(details))
 }
-
 
 export const sendMessageHandler =
   (
@@ -101,6 +100,27 @@ export const receiveMessageHandler =
             messageType: "textMessage",
             messageSendedTime: new Date(),
             postedByUser: "irfan",
+          },
+        },
+      }),
+    )
+  }
+
+export const recieveNewImageMessageHandler =
+  ({ chatRoomId, message }: { chatRoomId: string; message: { imageMessageSrc: string } }) =>
+  async (dispatch: AppDispatch) => {
+    dispatch(
+      chatRoomMessageAction.addSendedChatRoomMessage({
+        chatRoomId,
+        newMessage: {
+          messegeChannelType: "incomingMessage",
+          messageData: {
+            messageType: "imageMessage",
+            _id: "",
+            chatRoomId,
+            imageMessageSrc: message.imageMessageSrc,
+            messageSendedTime:new Date(),
+            postedByUser:"asdf"
           },
         },
       }),

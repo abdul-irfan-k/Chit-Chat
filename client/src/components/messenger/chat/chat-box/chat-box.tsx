@@ -6,6 +6,7 @@ import { useEffect } from "react"
 import VoiceMessage from "./voice-message/voice-message"
 import { chatUsersListReducerState } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
+import ImageMessage from "./image-message/image-message"
 
 const ChatBox = () => {
   const { currentChaterMessage } = useSelector(
@@ -19,37 +20,51 @@ const ChatBox = () => {
   useEffect(() => {}, [])
   return (
     <div className="px-10 h-full  overflow-y-scroll md:h-[70vh] ">
-      {currentChaterMessage?.messages.map((message) => {
-        return (
-          <>
-            {message.messageData.messageType == "textMessage" && (
-              <>
-                <TextMessage
-                  messageContent={message.messageData.message}
-                  messegeChannelType={message.messegeChannelType}
-                  time={message.messageData.messageSendedTime}
+      {userDetail != null &&
+        currentChaterDetail != null &&
+        currentChaterMessage?.messages.map((message) => {
+          return (
+            <>
+              {message.messageData.messageType == "textMessage" && (
+                <>
+                  <TextMessage
+                    messageContent={message.messageData.message}
+                    messegeChannelType={message.messegeChannelType}
+                    time={message.messageData.messageSendedTime}
+                    userImageSrc="/Asset/avatar.jpg"
+                    userName={
+                      message.messegeChannelType == "incomingMessage" ? currentChaterDetail.name : userDetail?.name
+                    }
+                  />
+                </>
+              )}
+
+              {message.messageData.messageType == "voiceMessage" && (
+                <VoiceMessage
+                  messageChannelType={message.messegeChannelType}
+                  AudioSrc={message.messageData.voiceMessageSrc}
+                  time={new Date()}
                   userImageSrc="/Asset/avatar.jpg"
                   userName={
                     message.messegeChannelType == "incomingMessage" ? currentChaterDetail?.name : userDetail?.name
                   }
                 />
-              </>
-            )}
+              )}
 
-            {message.messageData.messageType == "voiceMessage" && (
-              <VoiceMessage
-                messageChannelType={message.messegeChannelType}
-                AudioSrc={message.messageData.voiceMessageSrc}
-                time={new Date()}
-                userImageSrc="/Asset/avatar.jpg"
-                userName={
-                  message.messegeChannelType == "incomingMessage" ? currentChaterDetail?.name : userDetail?.name
-                }
-              />
-            )}
-          </>
-        )
-      })}
+              {message.messageData.messageType == "imageMessage" && (
+                <ImageMessage
+                  messageImageSrc={message.messageData.imageMessageSrc}
+                  messegeChannelType={message.messegeChannelType}
+                  time={new Date()}
+                  userImageSrc="/Asset/avatar.jpg"
+                  userName={
+                    message.messegeChannelType == "incomingMessage" ? currentChaterDetail?.name : userDetail?.name
+                  }
+                />
+              )}
+            </>
+          )
+        })}
 
       {/* <TextMessage
         messageContent="Hey, what's up?"

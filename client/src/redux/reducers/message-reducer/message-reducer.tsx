@@ -1,7 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit"
 
-
-
 interface textMessage {
   _id: string
   chatRoomId: string
@@ -21,18 +19,25 @@ interface voiceMessage {
   voiceMessageSrc: string
 }
 
+interface imageMessage {
+  _id: string
+  chatRoomId: string
+  postedByUser: string
+  messageType: "imageMessage"
+  messageSendedTime: Date
+  imageMessageSrc: string[]
+}
+type messageType = textMessage | voiceMessage | imageMessage
 interface outGoingMessage {
   messegeChannelType: "outgoingMessage"
-  messageData: textMessage | voiceMessage
+  messageData: messageType
   messageStatus?: "sended" | "notSended"
   messageDeliveryStatus?: "notDelivered" | "delivered" | "watched"
 }
 interface incomingMessage {
   messegeChannelType: "incomingMessage"
-  messageData: textMessage | voiceMessage
+  messageData: messageType
 }
-
-
 
 interface chatRoomMessages {
   chatRoomId: string
@@ -64,7 +69,7 @@ export const chatRoomsMessageReducer = createSlice({
     },
 
     removeCurrentChaterMessage: (state, action) => {
-      return {...state, currentChaterMessage: undefined }
+      return { ...state, currentChaterMessage: undefined }
     },
     addCurrentChaterMessage: (state, action) => {
       const currentChaterMessage = state.chatRoomMessages.filter(
@@ -72,11 +77,15 @@ export const chatRoomsMessageReducer = createSlice({
       )
       state.currentChaterMessage = currentChaterMessage[0]
     },
-    addSendedChatRoomMessage: (state, action) => {
+    addSendedChatRoomMessage: (
+      state,
+      action: { payload: { chatRoomId: string; newMessage: incomingMessage | outGoingMessage } },
+    ) => {
       const updatedChatRoomMessage = state.chatRoomMessages.filter((chatRoom) => {
         if (chatRoom.chatRoomId == action.payload.chatRoomId) return chatRoom.messages.push(action.payload.newMessage)
         return []
       })
+      console.log("update chat room room message",updatedChatRoomMessage)
       state.chatRoomMessages = [
         ...state.chatRoomMessages.filter((chatRoom) => chatRoom.chatRoomId != action.payload.chatRoomId),
         updatedChatRoomMessage[0],

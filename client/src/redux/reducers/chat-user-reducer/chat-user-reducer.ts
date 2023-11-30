@@ -121,12 +121,12 @@ export const chatUsersListReducer = createSlice({
       state.usersDeatail = updatedUserDetail
     },
     updateCurrentUser: (state, action) => {
-      state.currentChaterDetail = action.payload.userDetail
+      state.currentChaterDetail = {...action.payload.userDetail,currentChaterType:"user"}
       state.isCurrentChatingWithGroup = false
     },
 
     updateCurrentChatingGroup: (state, action) => {
-      state.currentChaterDetail = action.payload.groupDetail
+      state.currentChaterDetail = {...action.payload.groupDetail,currentChaterType:"group"}
       state.isCurrentChatingWithGroup = true
     },
   },

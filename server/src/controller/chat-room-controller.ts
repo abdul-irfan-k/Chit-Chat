@@ -37,7 +37,7 @@ export const getAllChatGroupsHandler = async (req: Request, res: Response) => {
       { $match: { member: { $elemMatch: { userId: userObjectId } } } },
       {
         $addFields: {
-          "isAdmin": {  "$in": [userObjectId,"$adminsDetail.userId"] }  
+          isAdmin: { $in: [userObjectId, "$adminsDetail.userId"] },
         },
       },
     ])
@@ -77,6 +77,9 @@ export const getChatRoomMessageHandler = async (req: Request, res: Response) => 
                 voiceMessageIds: {
                   $cond: { if: { $eq: ["$$message.type", "voiceMessage"] }, then: "$$message.id", else: "$$REMOVE" },
                 },
+                imageMessageIds: {
+                  $cond: { if: { $eq: ["$$message.type", "imageMessage"] }, then: "$$message.id", else: "$$REMOVE" },
+                },
               },
             },
           },
@@ -99,10 +102,18 @@ export const getChatRoomMessageHandler = async (req: Request, res: Response) => 
           as: "voiceMessage",
         },
       },
+      {
+        $lookup: {
+          from: "imagemessages",
+          let: { imageMessageIds: "$allMessages.imageMessageIds" },
+          pipeline: [{ $match: { $expr: { $in: ["$_id", "$$imageMessageIds"] } } }],
+          as: "imageMessage",
+        },
+      },
 
       {
         $addFields: {
-          messages: { $concatArrays: ["$textMessage", "$voiceMessage"] },
+          messages: { $concatArrays: ["$textMessage", "$voiceMessage", "$imageMessage"] },
         },
       },
       {
