@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import EmogiPicker from "@/components/shared/emogi-picker/emogi-picker"
 import { faMicrophone, faFaceSmile, faPlus, faPaperPlane, faStickyNote } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
@@ -12,6 +12,8 @@ import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 import { socketReducerState } from "@/redux/reducers/socket-reducer/socket-reducers"
 import VoiceRecorder from "@/components/shared/voice-recorder/voice-recorder"
 import { useSocketIoContext } from "@/provider/socket-io-provider/socket-io-provider"
+import InputSelectionBox from "./input-selection-box/input-selection-box"
+//@ts-ignore
 
 type inputPopUpMenuType = "emoji" | "sticker" | "media" | undefined
 
@@ -20,8 +22,8 @@ const InputBox = () => {
   const [inputMessage, setInputMessage] = useState("")
   const [inputPopUpMenuType, setInputPopUpMenuType] = useState<inputPopUpMenuType>(undefined)
 
-  const {socket} = useSocketIoContext()
-  // const { socket } = useSelector((state: { socketClient: socketReducerState }) => state.socketClient)
+  const { socket } = useSocketIoContext()
+  const { isConnectedSocket } = useSelector((state: { socketClient: socketReducerState }) => state.socketClient)
   const { currentChaterDetail } = useSelector(
     (state: { chatUsersList: chatUsersListReducerState }) => state.chatUsersList,
   )
@@ -71,11 +73,15 @@ const InputBox = () => {
         </div>
         {inputPopUpMenuType == "emoji" && <EmogiPicker emojiSelectHandler={setInputMessage} />}
       </div>
-      <div
-        className="w-10 flex justify-center items-center aspect-square bg-slate-300 rounded-full dark:bg-slate-800"
-        onClick={() => popUpMenuButtonHandler("media")}
-      >
-        <FontAwesomeIcon icon={faPlus} />
+      <div className="relative">
+        <div
+          className="w-10 flex justify-center items-center aspect-square bg-slate-300 rounded-full dark:bg-slate-800"
+          onClick={() => popUpMenuButtonHandler("media")}
+        >
+          <FontAwesomeIcon icon={faPlus} />
+        </div>
+        {inputPopUpMenuType == "media" && <InputSelectionBox />}
+
       </div>
 
       <div className="flex-1 px-1 md:px-5">

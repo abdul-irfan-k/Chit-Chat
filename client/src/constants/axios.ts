@@ -13,3 +13,8 @@ export const axiosMeetingInstance = axios.create({
   baseURL: "http://localhost:8000/meeting/",
   withCredentials: true,
 })
+
+export const axiosUploadInstance = axios.create({
+  baseURL: "http://localhost:8000/upload/",
+  withCredentials: true,
+})
