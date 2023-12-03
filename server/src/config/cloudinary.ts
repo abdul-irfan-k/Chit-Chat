@@ -1,11 +1,11 @@
-import { v2 as cloudinary } from "cloudinary"
+import { UploadApiOptions, v2 as cloudinary } from "cloudinary"
 
 interface cloudinaryFileUploadHandlerReturn {
   isSuccess: Boolean
   imageUrl?: string
   errorType?: string
 }
-export const cloudinaryFileUploadHandler = (file: string): Promise<cloudinaryFileUploadHandlerReturn> => {
+export const cloudinaryFileUploadHandler = (file: string,options?: UploadApiOptions): Promise<cloudinaryFileUploadHandlerReturn> => {
   return new Promise<cloudinaryFileUploadHandlerReturn>(async (resolve, reject) => {
     try {
       cloudinary.config({
@@ -15,7 +15,7 @@ export const cloudinaryFileUploadHandler = (file: string): Promise<cloudinaryFil
       })
 
       console.log(process.env.CLOUDINARY_API_KEY)
-      const cloudinaryFileUploadResponseData = await cloudinary.uploader.upload(file, { resource_type: "raw" })
+      const cloudinaryFileUploadResponseData = await cloudinary.uploader.upload(file, options)
       const { url } = cloudinaryFileUploadResponseData
 
       if (!url) return reject({ isSuccess: false })

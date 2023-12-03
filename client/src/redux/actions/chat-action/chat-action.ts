@@ -1,11 +1,11 @@
-import { axiosChatInstance, axiosUserInstance } from "@/constants/axios"
+import { axiosChatInstance, axiosUploadInstance, axiosUserInstance } from "@/constants/axios"
 import { chatUserListAction } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import { chatRoomMessageAction } from "@/redux/reducers/message-reducer/message-reducer"
 import { AppDispatch } from "@/store"
 import {
-  ClientToServerEvents,
-  ClientToServerMessageEvents,
   SocketIO,
+  groupMessageSourceAndDestinationDetail,
+  groupNewImageMessageInterface,
   groupNewPollMessageInterface,
 } from "@/types/socket-io-event-type/socket-io-event-type"
 import { Socket } from "socket.io-client"
@@ -186,6 +186,40 @@ export const receiveMessageHandler =
     )
   }
 
+interface sendImageMessageArguments extends groupMessageSourceAndDestinationDetail {
+  imageLocalPath: string
+}
+// send image message
+export const sendNewImagemessageHandler =
+  (
+    { chatRoomId, senderId, groupDetail, imageLocalPath }: sendImageMessageArguments,
+    formData: FormData,
+    socket: SocketIO,
+  ) =>
+  async (dispatch: AppDispatch) => {
+    dispatch(
+      chatRoomMessageAction.addSendedChatRoomMessage({
+        chatRoomId,
+        newMessage: {
+          messegeChannelType: "outgoingMessage",
+          messageData: {
+            _id: "",
+            chatRoomId,
+            imageMessageSrc: imageLocalPath,
+            messageType: "imageMessage",
+            messageSendedTime = new Date(),
+            postedByUser: "",
+          },
+          messageStatus: "notSended",
+        },
+      }),
+    )
+
+    const { data: response } = await axiosUploadInstance.post("/uploadSingleImage", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    })
+    // socket.emit("")
+  }
 export const recieveNewImageMessageHandler =
   ({ chatRoomId, message }: { chatRoomId: string; message: { imageMessageSrc: string } }) =>
   async (dispatch: AppDispatch) => {

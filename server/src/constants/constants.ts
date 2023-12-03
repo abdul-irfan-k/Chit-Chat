@@ -24,3 +24,7 @@ export const INVALIDOTP = "INVALIDOTP"
 
 // social media login error
 export const ACESSTOKENNOTPROIVIDED = "ACESSTOKENNOTPROIVIDED"
+
+
+// cloudnar upload error 
+export const FILENOTINCLUEDED = "FILENOTINCLUEDED"

@@ -20,7 +20,7 @@ interface newAudiomessageDetails extends messageSourceAndDestinationDetail {
   }
 }
 
-interface groupMessageSourceAndDestinationDetail {
+export interface groupMessageSourceAndDestinationDetail {
   senderId: string
   chatRoomId: string
   groupDetail: {
@@ -38,12 +38,18 @@ interface groupNewAudioMessageInterface extends groupMessageSourceAndDestination
   }
 }
 
-interface groupNewPollMessageInterface extends groupMessageSourceAndDestinationDetail {
+export interface groupNewPollMessageInterface extends groupMessageSourceAndDestinationDetail {
   message: {
     title: string
     options: {
       title: string
     }[]
+  }
+}
+
+export interface groupNewImageMessageInterface extends groupMessageSourceAndDestinationDetail {
+  message: {
+    filepath: string
   }
 }
 
