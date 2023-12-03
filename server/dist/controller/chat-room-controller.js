@@ -260,7 +260,6 @@ export const getGroupChatRoomMessageHandler = (req, res) => __awaiter(void 0, vo
                 },
             },
         ]);
-        debugger;
         return res.status(200).json(chatRoomMessages);
     }
     catch (error) {

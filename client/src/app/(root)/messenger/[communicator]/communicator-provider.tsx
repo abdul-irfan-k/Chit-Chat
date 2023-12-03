@@ -1,7 +1,6 @@
 "use client"
-import { getChatRoomMessageHandler } from "@/redux/actions/chat-action/chat-action"
-import { chatUsersListReducerState  
- } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
+import { getChatRoomMessageHandler, getGroupChatRoomMessageHandler } from "@/redux/actions/chat-action/chat-action"
+import { chatUsersListReducerState } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import { chatRoomMessageAction, chatRoomMessagesReducerSlate } from "@/redux/reducers/message-reducer/message-reducer"
 import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 import { useAppDispatch } from "@/store"
@@ -14,7 +13,7 @@ const CommunicatorProvider = () => {
   const dispatch = useAppDispatch()
 
   const { userDetail } = useSelector((state: { userDetail: userDetailState }) => state.userDetail)
-  const { currentChaterDetail } = useSelector(
+  const { currentChaterDetail, isCurrentChatingWithGroup } = useSelector(
     (state: { chatUsersList: chatUsersListReducerState }) => state.chatUsersList,
   )
 
@@ -30,9 +29,19 @@ const CommunicatorProvider = () => {
       dispatch(chatRoomMessageAction.addCurrentChaterMessage({ chatRoomId: currentChaterDetail?.chatRoom?.chatRoomId }))
       return
     }
-    dispatch(
-      getChatRoomMessageHandler({ chatRoomId: currentChaterDetail?.chatRoom?.chatRoomId, myUserId: userDetail?._id }),
-    )
+
+    if ( currentChaterDetail?.currentChaterType == "user") {
+      dispatch(
+        getChatRoomMessageHandler({ chatRoomId: currentChaterDetail?.chatRoom?.chatRoomId, myUserId: userDetail?._id }),
+      )
+    } else {
+      dispatch(
+        getGroupChatRoomMessageHandler({
+          chatRoomId: currentChaterDetail?.chatRoomId,
+          myUserId: userDetail?._id,
+        }),
+      )
+    }
   }, [currentChaterDetail?._id])
   // useEffect(() => {
   //   const isAlreadAvailableMessage = messageAvailableChatRoom.some(

@@ -7,9 +7,11 @@ import fs from "fs"
 import path from "path"
 import { v4 as uuidv4 } from "uuid"
 import { __dirname } from "../../server.js"
-import voiceMessageModel from "../../model/mongoose/message-model/voice-message-mode.js"
+import voiceMessageModel from "../../model/mongoose/message-model/voice-message-model.js"
 import { SocketIo } from "../../types/socket-io/socket-io.js"
 import ImageMessageModel from "../../model/mongoose/message-model/image-message-model.js"
+import mongoose from "mongoose"
+import PollMessageModel from "../../model/mongoose/message-model/poll-message-model.js"
 
 const userMessageSocketIo = (io: Server, socket: SocketIo) => {
   socket.on("message:newMessage", async ({ message, receiverId, senderId, chatRoomId }) => {
@@ -84,6 +86,8 @@ const userMessageSocketIo = (io: Server, socket: SocketIo) => {
       messageType: "imageMessage",
     })
   })
+
+
 }
 
 export default userMessageSocketIo

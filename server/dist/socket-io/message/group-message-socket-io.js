@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import PollMessageModel from "../../model/mongoose/message-model/poll-message-model.js";
 import textMessageModel from "../../model/mongoose/message-model/text-message-model.js";
 import GroupChatRoomModel from "../../model/mongoose/chat-room-model/group-chat-room-model.js";
+import mongoose from "mongoose";
 const groupMessageSocketIo = (socket) => {
     socket.on("groupMessage:newTextMessage", ({ chatRoomId, message, senderId, groupDetail }) => __awaiter(void 0, void 0, void 0, function* () {
         try {
@@ -56,6 +57,15 @@ const groupMessageSocketIo = (socket) => {
         catch (error) {
             console.log(error);
         }
+    }));
+    socket.on("groupMessage:pollMessageVoteUpdate", ({ chatRoomId, groupDetail, message, senderId }) => __awaiter(void 0, void 0, void 0, function* () {
+        console.log("poll update message");
+        const messageObjectId = new mongoose.Types.ObjectId(message._id);
+        yield PollMessageModel.updateVotedMember({
+            _id: messageObjectId,
+            currentVotedOptionDetail: { _id: message.selectedOption._id },
+            userId: senderId,
+        });
     }));
 };
 export default groupMessageSocketIo;

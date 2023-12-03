@@ -3,6 +3,7 @@ import { SocketIo } from "../../types/socket-io/socket-io.js"
 import PollMessageModel from "../../model/mongoose/message-model/poll-message-model.js"
 import textMessageModel from "../../model/mongoose/message-model/text-message-model.js"
 import GroupChatRoomModel from "../../model/mongoose/chat-room-model/group-chat-room-model.js"
+import mongoose from "mongoose"
 
 const groupMessageSocketIo = (socket: SocketIo) => {
   socket.on("groupMessage:newTextMessage", async ({ chatRoomId, message, senderId, groupDetail }) => {
@@ -51,6 +52,16 @@ const groupMessageSocketIo = (socket: SocketIo) => {
     } catch (error) {
       console.log(error)
     }
+  })
+
+  socket.on("groupMessage:pollMessageVoteUpdate", async ({ chatRoomId, groupDetail, message, senderId }) => {
+    console.log("poll update message")
+    const messageObjectId = new mongoose.Types.ObjectId(message._id)
+    await PollMessageModel.updateVotedMember({
+      _id: messageObjectId,
+      currentVotedOptionDetail: { _id: message.selectedOption._id },
+      userId: senderId,
+    })
   })
 }
 export default groupMessageSocketIo

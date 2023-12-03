@@ -7,6 +7,7 @@ import VoiceMessage from "./voice-message/voice-message"
 import { chatUsersListReducerState } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 import ImageMessage from "./image-message/image-message"
+import PollMessage from "./poll-message/poll-message"
 
 const ChatBox = () => {
   const { currentChaterMessage } = useSelector(
@@ -62,17 +63,30 @@ const ChatBox = () => {
                   }
                 />
               )}
+
+              {message.messageData.messageType == "pollMessage" && (
+                <PollMessage
+                  messegeChannelType={message.messegeChannelType}
+                  options={message.messageData.options}
+                  title={message.messageData.title}
+                  time={new Date()}
+                  userImageSrc="/Asset/avatar.jpg"
+                  userName={
+                    message.messegeChannelType == "incomingMessage" ? currentChaterDetail?.name : userDetail?.name
+                  }
+                  _id={message.messageData._id}
+                  userAndChaterDetails={{
+                    chatRoomId:
+                      currentChaterDetail.currentChaterType == "user"
+                        ? currentChaterDetail.chatRoom?.chatRoomId
+                        : currentChaterDetail.chatRoomId,
+                    senderId: userDetail._id,
+                  }}
+                />
+              )}
             </>
           )
         })}
-
-      {/* <TextMessage
-        messageContent="Hey, what's up?"
-        messegeChannelType="incomingMessage"
-        time={new Date()}
-        userImageSrc="/Asset/avatar.jpg"
-        userName="kaleel"
-      /> */}
     </div>
   )
 }

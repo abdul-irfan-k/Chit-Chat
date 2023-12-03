@@ -1,10 +1,13 @@
 import { axiosChatInstance, axiosUserInstance } from "@/constants/axios"
 import { chatUserListAction } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
-import {
-  chatRoomMessageAction,
-  messageAvailableChatRoomsAction,
-} from "@/redux/reducers/message-reducer/message-reducer"
+import { chatRoomMessageAction } from "@/redux/reducers/message-reducer/message-reducer"
 import { AppDispatch } from "@/store"
+import {
+  ClientToServerEvents,
+  ClientToServerMessageEvents,
+  SocketIO,
+  groupNewPollMessageInterface,
+} from "@/types/socket-io-event-type/socket-io-event-type"
 import { Socket } from "socket.io-client"
 
 export const addAllChatUsers = () => async (dispatch: AppDispatch) => {
@@ -38,6 +41,43 @@ export const updateCurrentChatingGroupHandler = (details) => async (dispatch: Ap
   dispatch(chatUserListAction.updateCurrentChatingGroup(details))
 }
 
+export const getChatRoomMessageHandler =
+  ({ chatRoomId, myUserId }: { chatRoomId: string; myUserId: string }) =>
+  async (dispatch: AppDispatch) => {
+    try {
+      const { data } = await axiosChatInstance.post("/getChatRoomMessage", { chatRoomId })
+      if (data == undefined) return dispatch(chatRoomMessageAction.removeCurrentChaterMessage({}))
+
+      const newData = data[0].messages.map((elm) => {
+        const messegeChannelType = elm.postedByUser == myUserId ? "outgoingMessage" : "incomingMessage"
+        return { messageData: { ...elm, messageSendedTime: new Date(elm.createdAt) }, messegeChannelType }
+      })
+      dispatch(chatRoomMessageAction.addIntialChatRoomMessage({ chatRoomId, messages: newData }))
+      dispatch(chatRoomMessageAction.addMessageAvailableChatRooms({ chatRoomId }))
+    } catch (error) {
+      console.log(error)
+      return dispatch(chatRoomMessageAction.removeCurrentChaterMessage({}))
+    }
+  }
+export const getGroupChatRoomMessageHandler =
+  ({ chatRoomId, myUserId }: { chatRoomId: string; myUserId: string }) =>
+  async (dispatch: AppDispatch) => {
+    try {
+      const { data } = await axiosChatInstance.post("/getGroupChatRoomMessage", { chatRoomId })
+      if (data == undefined) return dispatch(chatRoomMessageAction.removeCurrentChaterMessage({}))
+
+      const newData = data[0].messages.map((elm) => {
+        const messegeChannelType = elm.postedByUser == myUserId ? "outgoingMessage" : "incomingMessage"
+        return { messageData: { ...elm, messageSendedTime: new Date(elm.createdAt) }, messegeChannelType }
+      })
+      dispatch(chatRoomMessageAction.addIntialChatRoomMessage({ chatRoomId, messages: newData }))
+      dispatch(chatRoomMessageAction.addMessageAvailableChatRooms({ chatRoomId }))
+    } catch (error) {
+      console.log(error)
+      return dispatch(chatRoomMessageAction.removeCurrentChaterMessage({}))
+    }
+  }
+
 export const sendMessageHandler =
   (
     {
@@ -67,23 +107,63 @@ export const sendMessageHandler =
     )
   }
 
-export const getChatRoomMessageHandler =
-  ({ chatRoomId, myUserId }: { chatRoomId: string; myUserId: string }) =>
-  async (dispatch: AppDispatch) => {
-    try {
-      const { data } = await axiosChatInstance.post("/getChatRoomMessage", { chatRoomId })
-      if (data == undefined) return dispatch(chatRoomMessageAction.removeCurrentChaterMessage({}))
+export const sendPollMessageHandler = () => async (dispatch: AppDispatch) => {}
 
-      const newData = data[0].messages.map((elm) => {
-        const messegeChannelType = elm.postedByUser == myUserId ? "outgoingMessage" : "incomingMessage"
-        return { messageData: { ...elm, messageSendedTime: new Date(elm.createdAt) }, messegeChannelType }
-      })
-      dispatch(chatRoomMessageAction.addIntialChatRoomMessage({ chatRoomId, messages: newData }))
-      dispatch(chatRoomMessageAction.addMessageAvailableChatRooms({ chatRoomId }))
-    } catch (error) {
-      console.log(error)
-      return dispatch(chatRoomMessageAction.removeCurrentChaterMessage({}))
-    }
+// sending group poll message
+interface sendGroupPollMessageArguments extends groupNewPollMessageInterface {
+  postedByUser: string
+}
+export const sendGroupPollMessageHandler =
+  ({ chatRoomId, groupDetail, message, postedByUser, senderId }: sendGroupPollMessageArguments, socket: SocketIO) =>
+  async (dispatch: AppDispatch) => {
+    socket.emit("groupMessage:newPollMessage", { chatRoomId, groupDetail, message, senderId })
+    dispatch(
+      chatRoomMessageAction.addSendedChatRoomMessage({
+        chatRoomId,
+        newMessage: {
+          messegeChannelType: "outgoingMessage",
+          messageData: {
+            messageType: "pollMessage",
+            _id: "",
+            chatRoomId,
+            messageSendedTime: new Date(),
+            options: message.options,
+            postedByUser: postedByUser,
+            title: message.title,
+          },
+        },
+      }),
+    )
+  }
+// receiving group poll message
+export const receivePollMessageHandler =
+  ({
+    chatRoomId,
+    message,
+    senderId,
+  }: {
+    chatRoomId: string
+    message: { title: string; options: Array<Object> }
+    senderId: string
+  }) =>
+  async (dispatch: AppDispatch) => {
+    dispatch(
+      chatRoomMessageAction.addSendedChatRoomMessage({
+        chatRoomId,
+        newMessage: {
+          messegeChannelType: "incomingMessage",
+          messageData: {
+            messageType: "pollMessage",
+            _id: "",
+            chatRoomId,
+            messageSendedTime: new Date(),
+            options: message.options,
+            postedByUser: senderId,
+            title: message.title,
+          },
+        },
+      }),
+    )
   }
 
 export const receiveMessageHandler =
@@ -119,8 +199,8 @@ export const recieveNewImageMessageHandler =
             _id: "",
             chatRoomId,
             imageMessageSrc: message.imageMessageSrc,
-            messageSendedTime:new Date(),
-            postedByUser:"asdf"
+            messageSendedTime: new Date(),
+            postedByUser: "asdf",
           },
         },
       }),

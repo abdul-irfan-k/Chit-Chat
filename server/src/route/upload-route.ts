@@ -29,9 +29,6 @@ router.post("/uploadSingleImage", upload.single("file"), uploadSingleImageHandle
 
 // directly image adding cloudinary without storing
 // cloudinary.config({
-//   cloud_name: "dl9ibkuyg",
-//   api_key: "367691338822426",
-//   api_secret: "AoQ5Njff5kRnpKc3OyyJvYCaeak",
 // })
 // const cloudinaryStorage = new CloudinaryStorage({
 //   cloudinary: cloudinary,

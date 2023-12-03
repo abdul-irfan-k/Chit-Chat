@@ -2,6 +2,7 @@
 import { socketReducerAction } from "@/redux/reducers/socket-reducer/socket-reducers"
 import { SocketClient } from "@/socket-io-client/socket"
 import { useAppDispatch } from "@/store"
+import { ClientToServerEvents, ServerToClientEvents } from "@/types/socket-io-event-type/socket-io-event-type"
 import React, { FC, useEffect, useState } from "react"
 import { Socket } from "socket.io-client"
 
@@ -10,9 +11,9 @@ interface SocketIoProviderProps {
 }
 
 const socketClientObj = new SocketClient()
-export const socketContext = React.createContext<{ socket: SocketClient | Socket<DefaultEventsMap, DefaultEventsMap> }>(
-  { socket: socketClientObj },
-)
+export const socketContext = React.createContext<{
+  socket: SocketClient | Socket<ServerToClientEvents, ClientToServerEvents>
+}>({ socket: socketClientObj })
 export const useSocketIoContext = () => React.useContext(socketContext)
 
 const SocketIoProvider: FC<SocketIoProviderProps> = ({ children }) => {

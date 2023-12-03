@@ -270,7 +270,6 @@ export const getGroupChatRoomMessageHandler = async (req: Request, res: Response
       },
     ])
     
-    debugger
     return res.status(200).json(chatRoomMessages)
   } catch (error) {
     console.log(error)

@@ -1,5 +1,8 @@
+import { CorrectIcon } from "@/constants/icon-constant"
+import useDebounce from "@/hooks/use-debounce/use-debounce"
+import { useSocketIoContext } from "@/provider/socket-io-provider/socket-io-provider"
 import Image from "next/image"
-import React, { FC } from "react"
+import React, { FC, useState } from "react"
 
 interface option {
   title: string
@@ -9,6 +12,7 @@ interface option {
   }[]
 }
 interface PollMessageProps {
+  _id: string
   title: string
   options: option[]
   messegeChannelType: "incomingMessage" | "outgoingMessage"
@@ -16,9 +20,20 @@ interface PollMessageProps {
   userName: string
   userImageSrc: string
   isContinuingConverstion?: Boolean
+
+  userAndChaterDetails?: PollMessageUpdateSocketArgument
+}
+
+interface PollMessageUpdateSocketArgument {
+  senderId: string
+  chatRoomId: string
+  groupDetail?: {
+    _id: string
+  }
 }
 
 const PollMessage: FC<PollMessageProps> = ({
+  _id,
   options,
   title,
   messegeChannelType,
@@ -26,7 +41,24 @@ const PollMessage: FC<PollMessageProps> = ({
   userImageSrc,
   userName,
   isContinuingConverstion,
+  userAndChaterDetails,
 }) => {
+  const [selectedOption, setSelectedOption] = useState<number | undefined>(undefined)
+  const { socket } = useSocketIoContext()
+
+  useDebounce(
+    () => {
+      if (selectedOption == undefined || userAndChaterDetails == undefined) return
+      console.log("debounce", options[selectedOption])
+
+      socket.emit("groupMessage:pollMessageVoteUpdate", {
+        ...userAndChaterDetails,
+        message: { _id, selectedOption: { _id: options[selectedOption]._id } },
+      })
+    },
+    2000,
+    [selectedOption],
+  )
   return (
     <div
       className={
@@ -45,29 +77,43 @@ const PollMessage: FC<PollMessageProps> = ({
 
         <div
           className={
-            "px-4 py-2 rounded-full" +
-            (messegeChannelType == "incomingMessage" ? " bg-blue-500 text-slate-50" : " bg-slate-300 text-slate-950")
+            "px-5 py-5 w-[30vw] rounded-xl" +
+            (messegeChannelType == "incomingMessage" ? " bg-blue-500 text-slate-50" : " bg-neutral-800 text-slate-50")
           }
         >
-          <div>{title}</div>
-          <div className="gap-2 mt-3 flex flex-col">
+          <div className="text-xl font-medium">{title}</div>
+          <div className="gap-4 mt-3 flex flex-col">
             {options.map((option, index) => {
+              const isSelectedOption: boolean = selectedOption == index
               return (
-                <div className="gap-2 flex " key={index}>
-                  <div className="relative w-4 aspect-square rounded-full border-2 block"></div>
-                  <div className="gap-1 flex flex-col">
-                    <span>{option.title}</span>
-                    <div className="flex -space-x-4 rtl:space-x-reverse">
-                      <div className="relative w-10 h-10 border-2 border-white rounded-full dark:border-gray-800">
-                        <Image src="/Asset/avatar.jpg" alt="image" fill />
-                      </div>
-                      <div className="relative w-10 h-10 border-2 border-white rounded-full dark:border-gray-800">
-                        <Image src="/Asset/avatar.jpg" alt="image" fill />
-                      </div>
-                      <span className="flex items-center justify-center w-10 h-10 text-xs font-medium text-white bg-gray-700 border-2 border-white rounded-full hover:bg-gray-600 dark:border-gray-800">
-                        +99
-                      </span>
+                <div key={index}>
+                  <div className="relative gap-2 flex items-center">
+                    <div
+                      className="relative w-6 flex justify-center items-center aspect-square rounded-full border-2 block"
+                      onClick={() => setSelectedOption(index)}
+                    >
+                      {isSelectedOption && <CorrectIcon className="w-5 aspect-square" width="" height="" />}
                     </div>
+                    <div className="gap-1 flex w-full items-center">
+                      <div className="">{option.title}</div>
+                      <div className="w-full  flex justify-end">
+                        <div className=" flex -space-x-3 rtl:space-x-reverse">
+                          <div className="relative w-10 h-10 border-2 border-white rounded-full dark:border-gray-800 overflow-hidden">
+                            <Image src="/Asset/avatar.jpg" alt="image" fill />
+                          </div>
+                          <div className="relative w-10 h-10 border-2 border-white rounded-full dark:border-gray-800 overflow-hidden">
+                            <Image src="/Asset/avatar.jpg" alt="image" fill />
+                          </div>
+                          <span className="flex items-center justify-center w-10 h-10 text-xs font-medium text-white bg-gray-700 border-2 border-white rounded-full hover:bg-gray-600 dark:border-gray-800">
+                            +9
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-2 w-full h-3 rounded-full block dark:bg-neutral-900">
+                    <div className="w-[50%] h-3 rounded-full block bg-blue-500"></div>
                   </div>
                 </div>
               )

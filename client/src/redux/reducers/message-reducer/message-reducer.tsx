@@ -27,7 +27,23 @@ interface imageMessage {
   messageSendedTime: Date
   imageMessageSrc: string[]
 }
-type messageType = textMessage | voiceMessage | imageMessage
+
+interface pollMessage {
+  _id: string
+  chatRoomId: string
+  postedByUser: string
+  messageType: "pollMessage"
+  messageSendedTime: Date
+  title: string
+  options: {
+    title: string
+    _id: string
+    votedMembers: {
+      userId: string
+    }[]
+  }[]
+}
+type messageType = textMessage | voiceMessage | imageMessage | pollMessage
 interface outGoingMessage {
   messegeChannelType: "outgoingMessage"
   messageData: messageType
@@ -85,7 +101,7 @@ export const chatRoomsMessageReducer = createSlice({
         if (chatRoom.chatRoomId == action.payload.chatRoomId) return chatRoom.messages.push(action.payload.newMessage)
         return []
       })
-      console.log("update chat room room message",updatedChatRoomMessage)
+      console.log("update chat room room message", updatedChatRoomMessage)
       state.chatRoomMessages = [
         ...state.chatRoomMessages.filter((chatRoom) => chatRoom.chatRoomId != action.payload.chatRoomId),
         updatedChatRoomMessage[0],

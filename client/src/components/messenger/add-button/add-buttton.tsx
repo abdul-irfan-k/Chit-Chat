@@ -61,7 +61,7 @@ const AddButton = () => {
       </div>
 
       {/* <SearchBar /> */}
-      {popUpForm == "newGroup" && <GroupCreationForm />}
+      {popUpForm == "newGroup" && <GroupCreationForm onOutsideClickHandler={() => setPopUpForm(undefined)} />}
     </div>
   )
 }

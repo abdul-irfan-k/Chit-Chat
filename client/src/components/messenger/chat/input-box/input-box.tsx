@@ -80,8 +80,9 @@ const InputBox = () => {
         >
           <FontAwesomeIcon icon={faPlus} />
         </div>
-        {inputPopUpMenuType == "media" && <InputSelectionBox />}
-
+        {inputPopUpMenuType == "media" && (
+          <InputSelectionBox outsideClickHandler={() => setInputPopUpMenuType(undefined)} />
+        )}
       </div>
 
       <div className="flex-1 px-1 md:px-5">
