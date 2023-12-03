@@ -2,8 +2,6 @@ import express from "express";
 import multer from "multer";
 import path from "path";
 import { fileURLToPath } from "node:url";
-import { v2 as cloudinary } from "cloudinary";
-import { CloudinaryStorage } from "multer-storage-cloudinary";
 import { uploadSingleImageHandler } from "../controller/upload-controller.js";
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -18,16 +16,17 @@ const storage = multer.diskStorage({
     },
 });
 const upload = multer({ storage });
-// router.post("/uploadSingleImage", upload.single("file"), uploadSingleImageHandler)
+router.post("/uploadSingleImage", upload.single("file"), uploadSingleImageHandler);
+// router.post("/uploadMultipleImage", upload.array("image"),uploadMultipleImageHandler)
 // directly image adding cloudinary without storing
-cloudinary.config({
-    cloud_name: "dl9ibkuyg",
-    api_key: "367691338822426",
-    api_secret: "AoQ5Njff5kRnpKc3OyyJvYCaeak",
-});
-const cloudinaryStorage = new CloudinaryStorage({
-    cloudinary: cloudinary,
-});
-const cloudinaryUpload = multer({ storage: cloudinaryStorage });
-router.post("/uploadSingleImage", cloudinaryUpload.single("file"), uploadSingleImageHandler);
+// cloudinary.config({
+//   cloud_name: "dl9ibkuyg",
+//   api_key: "367691338822426",
+//   api_secret: "AoQ5Njff5kRnpKc3OyyJvYCaeak",
+// })
+// const cloudinaryStorage = new CloudinaryStorage({
+//   cloudinary: cloudinary,
+// })
+// const cloudinaryUpload = multer({ storage: cloudinaryStorage })
+// router.post("/uploadSingleImage", cloudinaryUpload.single("file"), uploadSingleImageHandler)
 export default router;

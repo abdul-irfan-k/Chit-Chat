@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url"
 import { v2 as cloudinary } from "cloudinary"
 import { CloudinaryStorage } from "multer-storage-cloudinary"
 
-import { uploadSingleImageHandler } from "../controller/upload-controller.js"
+import { uploadMultipleImageHandler, uploadSingleImageHandler } from "../controller/upload-controller.js"
 
 const router = express.Router()
 
@@ -25,7 +25,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage })
 
 router.post("/uploadSingleImage", upload.single("file"), uploadSingleImageHandler)
-router.post("/uploadMultipleImage", upload.array("image"))
+// router.post("/uploadMultipleImage", upload.array("image"),uploadMultipleImageHandler)
 
 // directly image adding cloudinary without storing
 // cloudinary.config({

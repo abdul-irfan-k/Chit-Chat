@@ -13,6 +13,7 @@ import GroupModel from "../model/mongoose/group-model.js";
 import mongoose from "mongoose";
 import ConnectionModel from "../model/mongoose/connections-model.js";
 import UserModel from "../model/mongoose/user-model.js";
+import GroupChatRoomModel from "../model/mongoose/chat-room-model/group-chat-room-model.js";
 export const sendMessageToUserHandler = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { _id } = req.user;
@@ -143,7 +144,7 @@ export const createGroupHandler = (req, res) => __awaiter(void 0, void 0, void 0
         const { _id } = req.user;
         const { groupName, groupMembers } = req.body;
         groupMembers.push({ userId: _id });
-        const newChatRoom = new ChatRoomModel({});
+        const newChatRoom = new GroupChatRoomModel({});
         yield newChatRoom.save();
         const newGroup = new GroupModel({
             name: groupName,
@@ -152,6 +153,7 @@ export const createGroupHandler = (req, res) => __awaiter(void 0, void 0, void 0
             chatRoomId: newChatRoom._id,
         });
         yield newGroup.save();
+        GroupChatRoomModel.findOneAndUpdate({ _id: newChatRoom._id }, { groupId: newGroup._id });
         return res.status(200).json({ isValid: true, chatRoomId: newChatRoom._id });
     }
     catch (error) {
@@ -169,5 +171,101 @@ export const acceptGroupHandler = (req, res) => __awaiter(void 0, void 0, void 0
     }
     catch (error) {
         return res.status(400).json({});
+    }
+});
+// get group chat room messages
+export const getGroupChatRoomMessageHandler = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { chatRoomId } = req.body;
+        console.log("chatRoomId", chatRoomId);
+        const chatRoomObjectId = new mongoose.Types.ObjectId(chatRoomId);
+        const chatRoomMessages = yield GroupChatRoomModel.aggregate([
+            { $match: { _id: chatRoomObjectId } },
+            { $unwind: "$chatRoomConversations" },
+            {
+                $group: {
+                    _id: null,
+                    messages: { $push: { type: "$chatRoomConversations.messageType", id: "$chatRoomConversations.messageId" } },
+                },
+            },
+            {
+                $project: {
+                    allMessages: {
+                        $map: {
+                            input: "$messages",
+                            as: "message",
+                            in: {
+                                textMessageIds: {
+                                    $cond: { if: { $eq: ["$$message.type", "textMessage"] }, then: "$$message.id", else: "$$REMOVE" },
+                                },
+                                voiceMessageIds: {
+                                    $cond: { if: { $eq: ["$$message.type", "voiceMessage"] }, then: "$$message.id", else: "$$REMOVE" },
+                                },
+                                imageMessageIds: {
+                                    $cond: { if: { $eq: ["$$message.type", "imageMessage"] }, then: "$$message.id", else: "$$REMOVE" },
+                                },
+                                pollMessageIds: {
+                                    $cond: { if: { $eq: ["$$message.type", "pollMessage"] }, then: "$$message.id", else: "$$REMOVE" },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            {
+                $lookup: {
+                    from: "textmessages",
+                    let: { messageIds: "$allMessages.textMessageIds" },
+                    pipeline: [{ $match: { $expr: { $in: ["$_id", "$$messageIds"] } } }],
+                    as: "textMessage",
+                },
+            },
+            {
+                $lookup: {
+                    from: "voicemessages",
+                    let: { voiceMessageIds: "$allMessages.voiceMessageIds" },
+                    pipeline: [{ $match: { $expr: { $in: ["$_id", "$$voiceMessageIds"] } } }],
+                    as: "voiceMessage",
+                },
+            },
+            {
+                $lookup: {
+                    from: "imagemessages",
+                    let: { imageMessageIds: "$allMessages.imageMessageIds" },
+                    pipeline: [{ $match: { $expr: { $in: ["$_id", "$$imageMessageIds"] } } }],
+                    as: "imageMessage",
+                },
+            },
+            {
+                $lookup: {
+                    from: "pollmessages",
+                    let: { pollMessageIds: "$allMessages.pollMessageIds" },
+                    pipeline: [{ $match: { $expr: { $in: ["$_id", "$$pollMessageIds"] } } }],
+                    as: "pollMessage",
+                },
+            },
+            {
+                $addFields: {
+                    messages: { $concatArrays: ["$textMessage", "$voiceMessage", "$imageMessage", "$pollMessage"] },
+                },
+            },
+            {
+                $project: {
+                    messages: {
+                        $sortArray: {
+                            input: "$messages",
+                            sortBy: { createdAt: 1 },
+                        },
+                    },
+                },
+            },
+        ]);
+        debugger;
+        return res.status(200).json(chatRoomMessages);
+    }
+    catch (error) {
+        console.log(error);
+        return res.status(400).json({ isValid: false });
+        // console.log(error)
     }
 });

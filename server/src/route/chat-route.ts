@@ -4,6 +4,7 @@ import {
   getAllChatGroupsHandler,
   getAllChatUsersHandler,
   getChatRoomMessageHandler,
+  getGroupChatRoomMessageHandler,
 } from "../controller/chat-room-controller.js"
 import { checkisLogedInMiddleware } from "../middleware/user-middleware.js"
 const router = express.Router()
@@ -13,10 +14,8 @@ router.all("*", (req, res, next) => {
   next()
 })
 
-
 router.post("/getUserChatRoomId")
 router.post("/getAllChatRoom")
-router.post("/getChatRoomMessage", checkisLogedInMiddleware, getChatRoomMessageHandler)
 router.post("/getAllChatUsers", checkisLogedInMiddleware, getAllChatUsersHandler)
 router.post("/getAllChatGroups", checkisLogedInMiddleware, getAllChatGroupsHandler)
 router.post("/changeGroupSetting")
@@ -33,6 +32,7 @@ router.post("/leaveGroup", checkisLogedInMiddleware) // member accept the group
 router.post("/updateGroupSetting")
 router.post("/deleteGroup")
 
-
+router.post("/getChatRoomMessage", checkisLogedInMiddleware, getChatRoomMessageHandler)
+router.post("/getGroupChatRoomMessage", checkisLogedInMiddleware, getGroupChatRoomMessageHandler)
 
 export default router

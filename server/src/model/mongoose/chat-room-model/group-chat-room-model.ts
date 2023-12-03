@@ -4,7 +4,7 @@ import { Schema, Types } from "mongoose"
 
 const groupChatRoomSchema = new Schema(
   {
-    groupId: { type: Schema.Types.ObjectId, required: true },
+    groupId: { type: Schema.Types.ObjectId },
     chatRoomConversations: [
       {
         messageId: Schema.Types.ObjectId,
@@ -19,7 +19,7 @@ const groupChatRoomSchema = new Schema(
 )
 
 interface groupChatRoomSchemaInterface {
-  groupId: { type: Schema.Types.ObjectId; required: true }
+  groupId?: Types.ObjectId | undefined
   chatRoomConversations: {
     messageId?: Types.ObjectId | undefined
     messageType?: string | undefined
@@ -48,7 +48,7 @@ groupChatRoomSchema.statics.initiateChat = async function (groupId: string) {
 
 interface addChatConversation {
   messageId: string
-  messageType: string
+  messageType:  "textMessage" | "voiceMessage"|"imageMessage"|"pollMessage"
   chatRoomId: string
 }
 groupChatRoomSchema.statics.addChatConversation = async function ({
@@ -65,5 +65,5 @@ groupChatRoomSchema.statics.addChatConversation = async function ({
 }
 
 export interface GroupChatRoomDocument extends groupChatRoomSchemaInterface, Document {}
-const GroupChatRoomModel = model<GroupChatRoomDocument, staticInterface>("ChatRoom", groupChatRoomSchema)
+const GroupChatRoomModel = model<GroupChatRoomDocument, staticInterface>("GroupChatRoom", groupChatRoomSchema)
 export default GroupChatRoomModel

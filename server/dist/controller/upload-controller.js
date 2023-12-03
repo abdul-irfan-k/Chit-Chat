@@ -7,20 +7,33 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import fs from "fs";
+import { cloudinaryFileUploadHandler } from "../config/cloudinary.js";
 export const uploadSingleImageHandler = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const fileResponse = req.file;
         console.log("file created ", req);
-        debugger;
         if (req.file == undefined)
             return;
-        // const cloudinaryUpload = await cloudinaryFileUploadHandler(req.file.path)
-        // if (cloudinaryUpload.imageUrl)
-        // res.status(200).json({ isvalid: true, isUploadedImage: true, fileUrl: cloudinaryUpload.imageUrl })
-        fs.unlinkSync(req.file.path);
+        const cloudinaryUpload = yield cloudinaryFileUploadHandler(req.file.path);
+        if (cloudinaryUpload.imageUrl)
+            res.status(200).json({ isvalid: true, isUploadedImage: true, fileUrl: cloudinaryUpload.imageUrl });
+        // res.status(200).json({ isvalid: true, isUploadedImage: true, fileUrl: "asdf" })
+        // fs.unlinkSync(req.file.path)
     }
     catch (error) {
         return res.status(400).json({});
     }
+});
+export const uploadMultipleImageHandler = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const imageFiles = req.files;
+        if (imageFiles == undefined)
+            return res.status(400).json({});
+        const imageFilesPath = [];
+        // imageFiles.forEach(async (imageFile) => {
+        //   const cloudinarUploadResponse = await cloudinaryFileUploadHandler(imageFile.path)
+        //   if (cloudinarUploadResponse.imageUrl) imageFilesPath.push(cloudinarUploadResponse.imageUrl)
+        // })
+        return res.status(200).json({ isValid: true, isUploadedImage: true, filesUrl: imageFilesPath });
+    }
+    catch (error) { }
 });

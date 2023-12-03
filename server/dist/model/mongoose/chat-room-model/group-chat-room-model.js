@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import mongoose, { model } from "mongoose";
 import { Schema } from "mongoose";
 const groupChatRoomSchema = new Schema({
-    groupId: { type: Schema.Types.ObjectId, required: true },
+    groupId: { type: Schema.Types.ObjectId },
     chatRoomConversations: [
         {
             messageId: Schema.Types.ObjectId,
@@ -48,5 +48,5 @@ groupChatRoomSchema.statics.addChatConversation = function ({ messageId, message
         }
     });
 };
-const GroupChatRoomModel = model("ChatRoom", groupChatRoomSchema);
+const GroupChatRoomModel = model("GroupChatRoom", groupChatRoomSchema);
 export default GroupChatRoomModel;
