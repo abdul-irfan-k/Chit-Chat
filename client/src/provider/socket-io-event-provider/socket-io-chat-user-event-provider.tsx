@@ -9,6 +9,7 @@ import {
 } from "@/redux/actions/call-action/call-action"
 import {
   addNewMessageNotificationHandler,
+  deleteMessageHandler,
   receiveMessageHandler,
   receivePollMessageHandler,
   recieveNewImageMessageHandler,
@@ -52,11 +53,13 @@ const SocketIoChatUserEventProvider = () => {
       )
     })
 
+    socket.on("message:deleteMessage", ({ chatRoomId, message }) => {
+      dispatch(deleteMessageHandler({ chatRoomId, message }))
+    })
+
     socket.on("groupMessage:receivePollMessage", ({ chatRoomId, message, senderId, groupDetail }) => {
       dispatch(receivePollMessageHandler({ chatRoomId, message, senderId }))
     })
-
-    
 
     socket.on("videoCall:requestCallAccept", (data) => {
       dispatch(callRequestNotificationReducerAction.addCallNotification(data))

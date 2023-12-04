@@ -8,6 +8,7 @@ import SocketIoChatUserEventProvider from "@/provider/socket-io-event-provider/s
 import UserAuthProvider from "@/provider/user-auth-provider/user-auth-provider"
 import CommunicatorProvider from "./messenger/[communicator]/communicator-provider"
 import SocketIoProvider from "@/provider/socket-io-provider/socket-io-provider"
+import ContextMenuProvider from "@/provider/context-menu-provider/context-menu-provider"
 
 interface RootLayoutProps {
   children: React.ReactNode
@@ -19,18 +20,20 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <SocketIoProvider>
           <UserAuthProvider>
             <PeerContextProvider>
-              <SocketIoIntialise />
-              <SocketIoChatUserEventProvider />
-              <Notification />
-              <CallRequestMenuCotainer />
-              <CommunicatorProvider />
-              <div className="flex w-screen overflow-hidden">
-                {/* <div className="relative w-14 h-screen flex items-center"> */}
-                <SideMenu />
-                {/* </div> */}
-                <div className="relative flex w-full ">{children}</div>
-              </div>
-              {/* <PeerContextProvider /> */}
+              <ContextMenuProvider>
+                <SocketIoIntialise />
+                <SocketIoChatUserEventProvider />
+                <Notification />
+                <CallRequestMenuCotainer />
+                <CommunicatorProvider />
+                <div className="flex w-screen overflow-hidden">
+                  {/* <div className="relative w-14 h-screen flex items-center"> */}
+                  <SideMenu />
+                  {/* </div> */}
+                  <div className="relative flex w-full ">{children}</div>
+                </div>
+                {/* <PeerContextProvider /> */}
+              </ContextMenuProvider>
             </PeerContextProvider>
           </UserAuthProvider>
         </SocketIoProvider>

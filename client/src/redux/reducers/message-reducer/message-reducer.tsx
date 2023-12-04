@@ -44,8 +44,8 @@ interface pollMessage {
   }[]
 }
 type messageType = textMessage | voiceMessage | imageMessage | pollMessage
-type messageStatus = "sended" | "notSended"
-type messageDeliveryStatus = "notDelivered" | "delivered" | "watched"
+export type messageStatus = "sended" | "notSended"
+export type messageDeliveryStatus = "notDelivered" | "delivered" | "watched"
 
 interface outGoingMessage {
   messegeChannelType: "outgoingMessage"
@@ -138,6 +138,19 @@ export const chatRoomsMessageReducer = createSlice({
           return { ...message, ...action.payload.messageStatusDetails }
         } else return { ...message }
       })
+      state.chatRoomMessages = [
+        ...state.chatRoomMessages.filter((chatRoom) => chatRoom.chatRoomId != action.payload.chatRoomId),
+        { chatRoomId: action.payload.chatRoomId, messages: updatedAllMessageOfChatRoom },
+      ]
+    },
+    deleteMessageFromChatRoom: (state, action: { payload: { chatRoomId: string; message: { _id: string } } }) => {
+      const chatRoomMessages = state.chatRoomMessages.filter(
+        (chatRoom) => chatRoom.chatRoomId == action.payload.chatRoomId,
+      )[0]
+      const updatedAllMessageOfChatRoom = chatRoomMessages.messages.filter(
+        (message) => message.messageData._id != action.payload.message._id,
+      )
+
       state.chatRoomMessages = [
         ...state.chatRoomMessages.filter((chatRoom) => chatRoom.chatRoomId != action.payload.chatRoomId),
         { chatRoomId: action.payload.chatRoomId, messages: updatedAllMessageOfChatRoom },

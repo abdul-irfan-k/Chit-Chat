@@ -1,3 +1,5 @@
+import CircleSpinner from "@/components/shared/circle-spinner/circle-spinner"
+import { messageDeliveryStatus, messageStatus } from "@/redux/reducers/message-reducer/message-reducer"
 import Image from "next/image"
 import React, { FC } from "react"
 
@@ -8,6 +10,8 @@ interface ImageMessageProps {
   userImageSrc: string
   isContinuingConverstion?: Boolean
   messageImageSrc: string[]
+  messageStatus?: messageStatus
+  messageDeliveryStatus?: messageDeliveryStatus
 }
 const ImageMessage: FC<ImageMessageProps> = ({
   messegeChannelType,
@@ -16,6 +20,8 @@ const ImageMessage: FC<ImageMessageProps> = ({
   userName,
   isContinuingConverstion,
   messageImageSrc,
+  messageStatus,
+  messageDeliveryStatus
 }) => {
   return (
     <div
@@ -41,8 +47,13 @@ const ImageMessage: FC<ImageMessageProps> = ({
           }
         >
           <Image alt="image" src={messageImageSrc[0]} fill />
+
+          <div className="absolute">
+            {messegeChannelType  == "outgoingMessage" && messageStatus ==  "notSended" && <CircleSpinner />}
+          </div>
         </div>
       </div>
+
     </div>
   )
 }

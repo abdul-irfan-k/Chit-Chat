@@ -1,3 +1,5 @@
+import MessageContextMenu from "@/components/shared/context-menu/message-context-menu/message-context-menu"
+import { useContextMenuContext } from "@/provider/context-menu-provider/context-menu-provider"
 import Image from "next/image"
 import React, { FC } from "react"
 
@@ -10,7 +12,15 @@ interface TextMessageInterface {
   isContinuingConverstion?: Boolean
 }
 
-const TextMessage: FC<TextMessageInterface> = ({ messageContent, messegeChannelType, time, userName, userImageSrc }) => {
+const TextMessage: FC<TextMessageInterface> = ({
+  messageContent,
+  messegeChannelType,
+  time,
+  userName,
+  userImageSrc,
+}) => {
+  const contextMenu = useContextMenuContext()
+
   return (
     <div
       className={
@@ -33,6 +43,13 @@ const TextMessage: FC<TextMessageInterface> = ({ messageContent, messegeChannelT
             "px-4 py-2 rounded-full" +
             (messegeChannelType == "incomingMessage" ? " bg-blue-500 text-slate-50" : " bg-slate-300 text-slate-950")
           }
+          onContextMenu={(e) => {
+            e.preventDefault()
+            if (contextMenu == null) return
+            contextMenu.setShowContextMenu(true)
+            contextMenu.setContextMenuType("message")
+            contextMenu.setContextMenuPosition({ xPosition: e.clientX, yPosition: e.clientY })
+          }}
         >
           {messageContent}
         </div>

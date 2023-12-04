@@ -205,19 +205,19 @@ export const sendNewImagemessageHandler =
           messageData: {
             _id: "",
             chatRoomId,
-            imageMessageSrc: imageLocalPath,
             messageType: "imageMessage",
-            messageSendedTime = new Date(),
+            messageSendedTime: new Date(),
             postedByUser: "",
+            imageMessageSrc: [imageLocalPath],
           },
           messageStatus: "notSended",
         },
       }),
     )
 
-    const { data: response } = await axiosUploadInstance.post("/uploadSingleImage", formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    })
+    // const { data: response } = await axiosUploadInstance.post("/uploadSingleImage", formData, {
+    //   headers: { "Content-Type": "multipart/form-data" },
+    // })
     // socket.emit("")
   }
 export const recieveNewImageMessageHandler =
@@ -239,6 +239,12 @@ export const recieveNewImageMessageHandler =
         },
       }),
     )
+  }
+
+export const deleteMessageHandler =
+  ({ chatRoomId, message }: { chatRoomId: string; message: { _id: string } }) =>
+  async (dispatch: AppDispatch) => {
+    dispatch(chatRoomMessageAction.deleteMessageFromChatRoom({ chatRoomId, message }))
   }
 
 export const addNewMessageNotificationHandler =
