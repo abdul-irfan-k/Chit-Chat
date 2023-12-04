@@ -4,6 +4,7 @@ import { chatRoomMessageAction } from "@/redux/reducers/message-reducer/message-
 import { AppDispatch } from "@/store"
 import {
   SocketIO,
+  deleteMessageInterface,
   groupMessageSourceAndDestinationDetail,
   groupNewImageMessageInterface,
   groupNewPollMessageInterface,
@@ -241,9 +242,16 @@ export const recieveNewImageMessageHandler =
     )
   }
 
-export const deleteMessageHandler =
+export const onChaterdeleteMessageHandler =
   ({ chatRoomId, message }: { chatRoomId: string; message: { _id: string } }) =>
   async (dispatch: AppDispatch) => {
+    dispatch(chatRoomMessageAction.deleteMessageFromChatRoom({ chatRoomId, message }))
+  }
+
+export const deleteMessageHandler =
+  ({ chatRoomId, message, receiverId, senderId }: deleteMessageInterface, socket: SocketIO) =>
+  async (dispatch: AppDispatch) => {
+    socket.emit("message:deleteMessage", { chatRoomId, message, receiverId, senderId })
     dispatch(chatRoomMessageAction.deleteMessageFromChatRoom({ chatRoomId, message }))
   }
 

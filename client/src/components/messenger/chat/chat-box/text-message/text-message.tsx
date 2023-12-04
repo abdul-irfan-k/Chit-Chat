@@ -10,14 +10,15 @@ interface TextMessageInterface {
   userName: string
   userImageSrc: string
   isContinuingConverstion?: Boolean
+  _id: string
 }
-
 const TextMessage: FC<TextMessageInterface> = ({
   messageContent,
   messegeChannelType,
   time,
   userName,
   userImageSrc,
+  _id,
 }) => {
   const contextMenu = useContextMenuContext()
 
@@ -46,9 +47,14 @@ const TextMessage: FC<TextMessageInterface> = ({
           onContextMenu={(e) => {
             e.preventDefault()
             if (contextMenu == null) return
-            contextMenu.setShowContextMenu(true)
-            contextMenu.setContextMenuType("message")
+
+            const isOutGoingMessage: boolean = messegeChannelType == "outgoingMessage"
+            contextMenu.setContextMenuDetails({
+              type: "message",
+              messageDetails: { _id, isOutGoingMessage, messageType: "textMessage", messageContent },
+            })
             contextMenu.setContextMenuPosition({ xPosition: e.clientX, yPosition: e.clientY })
+            contextMenu.setShowContextMenu(true)
           }}
         >
           {messageContent}

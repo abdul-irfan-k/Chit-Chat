@@ -87,7 +87,33 @@ const userMessageSocketIo = (io: Server, socket: SocketIo) => {
     })
   })
 
+  socket.on("message:deleteMessage", async ({ chatRoomId, message, receiverId, senderId }) => {
+    try {
+      const messageObjectId = new mongoose.Types.ObjectId(message._id)
+      const chatRoomObjectId = new mongoose.Types.ObjectId(chatRoomId)
 
+      if (message.messageType == "textMessage")
+        await textMessageModel.deleteOne({ _id: messageObjectId, postedByUser: senderId })
+      else if (message.messageType == "imageMessage")
+        await ImageMessageModel.deleteOne({ _id: messageObjectId, postedByUser: senderId })
+      else if (message.messageType == "voiceMessage")
+        await voiceMessageModel.deleteOne({ _id: messageObjectId, postedByUser: senderId })
+      else if (message.messageType == "pollMessage")
+        await PollMessageModel.deleteOne({ _id: messageObjectId, postedByUser: senderId })
+
+      await ChatRoomModel.findOneAndUpdate(
+        { _id: chatRoomObjectId },
+        { $pull: { chatRoomConversations: { messageId: messageObjectId, messageType: message.messageType } } },
+      )
+
+      const receiver = await getRedisSocketCached(receiverId)
+      if (receiver != null) {
+        socket.to(receiver.socketId).emit("message:deleteMessage", { chatRoomId, message, receiverId, senderId })
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  })
 }
 
 export default userMessageSocketIo

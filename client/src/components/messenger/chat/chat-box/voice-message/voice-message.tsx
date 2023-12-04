@@ -1,17 +1,19 @@
 "use client"
 import { PlayIcon, PauseIcon } from "@/constants/icon-constant"
 import useDebounce from "@/hooks/use-debounce/use-debounce"
+import { useContextMenuContext } from "@/provider/context-menu-provider/context-menu-provider"
 import Image from "next/image"
 import React, { FC, useCallback, useEffect, useRef, useState } from "react"
 
 interface VoiceMessageInterface {
+  _id: string
   time: Date
   messageChannelType: "incomingMessage" | "outgoingMessage"
   userName: string
   userImageSrc: string
   AudioSrc: string
 }
-const VoiceMessage: FC<VoiceMessageInterface> = ({ AudioSrc, messageChannelType, time, userImageSrc, userName }) => {
+const VoiceMessage: FC<VoiceMessageInterface> = ({ _id,AudioSrc, messageChannelType, time, userImageSrc, userName }) => {
   const audioRef = useRef<HTMLAudioElement>()
   const audioProgressBarRef = useRef<HTMLInputElement>()
   const playAnimationRef = useRef<number>()
@@ -19,6 +21,8 @@ const VoiceMessage: FC<VoiceMessageInterface> = ({ AudioSrc, messageChannelType,
   const [isPlayingVoiceMessage, setIsPlayingVoiceMessage] = useState<boolean>(false)
   const [audioMaxDuration, setAudioMaxDuration] = useState<number>()
   const [audioCurrentPlayingTime, setAudioCurrentPlayingTime] = useState<number>(0)
+
+  const contextMenu = useContextMenuContext()
 
   const playButtonHandler = () => {
     setIsPlayingVoiceMessage(true)
@@ -108,6 +112,18 @@ const VoiceMessage: FC<VoiceMessageInterface> = ({ AudioSrc, messageChannelType,
             "gap-2 flex px-4 py-2 rounded-full " +
             (messageChannelType == "incomingMessage" ? " bg-blue-500 text-slate-50" : " bg-slate-300 text-slate-950")
           }
+          onContextMenu={(e) => {
+            e.preventDefault()
+            if (contextMenu == null) return
+
+            const isOutGoingMessage: boolean = messageChannelType == "outgoingMessage"
+            contextMenu.setContextMenuDetails({
+              type: "message",
+              messageDetails: { _id, isOutGoingMessage, messageType: "voiceMessage", messageSrc: AudioSrc },
+            })
+            contextMenu.setContextMenuPosition({ xPosition: e.clientX, yPosition: e.clientY })
+            contextMenu.setShowContextMenu(true)
+          }}
         >
           {isPlayingVoiceMessage && (
             <div
@@ -131,9 +147,9 @@ const VoiceMessage: FC<VoiceMessageInterface> = ({ AudioSrc, messageChannelType,
             preload="metadata"
             onLoadedMetadata={audioOnLoadMetaDataHandler}
             // src={"https://aac.saavncdn.com/862/e277c1b441b562640c6b264aa3335a83_160.mp4"}
-             src={AudioSrc}
-             onEnded={audioOnEndHandler}
-/>
+            src={AudioSrc}
+            onEnded={audioOnEndHandler}
+          />
           <div className="relative h-full   gap-1 my-auto ">
             <input
               type="range"
@@ -142,7 +158,7 @@ const VoiceMessage: FC<VoiceMessageInterface> = ({ AudioSrc, messageChannelType,
               onChange={progressChangeHandler}
               max={audioMaxDuration}
               defaultValue={0}
-/>
+            />
 
             {audioMaxDuration != undefined && (
               <div className="bottom-0  text-[0.7rem]">

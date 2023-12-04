@@ -1,3 +1,4 @@
+
 interface messageSourceAndDestinationDetail {
   receiverId: string
   senderId: string
@@ -17,7 +18,7 @@ interface newAudiomessageDetails extends messageSourceAndDestinationDetail {
   }
 }
 
-interface groupMessageSourceAndDestinationDetail {
+export interface groupMessageSourceAndDestinationDetail {
   senderId: string
   chatRoomId: string
   groupDetail: {
@@ -35,7 +36,7 @@ interface groupNewAudioMessageInterface extends groupMessageSourceAndDestination
   }
 }
 
-interface groupNewPollMessageInterface extends groupMessageSourceAndDestinationDetail {
+export interface groupNewPollMessageInterface extends groupMessageSourceAndDestinationDetail {
   message: {
     title: string
     options: {
@@ -44,17 +45,34 @@ interface groupNewPollMessageInterface extends groupMessageSourceAndDestinationD
   }
 }
 
-
-interface pollMessageVoteUpdateInterface extends groupMessageSourceAndDestinationDetail {
-   message:{
-    _id:string
-    selectedOption:{
-      _id:string
-      currentVotingStatus:boolean
-    }
-   }
+export interface groupNewImageMessageInterface extends groupMessageSourceAndDestinationDetail {
+  message: {
+    filepath: string
+  }
 }
 
+interface pollMessageVoteUpdateInterface extends groupMessageSourceAndDestinationDetail {
+  message: {
+    _id: string
+    selectedOption: {
+      _id: string
+      currentVotingStatus: boolean
+    }
+  }
+}
+
+interface deleteMessageInterface extends messageSourceAndDestinationDetail {
+  message: {
+    _id: string
+    messageType: "textMessage" | "voiceMessage" | "imageMessage" | "pollMessage"
+  }
+}
+interface deleteGroupMessageInterface extends groupMessageSourceAndDestinationDetail {
+  message: {
+    _id: string
+    messageType: "textMessage" | "voiceMessage" | "imageMessage" | "pollMessage"
+  }
+}
 
 interface ClientToServerMessageEvents {
   "message:newImageMessage": (messageDetails: newImageMessageInterface) => void
@@ -65,8 +83,12 @@ interface ClientToServerMessageEvents {
   "groupMessage:newTextMessage": (messageDetails: groupNewTextMessageInterface) => void
   "groupMessage:newAudioMessage": (messageDetails: groupNewAudioMessageInterface) => void
   "groupMessage:newPollMessage": (messageDetails: groupNewPollMessageInterface) => void
+  "groupMessage:newImageMessage": (messageDetails: groupNewImageMessageInterface) => void
 
-  "groupMessage:pollMessageVoteUpdate":(messageDetails:pollMessageVoteUpdateInterface) => void
+  "groupMessage:pollMessageVoteUpdate": (messageDetails: pollMessageVoteUpdateInterface) => void
+
+  "message:deleteMessage": (messageDetails: deleteMessageInterface) => void
+  "groupMessage:deleteMessage": (messageDetails: deleteMessageInterface) => void
 }
 interface ServerToClientMessageEvents {
   "message:receiveMessage": (messageDetails: newMessageInterface) => void
@@ -75,6 +97,10 @@ interface ServerToClientMessageEvents {
   "groupMessage:receiveTextMessage": (messageDetails: groupNewTextMessageInterface) => void
   "groupMessage:receiveAudioMessage": (messageDetails: groupNewAudioMessageInterface) => void
   "groupMessage:receivePollMessage": (messageDetails: groupNewPollMessageInterface) => void
+  "groupMessage:receiveImageMessage": (messageDetails: groupNewImageMessageInterface) => void
+
+  "message:deleteMessage": (response:deleteMessageInterface) => void
+  "groupMessage:deleteMessage": () => void
 }
 
 export interface ClientToServerEvents extends ClientToServerMessageEvents {}

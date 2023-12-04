@@ -9,8 +9,8 @@ interface ContextMenuProviderProps {
 interface contextMenuContextArguments {
   showContextMenu: boolean
   setShowContextMenu: React.Dispatch<React.SetStateAction<boolean>>
-  contextMenuType: "message" | "video" | undefined
-  setContextMenuType: React.Dispatch<React.SetStateAction<"message" | "video" | undefined>>
+  contextMenuDetails: messageContextMenu | undefined
+  setContextMenuDetails: React.Dispatch<React.SetStateAction<messageContextMenu | undefined>>
   contextMenuPosition: { xPosition: number; yPosition: number } | null
   setContextMenuPosition: React.Dispatch<
     React.SetStateAction<{
@@ -22,9 +22,10 @@ interface contextMenuContextArguments {
 export const ContextMenuContext = React.createContext<contextMenuContextArguments | null>(null)
 export const useContextMenuContext = () => React.useContext(ContextMenuContext)
 
+// type  ContextMenuExtraArguments
 const ContextMenuProvider: FC<ContextMenuProviderProps> = ({ children }) => {
   const [showContextMenu, setShowContextMenu] = useState<boolean>(false)
-  const [contextMenuType, setContextMenuType] = useState<"message" | "video" | undefined>(undefined)
+  const [contextMenuDetails, setContextMenuDetails] = useState<messageContextMenu | undefined>(undefined)
   const [contextMenuPosition, setContextMenuPosition] = useState<{ xPosition: number; yPosition: number } | null>(null)
 
   useEffect(() => {
@@ -43,14 +44,23 @@ const ContextMenuProvider: FC<ContextMenuProviderProps> = ({ children }) => {
         value={{
           showContextMenu,
           contextMenuPosition,
-          contextMenuType,
-          setContextMenuType,
+          contextMenuDetails,
+          setContextMenuDetails,
           setShowContextMenu,
           setContextMenuPosition,
         }}
       >
-        {showContextMenu && contextMenuType == "message" && (
-          <MessageContextMenu xPosition={contextMenuPosition?.xPosition} yPosition={contextMenuPosition?.yPosition} />
+        {showContextMenu && contextMenuDetails != undefined && (
+          <>
+            {contextMenuPosition != null && contextMenuDetails.type == "message" && (
+              <MessageContextMenu
+                xPosition={contextMenuPosition.xPosition}
+                yPosition={contextMenuPosition.yPosition}
+                isOutGoingMessage={contextMenuDetails.messageDetails.isOutGoingMessage}
+                messageDetail={contextMenuDetails.messageDetails}
+              />
+            )}
+          </>
         )}
         {children}
       </ContextMenuContext.Provider>
@@ -59,3 +69,30 @@ const ContextMenuProvider: FC<ContextMenuProviderProps> = ({ children }) => {
 }
 
 export default ContextMenuProvider
+
+interface messageDetails {
+  _id: string
+  isOutGoingMessage: boolean
+}
+interface textMessage extends messageDetails {
+  messageType: "textMessage"
+  messageContent: string
+}
+
+interface voiceMessage extends messageDetails {
+  messageType: "voiceMessage"
+  messageSrc: string
+}
+interface imageMessage extends messageDetails {
+  messageType: "imageMessage"
+  messageSrc: string
+}
+interface pollMessage extends messageDetails {
+  messageType: "pollMessage"
+}
+
+export type messageDetail = textMessage | voiceMessage | imageMessage | pollMessage
+interface messageContextMenu {
+  type: "message"
+  messageDetails: messageDetail
+}

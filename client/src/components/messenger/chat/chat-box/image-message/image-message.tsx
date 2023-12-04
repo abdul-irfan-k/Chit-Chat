@@ -1,9 +1,11 @@
 import CircleSpinner from "@/components/shared/circle-spinner/circle-spinner"
+import { useContextMenuContext } from "@/provider/context-menu-provider/context-menu-provider"
 import { messageDeliveryStatus, messageStatus } from "@/redux/reducers/message-reducer/message-reducer"
 import Image from "next/image"
 import React, { FC } from "react"
 
 interface ImageMessageProps {
+  _id: string
   time: Date
   messegeChannelType: "incomingMessage" | "outgoingMessage"
   userName: string
@@ -14,6 +16,7 @@ interface ImageMessageProps {
   messageDeliveryStatus?: messageDeliveryStatus
 }
 const ImageMessage: FC<ImageMessageProps> = ({
+  _id,
   messegeChannelType,
   time,
   userImageSrc,
@@ -21,8 +24,9 @@ const ImageMessage: FC<ImageMessageProps> = ({
   isContinuingConverstion,
   messageImageSrc,
   messageStatus,
-  messageDeliveryStatus
+  messageDeliveryStatus,
 }) => {
+  const contextMenu = useContextMenuContext()
   return (
     <div
       className={
@@ -45,15 +49,26 @@ const ImageMessage: FC<ImageMessageProps> = ({
             "relative mt-5 px-4 py-2 w-[30vw] rounded-md overflow-hidden aspect-video" +
             (messegeChannelType == "incomingMessage" ? " bg-blue-500 text-slate-50" : " bg-slate-300 text-slate-950")
           }
+          onContextMenu={(e) => {
+            e.preventDefault()
+            if (contextMenu == null) return
+
+            const isOutGoingMessage: boolean = messegeChannelType == "outgoingMessage"
+            contextMenu.setContextMenuDetails({
+              type: "message",
+              messageDetails: { _id, isOutGoingMessage, messageType: "imageMessage", messageSrc: messageImageSrc[0] },
+            })
+            contextMenu.setContextMenuPosition({ xPosition: e.clientX, yPosition: e.clientY })
+            contextMenu.setShowContextMenu(true)
+          }}
         >
           <Image alt="image" src={messageImageSrc[0]} fill />
 
           <div className="absolute">
-            {messegeChannelType  == "outgoingMessage" && messageStatus ==  "notSended" && <CircleSpinner />}
+            {messegeChannelType == "outgoingMessage" && messageStatus == "notSended" && <CircleSpinner />}
           </div>
         </div>
       </div>
-
     </div>
   )
 }

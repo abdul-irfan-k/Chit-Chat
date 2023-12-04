@@ -63,12 +63,14 @@ interface pollMessageVoteUpdateInterface extends groupMessageSourceAndDestinatio
   }
 }
 
-interface deleteMessageInterface extends messageSourceAndDestinationDetail {
+export interface deleteMessageInterface extends messageSourceAndDestinationDetail {
   message: {
     _id: string
+    messageType: "textMessage" | "voiceMessage" | "imageMessage" | "pollMessage"
+
   }
 }
-interface deleteGroupMessageInterface extends groupMessageSourceAndDestinationDetail {
+export interface deleteGroupMessageInterface extends groupMessageSourceAndDestinationDetail {
   message: {
     _id: string
     messageType: "textMessage" | "voiceMessage" | "imageMessage" | "pollMessage"
@@ -89,7 +91,7 @@ interface ClientToServerMessageEvents {
   "groupMessage:pollMessageVoteUpdate": (messageDetails: pollMessageVoteUpdateInterface) => void
 
   "message:deleteMessage": (messageDetails: deleteMessageInterface) => void
-  "groupMessage:deleteMessage": (messageDetails: deleteMessageInterface) => void
+  "groupMessage:deleteMessage": (messageDetails: deleteGroupMessageInterface) => void
 }
 interface ServerToClientMessageEvents {
   "message:receiveMessage": (messageDetails: newMessageInterface) => void

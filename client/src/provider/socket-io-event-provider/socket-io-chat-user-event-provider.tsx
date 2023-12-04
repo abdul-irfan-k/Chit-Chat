@@ -9,7 +9,7 @@ import {
 } from "@/redux/actions/call-action/call-action"
 import {
   addNewMessageNotificationHandler,
-  deleteMessageHandler,
+  onChaterdeleteMessageHandler,
   receiveMessageHandler,
   receivePollMessageHandler,
   recieveNewImageMessageHandler,
@@ -54,7 +54,7 @@ const SocketIoChatUserEventProvider = () => {
     })
 
     socket.on("message:deleteMessage", ({ chatRoomId, message }) => {
-      dispatch(deleteMessageHandler({ chatRoomId, message }))
+      dispatch(onChaterdeleteMessageHandler({ chatRoomId, message }))
     })
 
     socket.on("groupMessage:receivePollMessage", ({ chatRoomId, message, senderId, groupDetail }) => {

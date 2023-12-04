@@ -36,12 +36,14 @@ const ChatBox = () => {
                     userName={
                       message.messegeChannelType == "incomingMessage" ? currentChaterDetail.name : userDetail?.name
                     }
+                    _id={message.messageData._id}
                   />
                 </>
               )}
 
               {message.messageData.messageType == "voiceMessage" && (
                 <VoiceMessage
+                  _id={message.messageData._id}
                   messageChannelType={message.messegeChannelType}
                   AudioSrc={message.messageData.voiceMessageSrc}
                   time={new Date()}
@@ -54,6 +56,7 @@ const ChatBox = () => {
 
               {message.messageData.messageType == "imageMessage" && (
                 <ImageMessage
+                  _id={message.messageData._id}
                   messageImageSrc={message.messageData.imageMessageSrc}
                   messegeChannelType={message.messegeChannelType}
                   time={new Date()}

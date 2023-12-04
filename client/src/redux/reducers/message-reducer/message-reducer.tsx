@@ -155,6 +155,8 @@ export const chatRoomsMessageReducer = createSlice({
         ...state.chatRoomMessages.filter((chatRoom) => chatRoom.chatRoomId != action.payload.chatRoomId),
         { chatRoomId: action.payload.chatRoomId, messages: updatedAllMessageOfChatRoom },
       ]
+
+      state.currentChaterMessage = { chatRoomId: action.payload.chatRoomId, messages: updatedAllMessageOfChatRoom }
     },
   },
 })
