@@ -8,6 +8,8 @@ import { messengerSortState } from "@/redux/reducers/messenger-sort-reducer/mess
 import { chatUsersListReducerState } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import { useEffect, useState } from "react"
 import CurrentChaterFullScreenProfile from "./current-chater-full-screen-profile/current-chater-full-screen-profile"
+import CurrentChatingGroupProfile from "./current-chating-group-profile/current-chating-group-profile"
+import DropZone from "@/components/shared/drop-zone/drop-zone"
 
 const ChatContainer = () => {
   const { messengerSortType } = useSelector((state: { messengerSort: messengerSortState }) => state.messengerSort)
@@ -16,10 +18,18 @@ const ChatContainer = () => {
   )
   const [showChaterToggleProfile, setShowChaterToggleProfile] = useState<boolean>(false)
 
+  const [isDroppingFile, setIsDroppingFile] = useState<boolean>(false)
   return (
     <>
       {messengerSortType == "chat" && (
-        <div className="py-5 relative  h-full flex flex-col  w-[90%]">
+        <div
+          className="py-5 relative  h-full flex flex-col  w-[90%]"
+          onDragEnter={() => {
+            console.log("on drag enter")
+            setIsDroppingFile(true)
+          }}
+          onDragLeave={() => setIsDroppingFile(false)}
+        >
           {currentChaterDetail == null && (
             <div onClick={() => setShowChaterToggleProfile(!showChaterToggleProfile)}>
               <ChatProfile currentStatus="ofline" profileImageSrc="/Asset/avatar.jpg" name="irfan" />
@@ -30,23 +40,41 @@ const ChatContainer = () => {
               <ChatProfile currentStatus="ofline" profileImageSrc="/Asset/avatar.jpg" {...currentChaterDetail} />
             </div>
           )}
-          {currentChaterDetail != null && isCurrentChatingWithGroup && (
+          {currentChaterDetail != null && currentChaterDetail.currentChaterType == "group" && (
             <div onClick={() => setShowChaterToggleProfile(!showChaterToggleProfile)}>
               <ChatProfile currentStatus="ofline" profileImageSrc="/Asset/avatar.jpg" {...currentChaterDetail} />
             </div>
           )}
 
           <ChatBox />
-          <InputBox />
+          {currentChaterDetail != undefined && currentChaterDetail.currentChaterType == "user" && <InputBox />}
+          {currentChaterDetail != undefined &&
+          currentChaterDetail.currentChaterType == "group" &&
+          currentChaterDetail.setting.isAdminOnlySendMessage ? (
+            currentChaterDetail.isAdmin && <InputBox />
+          ) : (
+            <InputBox />
+          )}
+
+          {/* {isDroppingFile && <DropZone onDropHandler={(e) => console.log("draged result",e)} />} */}
+       <DropZone onDropHandler={(e) => console.log("draged result",e)} />
         </div>
       )}
-      {showChaterToggleProfile && currentChaterDetail != null && (
+      {showChaterToggleProfile && currentChaterDetail != null && currentChaterDetail.currentChaterType == "user" && (
         <CurrentChaterFullScreenProfile
           profileImageSrc="/Asset/avatar.jpg"
           name={currentChaterDetail.name}
           currentStatus="ofline"
           chaterType="single"
           isChatingWithGroup={isCurrentChatingWithGroup}
+        />
+      )}
+      {showChaterToggleProfile && currentChaterDetail != null && currentChaterDetail.currentChaterType == "group" && (
+        <CurrentChatingGroupProfile
+          profileImageSrc="/Asset/avatar.jpg"
+          name={currentChaterDetail.name}
+          isChatingWithGroup={isCurrentChatingWithGroup}
+          {...currentChaterDetail}
         />
       )}
     </>

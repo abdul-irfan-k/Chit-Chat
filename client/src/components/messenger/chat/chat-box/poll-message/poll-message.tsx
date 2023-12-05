@@ -78,13 +78,17 @@ const PollMessage: FC<PollMessageProps> = ({
         <div
           className={
             "px-5 py-5 w-[30vw] rounded-xl" +
-            (messegeChannelType == "incomingMessage" ? " bg-blue-500 text-slate-50" : " bg-neutral-800 text-slate-50")
+            (messegeChannelType == "incomingMessage" ? " bg-neutral-800 text-slate-50" : " bg-neutral-800 text-slate-50")
           }
         >
           <div className="text-xl font-medium">{title}</div>
           <div className="gap-4 mt-3 flex flex-col">
             {options.map((option, index) => {
               const isSelectedOption: boolean = selectedOption == index
+              const isVotedForOption =
+                option.votedMembers.filter((member) => member.userId == userAndChaterDetails?.senderId).length > 0
+              const isVotedForCurrentOption = selectedOption == undefined ? isVotedForOption : isSelectedOption
+
               return (
                 <div key={index}>
                   <div className="relative gap-2 flex items-center">
@@ -92,7 +96,7 @@ const PollMessage: FC<PollMessageProps> = ({
                       className="relative w-6 flex justify-center items-center aspect-square rounded-full border-2 block"
                       onClick={() => setSelectedOption(index)}
                     >
-                      {isSelectedOption && <CorrectIcon className="w-5 aspect-square" width="" height="" />}
+                      {isVotedForCurrentOption && <CorrectIcon className="w-5 aspect-square" width="" height="" />}
                     </div>
                     <div className="gap-1 flex w-full items-center">
                       <div className="">{option.title}</div>
@@ -105,7 +109,7 @@ const PollMessage: FC<PollMessageProps> = ({
                             <Image src="/Asset/avatar.jpg" alt="image" fill />
                           </div>
                           <span className="flex items-center justify-center w-10 h-10 text-xs font-medium text-white bg-gray-700 border-2 border-white rounded-full hover:bg-gray-600 dark:border-gray-800">
-                            +9
+                            {option.votedMembers.length}
                           </span>
                         </div>
                       </div>

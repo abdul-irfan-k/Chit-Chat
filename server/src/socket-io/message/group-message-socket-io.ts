@@ -24,6 +24,8 @@ const groupMessageSocketIo = (socket: SocketIo) => {
         messageId: newMessage._id.toString(),
         messageType: "textMessage",
       })
+
+      
     } catch (error) {
       console.log(error)
     }

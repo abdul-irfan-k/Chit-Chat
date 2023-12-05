@@ -67,7 +67,6 @@ export interface deleteMessageInterface extends messageSourceAndDestinationDetai
   message: {
     _id: string
     messageType: "textMessage" | "voiceMessage" | "imageMessage" | "pollMessage"
-
   }
 }
 export interface deleteGroupMessageInterface extends groupMessageSourceAndDestinationDetail {
@@ -106,7 +105,30 @@ interface ServerToClientMessageEvents {
   "groupMessage:deleteMessage": () => void
 }
 
-export interface ClientToServerEvents extends ClientToServerMessageEvents {}
-export interface ServerToClientEvents extends ServerToClientMessageEvents {}
+interface groupAndSenderDetail {
+  senderId: string
+  chatRoomId: string
+  groupDetail: {
+    _id: string
+  }
+}
+interface groupSetting {
+  isAdminOnlySendMessage: boolean
+  isAllowedJoinByUrl: boolean
+  isHidingMembersNumber: boolean
+}
+
+interface groupUpdateSetting extends groupAndSenderDetail {
+  setting: groupSetting
+}
+interface ClientToServerGroupHandlerEvents {
+  "group:updateSetting": (args: groupUpdateSetting) => void
+}
+interface ServerToClientGroupHandlerEvents {
+  "group:onUpdateSetting": (args: groupUpdateSetting) => void
+}
+
+export interface ClientToServerEvents extends ClientToServerMessageEvents, ClientToServerGroupHandlerEvents {}
+export interface ServerToClientEvents extends ServerToClientMessageEvents, ServerToClientGroupHandlerEvents {}
 
 export type SocketIO = SocketClient | Socket<ServerToClientEvents, ClientToServerEvents>

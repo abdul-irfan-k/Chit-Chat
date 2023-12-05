@@ -1,29 +1,57 @@
-import { PersonIcon, SearchIcon } from "@/constants/icon-constant"
+import useDebounce from "@/hooks/use-debounce/use-debounce"
+import { useSocketIoContext } from "@/provider/socket-io-provider/socket-io-provider"
+import { chatUserListAction } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
+import { useAppDispatch } from "@/store"
 import Image from "next/image"
-import React, { FC } from "react"
+import React, { FC, useState } from "react"
 
-interface CurrentChaterFullScreenProfileProps {
+interface CurrentChatingGroupProfileProps {
+  _id: string
   name: string
-  chaterType: "single" | "group"
-  currentStatus: "online" | "ofline"
   profileImageSrc: string
-  description?: string
-  isChatingWithGroup?: boolean
+  description: string
   isAdmin?: boolean
+  setting: setting
 }
-// interface GroupSetting{
-
-// }
-
-const CurrentChaterFullScreenProfile: FC<CurrentChaterFullScreenProfileProps> = ({
-  chaterType,
-  currentStatus,
+interface setting {
+  isAdminOnlySendMessage: boolean
+  isAllowedJoinByUrl: boolean
+  isHidingMembersNumber: boolean
+}
+const CurrentChatingGroupProfile: FC<CurrentChatingGroupProfileProps> = ({
+  _id,
+  description,
   name,
   profileImageSrc,
-  description,
-  isChatingWithGroup,
   isAdmin,
+  setting,
 }) => {
+  const [groupSetting, setGroupSetting] = useState<setting>(setting)
+  const [initialRender, setInitialRender] = useState<boolean>(true)
+
+  const dispatch = useAppDispatch()
+  const {socket} = useSocketIoContext()
+  const onGroupSettingChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setGroupSetting({ ...setting, [e.target.name]: e.target.checked })
+    dispatch(
+      chatUserListAction.updateGroupSetting({
+        setting: { ...groupSetting, isAdminOnlySendMessage: e.target.checked },
+        _id,
+      }),
+    )
+    setInitialRender(false)
+  }
+
+  useDebounce(
+    () => {
+      if (initialRender) return
+      console.log("debounce ")
+    },
+    2000,
+    [groupSetting],
+  )
+
+
   return (
     <div className="fixed  right-0 top-0 h-screen w-[25vw]  overflow-y-scroll    bg-slate-200 dark:bg-neutral-950 z-[70] no-scrollbar">
       <div className="relative mt-10 mx-auto w-[40%] aspect-square overflow-hidden rounded-full">
@@ -31,19 +59,20 @@ const CurrentChaterFullScreenProfile: FC<CurrentChaterFullScreenProfileProps> = 
       </div>
       <div className="mt-5 flex flex-col items-center">
         <span className="text-xl font-bold">{name}</span>
-        {!isChatingWithGroup && (
-          <span className={"mt-1 text-base " + (currentStatus == "online" ? "text-green-500" : "text-red-500")}>
-            {currentStatus == "online" ? "online" : "ofline"}
-          </span>
-        )}
       </div>
 
-   
       <div className="mt-10">
         <div className="px-5 flex justify-between">
-          <span>Customize Chat</span>
+          <span>Admin Only Send Message</span>
           <label className="relative inline-flex items-center mb-5 cursor-pointer">
-            <input type="checkbox" value="" className="sr-only peer" />
+            <input
+              type="checkbox"
+              value=""
+              className="sr-only peer"
+              name="isAdminOnlySendMessage"
+              checked={groupSetting.isAdminOnlySendMessage}
+              onChange={onGroupSettingChangeHandler}
+            />
             <div className="w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
           </label>
         </div>
@@ -102,4 +131,4 @@ const CurrentChaterFullScreenProfile: FC<CurrentChaterFullScreenProfileProps> = 
   )
 }
 
-export default CurrentChaterFullScreenProfile
+export default CurrentChatingGroupProfile

@@ -24,6 +24,7 @@ import { userStatusSocketIo } from "./socket-io/user/user-status-socket-io.js"
 import videoCallIntialiseSocketIo from "./socket-io/meeting/video-call-socket-intialise.js"
 import GroupCallSocketIo from "./socket-io/meeting/group-call-socket-io.js"
 import callPeerHandlerSocketIo from "./socket-io/meeting/call-peer-handler-socket-io.js"
+import groupControllSocketIo from "./socket-io/group/group-control-socket-io.js"
 
 import { ClientToServerEvents, ServerToClientEvents } from "../../socket-io-event-types/socket-io-event-types.js"
 
@@ -46,7 +47,7 @@ app.use(cors(corsOptions))
 app.use(bodyParser())
 app.use(express.static(path.join(__dirname, "..", "public")))
 
-const io = new socketIo.Server<ClientToServerEvents,ServerToClientEvents>(server, {
+const io = new socketIo.Server<ClientToServerEvents, ServerToClientEvents>(server, {
   cors: {
     origin: [frontendUrl],
   },
@@ -67,7 +68,8 @@ io.on("connection", async (socket) => {
   userMessageSocketIo(io, socket)
   groupMessageSocketIo(socket)
 
-
+  // group controll
+  groupControllSocketIo(socket)
 })
 
 app.use("/user", userRouter)

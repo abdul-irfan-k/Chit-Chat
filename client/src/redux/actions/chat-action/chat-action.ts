@@ -1,5 +1,5 @@
 import { axiosChatInstance, axiosUploadInstance, axiosUserInstance } from "@/constants/axios"
-import { chatUserListAction } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
+import { chatUserListAction, groupSetting } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import { chatRoomMessageAction } from "@/redux/reducers/message-reducer/message-reducer"
 import { AppDispatch } from "@/store"
 import {
@@ -273,3 +273,9 @@ export const getIntialOnlineChatUsers = (socket: Socket) => async (dispatch: App
     })
   } catch (error) {}
 }
+
+export const onGroupSettingChangeHandler =
+  ({ groupDetail, setting }: { groupDetail: { _id: string }; setting: groupSetting }) =>
+  async (dispatch: AppDispatch) => {
+    dispatch(chatUserListAction.updateGroupSetting({ _id: groupDetail._id, setting }))
+  }

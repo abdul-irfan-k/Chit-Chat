@@ -29,12 +29,19 @@ interface chatUserDetail {
 interface currentChaterUserDetail extends chatUserDetail {
   currentChaterType: "user"
 }
+export interface groupSetting {
+  isAdminOnlySendMessage: boolean
+  isAllowedJoinByUrl: boolean
+  isHidingMembersNumber: boolean
+}
 interface chatGroupDetails {
   _id: string
   name: string
   groupImageUrl?: string
   chatRoomId?: string
   isAdmin: boolean
+  setting: groupSetting
+  discription: string
 }
 
 interface currentChatingGroupDetail extends chatGroupDetails {
@@ -121,13 +128,23 @@ export const chatUsersListReducer = createSlice({
       state.usersDeatail = updatedUserDetail
     },
     updateCurrentUser: (state, action) => {
-      state.currentChaterDetail = {...action.payload.userDetail,currentChaterType:"user"}
+      state.currentChaterDetail = { ...action.payload.userDetail, currentChaterType: "user" }
       state.isCurrentChatingWithGroup = false
     },
 
     updateCurrentChatingGroup: (state, action) => {
-      state.currentChaterDetail = {...action.payload.groupDetail,currentChaterType:"group"}
+      state.currentChaterDetail = { ...action.payload.groupDetail, currentChaterType: "group" }
       state.isCurrentChatingWithGroup = true
+    },
+    updateGroupSetting: (state, action: { payload: { setting: groupSetting; _id: string } }) => {
+      const updatedRequiredGroup = state.groupDetail.filter((group) => group._id == action.payload._id)[0]
+      state.groupDetail = [
+        ...state.groupDetail.filter((group) => group._id != action.payload._id),
+        { ...updatedRequiredGroup, setting: action.payload.setting },
+      ]
+      if (state.currentChaterDetail != null && state.currentChaterDetail.currentChaterType == "group") {
+        state.currentChaterDetail = { ...state.currentChaterDetail, setting: action.payload.setting }
+      }
     },
   },
 })

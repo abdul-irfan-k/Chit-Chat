@@ -10,6 +10,7 @@ import {
 import {
   addNewMessageNotificationHandler,
   onChaterdeleteMessageHandler,
+  onGroupSettingChangeHandler,
   receiveMessageHandler,
   receivePollMessageHandler,
   recieveNewImageMessageHandler,
@@ -59,6 +60,11 @@ const SocketIoChatUserEventProvider = () => {
 
     socket.on("groupMessage:receivePollMessage", ({ chatRoomId, message, senderId, groupDetail }) => {
       dispatch(receivePollMessageHandler({ chatRoomId, message, senderId }))
+    })
+
+    // group controll
+    socket.on("group:onUpdateSetting", ({ chatRoomId, groupDetail, senderId, setting }) => {
+      dispatch(onGroupSettingChangeHandler({ groupDetail, setting }))
     })
 
     socket.on("videoCall:requestCallAccept", (data) => {
