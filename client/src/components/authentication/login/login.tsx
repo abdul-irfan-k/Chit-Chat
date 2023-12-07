@@ -2,14 +2,20 @@ import React, { useState } from "react"
 import SocialMediaLoginContainer from "../social-media-login/social-media-login-container"
 import Image from "next/image"
 import { useAppDispatch } from "@/store"
+import { loginHandler } from "@/redux/actions/user-action/user-action"
+import { useRouter } from "next/navigation"
 
 const Login = () => {
+  const router = useRouter()
   const dispatch = useAppDispatch()
   const [userDetail, setUserDetail] = useState({ email: "", password: "" })
 
   const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) =>
     setUserDetail({ ...userDetail, [e.target.name]: e.target.value })
 
+  const loginButtonHandler = () => {
+    dispatch(loginHandler({ ...userDetail }, router))
+  }
   return (
     <div className="w-full h-screen flex items-center justify-center">
       <div className="flex  rounded-3xl xl:w-[70vw]">
@@ -96,7 +102,7 @@ const Login = () => {
 
           <div
             className="mt-3 py-2 text-xl font-extrabold flex items-center justify-center rounded-full bg-blue-500 "
-            onClick={signUpButtonHandler}
+            onClick={loginButtonHandler}
           >
             Sign Up
           </div>

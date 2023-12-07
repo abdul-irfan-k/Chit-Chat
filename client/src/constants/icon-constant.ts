@@ -52,9 +52,20 @@ import PhoneIcon from "/public/Asset/Icon/phone.svg"
 import VideoIcon from "/public/Asset/Icon/video.svg"
 import ArrowLeftIcon from "/public/Asset/Icon/arrow-left.svg"
 import CorrectIcon from "/public/Asset/Icon/correct.svg"
-
+import AttachMentIcon from "/public/Asset/Icon/attachment.svg"
+import CamaraIcon from "/public/Asset/Icon/photo-camera.svg"
+import CollectionIcon from "/public/Asset/Icon/collections-bookmark.svg"
+import ForwardIcon from "/public/Asset/Icon/forward.svg"
+import CheckCircleIcon from "/public/Asset/Icon/check-circle.svg"
+import DownloadIcon from "/public/Asset/Icon/download.svg"
 
 export {
+  AttachMentIcon,
+  CamaraIcon,
+  CollectionIcon,
+  ForwardIcon,
+  CheckCircleIcon,
+  DownloadIcon,
   IdBadgeIcon,
   AddCallIcon,
   CallIcon,
@@ -108,5 +119,5 @@ export {
   PhoneIcon,
   VideoIcon,
   ArrowLeftIcon,
-  CorrectIcon
+  CorrectIcon,
 }

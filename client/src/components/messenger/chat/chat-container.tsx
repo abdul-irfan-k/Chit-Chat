@@ -30,34 +30,39 @@ const ChatContainer = () => {
           }}
           onDragLeave={() => setIsDroppingFile(false)}
         >
-          {currentChaterDetail == null && (
-            <div onClick={() => setShowChaterToggleProfile(!showChaterToggleProfile)}>
-              <ChatProfile currentStatus="ofline" profileImageSrc="/Asset/avatar.jpg" name="irfan" />
-            </div>
-          )}
-          {currentChaterDetail != null && !isCurrentChatingWithGroup && (
-            <div onClick={() => setShowChaterToggleProfile(!showChaterToggleProfile)}>
-              <ChatProfile currentStatus="ofline" profileImageSrc="/Asset/avatar.jpg" {...currentChaterDetail} />
-            </div>
-          )}
-          {currentChaterDetail != null && currentChaterDetail.currentChaterType == "group" && (
-            <div onClick={() => setShowChaterToggleProfile(!showChaterToggleProfile)}>
-              <ChatProfile currentStatus="ofline" profileImageSrc="/Asset/avatar.jpg" {...currentChaterDetail} />
-            </div>
+          {!isDroppingFile && (
+            <>
+              {currentChaterDetail == null && (
+                <div onClick={() => setShowChaterToggleProfile(!showChaterToggleProfile)}>
+                  <ChatProfile currentStatus="ofline" profileImageSrc="/Asset/avatar.jpg" name="irfan" />
+                </div>
+              )}
+              {currentChaterDetail != null && !isCurrentChatingWithGroup && (
+                <div onClick={() => setShowChaterToggleProfile(!showChaterToggleProfile)}>
+                  <ChatProfile currentStatus="ofline" profileImageSrc="/Asset/avatar.jpg" {...currentChaterDetail} />
+                </div>
+              )}
+              {currentChaterDetail != null && currentChaterDetail.currentChaterType == "group" && (
+                <div onClick={() => setShowChaterToggleProfile(!showChaterToggleProfile)}>
+                  <ChatProfile currentStatus="ofline" profileImageSrc="/Asset/avatar.jpg" {...currentChaterDetail} />
+                </div>
+              )}
+
+              <ChatBox />
+              {currentChaterDetail != undefined && currentChaterDetail.currentChaterType == "user" && <InputBox />}
+              {currentChaterDetail != undefined &&
+              currentChaterDetail.currentChaterType == "group" &&
+              currentChaterDetail.setting.isAdminOnlySendMessage ? (
+                currentChaterDetail.isAdmin && <InputBox />
+              ) : (
+                <InputBox />
+              )}
+
+            </>
           )}
 
-          <ChatBox />
-          {currentChaterDetail != undefined && currentChaterDetail.currentChaterType == "user" && <InputBox />}
-          {currentChaterDetail != undefined &&
-          currentChaterDetail.currentChaterType == "group" &&
-          currentChaterDetail.setting.isAdminOnlySendMessage ? (
-            currentChaterDetail.isAdmin && <InputBox />
-          ) : (
-            <InputBox />
-          )}
-
-          {/* {isDroppingFile && <DropZone onDropHandler={(e) => console.log("draged result",e)} />} */}
-       <DropZone onDropHandler={(e) => console.log("draged result",e)} />
+          {isDroppingFile && <DropZone onDropHandler={(e) => console.log("draged result",e)} />}
+          {/* <DropZone onDropHandler={(e) => console.log("draged result", e)} /> */}
         </div>
       )}
       {showChaterToggleProfile && currentChaterDetail != null && currentChaterDetail.currentChaterType == "user" && (
