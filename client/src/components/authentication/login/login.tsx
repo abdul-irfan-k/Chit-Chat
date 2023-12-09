@@ -1,3 +1,4 @@
+"use client"
 import React, { useState } from "react"
 import SocialMediaLoginContainer from "../social-media-login/social-media-login-container"
 import Image from "next/image"
@@ -31,38 +32,8 @@ const Login = () => {
         </div>
 
         <div className=" gap-6 px-6 py-6 flex-1 flex flex-col bg-slate-200 dark:bg-neutral-950 ">
-          <h1 className="text-xl font-semibold">Sign Up</h1>
+          <h1 className="text-xl font-semibold">Login</h1>
 
-          <div className="flex gap-3">
-            <div className="flex-1 border-b-[3px] border-neutral-800">
-              <input
-                type="text"
-                placeholder="Enter First Name"
-                className="px-4 py-2 border-none rounded-md  w-full text-base   dark:bg-neutral-950  dark:text-slate-50"
-                name="firstname"
-                onChange={inputChangeHandler}
-              />
-            </div>
-            <div className="flex-1 border-b-[3px] border-neutral-800">
-              <input
-                type="text"
-                placeholder="Enter Last Name"
-                className="px-4 py-2 border-none rounded-md  w-full text-base  dark:bg-neutral-950 dark:text-slate-50"
-                name="lastName"
-                onChange={inputChangeHandler}
-              />
-            </div>
-          </div>
-
-          <div className="border-b-[3px] border-neutral-800">
-            <input
-              type="text"
-              placeholder="Enter user id"
-              className="px-4 py-2 border-none rounded-md  w-full text-base  dark:bg-neutral-950 dark:text-slate-50"
-              name="userId"
-              onChange={inputChangeHandler}
-            />
-          </div>
           <div className="border-b-[3px] border-neutral-800">
             <input
               type="text"
@@ -78,24 +49,6 @@ const Login = () => {
               placeholder="Enter Password"
               className="px-4 py-2 border-none rounded-md  w-full text-base  dark:bg-neutral-950 dark:text-slate-50"
               name="password"
-              onChange={inputChangeHandler}
-            />
-          </div>
-          <div className="border-b-[3px] border-neutral-800">
-            <input
-              type="password"
-              placeholder="Enter Comfirm Password"
-              className="px-4 py-2 border-none rounded-md  w-full text-base  dark:bg-neutral-950 dark:text-slate-50"
-              name="firstname"
-              onChange={inputChangeHandler}
-            />
-          </div>
-          <div className="border-b-[3px] border-neutral-800">
-            <input
-              type="password"
-              placeholder="Enter user id"
-              className="px-4 py-2 border-none rounded-md  w-full text-base  dark:bg-neutral-950 dark:text-slate-50"
-              name="confirmPassword"
               onChange={inputChangeHandler}
             />
           </div>

@@ -2,6 +2,7 @@ import { Request, Response } from "express"
 import User from "../model/mongoose/user-model.js"
 import {
   ACESSTOKENNOTPROIVIDED,
+  FILENOTINCLUEDED,
   INVALIDCOMFIRMPASSWORD,
   INVALIDOTP,
   INVALIDPASSWORD,
@@ -21,8 +22,13 @@ import axios from "axios"
 import jwt from "jsonwebtoken"
 import ConnectionModel from "../model/mongoose/connections-model.js"
 import mongoose from "mongoose"
+import fs from "fs"
 import UserModel from "../model/mongoose/user-model.js"
-// import { mongo } from "mongoose"
+import { cloudinaryFileUploadHandler } from "../config/cloudinary.js"
+
+interface MulterRequest extends Request {
+  file?: Express.Multer.File | undefined
+}
 
 export const signUpUserHandler = async (req: Request, res: Response) => {
   try {
@@ -582,6 +588,23 @@ export const getUserDetailsByUserIdHandler = async (req: Request, res: Response)
 
     // debugger;
     return res.status(200).json(usersDetails)
+  } catch (error) {
+    return res.status(400).json({})
+  }
+}
+
+export const modifyUserProfileHandler = async (req: MulterRequest, res: Response) => {
+  try {
+    const { _id } = req.user as userInterface
+    const userObjectId = new mongoose.Types.ObjectId(_id)
+    if (req.file == undefined) return res.status(400).json({ errorType: FILENOTINCLUEDED })
+
+    const cloudinaryUpload = await cloudinaryFileUploadHandler(req.file.path, { resource_type: "image" })
+    if (cloudinaryUpload.imageUrl) {
+      await UserModel.findOneAndUpdate({ _id: userObjectId }, { profileImageUrl: cloudinaryUpload.imageUrl })
+      res.status(200).json({ isvalid: true, isUploadedImage: true, fileUrl: cloudinaryUpload.imageUrl })
+    }
+    fs.unlinkSync(req.file.path)
   } catch (error) {
     return res.status(400).json({})
   }

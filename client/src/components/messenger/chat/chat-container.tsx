@@ -32,11 +32,11 @@ const ChatContainer = () => {
         >
           {!isDroppingFile && (
             <>
-              {currentChaterDetail == null && (
+              {/* {currentChaterDetail == null && (
                 <div onClick={() => setShowChaterToggleProfile(!showChaterToggleProfile)}>
                   <ChatProfile currentStatus="ofline" profileImageSrc="/Asset/avatar.jpg" name="irfan" />
                 </div>
-              )}
+              )} */}
               {currentChaterDetail != null && !isCurrentChatingWithGroup && (
                 <div onClick={() => setShowChaterToggleProfile(!showChaterToggleProfile)}>
                   <ChatProfile currentStatus="ofline" profileImageSrc="/Asset/avatar.jpg" {...currentChaterDetail} />
@@ -48,20 +48,23 @@ const ChatContainer = () => {
                 </div>
               )}
 
-              <ChatBox />
-              {currentChaterDetail != undefined && currentChaterDetail.currentChaterType == "user" && <InputBox />}
-              {currentChaterDetail != undefined &&
-              currentChaterDetail.currentChaterType == "group" &&
-              currentChaterDetail.setting.isAdminOnlySendMessage ? (
-                currentChaterDetail.isAdmin && <InputBox />
-              ) : (
-                <InputBox />
-              )}
+           {currentChaterDetail != null &&    <ChatBox />}
 
+              {currentChaterDetail != null && (
+                <>
+                  {currentChaterDetail.currentChaterType == "user" && <InputBox />}
+                  {currentChaterDetail.currentChaterType == "group" &&
+                  currentChaterDetail.setting.isAdminOnlySendMessage ? (
+                    <InputBox />
+                  ) : (
+                    currentChaterDetail.isAdmin && <InputBox />
+                  )}
+                </>
+              )}
             </>
           )}
 
-          {isDroppingFile && <DropZone onDropHandler={(e) => console.log("draged result",e)} />}
+          {isDroppingFile && <DropZone onDropHandler={(e) => console.log("draged result", e)} />}
           {/* <DropZone onDropHandler={(e) => console.log("draged result", e)} /> */}
         </div>
       )}

@@ -1,4 +1,5 @@
 import express from "express"
+
 import {
   createGroupHandler,
   getAllChatGroupsHandler,
@@ -7,6 +8,7 @@ import {
   getGroupChatRoomMessageHandler,
 } from "../controller/chat-room-controller.js"
 import { checkisLogedInMiddleware } from "../middleware/user-middleware.js"
+
 const router = express.Router()
 
 router.all("*", (req, res, next) => {

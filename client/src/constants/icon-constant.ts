@@ -58,8 +58,26 @@ import CollectionIcon from "/public/Asset/Icon/collections-bookmark.svg"
 import ForwardIcon from "/public/Asset/Icon/forward.svg"
 import CheckCircleIcon from "/public/Asset/Icon/check-circle.svg"
 import DownloadIcon from "/public/Asset/Icon/download.svg"
+import AddIcon from "/public/Asset/Icon/add.svg"
+import EditIcon from "/public/Asset/Icon/edit.svg"
+import MailIcon from "/public/Asset/Icon/mail.svg"
+import DatabaseIcon from "/public/Asset/Icon/database.svg"
+import DevicesIcon from "/public/Asset/Icon/devices.svg"
+import Stickerscon from "/public/Asset/Icon/stickers.svg"
+import LockIcon from "/public/Asset/Icon/lock.svg"
+import ArrowForwardIcon from "/public/Asset/Icon/arrow-forward.svg"
+import ArrowBackIcon from "/public/Asset/Icon/arrow-back.svg"
 
 export {
+  ArrowBackIcon,
+  ArrowForwardIcon,
+  AddIcon,
+  DatabaseIcon,
+  DevicesIcon,
+  EditIcon,
+  LockIcon,
+  MailIcon,
+  Stickerscon,
   AttachMentIcon,
   CamaraIcon,
   CollectionIcon,

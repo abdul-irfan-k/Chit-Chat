@@ -8,6 +8,7 @@ import { chatRoomsMessageReducer } from "./redux/reducers/message-reducer/messag
 import { callRequestReducer } from "./redux/reducers/call-request-reducer/call-request-reducer"
 import { callRedcuer } from "./redux/reducers/call-reducer/call-reducer"
 import { notificationReducer } from "./redux/reducers/notification-reducer/notification-reducer"
+import { sidebarSortReducer } from "./redux/reducers/sidebar-sort-reducer/sidebar-sort-reducer"
 
 const combinedReducers = combineReducers({
   socketClient: socketClientReducer.reducer,
@@ -19,6 +20,7 @@ const combinedReducers = combineReducers({
   callRequestReducer: callRequestReducer.reducer,
   notificationReducer: notificationReducer.reducer,
   callRedcuer: callRedcuer.reducer,
+  sidebarSort: sidebarSortReducer.reducer,
 })
 
 export const store = configureStore({

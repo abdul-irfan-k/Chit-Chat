@@ -83,5 +83,5 @@ interface staticInterface extends Model<GroupCallRoomDocument> {
 }
 
 export interface GroupCallRoomDocument extends groupCallRoomSchemaInterface, Document {}
-const GroupCallRoomModel = model<GroupCallRoomDocument, staticInterface>("GroupCallRoom", groupCallRoomSchema)
+const GroupCallRoomModel = model<GroupCallRoomDocument, staticInterface>("GroupMeeting", groupCallRoomSchema)
 export default GroupCallRoomModel

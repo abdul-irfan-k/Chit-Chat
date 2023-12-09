@@ -1,5 +1,5 @@
 import { Request, Response } from "express"
-import GroupCallRoomModel from "../model/mongoose/meeting-model/video-group-call-room-model.js"
+import GroupCallRoomModel from "../model/mongoose/meeting-model/group-meetingn-model.js"
 import { generateRandomUUID } from "../util/random-text-generator.js"
 import { v4 as uuidv4 } from "uuid"
 
@@ -29,4 +29,12 @@ export const findMeetingByCodeHandler = (req: Request, res: Response) => {
   try {
     const {} = req.body
   } catch (error) {}
+}
+
+export const getAllCallLogsHandler = (req: Request, res: Response) => {
+  try {
+    
+  } catch (error) {
+    return res.status(400).json({})
+  }
 }

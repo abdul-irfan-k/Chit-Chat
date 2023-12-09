@@ -75,5 +75,5 @@ interface staticInterface extends Model<VideoCallRoomDocument> {
 }
 
 export interface VideoCallRoomDocument extends videoCallRoomSchemaInterface, Document {}
-const VideoCallRoomModel = model<VideoCallRoomDocument, staticInterface>("VideoCallRoom", videoCallRoomSchema)
+const VideoCallRoomModel = model<VideoCallRoomDocument, staticInterface>("Meeting", videoCallRoomSchema)
 export default VideoCallRoomModel

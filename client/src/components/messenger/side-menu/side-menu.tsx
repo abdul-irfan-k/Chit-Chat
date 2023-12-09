@@ -16,15 +16,22 @@ import { useRouter } from "next/navigation"
 import { useSelector } from "react-redux"
 import { callReducerSlate } from "@/redux/reducers/call-reducer/call-reducer"
 import FullScreenNotification from "@/components/notificaton/full-screen-notification/full-screen-notification"
+import { useAppDispatch } from "@/store"
+import { sidebarReducerAction } from "@/redux/reducers/sidebar-sort-reducer/sidebar-sort-reducer"
 
 const SideMenu = () => {
+  const dispatch = useAppDispatch()
   const { isAvailableCallRoom } = useSelector((state: { callRedcuer: callReducerSlate }) => state.callRedcuer)
   const router = useRouter()
-  const [showNotification,setShowNotification] = useState<boolean>(false)
+  const [showNotification, setShowNotification] = useState<boolean>(false)
 
   const videoCallButtonHandler = () => {
     if (isAvailableCallRoom) return router.push("/video-call")
     else return router.push("/create-video-call")
+  }
+
+  const settingButtonHandler = () => {
+    dispatch(sidebarReducerAction.changeSideBarSortOption({ currentSideBarSortOption: "settting" }))
   }
 
   return (
@@ -46,7 +53,7 @@ const SideMenu = () => {
         <SideMenuIcon onClickHandler={() => setShowNotification(!showNotification)}>
           <BellIcon className="w-6 aspect-square" />
         </SideMenuIcon>
-        <SideMenuIcon>
+        <SideMenuIcon onClickHandler={settingButtonHandler}>
           <GearIcon className="w-6 aspect-square" />
         </SideMenuIcon>
         <SideMenuIcon>
@@ -56,7 +63,7 @@ const SideMenu = () => {
           <MoonIcon className="w-6 aspect-square" />
         </SideMenuIcon>
       </div>
-      {showNotification &&  <FullScreenNotification />}
+      {showNotification && <FullScreenNotification />}
     </div>
   )
 }
