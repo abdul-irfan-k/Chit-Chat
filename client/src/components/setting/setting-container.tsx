@@ -6,6 +6,7 @@ import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 import SettingMenu from "./setting-menu/setting-menu"
 import SettingNotificationControll from "./setting-notification-control/setting-notification-control"
 import { motion, AnimatePresence } from "framer-motion"
+import GeneralSetting from "./general-setting/general-setting"
 
 export type settingMenuType =
   | "notificationAndSound"
@@ -64,6 +65,19 @@ const SettingContainer = () => {
                 className="absolute w-full"
               >
                 <SettingNotificationControll backButtonHandler={() => setSettingSelectedMenu(undefined)} />
+              </motion.div>
+            )}
+
+            {settingSelectedMenu == "generalSetting" && (
+              <motion.div
+                key={settingSelectedMenu}
+                initial={{ translateX: "100%" }}
+                animate={{ translateX: "0%" }}
+                exit={{ translateX: "100%" }}
+                transition={{ duration: 0.4 }}
+                className="absolute w-full"
+              >
+                <GeneralSetting key={settingSelectedMenu} backButtonHandler={() => setSettingSelectedMenu(undefined)} />
               </motion.div>
             )}
           </AnimatePresence>
