@@ -4,6 +4,7 @@ import { chatUserListAction } from "@/redux/reducers/chat-user-reducer/chat-user
 import { useAppDispatch } from "@/store"
 import Image from "next/image"
 import React, { FC, useState } from "react"
+import { motion } from "framer-motion"
 
 interface CurrentChatingGroupProfileProps {
   _id: string
@@ -30,7 +31,7 @@ const CurrentChatingGroupProfile: FC<CurrentChatingGroupProfileProps> = ({
   const [initialRender, setInitialRender] = useState<boolean>(true)
 
   const dispatch = useAppDispatch()
-  const {socket} = useSocketIoContext()
+  const { socket } = useSocketIoContext()
   const onGroupSettingChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setGroupSetting({ ...setting, [e.target.name]: e.target.checked })
     dispatch(
@@ -51,9 +52,14 @@ const CurrentChatingGroupProfile: FC<CurrentChatingGroupProfileProps> = ({
     [groupSetting],
   )
 
-
   return (
-    <div className="fixed  right-0 top-0 h-screen w-[25vw]  overflow-y-scroll    bg-slate-200 dark:bg-neutral-950 z-[70] no-scrollbar">
+    <motion.div
+      key={"chaterProfile"}
+      className="fixed  right-0 top-0 h-screen w-[25vw]  overflow-y-scroll    bg-slate-200 dark:bg-neutral-950 z-[70] no-scrollbar"
+      initial={{ translateX: "100%" }}
+      animate={{ translateX: "0%" }}
+      exit={{ translateX: "100%" }}
+    >
       <div className="relative mt-10 mx-auto w-[40%] aspect-square overflow-hidden rounded-full">
         <Image src={profileImageSrc} fill alt="profile image" />
       </div>
@@ -127,7 +133,7 @@ const CurrentChatingGroupProfile: FC<CurrentChatingGroupProfileProps> = ({
           <Image src={"/Asset/nature.jpg"} alt="image" fill />
         </div>
       </div>
-    </div>
+    </motion.div>
   )
 }
 

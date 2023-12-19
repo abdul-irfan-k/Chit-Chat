@@ -10,6 +10,7 @@ import { useEffect, useState } from "react"
 import CurrentChaterFullScreenProfile from "./current-chater-full-screen-profile/current-chater-full-screen-profile"
 import CurrentChatingGroupProfile from "./current-chating-group-profile/current-chating-group-profile"
 import DropZone from "@/components/shared/drop-zone/drop-zone"
+import { AnimatePresence } from "framer-motion"
 
 const ChatContainer = () => {
   const { messengerSortType } = useSelector((state: { messengerSort: messengerSortState }) => state.messengerSort)
@@ -48,7 +49,7 @@ const ChatContainer = () => {
                 </div>
               )}
 
-           {currentChaterDetail != null &&    <ChatBox />}
+              {currentChaterDetail != null && <ChatBox />}
 
               {currentChaterDetail != null && (
                 <>
@@ -68,23 +69,26 @@ const ChatContainer = () => {
           {/* <DropZone onDropHandler={(e) => console.log("draged result", e)} /> */}
         </div>
       )}
-      {showChaterToggleProfile && currentChaterDetail != null && currentChaterDetail.currentChaterType == "user" && (
-        <CurrentChaterFullScreenProfile
-          profileImageSrc="/Asset/avatar.jpg"
-          name={currentChaterDetail.name}
-          currentStatus="ofline"
-          chaterType="single"
-          isChatingWithGroup={isCurrentChatingWithGroup}
-        />
-      )}
-      {showChaterToggleProfile && currentChaterDetail != null && currentChaterDetail.currentChaterType == "group" && (
-        <CurrentChatingGroupProfile
-          profileImageSrc="/Asset/avatar.jpg"
-          name={currentChaterDetail.name}
-          isChatingWithGroup={isCurrentChatingWithGroup}
-          {...currentChaterDetail}
-        />
-      )}
+
+      <AnimatePresence>
+        {showChaterToggleProfile && currentChaterDetail != null && currentChaterDetail.currentChaterType == "user" && (
+          <CurrentChaterFullScreenProfile
+            profileImageSrc="/Asset/avatar.jpg"
+            name={currentChaterDetail.name}
+            currentStatus="ofline"
+            chaterType="single"
+            isChatingWithGroup={isCurrentChatingWithGroup}
+          />
+        )}
+        {showChaterToggleProfile && currentChaterDetail != null && currentChaterDetail.currentChaterType == "group" && (
+          <CurrentChatingGroupProfile
+            profileImageSrc="/Asset/avatar.jpg"
+            name={currentChaterDetail.name}
+            isChatingWithGroup={isCurrentChatingWithGroup}
+            {...currentChaterDetail}
+          />
+        )}
+      </AnimatePresence>
     </>
   )
 }

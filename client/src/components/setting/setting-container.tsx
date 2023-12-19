@@ -8,6 +8,8 @@ import SettingNotificationControll from "./setting-notification-control/setting-
 import { motion, AnimatePresence } from "framer-motion"
 import GeneralSetting from "./general-setting/general-setting"
 import SettingEditProfile from "./setting-edit-profile/setting-editprofile"
+import { useAppDispatch } from "@/store"
+import { sidebarReducerAction } from "@/redux/reducers/sidebar-sort-reducer/sidebar-sort-reducer"
 
 export type settingMenuType =
   | "notificationAndSound"
@@ -20,7 +22,10 @@ export type settingMenuType =
   | "language"
   | "profileEdit"
   | undefined
+
+
 const SettingContainer = () => {
+  const dispatch = useAppDispatch()
   const [settingSelectedMenu, setSettingSelectedMenu] = useState<settingMenuType>()
 
   const settingMenuListClickHandler = (selectedMenuType: settingMenuType) => {
@@ -45,7 +50,9 @@ const SettingContainer = () => {
                 className="absolute w-full"
               >
                 <SettingTopBar
-                  backButtonClickHandler={() => setSettingSelectedMenu(undefined)}
+                  backButtonClickHandler={() => {
+                    dispatch(sidebarReducerAction.changeSideBarSortOption({ currentSideBarSortOption: "messenger" }))
+                  }}
                   editButtonClickHandler={() => setSettingSelectedMenu("profileEdit")}
                 />
                 <SettingProfile

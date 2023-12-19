@@ -4,17 +4,19 @@ type sidebarSortOption = "settting" | "notification" | "freindsList" | "messenge
 
 export interface sidebarSortReducerState {
   currentSideBarSortOption: sidebarSortOption
+  isInitialRender: boolean
 }
 
 const sidebarSortReducerIntialState: sidebarSortReducerState = {
   currentSideBarSortOption: "messenger",
+  isInitialRender: true,
 }
 export const sidebarSortReducer = createSlice({
   name: "sidebarSortReducer",
   initialState: sidebarSortReducerIntialState,
   reducers: {
     changeSideBarSortOption: (state, action: { payload: { currentSideBarSortOption: sidebarSortOption } }) => {
-      state.currentSideBarSortOption = action.payload.currentSideBarSortOption
+      return {currentSideBarSortOption:action.payload.currentSideBarSortOption,isInitialRender:false}
     },
   },
 })
