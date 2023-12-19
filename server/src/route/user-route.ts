@@ -74,4 +74,7 @@ router.post("/sendFreindRequest", checkisLogedInMiddleware, sendFreindRequestHan
 router.post("/acceptFreindRequest", checkisLogedInMiddleware, acceptFreindRequestHandler) // accept the freind request
 router.post("/rejectFreindRequest", checkisLogedInMiddleware) // reject freind request
 
+
+
+router.post("/updateSetting",checkisLogedInMiddleware)
 export default router

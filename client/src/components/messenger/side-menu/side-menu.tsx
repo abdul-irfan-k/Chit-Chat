@@ -34,6 +34,10 @@ const SideMenu = () => {
     dispatch(sidebarReducerAction.changeSideBarSortOption({ currentSideBarSortOption: "settting" }))
   }
 
+  const notificationButtonHandler = () => {
+    dispatch(sidebarReducerAction.changeSideBarSortOption({ currentSideBarSortOption: "notification" }))
+  }
+
   return (
     <div className="hidden  py-20 h-[90vh]  md:block   ">
       <div className="  h-full w-16  flex flex-col justify-between items-center   ">
@@ -50,7 +54,7 @@ const SideMenu = () => {
         <SideMenuIcon>
           <IdBadgeIcon className="w-6 aspect-square" />
         </SideMenuIcon>
-        <SideMenuIcon onClickHandler={() => setShowNotification(!showNotification)}>
+        <SideMenuIcon onClickHandler={notificationButtonHandler}>
           <BellIcon className="w-6 aspect-square" />
         </SideMenuIcon>
         <SideMenuIcon onClickHandler={settingButtonHandler}>

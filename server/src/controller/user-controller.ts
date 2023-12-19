@@ -25,6 +25,7 @@ import mongoose from "mongoose"
 import fs from "fs"
 import UserModel from "../model/mongoose/user-model.js"
 import { cloudinaryFileUploadHandler } from "../config/cloudinary.js"
+import UserSettingModel from "../model/mongoose/user-setting-model.js"
 
 interface MulterRequest extends Request {
   file?: Express.Multer.File | undefined
@@ -605,6 +606,19 @@ export const modifyUserProfileHandler = async (req: MulterRequest, res: Response
       res.status(200).json({ isvalid: true, isUploadedImage: true, fileUrl: cloudinaryUpload.imageUrl })
     }
     fs.unlinkSync(req.file.path)
+  } catch (error) {
+    return res.status(400).json({})
+  }
+}
+
+export const updateSettingHandler = async (req: Request, res: Response) => {
+  try {
+    const { _id } = req.user as userInterface
+    const userObjectId = new mongoose.Types.ObjectId(_id)
+
+    const { setting } = req.body
+    await UserSettingModel.findOneAndUpdate({ _id: userObjectId }, { ...setting })
+    return res.status(200).json({ isUpdated: true })
   } catch (error) {
     return res.status(400).json({})
   }

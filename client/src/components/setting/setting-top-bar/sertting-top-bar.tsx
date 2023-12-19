@@ -1,5 +1,6 @@
 "use client"
-import { CallIcon } from "@/constants/icon-constant"
+import { ArrowBackIcon, CallIcon, EditIcon } from "@/constants/icon-constant"
+import { useAppDispatch } from "@/store"
 import React, { FC, useState } from "react"
 
 interface SettingTopBarProps {
@@ -13,13 +14,13 @@ const SettingTopBar: FC<SettingTopBarProps> = ({ editButtonClickHandler, backBut
     <div className="flex justify-between items-center">
       <div className="flex gap-3 items-center">
         <div className="relative  w-5 aspect-square" onClick={backButtonClickHandler}>
-          <CallIcon />
+          <ArrowBackIcon />
         </div>
         <span>Setting</span>
       </div>
       <div className="flex gap-3 items-center">
         <div className="relative  w-5 aspect-square" onClick={editButtonClickHandler}>
-          <CallIcon />
+          <EditIcon />
         </div>
         <div
           className="relative  w-5 aspect-square"

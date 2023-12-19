@@ -7,6 +7,7 @@ import SettingMenu from "./setting-menu/setting-menu"
 import SettingNotificationControll from "./setting-notification-control/setting-notification-control"
 import { motion, AnimatePresence } from "framer-motion"
 import GeneralSetting from "./general-setting/general-setting"
+import SettingEditProfile from "./setting-edit-profile/setting-editprofile"
 
 export type settingMenuType =
   | "notificationAndSound"
@@ -17,6 +18,7 @@ export type settingMenuType =
   | "strickersAndEmoji"
   | "devices"
   | "language"
+  | "profileEdit"
   | undefined
 const SettingContainer = () => {
   const [settingSelectedMenu, setSettingSelectedMenu] = useState<settingMenuType>()
@@ -26,13 +28,13 @@ const SettingContainer = () => {
   }
 
   const { userDetail } = useSelector((state: { userDetail: userDetailState }) => state.userDetail)
+  const settingBackButtonHandler = () => setSettingSelectedMenu(undefined)
 
   return (
     <div className="relative  overflow-hidden w-full h-full">
       {userDetail != null && (
         <>
           <AnimatePresence>
-            
             {settingSelectedMenu == undefined && (
               <motion.div
                 key={settingSelectedMenu}
@@ -42,7 +44,10 @@ const SettingContainer = () => {
                 transition={{ duration: 0.4 }}
                 className="absolute w-full"
               >
-                <SettingTopBar backButtonClickHandler={() => {}} editButtonClickHandler={() => {}} />
+                <SettingTopBar
+                  backButtonClickHandler={() => setSettingSelectedMenu(undefined)}
+                  editButtonClickHandler={() => setSettingSelectedMenu("profileEdit")}
+                />
                 <SettingProfile
                   {...userDetail}
                   phoneNumber=""
@@ -54,7 +59,6 @@ const SettingContainer = () => {
               </motion.div>
             )}
 
-
             {settingSelectedMenu == "notificationAndSound" && (
               <motion.div
                 key={settingSelectedMenu}
@@ -64,7 +68,7 @@ const SettingContainer = () => {
                 transition={{ duration: 0.4 }}
                 className="absolute w-full"
               >
-                <SettingNotificationControll backButtonHandler={() => setSettingSelectedMenu(undefined)} />
+                <SettingNotificationControll backButtonHandler={settingBackButtonHandler} />
               </motion.div>
             )}
 
@@ -77,7 +81,23 @@ const SettingContainer = () => {
                 transition={{ duration: 0.4 }}
                 className="absolute w-full"
               >
-                <GeneralSetting key={settingSelectedMenu} backButtonHandler={() => setSettingSelectedMenu(undefined)} />
+                <GeneralSetting key={settingSelectedMenu} backButtonHandler={settingBackButtonHandler} />
+              </motion.div>
+            )}
+            {settingSelectedMenu == "profileEdit" && (
+              <motion.div
+                key={settingSelectedMenu}
+                initial={{ translateX: "100%" }}
+                animate={{ translateX: "0%" }}
+                exit={{ translateX: "100%" }}
+                transition={{ duration: 0.4 }}
+                className="absolute w-full"
+              >
+                <SettingEditProfile
+                  key={settingSelectedMenu}
+                  backButtonHandler={settingBackButtonHandler}
+                  // profileImageUrl={"/Asset/avatar.jpg"}
+                />
               </motion.div>
             )}
           </AnimatePresence>
