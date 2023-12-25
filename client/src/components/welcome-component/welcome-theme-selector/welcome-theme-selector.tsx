@@ -1,8 +1,11 @@
 "use client"
 import Image from "next/image"
-import React, { useState } from "react"
+import React, { FC, useState } from "react"
 
-const WelcomeThemeSelector = () => {
+interface WelcomeThemeSelectorProps {
+  continueButtonHandler(): void
+}
+const WelcomeThemeSelector: FC<WelcomeThemeSelectorProps> = ({ continueButtonHandler }) => {
   const [theme, setTheme] = useState<"light" | "dark" | "system">("system")
 
   return (
@@ -46,7 +49,7 @@ const WelcomeThemeSelector = () => {
             " relative   px-8 py-8  flex flex-col justify-center items-center w-full aspect-video  border-r-[1px] border-neutral-700   " +
             (theme == "system" ? " dark:bg-neutral-800 " : " dark:bg-neutral-950")
           }
-            onClick={() => setTheme("system")}
+          onClick={() => setTheme("system")}
         >
           <div className="relative w-full h-full flex justify-center">
             <div className="relative h-full aspect-video">
@@ -57,7 +60,12 @@ const WelcomeThemeSelector = () => {
         </div>
       </div>
 
-      <div className="mt-10 mx-auto self-start py-4 px-32 rounded-md text-lg bg-blue-500 ">Continue</div>
+      <div
+        className="mt-10 mx-auto self-start py-4 px-32 rounded-md text-lg bg-blue-500 "
+        onClick={continueButtonHandler}
+      >
+        Continue
+      </div>
     </div>
   )
 }

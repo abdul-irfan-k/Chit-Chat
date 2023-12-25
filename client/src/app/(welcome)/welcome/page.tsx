@@ -1,10 +1,10 @@
-import WelcomeThemeSelector from '@/components/welcome-component/welcome-theme-selector/welcome-theme-selector'
+import WelcomePageContainer from '@/components/welcome-component/welcome-container'
 import React from 'react'
 
 const WelcomePage = () => {
   return (
     <div>
-        <WelcomeThemeSelector />
+      <WelcomePageContainer />
     </div>
   )
 }
