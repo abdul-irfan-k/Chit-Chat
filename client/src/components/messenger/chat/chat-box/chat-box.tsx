@@ -8,6 +8,7 @@ import { chatUsersListReducerState } from "@/redux/reducers/chat-user-reducer/ch
 import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 import ImageMessage from "./image-message/image-message"
 import PollMessage from "./poll-message/poll-message"
+import VideoMessage from "./video-message/video-message"
 
 const ChatBox = () => {
   const { currentChaterMessage } = useSelector(
@@ -90,6 +91,17 @@ const ChatBox = () => {
             </>
           )
         })}
+        <VideoMessage  
+        _id="sdf"
+        messageThumbnaiImageSrc=""
+        messageVideoSrc="https://muxed.s3.amazonaws.com/leds.mp4"
+        messegeChannelType="incomingMessage"
+        time={new Date()}
+        userImageSrc="/Asset/avatar.jpg"
+        userName="irfan"
+        isContinuingConverstion={true}
+        
+        />
     </div>
   )
 }

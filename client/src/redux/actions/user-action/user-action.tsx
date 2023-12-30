@@ -73,3 +73,12 @@ export const loginWithGithubHandler = (data: Object, router: AppRouterInstance) 
     }
   } catch (error) {}
 }
+
+export const userIntialSettingSetupHandler = async (data: Object, router: AppRouterInstance) => {
+  try {
+    const { data: response } = await axiosUserInstance.post("/gettingStartedSettingSetup", data)
+    if (response.isUpdated) {
+      router.push("/messenger")
+    }
+  } catch (error) {}
+}

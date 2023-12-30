@@ -1,4 +1,5 @@
 import mongoose, { Types, Schema, Document, model } from "mongoose"
+import { Model } from "mongoose"
 
 const settingSchema = new mongoose.Schema(
   {
@@ -7,11 +8,11 @@ const settingSchema = new mongoose.Schema(
     },
     notificationAndSoundSetting: {
       privateChat: {
-        notification: { type: String, default: true },
+        notification: { type: Boolean, default: true },
         messagePreview: { type: Boolean, default: true },
       },
       group: {
-        notification: { type: String, default: true },
+        notification: { type: Boolean, default: true },
         messagePreview: { type: Boolean, default: true },
       },
     },
@@ -69,6 +70,27 @@ interface settingSchemaInterface {
     | undefined
 }
 
+settingSchema.statics.createIntialDefaultSettings = async function (
+  userId: Types.ObjectId,
+): Promise<settingSchemaInterface | null | undefined> {
+  try {
+    const userSetting = await this.findOne({ userId: userId })
+    if (userSetting) {
+      // const updatedSetting = await this.findOneAndUpdate({ userId }, {}, { new: true })
+    } else {
+      const userNewSetting = new this({ userId })
+      await userNewSetting.save()
+      return userNewSetting
+    }
+  } catch (error) {
+    throw Error()
+  }
+}
+
+interface staticInterface extends Model<SettingDocument> {
+  createIntialDefaultSettings(userId: Types.ObjectId): Promise<settingSchemaInterface | null>
+}
+
 export interface SettingDocument extends settingSchemaInterface, Document {}
-const UserSettingModel = model<SettingDocument>("userSetting", settingSchema)
+const UserSettingModel = model<SettingDocument, staticInterface>("userSetting", settingSchema)
 export default UserSettingModel

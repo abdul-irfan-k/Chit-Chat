@@ -21,10 +21,10 @@ const storage = multer.diskStorage({
 })
 const upload = multer({ storage })
 
-router.post("/uploadSingleImage", upload.single("file"), uploadSingleImageHandler)
+router.post("/uploadSingleImage", upload.single("image"), uploadSingleImageHandler)
 router.post("/uploadDocument",upload.single("document"),uploadSingleDocumentHandler)
 router.post("/uploadMultipleImage", upload.array("image"),uploadMultipleImageHandler)
-router.post("/uploadVideo", upload.array("image"),uploadMultipleImageHandler)
+router.post("/uploadVideo", upload.array("video"),uploadMultipleImageHandler)
 
 
 export default router

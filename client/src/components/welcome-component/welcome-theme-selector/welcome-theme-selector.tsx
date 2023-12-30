@@ -4,10 +4,10 @@ import React, { FC, useState } from "react"
 
 interface WelcomeThemeSelectorProps {
   continueButtonHandler(): void
+  theme: "light" | "dark" | "system"
+  setTheme: React.Dispatch<React.SetStateAction<"light" | "dark" | "system">>
 }
-const WelcomeThemeSelector: FC<WelcomeThemeSelectorProps> = ({ continueButtonHandler }) => {
-  const [theme, setTheme] = useState<"light" | "dark" | "system">("system")
-
+const WelcomeThemeSelector: FC<WelcomeThemeSelectorProps> = ({ continueButtonHandler, setTheme, theme }) => {
   return (
     <div
       className="fixed top-[50%] left-[50%] w-[65vw] flex flex-col text-center text-slate-50  "

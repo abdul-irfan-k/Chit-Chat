@@ -623,3 +623,23 @@ export const updateSettingHandler = async (req: Request, res: Response) => {
     return res.status(400).json({})
   }
 }
+
+export const gettingStartedSettingSetupHandler = async (req: Request, res: Response) => {
+  try {
+    const { _id } = req.user as userInterface
+    const userObjectId = new mongoose.Types.ObjectId(_id)
+    const { theme } = req.body
+
+    const userSetting = UserSettingModel.findOne({ _id: userObjectId })
+    if (userSetting == null) {
+      const newUserSettting = new UserSettingModel({ userId: userObjectId })
+      await newUserSettting.save()
+      return res.status(200).json({ isUpdated: true })
+    }
+
+    await UserSettingModel.findOneAndUpdate({ _id: userObjectId }, { $set: { "generalSetting.theme": theme } })
+    return res.status(200).json({ isUpdated: true })
+  } catch (error) {
+    return res.status(400).json({})
+  }
+}

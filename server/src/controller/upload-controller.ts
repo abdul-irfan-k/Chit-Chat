@@ -12,7 +12,7 @@ export const uploadSingleImageHandler = async (req: MulterRequest, res: Response
     if (req.file == undefined) return
     const cloudinaryUpload = await cloudinaryFileUploadHandler(req.file.path, { resource_type: "image" })
     if (cloudinaryUpload.imageUrl)
-      res.status(200).json({ isvalid: true, isUploadedImage: true, fileUrl: cloudinaryUpload.imageUrl })
+      res.status(200).json({ isvalid: true, isUploaded: true, fileUrl: cloudinaryUpload.imageUrl })
     fs.unlinkSync(req.file.path)
   } catch (error) {
     return res.status(400).json({})
@@ -37,7 +37,7 @@ export const uploadMultipleImageHandler = async (req: MultipleUploadMulterReqque
     //   const cloudinarUploadResponse = await cloudinaryFileUploadHandler(imageFile.path)
     //   if (cloudinarUploadResponse.imageUrl) imageFilesPath.push(cloudinarUploadResponse.imageUrl)
     // })
-    return res.status(200).json({ isValid: true, isUploadedImage: true, filesUrl: imageFilesPath })
+    return res.status(200).json({ isValid: true, isUploaded: true, filesUrl: imageFilesPath })
   } catch (error) {
     return res.status(400).json({})
   }
@@ -49,7 +49,7 @@ export const uploadSingleDocumentHandler = async (req: MulterRequest, res: Respo
     if (file == undefined) return res.status(400).json({ errorType: FILENOTINCLUEDED })
     const cloudinaryUpload = await cloudinaryFileUploadHandler(file.path, { resource_type: "raw" })
     if (cloudinaryUpload.imageUrl)
-      res.status(200).json({ isvalid: true, isUploadedImage: true, fileUrl: cloudinaryUpload.imageUrl })
+      res.status(200).json({ isvalid: true, isUploaded: true, fileUrl: cloudinaryUpload.imageUrl })
     fs.unlinkSync(file.path)
   } catch (error) {
     return res.status(400).json({})
@@ -62,7 +62,7 @@ export const uploadVideoHandler = async (req: MulterRequest, res: Response) => {
     if (videoFile == undefined) return res.status(400).json({ errorType: FILENOTINCLUEDED })
     const cloudinaryUpload = await cloudinaryFileUploadHandler(videoFile.path, { resource_type: "video" })
     if (cloudinaryUpload.imageUrl)
-      res.status(200).json({ isvalid: true, isUploadedImage: true, fileUrl: cloudinaryUpload.imageUrl })
+      res.status(200).json({ isvalid: true, isUploaded: true, fileUrl: cloudinaryUpload.imageUrl })
     fs.unlinkSync(videoFile.path)
   } catch (error) {
     return res.status(400).json({})

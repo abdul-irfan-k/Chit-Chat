@@ -17,6 +17,12 @@ interface newAudiomessageDetails extends messageSourceAndDestinationDetail {
   }
 }
 
+interface newVideoMessageInterface extends messageSourceAndDestinationDetail {
+  message: {
+    videoMessageSrc: string
+  }
+}
+
 export interface groupMessageSourceAndDestinationDetail {
   senderId: string
   chatRoomId: string
@@ -77,6 +83,7 @@ interface ClientToServerMessageEvents {
   "message:newImageMessage": (messageDetails: newImageMessageInterface) => void
   "message:newMessage": (messageDetails: newMessageInterface) => void
   "message:newAudioMessage": (messageDetails: newAudiomessageDetails) => void
+  "message:newVideoMessage": (messageDetails: newVideoMessageInterface) => void
   // "groupMessage:newTextMessage"
 
   "groupMessage:newTextMessage": (messageDetails: groupNewTextMessageInterface) => void
@@ -92,6 +99,7 @@ interface ClientToServerMessageEvents {
 interface ServerToClientMessageEvents {
   "message:receiveMessage": (messageDetails: newMessageInterface) => void
   "message:recieveNewImageMessage": (messageDetails: newImageMessageInterface) => void
+  "message:receiveVideoMessage": (messageDetails: newVideoMessageInterface) => void
 
   "groupMessage:receiveTextMessage": (messageDetails: groupNewTextMessageInterface) => void
   "groupMessage:receiveAudioMessage": (messageDetails: groupNewAudioMessageInterface) => void

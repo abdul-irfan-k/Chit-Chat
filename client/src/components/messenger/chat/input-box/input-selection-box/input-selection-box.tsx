@@ -1,4 +1,4 @@
-import { PersonIcon } from "@/constants/icon-constant"
+import { CamaraIcon, PersonIcon, VideoIcon } from "@/constants/icon-constant"
 import React, { FC, useRef, useState } from "react"
 import PreviewSelectedImage from "../image-selection/image-selection"
 import { axiosUploadInstance } from "@/constants/axios"
@@ -26,21 +26,21 @@ const InputSelectionBox: FC<InputSelectionBoxProps> = ({ outsideClickHandler }) 
 
   return (
     <div
-      className="absolute px-8 py-5 rounded-lg gap-1 flex flex-col bottom-[200%] bg-slate-300  dark:bg-slate-900"
+      className="absolute px-8 py-5 rounded-lg gap-1 flex flex-col bottom-[200%] bg-slate-300  dark:bg-neutral-950"
       ref={inputSelectionBoxRef}
     >
       <ImageSelection currentChaterDetail={currentChaterDetail} userDetail={userDetail} />
       <div className="gap-1 py-2 flex items-center">
         <div className="relative w-6 aspect-square">
-          <PersonIcon className="w-6 aspect-square" width="" height="" />
+          <CamaraIcon className="w-6 aspect-square" width="" height="" />
         </div>
         <span className="text-base">Camara</span>
       </div>
       <div className="gap-1 py-2 flex items-center">
         <div className="relative w-6 aspect-square">
-          <PersonIcon className="w-6 aspect-square" width="" height="" />
+          <VideoIcon className="w-6 aspect-square" width="" height="" />
         </div>
-        <span className="text-base">Contact</span>
+        <span className="text-base">Video</span>
       </div>
       <div className="gap-1 py-2 flex items-center">
         <div className="relative w-6 aspect-square">

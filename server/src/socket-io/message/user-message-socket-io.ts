@@ -12,6 +12,7 @@ import { SocketIo } from "../../types/socket-io/socket-io.js"
 import ImageMessageModel from "../../model/mongoose/message-model/image-message-model.js"
 import mongoose from "mongoose"
 import PollMessageModel from "../../model/mongoose/message-model/poll-message-model.js"
+import VideoMessageModel from "../../model/mongoose/message-model/video-message-model.js"
 
 const userMessageSocketIo = (io: Server, socket: SocketIo) => {
   socket.on("message:newMessage", async ({ message, receiverId, senderId, chatRoomId }) => {
@@ -84,6 +85,28 @@ const userMessageSocketIo = (io: Server, socket: SocketIo) => {
       chatRoomId,
       messageId: newMessage._id,
       messageType: "imageMessage",
+    })
+  })
+
+  socket.on("message:newVideoMessage", async ({ chatRoomId, message, receiverId, senderId }) => {
+    const newMessage = new VideoMessageModel({
+      chatRoomId,
+      postedByUser: senderId,
+      videoMessageSrc: message.videoMessageSrc,
+      messageType: "videoMessage",
+    })
+    await newMessage.save()
+
+    if (newMessage == null) return
+    const receiver = await getRedisSocketCached(receiverId)
+    if (receiver != null) {
+      socket.to(receiver.socketId).emit("message:receiveVideoMessage", { chatRoomId, message, receiverId, senderId })
+    }
+
+    ChatRoomModel.addChatConversation({
+      chatRoomId,
+      messageId: newMessage._id,
+      messageType: "videoMessage",
     })
   })
 

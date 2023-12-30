@@ -10,6 +10,7 @@ import {
   checkUserIdAvilableHandler,
   getUserDetailHandler,
   getUserDetailsByUserIdHandler,
+  gettingStartedSettingSetupHandler,
   googleLoginWithAcessTokenHandler,
   loginUserHandler,
   loginWithGithubHandler,
@@ -74,7 +75,8 @@ router.post("/sendFreindRequest", checkisLogedInMiddleware, sendFreindRequestHan
 router.post("/acceptFreindRequest", checkisLogedInMiddleware, acceptFreindRequestHandler) // accept the freind request
 router.post("/rejectFreindRequest", checkisLogedInMiddleware) // reject freind request
 
-
+// welco0me page setting setup 
+router.post("/gettingStartedSettingSetup",checkisLogedInMiddleware,gettingStartedSettingSetupHandler)
 
 router.post("/updateSetting",checkisLogedInMiddleware)
 export default router
