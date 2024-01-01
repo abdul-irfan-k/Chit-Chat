@@ -48,7 +48,7 @@ chatRoomSchema.statics.initiateChat = async function (userIds: string[]) {
 
 interface addChatConversation {
   messageId: string
-  messageType: "textMessage" | "voiceMessage"|"imageMessage"
+  messageType: "textMessage" | "voiceMessage" | "imageMessage" | "videoMessage"
   chatRoomId: string
 }
 chatRoomSchema.statics.addChatConversation = async function ({

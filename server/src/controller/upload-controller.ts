@@ -64,6 +64,7 @@ export const uploadVideoHandler = async (req: MulterRequest, res: Response) => {
     if (cloudinaryUpload.imageUrl)
       res.status(200).json({ isvalid: true, isUploaded: true, fileUrl: cloudinaryUpload.imageUrl })
     fs.unlinkSync(videoFile.path)
+    
   } catch (error) {
     return res.status(400).json({})
   }
