@@ -1,17 +1,18 @@
-import mongoose, { Model, Schema, model } from "mongoose"
+import mongoose, { Model, Schema, Types, model } from "mongoose"
 
-interface videoCallRoomSchemaInterface {
+interface CallRoomSchemaInterface {
   chatRoomId: string
   userIds: string[]
   callCurrentStatus?: string
-  callIntiatorUserId?: string
+  callIntiatorUserId?: Types.ObjectId
+  callType?: string | undefined
 }
-const videoCallRoomSchema = new Schema(
+const CallRoomSchema = new Schema(
   {
-    userIds: { type: [String], default: [] },
     chatRoomId: { type: String, required: true },
     callCurrentStatus: { type: String },
-    callIntiatorUserId: { type: String },
+    callIntiatorUserId: { type: Schema.Types.ObjectId, required: true },
+    callType: { type: String },
   },
   {
     timestamps: true,
@@ -22,16 +23,11 @@ interface initiateVideoCallRoomArgument {
   userId: string
   chatRoomId: string
 }
-videoCallRoomSchema.statics.initiateVideoCallRoom = function ({ chatRoomId, userId }: initiateVideoCallRoomArgument) {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const videoCallRoom = new this({ chatRoomId, userIds: [userId], callIntiatorUserId: userId })
-      await videoCallRoom.save()
-      return resolve({ isCreatedRoom: true, _id: videoCallRoom._id })
-    } catch (error) {
-      reject()
-    }
-  })
+CallRoomSchema.statics.initiateVideoCallRoom = async function ({ chatRoomId, userId }: initiateVideoCallRoomArgument) {
+   const intiatorUserId = new mongoose.Types.ObjectId(userId)
+  const videoCallRoom = new this({ chatRoomId, userIds: [userId], callIntiatorUserId: intiatorUserId })
+  await videoCallRoom.save()
+  return { isCreatedRoom: true, _id: videoCallRoom._id }
 }
 
 interface addVideoCallRoomUserArgument {
@@ -39,41 +35,29 @@ interface addVideoCallRoomUserArgument {
   callRoomId: string
 }
 
-videoCallRoomSchema.statics.addVideoCallRoomUser = function ({ userId, callRoomId }: addVideoCallRoomUserArgument) {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const callRoomObjectId = new mongoose.Types.ObjectId(callRoomId)
-      const videoCallRoom = await this.findOneAndUpdate(
-        { _id: callRoomObjectId },
-        {
-          $push: { userIds: userId },
-        },
-        { new: true },
-      )
-      resolve(videoCallRoom)
-    } catch (error) {
-      reject()
-    }
-  })
+CallRoomSchema.statics.addVideoCallRoomUser = async function ({ userId, callRoomId }: addVideoCallRoomUserArgument) {
+  const callRoomObjectId = new mongoose.Types.ObjectId(callRoomId)
+  const videoCallRoom = await this.findOneAndUpdate(
+    { _id: callRoomObjectId },
+    {
+      $push: { userIds: userId },
+    },
+    { new: true },
+  )
+  return videoCallRoom
 }
 
-videoCallRoomSchema.statics.getVideoCallRoom = function (chatRoomId: string) {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const videoCallRoom = await this.findOne({ chatRoomId })
-      return resolve(videoCallRoom)
-    } catch (error) {
-      reject()
-    }
-  })
+CallRoomSchema.statics.getVideoCallRoom = async function (chatRoomId: string) {
+  const videoCallRoom = await this.findOne({ chatRoomId })
+  return videoCallRoom
 }
 
 interface staticInterface extends Model<VideoCallRoomDocument> {
-  initiateVideoCallRoom(details: initiateVideoCallRoomArgument): Promise<any>
-  addVideoCallRoomUser(details: addVideoCallRoomUserArgument): Promise<any>
-  getVideoCallRoom(chatRoomId: string): Promise<any>
+  initiateVideoCallRoom(details: initiateVideoCallRoomArgument): { isCreatedRoom: boolean; _id: Types.ObjectId }
+  addVideoCallRoomUser(details: addVideoCallRoomUserArgument): any
+  getVideoCallRoom(chatRoomId: string): void
 }
 
-export interface VideoCallRoomDocument extends videoCallRoomSchemaInterface, Document {}
-const VideoCallRoomModel = model<VideoCallRoomDocument, staticInterface>("Meeting", videoCallRoomSchema)
+export interface VideoCallRoomDocument extends CallRoomSchemaInterface, Document {}
+const VideoCallRoomModel = model<VideoCallRoomDocument, staticInterface>("Meeting", CallRoomSchema)
 export default VideoCallRoomModel

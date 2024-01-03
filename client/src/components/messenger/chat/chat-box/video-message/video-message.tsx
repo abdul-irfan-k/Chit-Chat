@@ -1,6 +1,9 @@
 import Image from "next/image"
 import React, { FC, useState } from "react"
 import VideoMessagePreview from "./video-message-preview/video-message-preview"
+import { useContextMenuContext } from "@/provider/context-menu-provider/context-menu-provider"
+import { messageDeliveryStatus, messageStatus } from "@/redux/reducers/message-reducer/message-reducer"
+import CircleSpinner from "@/components/shared/circle-spinner/circle-spinner"
 
 interface VideoMessageProps {
   _id: string
@@ -9,14 +12,12 @@ interface VideoMessageProps {
   userName: string
   userImageSrc: string
   isContinuingConverstion?: Boolean
-  messageThumbnaiImageSrc: string
   messageVideoSrc: string
   messageStatus?: messageStatus
   messageDeliveryStatus?: messageDeliveryStatus
 }
 const VideoMessage: FC<VideoMessageProps> = ({
   _id,
-  messageThumbnaiImageSrc,
   messageVideoSrc,
   messegeChannelType,
   time,
@@ -27,7 +28,7 @@ const VideoMessage: FC<VideoMessageProps> = ({
   messageStatus,
 }) => {
   const [previewVideo, setPreviewVideo] = useState<boolean>(false)
-
+  const contextMenu = useContextMenuContext()
   return (
     <div
       className={
@@ -57,13 +58,18 @@ const VideoMessage: FC<VideoMessageProps> = ({
             const isOutGoingMessage: boolean = messegeChannelType == "outgoingMessage"
             contextMenu.setContextMenuDetails({
               type: "message",
-              messageDetails: { _id, isOutGoingMessage, messageType: "imageMessage", messageSrc: messageImageSrc[0] },
+              messageDetails: { _id, isOutGoingMessage, messageType: "videoMessage", messageSrc: messageVideoSrc },
             })
             contextMenu.setContextMenuPosition({ xPosition: e.clientX, yPosition: e.clientY })
             contextMenu.setShowContextMenu(true)
           }}
         >
-          <Image alt="image" src={messageThumbnaiImageSrc} fill />
+          <div className="w-full h-full ">
+            <video
+              className=" w-full h-full"
+              src={messageVideoSrc}
+            ></video>
+          </div>
           {previewVideo && <VideoMessagePreview messageVideoSrc={messageVideoSrc} />}
           <div className="absolute">
             {messegeChannelType == "outgoingMessage" && messageStatus == "notSended" && <CircleSpinner />}

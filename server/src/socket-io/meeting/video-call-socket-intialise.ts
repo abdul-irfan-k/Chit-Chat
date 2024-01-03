@@ -1,9 +1,9 @@
-import { Server, Socket } from "socket.io"
+import {  Socket } from "socket.io"
 import { getRedisSocketCached } from "../../model/redis/redis.js"
 import VideoCallRoomModel from "../../model/mongoose/meeting-model/meeting-model.js"
 import { v4 as uuidv4 } from "uuid"
 
-const videoCallIntialiseSocketIo = (io: Server, socket: Socket) => {
+const callSocketIo = (socket: Socket) => {
   socket.on("videoCall:intialise", async ({ chatRoomId, userDetail, userName, receiverId }) => {
     try {
       const videoCallRoom = await VideoCallRoomModel.initiateVideoCallRoom({ chatRoomId, userId: userDetail._id })
@@ -58,4 +58,4 @@ const videoCallIntialiseSocketIo = (io: Server, socket: Socket) => {
   })
 }
 
-export default videoCallIntialiseSocketIo
+export default callSocketIo

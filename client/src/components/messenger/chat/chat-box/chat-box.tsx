@@ -88,20 +88,22 @@ const ChatBox = () => {
                   }}
                 />
               )}
+
+              {message.messageData.messageType == "videoMessage" && (
+                <VideoMessage
+                  _id={message.messageData._id}
+                  messageVideoSrc={message.messageData.videoMessageSrc}
+                  messegeChannelType={message.messegeChannelType}
+                  time={new Date()}
+                  userImageSrc="/Asset/avatar.jpg"
+                  userName={
+                    message.messegeChannelType == "incomingMessage" ? currentChaterDetail?.name : userDetail?.name
+                  }
+                />
+              )}
             </>
           )
         })}
-        <VideoMessage  
-        _id="sdf"
-        messageThumbnaiImageSrc=""
-        messageVideoSrc="https://muxed.s3.amazonaws.com/leds.mp4"
-        messegeChannelType="incomingMessage"
-        time={new Date()}
-        userImageSrc="/Asset/avatar.jpg"
-        userName="irfan"
-        isContinuingConverstion={true}
-        
-        />
     </div>
   )
 }

@@ -49,6 +49,7 @@ const ImageSelection: FC<ImageSelectionProps> = ({ userDetail, currentChaterDeta
   const fileUploadHandler = async () => {
     try {
       if (currentChaterDetail == null || userDetail == null) return
+      console.log("file upload handler ")
 
       // image upllading and sending in socker io
       const selectedImages = selectedFile.filter((file) => file.type.split("/")[0] == "image")
@@ -66,7 +67,11 @@ const ImageSelection: FC<ImageSelectionProps> = ({ userDetail, currentChaterDeta
           headers: { "Content-Type": "multipart/form-data" },
         })
 
-        if (response.isUploaded != undefined && currentChaterDetail.currentChaterType == "user" && currentChaterDetail.chatRoom != undefined) {
+        if (
+          response.isUploaded != undefined &&
+          currentChaterDetail.currentChaterType == "user" &&
+          currentChaterDetail.chatRoom != undefined
+        ) {
           socket.emit("message:newImageMessage", {
             chatRoomId: currentChaterDetail.chatRoom.chatRoomId,
             message: { imageMessageSrc: response.fileUrl },
@@ -77,8 +82,9 @@ const ImageSelection: FC<ImageSelectionProps> = ({ userDetail, currentChaterDeta
       }
 
       // video uploading and sending
-      const selectedVideoFiles = selectedFile.filter((file) => file.type.split("/")[0] == "video")
+      const selectedVideoFiles = selectedFile.filter((file) => file.type.split("/")[0] == "video")  
       if (selectedVideoFiles.length > 0) {
+        console.log("selected video files",selectedVideoFiles.length)
         const formData = new FormData()
         formData.append("video", selectedVideoFiles[0])
 
@@ -87,8 +93,18 @@ const ImageSelection: FC<ImageSelectionProps> = ({ userDetail, currentChaterDeta
           headers: { "Content-Type": "multipart/form-data" },
         })
 
-
-        // if()
+        if (
+          response.isUploaded != undefined &&
+          currentChaterDetail.currentChaterType == "user" &&
+          currentChaterDetail.chatRoom != undefined
+        ) {
+          socket.emit("message:newVideoMessage", {
+            chatRoomId: currentChaterDetail.chatRoom.chatRoomId,
+            message: { videoMessageSrc: response.fileUrl },
+            receiverId: currentChaterDetail._id,
+            senderId: userDetail._id,
+          })
+        }
       }
     } catch (error) {}
   }

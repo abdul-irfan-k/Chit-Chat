@@ -27,6 +27,14 @@ interface imageMessage {
   messageSendedTime: Date
   imageMessageSrc: string[]
 }
+interface videoMessage {
+  _id: string
+  chatRoomId: string
+  postedByUser: string
+  messageType: "videoMessage"
+  messageSendedTime: Date
+  videoMessageSrc: string
+}
 
 interface pollMessage {
   _id: string
@@ -43,7 +51,7 @@ interface pollMessage {
     }[]
   }[]
 }
-type messageType = textMessage | voiceMessage | imageMessage | pollMessage
+type messageType = textMessage | voiceMessage | imageMessage | pollMessage | videoMessage
 export type messageStatus = "sended" | "notSended"
 export type messageDeliveryStatus = "notDelivered" | "delivered" | "watched"
 

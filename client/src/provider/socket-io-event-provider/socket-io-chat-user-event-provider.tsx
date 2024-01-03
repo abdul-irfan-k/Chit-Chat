@@ -14,6 +14,7 @@ import {
   receiveMessageHandler,
   receivePollMessageHandler,
   recieveNewImageMessageHandler,
+  recieveVideoMessageHandler,
 } from "@/redux/actions/chat-action/chat-action"
 import { chatUsersListReducerState } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import { socketReducerState } from "@/redux/reducers/socket-reducer/socket-reducers"
@@ -52,6 +53,12 @@ const SocketIoChatUserEventProvider = () => {
       dispatch(
         recieveNewImageMessageHandler({ chatRoomId: messageResponse.chatRoomId, message: messageResponse.message }),
       )
+    })
+
+    socket.on("message:receiveVideoMessage", ({ chatRoomId, message, receiverId, senderId }) => {
+      if (currentChaterDetail != null && currentChaterDetail._id != chatRoomId)
+        dispatch(addNewMessageNotificationHandler({ _id: senderId }))
+      dispatch(recieveVideoMessageHandler({ chatRoomId, message }))
     })
 
     socket.on("message:deleteMessage", ({ chatRoomId, message }) => {

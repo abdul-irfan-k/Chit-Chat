@@ -21,7 +21,7 @@ import userMessageSocketIo from "./socket-io/message/user-message-socket-io.js"
 import groupMessageSocketIo from "./socket-io/message/group-message-socket-io.js"
 import { userSocketIntialization } from "./socket-io/user/user-initialise.js"
 import { userStatusSocketIo } from "./socket-io/user/user-status-socket-io.js"
-import videoCallIntialiseSocketIo from "./socket-io/meeting/video-call-socket-intialise.js"
+import callSocketIo from "./socket-io/meeting/video-call-socket-intialise.js"
 import GroupCallSocketIo from "./socket-io/meeting/group-call-socket-io.js"
 import callPeerHandlerSocketIo from "./socket-io/meeting/call-peer-handler-socket-io.js"
 import groupControllSocketIo from "./socket-io/group/group-control-socket-io.js"
@@ -59,7 +59,7 @@ io.on("connection", async (socket) => {
 
   // video call
   callPeerHandlerSocketIo(io, socket)
-  videoCallIntialiseSocketIo(io, socket)
+  callSocketIo(socket)
   GroupCallSocketIo(io, socket)
 
   userStatusSocketIo(io, socket)

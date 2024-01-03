@@ -20,6 +20,12 @@ interface newAudiomessageDetails extends messageSourceAndDestinationDetail {
   }
 }
 
+interface newVideoMessageInterface extends messageSourceAndDestinationDetail {
+  message: {
+    videoMessageSrc: string
+  }
+}
+
 export interface groupMessageSourceAndDestinationDetail {
   senderId: string
   chatRoomId: string
@@ -63,16 +69,16 @@ interface pollMessageVoteUpdateInterface extends groupMessageSourceAndDestinatio
   }
 }
 
-export interface deleteMessageInterface extends messageSourceAndDestinationDetail {
+interface deleteMessageInterface extends messageSourceAndDestinationDetail {
   message: {
     _id: string
-    messageType: "textMessage" | "voiceMessage" | "imageMessage" | "pollMessage"
+    messageType: "textMessage" | "voiceMessage" | "imageMessage" | "pollMessage" | "videoMessage"
   }
 }
-export interface deleteGroupMessageInterface extends groupMessageSourceAndDestinationDetail {
+interface deleteGroupMessageInterface extends groupMessageSourceAndDestinationDetail {
   message: {
     _id: string
-    messageType: "textMessage" | "voiceMessage" | "imageMessage" | "pollMessage"
+    messageType: "textMessage" | "voiceMessage" | "imageMessage" | "pollMessage" | "videoMessage"
   }
 }
 
@@ -80,6 +86,7 @@ interface ClientToServerMessageEvents {
   "message:newImageMessage": (messageDetails: newImageMessageInterface) => void
   "message:newMessage": (messageDetails: newMessageInterface) => void
   "message:newAudioMessage": (messageDetails: newAudiomessageDetails) => void
+  "message:newVideoMessage": (messageDetails: newVideoMessageInterface) => void
   // "groupMessage:newTextMessage"
 
   "groupMessage:newTextMessage": (messageDetails: groupNewTextMessageInterface) => void
@@ -90,11 +97,12 @@ interface ClientToServerMessageEvents {
   "groupMessage:pollMessageVoteUpdate": (messageDetails: pollMessageVoteUpdateInterface) => void
 
   "message:deleteMessage": (messageDetails: deleteMessageInterface) => void
-  "groupMessage:deleteMessage": (messageDetails: deleteGroupMessageInterface) => void
+  "groupMessage:deleteMessage": (messageDetails: deleteMessageInterface) => void
 }
 interface ServerToClientMessageEvents {
   "message:receiveMessage": (messageDetails: newMessageInterface) => void
   "message:recieveNewImageMessage": (messageDetails: newImageMessageInterface) => void
+  "message:receiveVideoMessage": (messageDetails: newVideoMessageInterface) => void
 
   "groupMessage:receiveTextMessage": (messageDetails: groupNewTextMessageInterface) => void
   "groupMessage:receiveAudioMessage": (messageDetails: groupNewAudioMessageInterface) => void

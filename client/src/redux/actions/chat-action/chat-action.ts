@@ -242,6 +242,23 @@ export const recieveNewImageMessageHandler =
     )
   }
 
+export const recieveVideoMessageHandler = ({ chatRoomId, message }: { chatRoomId: string; message: { videoMessageSrc: string } }) => async (dispatch:AppDispatch) => {
+  dispatch(chatRoomMessageAction.addSendedChatRoomMessage({
+    chatRoomId,
+    newMessage:{
+      messegeChannelType:"incomingMessage",
+      messageData:{
+        messageType:"videoMessage",
+        _id:"",
+        chatRoomId,
+        videoMessageSrc:message.videoMessageSrc,
+        messageSendedTime:new Date(),
+        postedByUser:"a"
+      }
+    }
+  }))
+}
+
 export const onChaterdeleteMessageHandler =
   ({ chatRoomId, message }: { chatRoomId: string; message: { _id: string } }) =>
   async (dispatch: AppDispatch) => {

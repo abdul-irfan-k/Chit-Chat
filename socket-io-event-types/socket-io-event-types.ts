@@ -69,13 +69,13 @@ interface pollMessageVoteUpdateInterface extends groupMessageSourceAndDestinatio
 interface deleteMessageInterface extends messageSourceAndDestinationDetail {
   message: {
     _id: string
-    messageType: "textMessage" | "voiceMessage" | "imageMessage" | "pollMessage"
+    messageType: "textMessage" | "voiceMessage" | "imageMessage" | "pollMessage" | "videoMessage"
   }
 }
 interface deleteGroupMessageInterface extends groupMessageSourceAndDestinationDetail {
   message: {
     _id: string
-    messageType: "textMessage" | "voiceMessage" | "imageMessage" | "pollMessage"
+    messageType: "textMessage" | "voiceMessage" | "imageMessage" | "pollMessage" | "videoMessage"
   }
 }
 

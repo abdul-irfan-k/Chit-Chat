@@ -90,8 +90,11 @@ interface imageMessage extends messageDetails {
 interface pollMessage extends messageDetails {
   messageType: "pollMessage"
 }
+interface videoMessage extends messageDetails {
+  messageType: "videoMessage"
+}
 
-export type messageDetail = textMessage | voiceMessage | imageMessage | pollMessage
+export type messageDetail = textMessage | voiceMessage | imageMessage | pollMessage | videoMessage
 interface messageContextMenu {
   type: "message"
   messageDetails: messageDetail

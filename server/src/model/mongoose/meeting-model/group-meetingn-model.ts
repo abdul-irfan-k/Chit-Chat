@@ -46,26 +46,24 @@ interface createVideoCallRoomArgument {
   peerId: string
   callRoomId: string
 }
-groupCallRoomSchema.statics.createVideoCallRoom = function ({
+groupCallRoomSchema.statics.createVideoCallRoom = async function ({
   peerId,
   referenceId,
   userId,
   callRoomId,
 }: createVideoCallRoomArgument) {
-  return new Promise(async (resolve, reject) => {
-    console.log("peer id", peerId)
-    const newVideoCallRoom = new this({
-      referenceId,
-      adminId: userId,
-      callRoomId,
-      callInitiator: userId,
-      pinnedUsers: [{ userId }],
-      callRoomAllUsers: [{ userId }],
-      callRoomCurrentUsers: [{ peerId, userId }],
-    })
-    await newVideoCallRoom.save()
-    return resolve({})
+  console.log("peer id", peerId)
+  const newVideoCallRoom = new this({
+    referenceId,
+    adminId: userId,
+    callRoomId,
+    callInitiator: userId,
+    pinnedUsers: [{ userId }],
+    callRoomAllUsers: [{ userId }],
+    callRoomCurrentUsers: [{ peerId, userId }],
   })
+  await newVideoCallRoom.save()
+  return
 }
 
 groupCallRoomSchema.statics.getAdminDetail = function ({ referenceId }: { referenceId: string }) {
@@ -77,7 +75,7 @@ groupCallRoomSchema.statics.getAdminDetail = function ({ referenceId }: { refere
 }
 
 interface staticInterface extends Model<GroupCallRoomDocument> {
-  createVideoCallRoom(details: createVideoCallRoomArgument): Promise<any>
+  createVideoCallRoom(details: createVideoCallRoomArgument): void
   getAdminDetail(details: { referenceId: string }): Promise<{ userId: string }>
   addUser(details: any): Promise<any>
 }
