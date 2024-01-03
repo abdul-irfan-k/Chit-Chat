@@ -123,6 +123,9 @@ const userMessageSocketIo = (io: Server, socket: SocketIo) => {
         await voiceMessageModel.deleteOne({ _id: messageObjectId, postedByUser: senderId })
       else if (message.messageType == "pollMessage")
         await PollMessageModel.deleteOne({ _id: messageObjectId, postedByUser: senderId })
+      else if (message.messageType == "videoMessage")
+        await VideoMessageModel.deleteOne({ _id: messageObjectId, postedByUser: senderId })
+
 
       await ChatRoomModel.findOneAndUpdate(
         { _id: chatRoomObjectId },

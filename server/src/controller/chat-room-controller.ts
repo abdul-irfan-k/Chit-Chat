@@ -81,6 +81,9 @@ export const getChatRoomMessageHandler = async (req: Request, res: Response) => 
                 imageMessageIds: {
                   $cond: { if: { $eq: ["$$message.type", "imageMessage"] }, then: "$$message.id", else: "$$REMOVE" },
                 },
+                videoMessageIds: {
+                  $cond: { if: { $eq: ["$$message.type", "videoMessage"] }, then: "$$message.id", else: "$$REMOVE" },
+                },
               },
             },
           },
@@ -111,10 +114,18 @@ export const getChatRoomMessageHandler = async (req: Request, res: Response) => 
           as: "imageMessage",
         },
       },
+      {
+        $lookup: {
+          from: "videomessages",
+          let: { videoMessageIds: "$allMessages.videoMessageIds" },
+          pipeline: [{ $match: { $expr: { $in: ["$_id", "$$videoMessageIds"] } } }],
+          as: "videoMessage",
+        },
+      },
 
       {
         $addFields: {
-          messages: { $concatArrays: ["$textMessage", "$voiceMessage", "$imageMessage"] },
+          messages: { $concatArrays: ["$textMessage", "$voiceMessage", "$imageMessage", "$videoMessage"] },
         },
       },
       {
@@ -214,6 +225,9 @@ export const getGroupChatRoomMessageHandler = async (req: Request, res: Response
                 pollMessageIds: {
                   $cond: { if: { $eq: ["$$message.type", "pollMessage"] }, then: "$$message.id", else: "$$REMOVE" },
                 },
+                videoMessageIds: {
+                  $cond: { if: { $eq: ["$$message.type", "videoMessage"] }, then: "$$message.id", else: "$$REMOVE" },
+                },
               },
             },
           },
@@ -246,6 +260,14 @@ export const getGroupChatRoomMessageHandler = async (req: Request, res: Response
       },
       {
         $lookup: {
+          from: "videomessages",
+          let: { videoMessageIds: "$allMessages.imageMessageIds" },
+          pipeline: [{ $match: { $expr: { $in: ["$_id", "$$videoMessageIds"] } } }],
+          as: "videoMessage",
+        },
+      },
+      {
+        $lookup: {
           from: "pollmessages",
           let: { pollMessageIds: "$allMessages.pollMessageIds" },
           pipeline: [{ $match: { $expr: { $in: ["$_id", "$$pollMessageIds"] } } }],
@@ -255,7 +277,7 @@ export const getGroupChatRoomMessageHandler = async (req: Request, res: Response
 
       {
         $addFields: {
-          messages: { $concatArrays: ["$textMessage", "$voiceMessage", "$imageMessage", "$pollMessage"] },
+          messages: { $concatArrays: ["$textMessage", "$voiceMessage", "$imageMessage","$videoMessage", "$pollMessage"] },
         },
       },
       {
@@ -269,7 +291,7 @@ export const getGroupChatRoomMessageHandler = async (req: Request, res: Response
         },
       },
     ])
-    
+
     return res.status(200).json(chatRoomMessages)
   } catch (error) {
     console.log(error)

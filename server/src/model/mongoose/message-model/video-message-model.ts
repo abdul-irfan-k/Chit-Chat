@@ -4,7 +4,7 @@ const videoMessageSchema = new Schema(
   {
     chatRoomId: { type: String, required: true },
     postedByUser: { type: String, required: true },
-    videoMessageSrc: { type: [String], required: true },
+    videoMessageSrc: { type: String, required: true },
     messageType: { type: String },
     readreadByRecipient: [{ readByUserId: { type: String }, readAt: { type: Date, default: Date.now() } }],
   },

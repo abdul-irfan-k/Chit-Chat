@@ -33,11 +33,18 @@ export const uploadMultipleImageHandler = async (req: MultipleUploadMulterReqque
     const imageFiles = req.files
     if (imageFiles == undefined) return res.status(400).json({})
     const imageFilesPath: Array<string> = []
-    // imageFiles.forEach(async (imageFile) => {
-    //   const cloudinarUploadResponse = await cloudinaryFileUploadHandler(imageFile.path)
-    //   if (cloudinarUploadResponse.imageUrl) imageFilesPath.push(cloudinarUploadResponse.imageUrl)
-    // })
-    return res.status(200).json({ isValid: true, isUploaded: true, filesUrl: imageFilesPath })
+
+    //@ts-ignore
+    imageFiles.forEach(async (imageFile) => {
+      const cloudinarUploadResponse = await cloudinaryFileUploadHandler(imageFile.path)
+      if (cloudinarUploadResponse.imageUrl) imageFilesPath.push(cloudinarUploadResponse.imageUrl)
+    })
+    res.status(200).json({ isValid: true, isUploaded: true, filesUrl: imageFilesPath })
+
+    //@ts-ignore
+    imageFiles.forEach((file) => {
+      fs.unlinkSync(file.path)
+    })
   } catch (error) {
     return res.status(400).json({})
   }
@@ -64,7 +71,6 @@ export const uploadVideoHandler = async (req: MulterRequest, res: Response) => {
     if (cloudinaryUpload.imageUrl)
       res.status(200).json({ isvalid: true, isUploaded: true, fileUrl: cloudinaryUpload.imageUrl })
     fs.unlinkSync(videoFile.path)
-    
   } catch (error) {
     return res.status(400).json({})
   }
