@@ -1,4 +1,4 @@
-import { Schema, Document, model, Model } from "mongoose"
+import { Schema, Document, model, Model, Types } from "mongoose"
 
 interface readByRecipientSchemaInterface {
   readByUserId: string
@@ -15,6 +15,7 @@ interface voiceMessageSchemaInerface {
   voiceMessageSrc: string
   messageType: string
   readreadByRecipient?: readByRecipientSchemaInterface[]
+  reactions?: Types.ObjectId | undefined
 }
 const voiceMessageSchema = new Schema(
   {
@@ -23,6 +24,7 @@ const voiceMessageSchema = new Schema(
     voiceMessageSrc: { type: String, required: true },
     messageType: { type: String, default: "voiceMessage" },
     readreadByRecipient: { type: [readByRecipientSchema], default: [] },
+    reactions: { type: Schema.Types.ObjectId },
   },
   {
     timestamps: true,

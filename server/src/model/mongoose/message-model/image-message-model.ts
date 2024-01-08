@@ -1,4 +1,4 @@
-import { Document, Schema, model } from "mongoose"
+import { Document, Schema, model,Types } from "mongoose"
 
 const imageMessageSchema = new Schema(
   {
@@ -7,6 +7,7 @@ const imageMessageSchema = new Schema(
     imageMessageSrc: { type: [String], required: true },
     messageType: { type: String },
     readreadByRecipient: [{ readByUserId: { type: String }, readAt: { type: Date, default: Date.now() } }],
+    reactions: {type:Schema.Types.ObjectId}
   },
   {
     timestamps: true,
@@ -22,6 +23,7 @@ interface imageMessageSchemaInterface {
     readAt: Date
     readByUserId?: string | undefined
   }[]
+  reactions?: Types.ObjectId | undefined
 }
 
 export interface ImageMessageDocument extends Document, imageMessageSchemaInterface {}
