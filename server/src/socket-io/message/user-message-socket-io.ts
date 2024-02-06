@@ -13,6 +13,7 @@ import ImageMessageModel from "../../model/mongoose/message-model/image-message-
 import mongoose from "mongoose"
 import PollMessageModel from "../../model/mongoose/message-model/poll-message-model.js"
 import VideoMessageModel from "../../model/mongoose/message-model/video-message-model.js"
+import MessageReactionModel from "../../model/mongoose/message-model/message-reaction-model.js"
 
 const userMessageSocketIo = (io: Server, socket: SocketIo) => {
   socket.on("message:newMessage", async ({ message, receiverId, senderId, chatRoomId }) => {
@@ -126,7 +127,6 @@ const userMessageSocketIo = (io: Server, socket: SocketIo) => {
       else if (message.messageType == "videoMessage")
         await VideoMessageModel.deleteOne({ _id: messageObjectId, postedByUser: senderId })
 
-
       await ChatRoomModel.findOneAndUpdate(
         { _id: chatRoomObjectId },
         { $pull: { chatRoomConversations: { messageId: messageObjectId, messageType: message.messageType } } },
@@ -139,6 +139,25 @@ const userMessageSocketIo = (io: Server, socket: SocketIo) => {
     } catch (error) {
       console.log(error)
     }
+  })
+
+  socket.on("message:reactMessage", async ({ chatRoomId, groupDetail, message, receiverId, senderId }) => {
+    try {
+      const messageObjectId = new mongoose.Types.ObjectId(message._id)
+      const userObjectId = new mongoose.Types.ObjectId(senderId)
+      const messageReactions = await MessageReactionModel.findOrCreateMessageReactionModel(messageObjectId)
+
+      const isAlreadyReactedForMessage = messageReactions.reactions.some(
+        (reaction) => reaction.usersId.indexOf(senderId) !== -1,
+      )
+
+      if (!isAlreadyReactedForMessage) {
+        const updatedMessageReaction = await MessageReactionModel.findOneAndUpdate(
+          { messageId: messageObjectId },
+          { reactions: [{ emoji: message.emoji, emojiId: message.emojiId, usersId: [userObjectId] }] },
+        )
+      }
+    } catch (error) {}
   })
 }
 
