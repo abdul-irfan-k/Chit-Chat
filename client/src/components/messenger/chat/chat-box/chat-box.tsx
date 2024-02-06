@@ -9,6 +9,7 @@ import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 import ImageMessage from "./image-message/image-message"
 import PollMessage from "./poll-message/poll-message"
 import VideoMessage from "./video-message/video-message"
+import MessageReaction from "@/components/shared/message-reaction-menu/message-reaction-menu"
 
 const ChatBox = () => {
   const { currentChaterMessage } = useSelector(
@@ -21,7 +22,7 @@ const ChatBox = () => {
 
   useEffect(() => {}, [])
   return (
-    <div className="px-10 h-full  overflow-y-scroll md:h-[70vh] ">
+    <div className="relative px-10 h-full  overflow-y-scroll md:h-[70vh] ">
       {userDetail != null &&
         currentChaterDetail != null &&
         currentChaterMessage?.messages.map((message) => {
@@ -104,6 +105,7 @@ const ChatBox = () => {
             </>
           )
         })}
+        <MessageReaction />
     </div>
   )
 }

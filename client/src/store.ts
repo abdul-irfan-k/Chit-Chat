@@ -10,6 +10,7 @@ import { callRedcuer } from "./redux/reducers/call-reducer/call-reducer"
 import { notificationReducer } from "./redux/reducers/notification-reducer/notification-reducer"
 import { sidebarSortReducer } from "./redux/reducers/sidebar-sort-reducer/sidebar-sort-reducer"
 import { userSettingReducer } from "./redux/reducers/user-setting-reducer/user-setting-reducer"
+import { reactionMenuReducer } from "./redux/reducers/reaction-reducer/reaction-reducer"
 
 const combinedReducers = combineReducers({
   socketClient: socketClientReducer.reducer,
@@ -23,6 +24,7 @@ const combinedReducers = combineReducers({
   callRedcuer: callRedcuer.reducer,
   sidebarSort: sidebarSortReducer.reducer,
   userSetting: userSettingReducer.reducer,
+  reactionMenu: reactionMenuReducer.reducer,
 })
 
 export const store = configureStore({

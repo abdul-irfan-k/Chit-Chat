@@ -13,9 +13,7 @@ const EmogiPicker: FC<EmogiPickerProps> = ({ emojiSelectHandler }) => {
   const [isLoadedEmojiData, setIsLoadedEmojiData] = useState(false)
 
   const getEmojiDataHandler = async () => {
-    const { data } = await axios.get(
-      "https://cdn.jsdelivr.net/npm/@emoji-mart/data",
-    )
+    const { data } = await axios.get("https://cdn.jsdelivr.net/npm/@emoji-mart/data")
     setEmojiData(data)
     setIsLoadedEmojiData(true)
   }
@@ -25,6 +23,7 @@ const EmogiPicker: FC<EmogiPickerProps> = ({ emojiSelectHandler }) => {
 
   const onEmojiSelectHandler = (data: any) => {
     const emoji = data.native
+    console.log("emijis",data, { id: data.id, unified: data.unified, shortcodes: data.shortcodes, native: data.native })
     emojiSelectHandler((val) => {
       return val + emoji
     })

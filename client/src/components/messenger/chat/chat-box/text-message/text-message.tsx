@@ -1,5 +1,6 @@
 import MessageContextMenu from "@/components/shared/context-menu/message-context-menu/message-context-menu"
 import { useContextMenuContext } from "@/provider/context-menu-provider/context-menu-provider"
+import MessageReactionMenuProvider from "@/provider/message-reaction-menu-provider/message-reaction-menu-provider"
 import Image from "next/image"
 import React, { FC } from "react"
 
@@ -38,27 +39,28 @@ const TextMessage: FC<TextMessageInterface> = ({
           <div className="font-medium text-base text-slate-950 dark:text-slate-50 ">{userName}</div>
           <div className="font-light text-xs text-slate-800 dark:text-slate-200">{time.toDateString()}</div>
         </div>
+        <MessageReactionMenuProvider messageId={_id}>
+          <div
+            className={
+              "px-4 py-2 rounded-full" +
+              (messegeChannelType == "incomingMessage" ? " bg-blue-500 text-slate-50" : " bg-slate-300 text-slate-950")
+            }
+            onContextMenu={(e) => {
+              e.preventDefault()
+              if (contextMenu == null) return
 
-        <div
-          className={
-            "px-4 py-2 rounded-full" +
-            (messegeChannelType == "incomingMessage" ? " bg-blue-500 text-slate-50" : " bg-slate-300 text-slate-950")
-          }
-          onContextMenu={(e) => {
-            e.preventDefault()
-            if (contextMenu == null) return
-
-            const isOutGoingMessage: boolean = messegeChannelType == "outgoingMessage"
-            contextMenu.setContextMenuDetails({
-              type: "message",
-              messageDetails: { _id, isOutGoingMessage, messageType: "textMessage", messageContent },
-            })
-            contextMenu.setContextMenuPosition({ xPosition: e.clientX, yPosition: e.clientY })
-            contextMenu.setShowContextMenu(true)
-          }}
-        >
-          {messageContent}
-        </div>
+              const isOutGoingMessage: boolean = messegeChannelType == "outgoingMessage"
+              contextMenu.setContextMenuDetails({
+                type: "message",
+                messageDetails: { _id, isOutGoingMessage, messageType: "textMessage", messageContent },
+              })
+              contextMenu.setContextMenuPosition({ xPosition: e.clientX, yPosition: e.clientY })
+              contextMenu.setShowContextMenu(true)
+            }}
+          >
+            {messageContent}
+          </div>
+        </MessageReactionMenuProvider>
       </div>
     </div>
   )
