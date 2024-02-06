@@ -6,6 +6,7 @@ import mongoose from "mongoose"
 import ConnectionModel from "../model/mongoose/connections-model.js"
 import UserModel from "../model/mongoose/user-model.js"
 import GroupChatRoomModel from "../model/mongoose/chat-room-model/group-chat-room-model.js"
+import MessageReactionModel from "../model/mongoose/message-model/message-reaction-model.js"
 
 export const sendMessageToUserHandler = async (req: Request, res: Response) => {
   try {
@@ -277,7 +278,9 @@ export const getGroupChatRoomMessageHandler = async (req: Request, res: Response
 
       {
         $addFields: {
-          messages: { $concatArrays: ["$textMessage", "$voiceMessage", "$imageMessage","$videoMessage", "$pollMessage"] },
+          messages: {
+            $concatArrays: ["$textMessage", "$voiceMessage", "$imageMessage", "$videoMessage", "$pollMessage"],
+          },
         },
       },
       {
@@ -297,5 +300,38 @@ export const getGroupChatRoomMessageHandler = async (req: Request, res: Response
     console.log(error)
     return res.status(400).json({ isValid: false })
     // console.log(error)
+  }
+}
+
+export const getChatRoomMessageReactionHandler = async (req: Request, res: Response) => {
+  try {
+    const { chatRoomId, skip, step, limit } = req.body
+
+    const chatRoomObjectId = new mongoose.Types.ObjectId(chatRoomId)
+
+    const arrayStartingFrom = -(skip + 1) * step
+
+    // const chatRoomMessageReactions = await ChatRoomModel.findOne(
+    //   { _id: chatRoomObjectId },
+    //   { chatRoomConversations: { $slice: [arrayStartingFrom, limit] } },
+    // )
+
+    const chatRoomMessageReactions = await ChatRoomModel.aggregate([
+      { $match: { _id: chatRoomObjectId } },
+      { $project: { chatRoomConversations: { $slice: ["$chatRoomConversations", arrayStartingFrom, limit] } } },
+      {
+        $lookup: {
+          from: "messagereactions",
+          let: { messageIds: "$chatRoomConversations" },
+          pipeline: [{ $match:{ $expr: { $in: ["$_id", "$$messageIds.messageId"] } } }],
+          as: "messageReaction",
+        },
+      },
+    ])
+
+    return res.status(200).json({ chatRoomMessageReactions })
+  } catch (error) {
+    console.log(error)
+    return res.status(400).json({})
   }
 }

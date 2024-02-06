@@ -5,6 +5,7 @@ import {
   getAllChatGroupsHandler,
   getAllChatUsersHandler,
   getChatRoomMessageHandler,
+  getChatRoomMessageReactionHandler,
   getGroupChatRoomMessageHandler,
 } from "../controller/chat-room-controller.js"
 import { checkisLogedInMiddleware } from "../middleware/user-middleware.js"
@@ -36,5 +37,7 @@ router.post("/deleteGroup")
 
 router.post("/getChatRoomMessage", checkisLogedInMiddleware, getChatRoomMessageHandler)
 router.post("/getGroupChatRoomMessage", checkisLogedInMiddleware, getGroupChatRoomMessageHandler)
+router.post("/getChatRoomMessageReaction",getChatRoomMessageReactionHandler)
+router.post("/getGroupChatRoomMessageReaction",checkisLogedInMiddleware)
 
 export default router
