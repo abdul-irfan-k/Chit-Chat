@@ -2,7 +2,7 @@ interface Reaction {
   id: string
   unified: string
   shortcodes: string
-  native?: string
+  native: string
 }
 
 export const Reactions: Array<Reaction> = [

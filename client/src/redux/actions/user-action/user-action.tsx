@@ -80,5 +80,7 @@ export const userIntialSettingSetupHandler = async (data: Object, router: AppRou
     if (response.isUpdated) {
       router.push("/messenger")
     }
-  } catch (error) {}
+  } catch (error) {
+    
+  }
 }

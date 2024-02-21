@@ -15,6 +15,7 @@ const EmogiPicker: FC<EmogiPickerProps> = ({ emojiSelectHandler }) => {
   const getEmojiDataHandler = async () => {
     const { data } = await axios.get("https://cdn.jsdelivr.net/npm/@emoji-mart/data")
     setEmojiData(data)
+    console.log("data",data)
     setIsLoadedEmojiData(true)
   }
   useEffect(() => {

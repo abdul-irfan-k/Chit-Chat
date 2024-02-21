@@ -69,7 +69,7 @@ interface pollMessageVoteUpdateInterface extends groupMessageSourceAndDestinatio
   }
 }
 
-interface deleteMessageInterface extends messageSourceAndDestinationDetail {
+export interface deleteMessageInterface extends messageSourceAndDestinationDetail {
   message: {
     _id: string
     messageType: "textMessage" | "voiceMessage" | "imageMessage" | "pollMessage" | "videoMessage"
@@ -81,12 +81,20 @@ interface deleteGroupMessageInterface extends groupMessageSourceAndDestinationDe
     messageType: "textMessage" | "voiceMessage" | "imageMessage" | "pollMessage" | "videoMessage"
   }
 }
+export interface reactMeessageInterface extends messageSourceAndDestinationDetail {
+  message: {
+    _id: string
+    emojiId: string
+    emoji: string
+  }
+}
 
 interface ClientToServerMessageEvents {
   "message:newImageMessage": (messageDetails: newImageMessageInterface) => void
   "message:newMessage": (messageDetails: newMessageInterface) => void
   "message:newAudioMessage": (messageDetails: newAudiomessageDetails) => void
   "message:newVideoMessage": (messageDetails: newVideoMessageInterface) => void
+  "message:reactMessage": (messageDetails: reactMeessageInterface) => void
   // "groupMessage:newTextMessage"
 
   "groupMessage:newTextMessage": (messageDetails: groupNewTextMessageInterface) => void

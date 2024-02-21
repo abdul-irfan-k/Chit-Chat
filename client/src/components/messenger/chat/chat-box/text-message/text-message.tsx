@@ -1,6 +1,9 @@
 import MessageContextMenu from "@/components/shared/context-menu/message-context-menu/message-context-menu"
+import { Reactions } from "@/components/shared/message-reaction-menu/message-reaction-constant"
+import MessageReaction from "@/components/shared/message-reaction-menu/message-reaction-menu"
 import { useContextMenuContext } from "@/provider/context-menu-provider/context-menu-provider"
 import MessageReactionMenuProvider from "@/provider/message-reaction-menu-provider/message-reaction-menu-provider"
+import { messageReaction } from "@/redux/reducers/message-reducer/message-reducer"
 import Image from "next/image"
 import React, { FC } from "react"
 
@@ -12,6 +15,7 @@ interface TextMessageInterface {
   userImageSrc: string
   isContinuingConverstion?: Boolean
   _id: string
+  reactions?: messageReaction["reactions"]
 }
 const TextMessage: FC<TextMessageInterface> = ({
   messageContent,
@@ -20,6 +24,7 @@ const TextMessage: FC<TextMessageInterface> = ({
   userName,
   userImageSrc,
   _id,
+  reactions,
 }) => {
   const contextMenu = useContextMenuContext()
 
@@ -60,6 +65,7 @@ const TextMessage: FC<TextMessageInterface> = ({
           >
             {messageContent}
           </div>
+          <MessageReaction reactions={reactions} />
         </MessageReactionMenuProvider>
       </div>
     </div>

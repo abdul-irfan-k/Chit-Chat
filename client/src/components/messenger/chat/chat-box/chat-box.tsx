@@ -9,8 +9,6 @@ import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 import ImageMessage from "./image-message/image-message"
 import PollMessage from "./poll-message/poll-message"
 import VideoMessage from "./video-message/video-message"
-import MessageReaction from "@/components/shared/message-reaction-menu/message-reaction-menu"
-
 const ChatBox = () => {
   const { currentChaterMessage } = useSelector(
     (state: { chatRoomsMessageReducer: chatRoomMessagesReducerSlate }) => state.chatRoomsMessageReducer,
@@ -39,6 +37,7 @@ const ChatBox = () => {
                       message.messegeChannelType == "incomingMessage" ? currentChaterDetail.name : userDetail?.name
                     }
                     _id={message.messageData._id}
+                    reactions={message.messageData.reactions}
                   />
                 </>
               )}
@@ -105,7 +104,6 @@ const ChatBox = () => {
             </>
           )
         })}
-        <MessageReaction />
     </div>
   )
 }

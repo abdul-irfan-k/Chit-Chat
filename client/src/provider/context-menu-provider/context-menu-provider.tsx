@@ -60,6 +60,12 @@ const ContextMenuProvider: FC<ContextMenuProviderProps> = ({ children }) => {
                 messageDetail={contextMenuDetails.messageDetails}
               />
             )}
+
+            {showContextMenu && (
+              <div className="fixed left-0 top-0 w-screen h-screen z-30 "
+               style={{ background: "rgba(0,0,0,.4)" }}
+              ></div>
+            )}
           </>
         )}
         {children}

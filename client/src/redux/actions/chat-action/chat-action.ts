@@ -1,4 +1,4 @@
-import { axiosChatInstance, axiosUploadInstance, axiosUserInstance } from "@/constants/axios"
+import { axiosChatInstance } from "@/constants/axios"
 import { chatUserListAction, groupSetting } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import { chatRoomMessageAction } from "@/redux/reducers/message-reducer/message-reducer"
 import { AppDispatch } from "@/store"
@@ -6,8 +6,8 @@ import {
   SocketIO,
   deleteMessageInterface,
   groupMessageSourceAndDestinationDetail,
-  groupNewImageMessageInterface,
   groupNewPollMessageInterface,
+  reactMeessageInterface,
 } from "@/types/socket-io-event-type/socket-io-event-type"
 import { Socket } from "socket.io-client"
 
@@ -242,22 +242,26 @@ export const recieveNewImageMessageHandler =
     )
   }
 
-export const recieveVideoMessageHandler = ({ chatRoomId, message }: { chatRoomId: string; message: { videoMessageSrc: string } }) => async (dispatch:AppDispatch) => {
-  dispatch(chatRoomMessageAction.addSendedChatRoomMessage({
-    chatRoomId,
-    newMessage:{
-      messegeChannelType:"incomingMessage",
-      messageData:{
-        messageType:"videoMessage",
-        _id:"",
+export const recieveVideoMessageHandler =
+  ({ chatRoomId, message }: { chatRoomId: string; message: { videoMessageSrc: string } }) =>
+  async (dispatch: AppDispatch) => {
+    dispatch(
+      chatRoomMessageAction.addSendedChatRoomMessage({
         chatRoomId,
-        videoMessageSrc:message.videoMessageSrc,
-        messageSendedTime:new Date(),
-        postedByUser:"a"
-      }
-    }
-  }))
-}
+        newMessage: {
+          messegeChannelType: "incomingMessage",
+          messageData: {
+            messageType: "videoMessage",
+            _id: "",
+            chatRoomId,
+            videoMessageSrc: message.videoMessageSrc,
+            messageSendedTime: new Date(),
+            postedByUser: "a",
+          },
+        },
+      }),
+    )
+  }
 
 export const onChaterdeleteMessageHandler =
   ({ chatRoomId, message }: { chatRoomId: string; message: { _id: string } }) =>
@@ -270,6 +274,22 @@ export const deleteMessageHandler =
   async (dispatch: AppDispatch) => {
     socket.emit("message:deleteMessage", { chatRoomId, message, receiverId, senderId })
     dispatch(chatRoomMessageAction.deleteMessageFromChatRoom({ chatRoomId, message }))
+  }
+
+export const messageReactionHandler =
+  ({ chatRoomId, message, receiverId, senderId }: reactMeessageInterface, socket: SocketIO) =>
+  async (dispatch: AppDispatch) => {
+    try {
+      socket.emit("message:reactMessage", { chatRoomId, message, receiverId, senderId })
+      dispatch(chatRoomMessageAction.updateMessageReaction({ chatRoomId, userId: senderId, message }))
+    } catch (error) {}
+  }
+
+//user action
+export const onGroupSettingChangeHandler =
+  ({ groupDetail, setting }: { groupDetail: { _id: string }; setting: groupSetting }) =>
+  async (dispatch: AppDispatch) => {
+    dispatch(chatUserListAction.updateGroupSetting({ _id: groupDetail._id, setting }))
   }
 
 export const addNewMessageNotificationHandler =
@@ -290,9 +310,3 @@ export const getIntialOnlineChatUsers = (socket: Socket) => async (dispatch: App
     })
   } catch (error) {}
 }
-
-export const onGroupSettingChangeHandler =
-  ({ groupDetail, setting }: { groupDetail: { _id: string }; setting: groupSetting }) =>
-  async (dispatch: AppDispatch) => {
-    dispatch(chatUserListAction.updateGroupSetting({ _id: groupDetail._id, setting }))
-  }

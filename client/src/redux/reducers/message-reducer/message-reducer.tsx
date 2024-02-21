@@ -1,87 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit"
 
-interface textMessage {
-  _id: string
-  chatRoomId: string
-  postedByUser: string
-  message: string
-  messageType: "textMessage"
-  messageSendedTime: Date
-}
-
-interface voiceMessage {
-  _id: string
-  chatRoomId: string
-  postedByUser: string
-  message: string
-  messageType: "voiceMessage"
-  messageSendedTime: Date
-  voiceMessageSrc: string
-}
-
-interface imageMessage {
-  _id: string
-  chatRoomId: string
-  postedByUser: string
-  messageType: "imageMessage"
-  messageSendedTime: Date
-  imageMessageSrc: string[]
-}
-interface videoMessage {
-  _id: string
-  chatRoomId: string
-  postedByUser: string
-  messageType: "videoMessage"
-  messageSendedTime: Date
-  videoMessageSrc: string
-}
-
-interface pollMessage {
-  _id: string
-  chatRoomId: string
-  postedByUser: string
-  messageType: "pollMessage"
-  messageSendedTime: Date
-  title: string
-  options: {
-    title: string
-    _id: string
-    votedMembers: {
-      userId: string
-    }[]
-  }[]
-}
-type messageType = textMessage | voiceMessage | imageMessage | pollMessage | videoMessage
-export type messageStatus = "sended" | "notSended"
-export type messageDeliveryStatus = "notDelivered" | "delivered" | "watched"
-
-interface outGoingMessage {
-  messegeChannelType: "outgoingMessage"
-  messageData: messageType
-  messageStatus?: messageStatus
-  messageDeliveryStatus?: messageDeliveryStatus
-}
-interface incomingMessage {
-  messegeChannelType: "incomingMessage"
-  messageData: messageType
-}
-
-interface chatRoomMessages {
-  chatRoomId: string
-  messages: Array<outGoingMessage | incomingMessage>
-}
-
-interface allChatRoomMessages {
-  chatRoomMessages: chatRoomMessages[]
-  currentChaterMessage?: chatRoomMessages
-  messageAvailableChatRoom: availabeChatRoom[]
-}
-
-interface availabeChatRoom {
-  chatRoomId: string
-}
-
-export type chatRoomMessagesReducerSlate = allChatRoomMessages
 const chatRoomMessagesIntialState: chatRoomMessagesReducerSlate = {
   chatRoomMessages: [],
   messageAvailableChatRoom: [],
@@ -166,6 +84,155 @@ export const chatRoomsMessageReducer = createSlice({
 
       state.currentChaterMessage = { chatRoomId: action.payload.chatRoomId, messages: updatedAllMessageOfChatRoom }
     },
+    updateMessageReaction: (
+      state,
+      action: {
+        payload: { chatRoomId: string; userId: string; message: { _id: string; emoji: string; emojiId: string } }
+      },
+    ) => {
+      const chatRoomMessages = state.chatRoomMessages.filter((chatRoom) => {
+        if (chatRoom.chatRoomId == action.payload.chatRoomId) return chatRoom.messages
+        return []
+      })[0]
+      const updatedAllMessageOfChatRoom = chatRoomMessages.messages.map((message) => {
+        if (message.messageData._id == action.payload.message._id) {
+          if (message.messageData.reactions == undefined) {
+            return {
+              ...message,
+              messageData: {
+                ...message.messageData,
+                reactions: [{ ...action.payload.message, usersId: [{ userId: action.payload.userId }] }],
+              },
+            }
+          }
+
+          const updatedReaction: messageReaction["reactions"] = []
+          message.messageData.reactions.forEach((reaction) => {
+            if (reaction.emoji == action.payload.message.emoji) return updatedReaction.push({ ...reaction })
+            const oldReactionIndex = reaction.usersId.findIndex((user) => user.userId == action.payload.userId)
+            if (oldReactionIndex != -1) {
+              if (reaction.usersId.length > 1)
+                return updatedReaction.push({ ...reaction, usersId: reaction.usersId.slice(oldReactionIndex, 1) })
+
+              if (reaction.emojiId == action.payload.message.emoji)
+                return updatedReaction.push({
+                  ...reaction,
+                  usersId: [...reaction.usersId, { userId: action.payload.userId }],
+                })
+            } else updatedReaction.push({ ...reaction })
+          })
+
+          const isAlreadyHaveNewReaction = message.messageData.reactions.findIndex(
+            (reaction) => reaction.emojiId == action.payload.message.emojiId,
+          )
+          if (isAlreadyHaveNewReaction == -1) {
+            updatedReaction.push({ ...action.payload.message, usersId: [{ userId: action.payload.userId }] })
+          }
+
+          return { ...message, messageData: { ...message.messageData, reactions: updatedReaction } }
+        } else return { ...message }
+      })
+      state.chatRoomMessages = [
+        ...state.chatRoomMessages.filter((chatroom) => chatroom.chatRoomId != action.payload.chatRoomId),
+        { chatRoomId: action.payload.chatRoomId, messages: updatedAllMessageOfChatRoom },
+      ]
+      if (state.currentChaterMessage?.chatRoomId == action.payload.chatRoomId) {
+        state.currentChaterMessage = { chatRoomId: action.payload.chatRoomId, messages: updatedAllMessageOfChatRoom }
+      }
+    },
   },
 })
 export const chatRoomMessageAction = chatRoomsMessageReducer.actions
+
+export interface messageReaction {
+  reactions?: {
+    emoji: string
+    emojiId: string
+    usersId: {
+      userId: string
+    }[]
+  }[]
+}
+
+interface textMessage extends messageReaction {
+  _id: string
+  chatRoomId: string
+  postedByUser: string
+  message: string
+  messageType: "textMessage"
+  messageSendedTime: Date
+}
+
+interface voiceMessage extends messageReaction {
+  _id: string
+  chatRoomId: string
+  postedByUser: string
+  message: string
+  messageType: "voiceMessage"
+  messageSendedTime: Date
+  voiceMessageSrc: string
+}
+
+interface imageMessage extends messageReaction {
+  _id: string
+  chatRoomId: string
+  postedByUser: string
+  messageType: "imageMessage"
+  messageSendedTime: Date
+  imageMessageSrc: string[]
+}
+interface videoMessage extends messageReaction {
+  _id: string
+  chatRoomId: string
+  postedByUser: string
+  messageType: "videoMessage"
+  messageSendedTime: Date
+  videoMessageSrc: string
+}
+
+interface pollMessage extends messageReaction {
+  _id: string
+  chatRoomId: string
+  postedByUser: string
+  messageType: "pollMessage"
+  messageSendedTime: Date
+  title: string
+  options: {
+    title: string
+    _id: string
+    votedMembers: {
+      userId: string
+    }[]
+  }[]
+}
+type messageType = textMessage | voiceMessage | imageMessage | pollMessage | videoMessage
+export type messageStatus = "sended" | "notSended"
+export type messageDeliveryStatus = "notDelivered" | "delivered" | "watched"
+
+interface outGoingMessage {
+  messegeChannelType: "outgoingMessage"
+  messageData: messageType
+  messageStatus?: messageStatus
+  messageDeliveryStatus?: messageDeliveryStatus
+}
+interface incomingMessage {
+  messegeChannelType: "incomingMessage"
+  messageData: messageType
+}
+
+interface chatRoomMessages {
+  chatRoomId: string
+  messages: Array<outGoingMessage | incomingMessage>
+}
+
+interface allChatRoomMessages {
+  chatRoomMessages: chatRoomMessages[]
+  currentChaterMessage?: chatRoomMessages
+  messageAvailableChatRoom: availabeChatRoom[]
+}
+
+interface availabeChatRoom {
+  chatRoomId: string
+}
+
+export type chatRoomMessagesReducerSlate = allChatRoomMessages
