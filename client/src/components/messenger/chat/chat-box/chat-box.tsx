@@ -20,7 +20,7 @@ const ChatBox = () => {
   const { userDetail } = useSelector((state: { userDetail: userDetailState }) => state.userDetail)
 
   return (
-    <div className="relative px-10 h-full  overflow-y-scroll md:h-[70vh] ">
+    <div className="relative px-10 h-full   md:h-[70vh] ">
       {userDetail != null && currentChaterDetail != null && (
         <MessageInfiniteScroll
           currentChaterDetail={currentChaterDetail}

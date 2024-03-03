@@ -4,12 +4,12 @@ import { chatUsersListReducerState } from "@/redux/reducers/chat-user-reducer/ch
 import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 import { useAppDispatch } from "@/store"
 import React, { FC, useState } from "react"
-import InfiniteScroll from "react-infinite-scroller"
+import InfiniteScroll from "react-infinite-scroll-component"
 
 interface MessageInfiniteScrollProps {
   children: React.ReactNode
-  userDetail: userDetailState['userDetail']
-  currentChaterDetail: chatUsersListReducerState['currentChaterDetail']
+  userDetail: userDetailState["userDetail"]
+  currentChaterDetail: chatUsersListReducerState["currentChaterDetail"]
   totatMessages?: number
   totalFetchedMessages?: number
 }
@@ -22,7 +22,7 @@ const MessageInfiniteScroll: FC<MessageInfiniteScrollProps> = ({
 }) => {
   const dispatch = useAppDispatch()
 
-  const [] = useState()
+  const [num, setNum] = useState(10)
   const [hasMore, setHasMore] = useState(false)
   const fetchMoreDataHandler = () => {
     console.log("fetch more data handler")
@@ -38,19 +38,29 @@ const MessageInfiniteScroll: FC<MessageInfiniteScrollProps> = ({
         }),
       )
     }
+    setTimeout(() => {
+      setNum(num + 10)
+    }, 1500)
   }
 
   return (
     <InfiniteScroll
+      dataLength={totatMessages != undefined ? totatMessages : 500}
       loader={
         <div className="loader" key={0}>
           Loading ...
         </div>
       }
+      hasMore
       // isReverse
-      loadMore={fetchMoreDataHandler}
-    >
+      next={fetchMoreDataHandler}
+      height={500}
+      // style={{ height: "100%", overflowY: "scroll" }}
+    >asfsdf
       {children}
+      {/* {new Array(num).map((elm) => {
+        return <div key={"elm" + elm}>{elm}</div>
+      })} */}
     </InfiniteScroll>
   )
 }

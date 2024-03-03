@@ -30,16 +30,25 @@ export const chatRoomsMessageReducer = createSlice({
 
       const currentChaterMessage: chatRoomMessages = {
         ...action.payload.messageAndChatRoomDetails,
-        messages: [...action.payload.messageAndChatRoomDetails.messages, ...oldMessages.messages],
+        messages: [...action.payload.messageAndChatRoomDetails.messages,...oldMessages.messages],
         totatMessages: oldMessages.totatMessages,
         totalFetchedMessages:
           oldMessages.totalFetchedMessages != undefined ? oldMessages.totalFetchedMessages + 10 : 10,
       }
+
+      console.log("current chater messages", currentChaterMessage)
       return {
         ...state,
-        chatRoomMessages: [...otherChatRoomMessages, ...currentChaterMessages],
+        chatRoomMessages: [
+          ...otherChatRoomMessages,
+          {
+            ...action.payload.messageAndChatRoomDetails,
+            messages: [...oldMessages.messages, ...action.payload.messageAndChatRoomDetails.messages],
+          },
+        ],
         currentChaterMessage,
       }
+      // return {...state}
     },
 
     removeCurrentChaterMessage: (state, action) => {

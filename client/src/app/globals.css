@@ -48,3 +48,7 @@
 .input-range:focus::-ms-fill-upper {
   background: #ccc;
 }
+
+.infinite-scroll-component__outerdiv {
+  height: 100%;
+}
