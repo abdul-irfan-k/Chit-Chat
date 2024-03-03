@@ -33,11 +33,7 @@ const ChatContainer = () => {
         >
           {!isDroppingFile && (
             <>
-              {/* {currentChaterDetail == null && (
-                <div onClick={() => setShowChaterToggleProfile(!showChaterToggleProfile)}>
-                  <ChatProfile currentStatus="ofline" profileImageSrc="/Asset/avatar.jpg" name="irfan" />
-                </div>
-              )} */}
+             
               {currentChaterDetail != null && !isCurrentChatingWithGroup && (
                 <div onClick={() => setShowChaterToggleProfile(!showChaterToggleProfile)}>
                   <ChatProfile currentStatus="ofline" profileImageSrc="/Asset/avatar.jpg" {...currentChaterDetail} />

@@ -9,8 +9,37 @@ export const chatRoomsMessageReducer = createSlice({
   name: "chatRoomMessageReducer",
   initialState: chatRoomMessagesIntialState,
   reducers: {
-    addIntialChatRoomMessage: (state, action) => {
-      return { ...state, chatRoomMessages: [action.payload], currentChaterMessage: action.payload }
+    addChatRoomMessage: (
+      state,
+      action: { payload: { messageAndChatRoomDetails: chatRoomMessages; isInitialMessages: boolean } },
+    ) => {
+      if (action.payload.isInitialMessages)
+        return {
+          ...state,
+          chatRoomMessages: [{ ...action.payload.messageAndChatRoomDetails, totalFetchedMessages: 10 }],
+          currentChaterMessage: { ...action.payload.messageAndChatRoomDetails, totalFetchedMessages: 10 },
+        }
+
+      const oldMessages = state.chatRoomMessages.filter(
+        (chatRoom) => chatRoom.chatRoomId == action.payload.messageAndChatRoomDetails.chatRoomId,
+      )[0]
+
+      const otherChatRoomMessages = state.chatRoomMessages.filter(
+        (chatRoom) => chatRoom.chatRoomId == action.payload.messageAndChatRoomDetails.chatRoomId,
+      )
+
+      const currentChaterMessage: chatRoomMessages = {
+        ...action.payload.messageAndChatRoomDetails,
+        messages: [...action.payload.messageAndChatRoomDetails.messages, ...oldMessages.messages],
+        totatMessages: oldMessages.totatMessages,
+        totalFetchedMessages:
+          oldMessages.totalFetchedMessages != undefined ? oldMessages.totalFetchedMessages + 10 : 10,
+      }
+      return {
+        ...state,
+        chatRoomMessages: [...otherChatRoomMessages, ...currentChaterMessages],
+        currentChaterMessage,
+      }
     },
 
     removeCurrentChaterMessage: (state, action) => {
@@ -223,6 +252,9 @@ interface incomingMessage {
 interface chatRoomMessages {
   chatRoomId: string
   messages: Array<outGoingMessage | incomingMessage>
+  isAllMessageFetched?: boolean
+  totalFetchedMessages?: number
+  totatMessages?: number
 }
 
 interface allChatRoomMessages {

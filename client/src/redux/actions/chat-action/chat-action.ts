@@ -43,17 +43,36 @@ export const updateCurrentChatingGroupHandler = (details) => async (dispatch: Ap
 }
 
 export const getChatRoomMessageHandler =
-  ({ chatRoomId, myUserId }: { chatRoomId: string; myUserId: string }) =>
+  ({
+    chatRoomId,
+    myUserId,
+    skip = 0,
+    step = 10,
+    limit = 10,
+  }: {
+    chatRoomId: string
+    myUserId: string
+    skip: number
+    step: number
+    limit: number
+  }) =>
   async (dispatch: AppDispatch) => {
     try {
-      const { data } = await axiosChatInstance.post("/getChatRoomMessage", { chatRoomId })
+      const { data } = await axiosChatInstance.post("/getChatRoomMessage", { chatRoomId, skip, step, limit })
       if (data == undefined) return dispatch(chatRoomMessageAction.removeCurrentChaterMessage({}))
 
-      const newData = data[0].messages.map((elm) => {
+      const messageData = data[0].messages.map((elm) => {
         const messegeChannelType = elm.postedByUser == myUserId ? "outgoingMessage" : "incomingMessage"
         return { messageData: { ...elm, messageSendedTime: new Date(elm.createdAt) }, messegeChannelType }
       })
-      dispatch(chatRoomMessageAction.addIntialChatRoomMessage({ chatRoomId, messages: newData }))
+
+      const isInitialMessages = skip == 0
+      dispatch(
+        chatRoomMessageAction.addChatRoomMessage({
+          messageAndChatRoomDetails: { chatRoomId, messages: messageData, totatMessages: data.totalMessages },
+          isInitialMessages,
+        }),
+      )
       dispatch(chatRoomMessageAction.addMessageAvailableChatRooms({ chatRoomId }))
     } catch (error) {
       console.log(error)
