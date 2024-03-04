@@ -58,7 +58,13 @@ export const getChatRoomMessageHandler =
   }) =>
   async (dispatch: AppDispatch) => {
     try {
-      const { data } = await axiosChatInstance.post("/getChatRoomMessage", { chatRoomId, skip, step, limit })
+      const { data } = await axiosChatInstance.post("/getChatRoomMessage", {
+        chatRoomId,
+        skip,
+        step,
+        limit,
+        sort: "ACCENDING",
+      })
       if (data == undefined) return dispatch(chatRoomMessageAction.removeCurrentChaterMessage({}))
 
       const messageData = data[0].messages.map((elm) => {

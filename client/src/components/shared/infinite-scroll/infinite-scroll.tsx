@@ -45,7 +45,7 @@ const MessageInfiniteScroll: FC<MessageInfiniteScrollProps> = ({
 
   return (
     <InfiniteScroll
-      dataLength={totatMessages != undefined ? totatMessages : 500}
+      dataLength={totalFetchedMessages != undefined ? totalFetchedMessages : 10}
       loader={
         <div className="loader" key={0}>
           Loading ...
@@ -53,10 +53,12 @@ const MessageInfiniteScroll: FC<MessageInfiniteScrollProps> = ({
       }
       hasMore
       // isReverse
+      inverse={true}
       next={fetchMoreDataHandler}
       height={500}
+      style={{ display: 'flex', flexDirection: 'column-reverse' }}
       // style={{ height: "100%", overflowY: "scroll" }}
-    >asfsdf
+    >
       {children}
       {/* {new Array(num).map((elm) => {
         return <div key={"elm" + elm}>{elm}</div>

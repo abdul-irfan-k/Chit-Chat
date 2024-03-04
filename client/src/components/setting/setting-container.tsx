@@ -104,6 +104,7 @@ const SettingContainer = () => {
                   key={settingSelectedMenu}
                   backButtonHandler={settingBackButtonHandler}
                   // profileImageUrl={"/Asset/avatar.jpg"}
+                  userDetail={userDetail}
                 />
               </motion.div>
             )}

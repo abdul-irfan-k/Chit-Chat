@@ -25,25 +25,24 @@ export const chatRoomsMessageReducer = createSlice({
       )[0]
 
       const otherChatRoomMessages = state.chatRoomMessages.filter(
-        (chatRoom) => chatRoom.chatRoomId == action.payload.messageAndChatRoomDetails.chatRoomId,
+        (chatRoom) => chatRoom.chatRoomId != action.payload.messageAndChatRoomDetails.chatRoomId,
       )
 
       const currentChaterMessage: chatRoomMessages = {
         ...action.payload.messageAndChatRoomDetails,
-        messages: [...action.payload.messageAndChatRoomDetails.messages,...oldMessages.messages],
+        messages: [...oldMessages.messages,...action.payload.messageAndChatRoomDetails.messages],
         totatMessages: oldMessages.totatMessages,
         totalFetchedMessages:
           oldMessages.totalFetchedMessages != undefined ? oldMessages.totalFetchedMessages + 10 : 10,
       }
 
-      console.log("current chater messages", currentChaterMessage)
       return {
         ...state,
         chatRoomMessages: [
           ...otherChatRoomMessages,
           {
             ...action.payload.messageAndChatRoomDetails,
-            messages: [...oldMessages.messages, ...action.payload.messageAndChatRoomDetails.messages],
+            messages: [...currentChaterMessage.messages],
           },
         ],
         currentChaterMessage,

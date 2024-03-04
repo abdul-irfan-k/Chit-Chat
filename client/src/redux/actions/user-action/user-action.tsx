@@ -84,3 +84,6 @@ export const userIntialSettingSetupHandler = async (data: Object, router: AppRou
     
   }
 }
+
+
+

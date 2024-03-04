@@ -31,81 +31,83 @@ const ChatBox = () => {
           {currentChaterMessage?.messages.map((message) => {
             return (
               <>
-                {message.messageData.messageType == "textMessage" && (
-                  <>
-                    <TextMessage
-                      messageContent={message.messageData.message}
-                      messegeChannelType={message.messegeChannelType}
-                      time={message.messageData.messageSendedTime}
+                <div>
+                  {message.messageData.messageType == "textMessage" && (
+                    <>
+                      <TextMessage
+                        messageContent={message.messageData.message}
+                        messegeChannelType={message.messegeChannelType}
+                        time={message.messageData.messageSendedTime}
+                        userImageSrc="/Asset/avatar.jpg"
+                        userName={
+                          message.messegeChannelType == "incomingMessage" ? currentChaterDetail.name : userDetail?.name
+                        }
+                        _id={message.messageData._id}
+                        reactions={message.messageData.reactions}
+                      />
+                    </>
+                  )}
+
+                  {message.messageData.messageType == "voiceMessage" && (
+                    <VoiceMessage
+                      _id={message.messageData._id}
+                      messageChannelType={message.messegeChannelType}
+                      AudioSrc={message.messageData.voiceMessageSrc}
+                      time={new Date()}
                       userImageSrc="/Asset/avatar.jpg"
                       userName={
-                        message.messegeChannelType == "incomingMessage" ? currentChaterDetail.name : userDetail?.name
+                        message.messegeChannelType == "incomingMessage" ? currentChaterDetail?.name : userDetail?.name
+                      }
+                    />
+                  )}
+
+                  {message.messageData.messageType == "imageMessage" && (
+                    <ImageMessage
+                      _id={message.messageData._id}
+                      messageImageSrc={message.messageData.imageMessageSrc}
+                      messegeChannelType={message.messegeChannelType}
+                      time={new Date()}
+                      userImageSrc="/Asset/avatar.jpg"
+                      userName={
+                        message.messegeChannelType == "incomingMessage" ? currentChaterDetail?.name : userDetail?.name
+                      }
+                    />
+                  )}
+
+                  {message.messageData.messageType == "pollMessage" && (
+                    <PollMessage
+                      messegeChannelType={message.messegeChannelType}
+                      options={message.messageData.options}
+                      title={message.messageData.title}
+                      time={new Date()}
+                      userImageSrc="/Asset/avatar.jpg"
+                      userName={
+                        message.messegeChannelType == "incomingMessage" ? currentChaterDetail?.name : userDetail?.name
                       }
                       _id={message.messageData._id}
-                      reactions={message.messageData.reactions}
+                      userAndChaterDetails={{
+                        chatRoomId:
+                          currentChaterDetail.currentChaterType == "user"
+                            ? currentChaterDetail.chatRoom?.chatRoomId
+                            : currentChaterDetail.chatRoomId,
+                        senderId: userDetail._id,
+                      }}
                     />
-                  </>
-                )}
+                  )}
 
-                {message.messageData.messageType == "voiceMessage" && (
-                  <VoiceMessage
-                    _id={message.messageData._id}
-                    messageChannelType={message.messegeChannelType}
-                    AudioSrc={message.messageData.voiceMessageSrc}
-                    time={new Date()}
-                    userImageSrc="/Asset/avatar.jpg"
-                    userName={
-                      message.messegeChannelType == "incomingMessage" ? currentChaterDetail?.name : userDetail?.name
-                    }
-                  />
-                )}
-
-                {message.messageData.messageType == "imageMessage" && (
-                  <ImageMessage
-                    _id={message.messageData._id}
-                    messageImageSrc={message.messageData.imageMessageSrc}
-                    messegeChannelType={message.messegeChannelType}
-                    time={new Date()}
-                    userImageSrc="/Asset/avatar.jpg"
-                    userName={
-                      message.messegeChannelType == "incomingMessage" ? currentChaterDetail?.name : userDetail?.name
-                    }
-                  />
-                )}
-
-                {message.messageData.messageType == "pollMessage" && (
-                  <PollMessage
-                    messegeChannelType={message.messegeChannelType}
-                    options={message.messageData.options}
-                    title={message.messageData.title}
-                    time={new Date()}
-                    userImageSrc="/Asset/avatar.jpg"
-                    userName={
-                      message.messegeChannelType == "incomingMessage" ? currentChaterDetail?.name : userDetail?.name
-                    }
-                    _id={message.messageData._id}
-                    userAndChaterDetails={{
-                      chatRoomId:
-                        currentChaterDetail.currentChaterType == "user"
-                          ? currentChaterDetail.chatRoom?.chatRoomId
-                          : currentChaterDetail.chatRoomId,
-                      senderId: userDetail._id,
-                    }}
-                  />
-                )}
-
-                {message.messageData.messageType == "videoMessage" && (
-                  <VideoMessage
-                    _id={message.messageData._id}
-                    messageVideoSrc={message.messageData.videoMessageSrc}
-                    messegeChannelType={message.messegeChannelType}
-                    time={new Date()}
-                    userImageSrc="/Asset/avatar.jpg"
-                    userName={
-                      message.messegeChannelType == "incomingMessage" ? currentChaterDetail?.name : userDetail?.name
-                    }
-                  />
-                )}
+                  {message.messageData.messageType == "videoMessage" && (
+                    <VideoMessage
+                      _id={message.messageData._id}
+                      messageVideoSrc={message.messageData.videoMessageSrc}
+                      messegeChannelType={message.messegeChannelType}
+                      time={new Date()}
+                      userImageSrc="/Asset/avatar.jpg"
+                      userName={
+                        message.messegeChannelType == "incomingMessage" ? currentChaterDetail?.name : userDetail?.name
+                      }
+                    />
+                  )}
+                </div>
               </>
             )
           })}
