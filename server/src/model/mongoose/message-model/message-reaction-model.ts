@@ -1,4 +1,4 @@
-import { Model, Schema, Types, model,Document } from "mongoose"
+import { Model, Schema, Types, model, Document } from "mongoose"
 
 const messageReactionSchema = new Schema(
   {
@@ -8,7 +8,7 @@ const messageReactionSchema = new Schema(
         reactionType: { type: String },
         emoji: { type: String, required: true },
         emojiId: { type: String, required: true },
-        usersId: [{ userId: Schema.Types.ObjectId }],
+        usersId: [{ userId: { type: Schema.Types.ObjectId, required: true } }],
       },
     ],
   },
@@ -22,12 +22,12 @@ interface messageReaction {
     emoji: string
     emojiId: string
     usersId: {
-      userId?: Types.ObjectId | undefined
-    }[]
+      userId: Types.ObjectId;
+  }[]
   }[]
 }
 
-interface MessageReactionDocument extends messageReaction, Document {
+interface MessageReactionDocument extends Model<messageReaction> {
   findOrCreateMessageReactionModel(messageId: Types.ObjectId): Promise<messageReaction>
 }
 
@@ -41,5 +41,5 @@ messageReactionSchema.statics.findOrCreateMessageReactionModel = async function 
   return newMessageReaction
 }
 
-const MessageReactionModel = model<MessageReactionDocument>("messageReaction", messageReactionSchema)
+const MessageReactionModel = model<messageReaction, MessageReactionDocument>("messageReaction", messageReactionSchema)
 export default MessageReactionModel

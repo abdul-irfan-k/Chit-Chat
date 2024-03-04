@@ -141,14 +141,14 @@ const userMessageSocketIo = (io: Server, socket: SocketIo) => {
     }
   })
 
-  socket.on("message:reactMessage", async ({ chatRoomId, groupDetail, message, receiverId, senderId }) => {
+  socket.on("message:reactMessage", async ({ chatRoomId, message, receiverId, senderId }) => {
     try {
       const messageObjectId = new mongoose.Types.ObjectId(message._id)
       const userObjectId = new mongoose.Types.ObjectId(senderId)
       const messageReactions = await MessageReactionModel.findOrCreateMessageReactionModel(messageObjectId)
 
       const isAlreadyReactedForMessage = messageReactions.reactions.some(
-        (reaction) => reaction.usersId.indexOf(senderId) !== -1,
+        (reaction) => reaction.usersId.indexOf({ userId: userObjectId }) !== -1,
       )
 
       if (!isAlreadyReactedForMessage) {
