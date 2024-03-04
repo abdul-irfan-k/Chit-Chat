@@ -33,10 +33,15 @@ const ChatContainer = () => {
         >
           {!isDroppingFile && (
             <>
-             
-              {currentChaterDetail != null && !isCurrentChatingWithGroup && (
+              {currentChaterDetail != null && currentChaterDetail.currentChaterType == "user" && (
                 <div onClick={() => setShowChaterToggleProfile(!showChaterToggleProfile)}>
-                  <ChatProfile currentStatus="ofline" profileImageSrc="/Asset/avatar.jpg" {...currentChaterDetail} />
+                  <ChatProfile
+                    currentStatus="ofline"
+                    profileImageSrc={
+                      currentChaterDetail.profileImageUrl ? currentChaterDetail.profileImageUrl : "/Asset/avatar.jpg"
+                    }
+                    {...currentChaterDetail}
+                  />
                 </div>
               )}
               {currentChaterDetail != null && currentChaterDetail.currentChaterType == "group" && (
@@ -69,7 +74,9 @@ const ChatContainer = () => {
       <AnimatePresence>
         {showChaterToggleProfile && currentChaterDetail != null && currentChaterDetail.currentChaterType == "user" && (
           <CurrentChaterFullScreenProfile
-            profileImageSrc="/Asset/avatar.jpg"
+            profileImageSrc={
+              currentChaterDetail.profileImageUrl ? currentChaterDetail.profileImageUrl : "/Asset/avatar.jpg"
+            }
             name={currentChaterDetail.name}
             currentStatus="ofline"
             chaterType="single"

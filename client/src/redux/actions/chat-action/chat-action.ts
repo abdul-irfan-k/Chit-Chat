@@ -16,7 +16,7 @@ export const addAllChatUsers = () => async (dispatch: AppDispatch) => {
     const { data: usersDeatail } = await axiosChatInstance.post("/getAllChatUsers")
     // dispatch(chatUserListAction.addIntialAllUserList(usersDeatail))
     const { data: groupDetail } = await axiosChatInstance.post("/getAllChatGroups")
-    console.log("group details", groupDetail)
+    console.log("user details", usersDeatail)
     // console.log("all chat groups", data)
     dispatch(chatUserListAction.addIntialAllUserAndGroupList({ usersDeatail, groupDetail }))
   } catch (error) {}

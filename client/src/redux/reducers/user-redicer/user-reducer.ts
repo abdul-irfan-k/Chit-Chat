@@ -32,33 +32,33 @@ export const userSignUpAction = userSignUpDetailReducer.actions
 
 // userdetail reducer
 interface userDetail {
-  _id:string
+  _id: string
   name: string
   userId: string
   email: string
-  profileImageUrl?: string
+  profileImageUrl: string
 }
 
 interface userDetailReducer {
   userDetail: userDetail | null
-  isLogedIn: Boolean,
-  isChanged:Boolean
+  isLogedIn: Boolean
+  isChanged: Boolean
 }
 export type userDetailState = userDetailReducer
 const userDetailIntialState: userDetailState = {
-  userDetail:null,
-  isLogedIn:false,
-  isChanged:false
+  userDetail: null,
+  isLogedIn: false,
+  isChanged: false,
 }
 
 export const userDetailReducer = createSlice({
   name: "userDetailReducer",
   initialState: userDetailIntialState,
   reducers: {
-    setUserDetail: (state, action) => {
+    setUserDetail: (state, action: { payload: userDetailReducer }) => {
       state.isChanged = action.payload.isChanged
       state.isLogedIn = action.payload.isLogedIn
-      state.userDetail = {...action.payload.userDetail}
+      if (action.payload.userDetail != null) state.userDetail = { ...action.payload.userDetail }
     },
     updateUserDetail: (state, action) => {},
     removeUserDetail: (state, action) => {

@@ -33,9 +33,16 @@ export const signUpHandler = (details: Object) => async (dispatch: AppDispatch) 
 export const checkUserIsLogedIn = () => async (dispatch: AppDispatch) => {
   try {
     const { data } = await axiosUserInstance.post("/getUserDetail")
+    console.log("data", data)
     return dispatch(
       userDetailAction.setUserDetail({
-        userDetail: { name: data.name, email: data.email, userId: data.userId, _id: data._id },
+        userDetail: {
+          name: data.name,
+          email: data.email,
+          userId: data.userId,
+          _id: data._id,
+          profileImageUrl: data.profileImageUrl,
+        },
         isLogedIn: true,
         isChanged: true,
       }),
@@ -80,10 +87,5 @@ export const userIntialSettingSetupHandler = async (data: Object, router: AppRou
     if (response.isUpdated) {
       router.push("/messenger")
     }
-  } catch (error) {
-    
-  }
+  } catch (error) {}
 }
-
-
-

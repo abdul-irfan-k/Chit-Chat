@@ -18,11 +18,13 @@ import { callReducerSlate } from "@/redux/reducers/call-reducer/call-reducer"
 import FullScreenNotification from "@/components/notificaton/full-screen-notification/full-screen-notification"
 import { useAppDispatch } from "@/store"
 import { sidebarReducerAction } from "@/redux/reducers/sidebar-sort-reducer/sidebar-sort-reducer"
+import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 
 const SideMenu = () => {
   const dispatch = useAppDispatch()
-  const { isAvailableCallRoom } = useSelector((state: { callRedcuer: callReducerSlate }) => state.callRedcuer)
   const router = useRouter()
+  const { isAvailableCallRoom } = useSelector((state: { callRedcuer: callReducerSlate }) => state.callRedcuer)
+  const { userDetail } = useSelector((state: { userDetail: userDetailState }) => state.userDetail)
   const [showNotification, setShowNotification] = useState<boolean>(false)
 
   const videoCallButtonHandler = () => {
@@ -42,7 +44,15 @@ const SideMenu = () => {
     <div className="hidden  py-20 h-[90vh]  md:block   ">
       <div className="  h-full w-16  flex flex-col justify-between items-center   ">
         <div className="w-10 relative overflow-hidden flex items-center justify-center aspect-square rounded-full ">
-          <Image alt="profile-image" src={"/Asset/avatar.jpg"} fill />
+          <Image
+            alt="profile-image"
+            src={
+              userDetail != null && userDetail?.profileImageUrl != undefined
+                ? userDetail?.profileImageUrl
+                : ""
+            }
+            fill
+          />
         </div>
 
         <SideMenuIcon onClickHandler={() => router.push("/messenger")}>

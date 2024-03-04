@@ -38,7 +38,13 @@ const ChatBox = () => {
                         messageContent={message.messageData.message}
                         messegeChannelType={message.messegeChannelType}
                         time={message.messageData.messageSendedTime}
-                        userImageSrc="/Asset/avatar.jpg"
+                        userImageSrc={
+                          message.messegeChannelType == "incomingMessage"
+                            ? currentChaterDetail.currentChaterType == "user" && currentChaterDetail.profileImageUrl
+                              ? currentChaterDetail.profileImageUrl
+                              : "/Asset/avatar.jpg"
+                            : userDetail.profileImageUrl
+                        }
                         userName={
                           message.messegeChannelType == "incomingMessage" ? currentChaterDetail.name : userDetail?.name
                         }
@@ -54,7 +60,13 @@ const ChatBox = () => {
                       messageChannelType={message.messegeChannelType}
                       AudioSrc={message.messageData.voiceMessageSrc}
                       time={new Date()}
-                      userImageSrc="/Asset/avatar.jpg"
+                      userImageSrc={
+                        message.messegeChannelType == "incomingMessage"
+                          ? currentChaterDetail.currentChaterType == "user" && currentChaterDetail.profileImageUrl
+                            ? currentChaterDetail.profileImageUrl
+                            : "/Asset/avatar.jpg"
+                          : userDetail.profileImageUrl
+                      }
                       userName={
                         message.messegeChannelType == "incomingMessage" ? currentChaterDetail?.name : userDetail?.name
                       }
@@ -67,7 +79,13 @@ const ChatBox = () => {
                       messageImageSrc={message.messageData.imageMessageSrc}
                       messegeChannelType={message.messegeChannelType}
                       time={new Date()}
-                      userImageSrc="/Asset/avatar.jpg"
+                      userImageSrc={
+                        message.messegeChannelType == "incomingMessage"
+                          ? currentChaterDetail.currentChaterType == "user" && currentChaterDetail.profileImageUrl
+                            ? currentChaterDetail.profileImageUrl
+                            : "/Asset/avatar.jpg"
+                          : userDetail.profileImageUrl
+                      }
                       userName={
                         message.messegeChannelType == "incomingMessage" ? currentChaterDetail?.name : userDetail?.name
                       }
@@ -80,7 +98,13 @@ const ChatBox = () => {
                       options={message.messageData.options}
                       title={message.messageData.title}
                       time={new Date()}
-                      userImageSrc="/Asset/avatar.jpg"
+                      userImageSrc={
+                        message.messegeChannelType == "incomingMessage"
+                          ? currentChaterDetail.currentChaterType == "user" && currentChaterDetail.profileImageUrl
+                            ? currentChaterDetail.profileImageUrl
+                            : "/Asset/avatar.jpg"
+                          : userDetail.profileImageUrl
+                      }
                       userName={
                         message.messegeChannelType == "incomingMessage" ? currentChaterDetail?.name : userDetail?.name
                       }
@@ -101,7 +125,13 @@ const ChatBox = () => {
                       messageVideoSrc={message.messageData.videoMessageSrc}
                       messegeChannelType={message.messegeChannelType}
                       time={new Date()}
-                      userImageSrc="/Asset/avatar.jpg"
+                      userImageSrc={
+                        message.messegeChannelType == "incomingMessage"
+                          ? currentChaterDetail.currentChaterType == "user" && currentChaterDetail.profileImageUrl
+                            ? currentChaterDetail.profileImageUrl
+                            : "/Asset/avatar.jpg"
+                          : userDetail.profileImageUrl
+                      }
                       userName={
                         message.messegeChannelType == "incomingMessage" ? currentChaterDetail?.name : userDetail?.name
                       }
