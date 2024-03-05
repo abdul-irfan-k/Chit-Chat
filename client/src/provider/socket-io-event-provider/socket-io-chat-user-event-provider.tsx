@@ -17,7 +17,6 @@ import {
   recieveVideoMessageHandler,
 } from "@/redux/actions/chat-action/chat-action"
 import { chatUsersListReducerState } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
-import { socketReducerState } from "@/redux/reducers/socket-reducer/socket-reducers"
 import { callRequestNotificationReducerAction } from "@/redux/reducers/notification-reducer/notification-reducer"
 import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 import { useAppDispatch } from "@/store"
@@ -31,14 +30,12 @@ const SocketIoChatUserEventProvider = () => {
   const router = useRouter()
 
   const { socket } = useSocketIoContext()
-  const { isAvailableSocket } = useSelector((state: { socketClient: socketReducerState }) => state.socketClient)
   const { currentChaterDetail } = useSelector(
     (state: { chatUsersList: chatUsersListReducerState }) => state.chatUsersList,
   )
   const { userDetail, isLogedIn } = useSelector((state: { userDetail: userDetailState }) => state.userDetail)
 
   useEffect(() => {
-    if (!isAvailableSocket || !isLogedIn) return console.log("not availbe socket client", socket)
 
     socket.on("message:receiveMessage", (messageResponse) => {
       if (currentChaterDetail?._id != messageResponse.senderId)
@@ -101,7 +98,7 @@ const SocketIoChatUserEventProvider = () => {
       console.log("new user joined ")
       dispatch(addGroupCallConnectionRequiredPeers({ ...details.newUserDetail }))
     })
-  }, [isAvailableSocket, dispatch, isLogedIn])
+  }, [ dispatch, isLogedIn])
   return <div></div>
 }
 

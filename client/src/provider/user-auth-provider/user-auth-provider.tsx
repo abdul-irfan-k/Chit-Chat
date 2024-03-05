@@ -2,7 +2,6 @@
 import { addAllChatGroups, addAllChatUsers, getIntialOnlineChatUsers } from "@/redux/actions/chat-action/chat-action"
 import { checkUserIsLogedIn } from "@/redux/actions/user-action/user-action"
 import { chatUsersListReducerState } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
-import { socketReducerState } from "@/redux/reducers/socket-reducer/socket-reducers"
 import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 import { useAppDispatch } from "@/store"
 import React, { FC, useEffect } from "react"
@@ -23,7 +22,6 @@ const UserAuthProvider: FC<UserAuthProviderProps> = ({ children }) => {
     isLogedIn,
   } = useSelector((state: { userDetail: userDetailState }) => state.userDetail)
   const {socket} = useSocketIoContext()
-  const {  isAvailableSocket } = useSelector((state: { socketClient: socketReducerState }) => state.socketClient)
 
   useEffect(() => {
     dispatch(addAllChatUsers())
@@ -32,11 +30,10 @@ const UserAuthProvider: FC<UserAuthProviderProps> = ({ children }) => {
 
   useEffect(() => {
     if (isLogedIn) {
-      if (!isAvailableSocket) return console.log("not availbe socket", socket)
       socket.emit("socket:join", { userId: userDetails?._id })
       dispatch(getIntialOnlineChatUsers(socket))
     }
-  }, [isLogedIn, isAvailableSocket,dispatch])
+  }, [isLogedIn,dispatch])
 
 
   useEffect(() => {

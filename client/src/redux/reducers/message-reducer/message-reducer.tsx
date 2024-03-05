@@ -30,7 +30,7 @@ export const chatRoomsMessageReducer = createSlice({
 
       const currentChaterMessage: chatRoomMessages = {
         ...action.payload.messageAndChatRoomDetails,
-        messages: [...oldMessages.messages,...action.payload.messageAndChatRoomDetails.messages],
+        messages: [...oldMessages.messages, ...action.payload.messageAndChatRoomDetails.messages],
         totatMessages: oldMessages.totatMessages,
         totalFetchedMessages:
           oldMessages.totalFetchedMessages != undefined ? oldMessages.totalFetchedMessages + 10 : 10,
@@ -63,16 +63,15 @@ export const chatRoomsMessageReducer = createSlice({
       state,
       action: { payload: { chatRoomId: string; newMessage: incomingMessage | outGoingMessage } },
     ) => {
-      const updatedChatRoomMessage = state.chatRoomMessages.filter((chatRoom) => {
-        if (chatRoom.chatRoomId == action.payload.chatRoomId) return chatRoom.messages.push(action.payload.newMessage)
-        return []
-      })
-      console.log("update chat room room message", updatedChatRoomMessage)
+      const updatedChatRoomMessage = state.chatRoomMessages.filter(
+        (chatRoom) => chatRoom.chatRoomId == action.payload.chatRoomId,
+      )[0]
+      updatedChatRoomMessage.messages = [{ ...action.payload.newMessage }, ...updatedChatRoomMessage.messages]
       state.chatRoomMessages = [
         ...state.chatRoomMessages.filter((chatRoom) => chatRoom.chatRoomId != action.payload.chatRoomId),
-        updatedChatRoomMessage[0],
+        { ...updatedChatRoomMessage },
       ]
-      state.currentChaterMessage = updatedChatRoomMessage[0]
+      state.currentChaterMessage = updatedChatRoomMessage
     },
     addMessageAvailableChatRooms: (state, action) => {
       const isAlreadAvailableMessage = state.messageAvailableChatRoom.some(

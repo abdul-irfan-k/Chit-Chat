@@ -1,6 +1,5 @@
 import { GroupIcon, PersonIcon, SchoolIcon } from "@/constants/icon-constant"
 import { useSocketIoContext } from "@/provider/socket-io-provider/socket-io-provider"
-import { socketReducerState } from "@/redux/reducers/socket-reducer/socket-reducers"
 import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 import React, { FC, useState } from "react"
 import { useSelector } from "react-redux"
@@ -14,7 +13,6 @@ const CreateMeetingInitialForm: FC<CreateGroupMeetingFormProps> = ({ setMeetingF
   const [meetingCode, setMeetingCode] = useState<string>("")
 
   const {socket} = useSocketIoContext()
-  // const { socket } = useSelector((state: { socketClient: socketReducerState }) => state.socketClient)
   const { userDetail } = useSelector((state: { userDetail: userDetailState }) => state.userDetail)
 
   const joinButtonHandler = () => {

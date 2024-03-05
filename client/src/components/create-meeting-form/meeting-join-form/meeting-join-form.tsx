@@ -7,7 +7,6 @@ import MediaSourceSelector from "./media-source-selector"
 import { useAppDispatch } from "@/store"
 import { changeCallSettingHandler } from "@/redux/actions/call-action/call-action"
 import { PeerVideoRefContext } from "@/provider/peer-js-video-provider.tsx/peer-js-video-provider"
-import { socketReducerState } from "@/redux/reducers/socket-reducer/socket-reducers"
 import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 import { useSocketIoContext } from "@/provider/socket-io-provider/socket-io-provider"
 
@@ -20,7 +19,6 @@ const MeetingJoinForm: FC<MeetingJoinFormProps> = ({ meetingCode }) => {
   const videoContext = useContext(PeerVideoRefContext)
 
   const {socket} = useSocketIoContext()
-  // const { socket } = useSelector((state: { socketClient: socketReducerState }) => state.socketClient)
   const { userDetail } = useSelector((state: { userDetail: userDetailState }) => state.userDetail)
 
   const [isVideoRecording, setIsVideoRecording] = useState<boolean>(false)

@@ -9,7 +9,6 @@ import { useAppDispatch } from "@/store"
 import { sendMessageHandler } from "@/redux/actions/chat-action/chat-action"
 import { chatUsersListReducerState } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
-import { socketReducerState } from "@/redux/reducers/socket-reducer/socket-reducers"
 import VoiceRecorder from "@/components/shared/voice-recorder/voice-recorder"
 import { useSocketIoContext } from "@/provider/socket-io-provider/socket-io-provider"
 import InputSelectionBox from "./input-selection-box/input-selection-box"
@@ -23,7 +22,6 @@ const InputBox = () => {
   const [inputPopUpMenuType, setInputPopUpMenuType] = useState<inputPopUpMenuType>(undefined)
 
   const { socket } = useSocketIoContext()
-  const { isConnectedSocket } = useSelector((state: { socketClient: socketReducerState }) => state.socketClient)
   const { currentChaterDetail } = useSelector(
     (state: { chatUsersList: chatUsersListReducerState }) => state.chatUsersList,
   )

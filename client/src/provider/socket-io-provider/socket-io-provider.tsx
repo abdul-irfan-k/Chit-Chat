@@ -1,5 +1,4 @@
 "use client"
-import { socketReducerAction } from "@/redux/reducers/socket-reducer/socket-reducers"
 import { SocketClient } from "@/socket-io-client/socket"
 import { useAppDispatch } from "@/store"
 import { ClientToServerEvents, ServerToClientEvents } from "@/types/socket-io-event-type/socket-io-event-type"
@@ -24,7 +23,6 @@ const SocketIoProvider: FC<SocketIoProviderProps> = ({ children }) => {
       try {
         const { socket: connectedSocket } = await socketClientObj.connect()
         setSocket(connectedSocket)
-        dispatch(socketReducerAction.updateSocket({ isAvailableSocket: true, isConnectedSocket: true }))
       } catch (error) {}
     })()
   }, [])

@@ -8,7 +8,6 @@ import { callReducerSlate } from "@/redux/reducers/call-reducer/call-reducer"
 
 import { useAppDispatch } from "@/store"
 import { addAvailableMediaDevices } from "@/redux/actions/call-action/call-action"
-import { socketReducerState } from "@/redux/reducers/socket-reducer/socket-reducers"
 import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 import { useSocketIoContext } from "../socket-io-provider/socket-io-provider"
 
@@ -16,7 +15,6 @@ const PeerJsStreamMethodProvider = () => {
   const dispatch = useAppDispatch()
 
   const {socket} = useSocketIoContext()
-  const {  isAvailableSocket } = useSelector((state: { socketClient: socketReducerState }) => state.socketClient)
   const { isAvailableCallRoom, callDetail, callSetting, connectionRequiredPeers } = useSelector(
     (state: { callRedcuer: callReducerSlate }) => state.callRedcuer,
   )
@@ -204,8 +202,7 @@ const PeerJsStreamMethodProvider = () => {
 
   // socket events
   useEffect(() => {
-    console.log("socket", isAvailableSocket)
-    if (!isAvailableSocket || !isLogedIn) return
+    if ( !isLogedIn) return
     socket.on("call:peer:getOfferPeer", async ({ receiverId, peerSdp, senderId }) => {
       console.log("get offer peer event ", receiverId, senderId, userDetail?._id)
 
@@ -226,7 +223,7 @@ const PeerJsStreamMethodProvider = () => {
       // setIceCandidate(peerRef.current[0].peerConnection, iceCandidate)
       setRemoteIceCandidate([{ iceCandidate: iceCandidate, userId: senderId }])
     })
-  }, [isAvailableSocket, isLogedIn])
+  }, [ isLogedIn])
 
   useEffect(() => {
     getAvailableMediaDevices()

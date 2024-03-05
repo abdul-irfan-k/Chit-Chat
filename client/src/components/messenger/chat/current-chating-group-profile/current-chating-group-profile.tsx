@@ -5,6 +5,7 @@ import { useAppDispatch } from "@/store"
 import Image from "next/image"
 import React, { FC, useState } from "react"
 import { motion } from "framer-motion"
+import { EditIcon } from "@/constants/icon-constant"
 
 interface CurrentChatingGroupProfileProps {
   _id: string
@@ -31,7 +32,6 @@ const CurrentChatingGroupProfile: FC<CurrentChatingGroupProfileProps> = ({
   const [initialRender, setInitialRender] = useState<boolean>(true)
 
   const dispatch = useAppDispatch()
-  const { socket } = useSocketIoContext()
   const onGroupSettingChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setGroupSetting({ ...setting, [e.target.name]: e.target.checked })
     dispatch(
@@ -60,6 +60,9 @@ const CurrentChatingGroupProfile: FC<CurrentChatingGroupProfileProps> = ({
       animate={{ translateX: "0%" }}
       exit={{ translateX: "100%" }}
     >
+      <div className="absolute right-3 top-3">
+        <EditIcon />
+      </div>
       <div className="relative mt-10 mx-auto w-[40%] aspect-square overflow-hidden rounded-full">
         <Image src={profileImageSrc} fill alt="profile image" />
       </div>

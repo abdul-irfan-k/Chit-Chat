@@ -2,7 +2,6 @@
 import Image from "next/image"
 
 import { FC, MouseEvent, useEffect } from "react"
-import { socketReducerState } from "@/redux/reducers/socket-reducer/socket-reducers"
 import { useSelector } from "react-redux"
 import { useAppDispatch } from "@/store"
 import { videoCallRequestHandler } from "@/redux/actions/call-request-action/call-request-action"
@@ -20,7 +19,6 @@ interface ChatProfileInstance {
 
 const ChatProfile: FC<ChatProfileInstance> = ({ name, profileImageSrc, currentStatus, backButtonHandler }) => {
   const {socket} = useSocketIoContext()
-  // const { socket } = useSelector((state: { socketClient: socketReducerState }) => state.socketClient)
   const { currentChaterDetail } = useSelector(
     (state: { chatUsersList: chatUsersListReducerState }) => state.chatUsersList,
   )

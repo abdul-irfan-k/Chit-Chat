@@ -1,5 +1,4 @@
 "use client"
-import { reactionMenuReducerActions } from "@/redux/reducers/reaction-reducer/reaction-reducer"
 import { useAppDispatch } from "@/store"
 import React, { FC, useState } from "react"
 
@@ -16,11 +15,6 @@ const MessageReactionMenuProvider: FC<MessageReactionMenuProviderProps> = ({ chi
 
     setIsHovering(true)
     //@ts-ignore
-    dispatch(
-      reactionMenuReducerActions.changeReactionMenu({
-        reactionMenu: { messageId, xPosition: 0, yPosition: e.target.offsetTop },
-      }),
-    )
   }
 
   const mouseLeaveHandler = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {

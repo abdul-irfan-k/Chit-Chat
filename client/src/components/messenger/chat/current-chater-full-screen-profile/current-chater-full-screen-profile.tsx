@@ -33,6 +33,7 @@ const CurrentChaterFullScreenProfile: FC<CurrentChaterFullScreenProfileProps> = 
           animate={{ translateX: "0%" }}
           exit={{ translateX: "100%" }}
         >
+      
           <div className="relative mt-10 mx-auto w-[40%] aspect-square overflow-hidden rounded-full">
             <Image src={profileImageSrc} fill alt="profile image" />
           </div>

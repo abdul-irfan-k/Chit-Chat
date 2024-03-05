@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react"
 import AudioCallNotification from "./audio-call-notification/audio-call-notification"
 import { useSelector } from "react-redux"
 import { callNotificationReducerSlate } from "@/redux/reducers/notification-reducer/notification-reducer"
-import { socketReducerState } from "@/redux/reducers/socket-reducer/socket-reducers"
 import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 import { useSocketIoContext } from "@/provider/socket-io-provider/socket-io-provider"
 
@@ -13,7 +12,6 @@ const CallNotificationContainer = () => {
     (state: { notificationReducer: callNotificationReducerSlate }) => state.notificationReducer,
   )
   const {socket} = useSocketIoContext()
-  const {  isAvailableSocket } = useSelector((state: { socketClient: socketReducerState }) => state.socketClient)
   const { userDetail } = useSelector((state: { userDetail: userDetailState }) => state.userDetail)
 
   const outSideClickHandler = () => {
@@ -28,7 +26,7 @@ const CallNotificationContainer = () => {
   }, [isAvailableCallNotification])
 
   const callAcceptHandler = () => {
-    if (!isAvailableSocket || userDetail == null) return
+    if ( userDetail == null) return
     socket.emit("videoCall:acceptRequest", { callRoomId: callNotificationData?.callRoomId, userId: userDetail._id })
   }
   const callDeclineHandler = () => {}
