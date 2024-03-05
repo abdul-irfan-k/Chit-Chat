@@ -6,7 +6,8 @@ const router = express.Router()
 
 router.post("/createGroupVideoCall", checkisLogedInMiddleware, createGroupVideoCallHandler)
 router.post("/findMeetingByCode", checkisLogedInMiddleware)
-router.post("/getAllCallLogs",checkisLogedInMiddleware,getAllCallLogsHandler)
+// router.post("/getAllCallLogs",checkisLogedInMiddleware,getAllCallLogsHandler)
+router.post("/getCallLogs",checkisLogedInMiddleware,getAllCallLogsHandler)
 
 
 export default router

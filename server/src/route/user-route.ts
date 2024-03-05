@@ -20,6 +20,8 @@ import {
   sendFreindRequestHandler,
   sendVerifyUserEmailHandler,
   signUpUserHandler,
+  updateUserDetailHandler,
+  updateUserProfileHandler,
   verifyUserEmailHandler,
   verifyUserIsLogedInHandler,
 } from "../controller/user-controller.js"
@@ -58,9 +60,9 @@ router.post("/requestChangePasswordWithOtp", checkisLogedInMiddleware, requestCh
 router.post("/forgotPassword")
 
 // update user details
-router.post("/modifyUserProfile", checkisLogedInMiddleware, upload.single("profileImage"))
-router.post("/modifyUserDetail", checkisLogedInMiddleware)
-router.post("/modifyUserEmail", checkisLogedInMiddleware)
+router.post("/updateUserProfile", checkisLogedInMiddleware, upload.single("profileImage"), updateUserProfileHandler)
+router.post("/updateUserDetail", checkisLogedInMiddleware, upload.single("profileImage"), updateUserDetailHandler)
+router.post("/updateUserEmail")
 
 // fetching the user list in search bar
 router.post("/getUserDetailByUserId", checkisLogedInMiddleware, getUserDetailsByUserIdHandler)
@@ -75,8 +77,8 @@ router.post("/sendFreindRequest", checkisLogedInMiddleware, sendFreindRequestHan
 router.post("/acceptFreindRequest", checkisLogedInMiddleware, acceptFreindRequestHandler) // accept the freind request
 router.post("/rejectFreindRequest", checkisLogedInMiddleware) // reject freind request
 
-// welco0me page setting setup 
-router.post("/gettingStartedSettingSetup",checkisLogedInMiddleware,gettingStartedSettingSetupHandler)
+// welco0me page setting setup
+router.post("/gettingStartedSettingSetup", checkisLogedInMiddleware, gettingStartedSettingSetupHandler)
 
-router.post("/updateSetting",checkisLogedInMiddleware)
+router.post("/updateSetting", checkisLogedInMiddleware)
 export default router

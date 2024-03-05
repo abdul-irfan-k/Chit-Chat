@@ -594,7 +594,7 @@ export const getUserDetailsByUserIdHandler = async (req: Request, res: Response)
   }
 }
 
-export const modifyUserProfileHandler = async (req: MulterRequest, res: Response) => {
+export const updateUserProfileHandler = async (req: MulterRequest, res: Response) => {
   try {
     const { _id } = req.user as userInterface
     const userObjectId = new mongoose.Types.ObjectId(_id)
@@ -606,6 +606,38 @@ export const modifyUserProfileHandler = async (req: MulterRequest, res: Response
       res.status(200).json({ isvalid: true, isUploadedImage: true, fileUrl: cloudinaryUpload.imageUrl })
     }
     fs.unlinkSync(req.file.path)
+  } catch (error) {
+    return res.status(400).json({})
+  }
+}
+
+export const updateUserDetailHandler = async (req: MulterRequest, res: Response) => {
+  try {
+    const { _id } = req.user as userInterface
+    const userObjectId = new mongoose.Types.ObjectId(_id)
+
+    let profileImageUrl: undefined | string = undefined
+    const userUpdatedDetails: Object = req.body
+    console.log("user updated details", userUpdatedDetails)
+    if (req.file != undefined) {
+      const cloudinaryUpload = await cloudinaryFileUploadHandler(req.file.path, { resource_type: "image" })
+      if (cloudinaryUpload.imageUrl) {
+        profileImageUrl = cloudinaryUpload.imageUrl
+      }
+      fs.unlinkSync(req.file.path)
+    }
+    if (profileImageUrl != undefined) {
+      await UserModel.findOneAndUpdate(
+        { _id: userObjectId },
+        { profileImageUrl: profileImageUrl, ...userUpdatedDetails },
+      )
+    } else {
+      await UserModel.findOneAndUpdate(
+        { _id: userObjectId },
+        { profileImageUrl: profileImageUrl, ...userUpdatedDetails },
+      )
+    }
+    return res.status(200).json({ isValid: true, isUpdated: true })
   } catch (error) {
     return res.status(400).json({})
   }

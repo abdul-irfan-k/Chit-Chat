@@ -67,7 +67,7 @@ userSchema.statics.getAllChatUser = async function (myUserId: string) {
         },
       },
       { $unwind: "$chatRoom" },
-      { $project: { name: 1, email: 1, userId: 1, chatRoom: "$chatRoom" } },
+      { $project: { name: 1, email: 1, userId: 1, profileImageUrl: 1, chatRoom: "$chatRoom" } },
     ])
     return allChatUsers
   } catch (error) {
