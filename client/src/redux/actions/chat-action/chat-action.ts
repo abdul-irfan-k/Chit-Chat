@@ -209,11 +209,12 @@ export const sendAudioMessageHandler =
     socket: SocketIO,
   ) =>
   async (dispatch: AppDispatch) => {
+    console.log("send audio message")
     dispatch(
       chatRoomMessageAction.addSendedChatRoomMessage({
         chatRoomId,
         newMessage: {
-          messegeChannelType: "incomingMessage",
+          messegeChannelType: "outgoingMessage",
           messageData: {
             messageType: "voiceMessage",
             _id: "",
@@ -228,9 +229,6 @@ export const sendAudioMessageHandler =
     socket.emit("message:newAudioMessage", { chatRoomId, message, receiverId, senderId })
   }
 
-
-
-  
 export const receiveMessageHandler =
   ({ chatRoomId, message }: { chatRoomId: string; message: string }) =>
   async (dispatch: AppDispatch) => {

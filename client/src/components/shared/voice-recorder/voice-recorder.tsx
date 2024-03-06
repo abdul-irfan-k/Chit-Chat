@@ -9,9 +9,11 @@ import { useSelector } from "react-redux"
 import { AudioRecorder, useAudioRecorder } from "react-audio-voice-recorder"
 import { axiosUploadInstance } from "@/constants/axios"
 import { sendAudioMessageHandler } from "@/redux/actions/chat-action/chat-action"
+import { useAppDispatch } from "@/store"
 
 const mimeType = "audio/mp3"
 const VoiceRecorder = () => {
+  const dispatch = useAppDispatch()
   const [permission, setPermission] = useState(false)
   const [stream, setStream] = useState<MediaStream | null>(null)
   const [recordingStatus, setRecordingStatus] = useState<"inactive" | "recording" | "paused" | "recorded">("inactive")
@@ -93,16 +95,21 @@ const VoiceRecorder = () => {
   const recorderControls = useAudioRecorder()
   const addAudioElement = (blob) => {
     const url = URL.createObjectURL(blob)
-    if (currentChaterDetail?.currentChaterType == "user")
-      sendAudioMessageHandler(
-        {
-          chatRoomId: currentChaterDetail.chatRoom.chatRoomId,
-          receiverId: currentChaterDetail._id,
-          message: { file: blob, url },
-          senderId: userDetail?._id,
-        },
-        socket,
+    console.log("add audio", currentChaterDetail)
+
+    if (currentChaterDetail?.currentChaterType == "user") {
+      dispatch(
+        sendAudioMessageHandler(
+          {
+            chatRoomId: currentChaterDetail.chatRoom.chatRoomId,
+            receiverId: currentChaterDetail._id,
+            message: { file: blob, url },
+            senderId: userDetail?._id,
+          },
+          socket,
+        ),
       )
+    }
   }
 
   return (
