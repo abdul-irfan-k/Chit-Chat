@@ -37,29 +37,41 @@ const userMessageSocketIo = (io: Server, socket: SocketIo) => {
     }
   })
 
-  socket.on("message:newAudioMessage", async ({ message, senderId, chatRoomId }) => {
+  socket.on("message:newAudioMessage", async ({ message, senderId, chatRoomId, receiverId }) => {
     try {
+      console.log("new audio message")
       // const receiver = awiat getRedisSocketCached(receiverId)
       const randomId = uuidv4()
-      const filepath = path.join(__dirname, "..", "public", "uploader", `${randomId}.mp3`)
+      const filepath = path.join(__dirname, "..", "public", "upload", `${randomId}.mp3`)
 
       // const base64ConvertedData = file.toString("base64")
       await fs.writeFileSync(filepath, message.file)
-      console.log("file", filepath)
 
-      const cloudinaryUpload = await cloudinaryFileUploadHandler(filepath)
-      console.log(cloudinaryUpload.imageUrl)
-      if (!cloudinaryUpload.isSuccess || cloudinaryUpload.imageUrl == undefined) return
-      const voiceMessage = await voiceMessageModel.createNewMessageInChatRoom({
-        voiceMessageSrc: cloudinaryUpload.imageUrl,
+      const cloudinaryUpload = await cloudinaryFileUploadHandler(filepath, { resource_type: "auto" })
+      if (!cloudinaryUpload.isSuccess || cloudinaryUpload.url == undefined) return
+      const newVoiceMessage = new voiceMessageModel({
+        voiceMessageSrc: cloudinaryUpload.url,
         postedByUser: senderId,
       })
+      await newVoiceMessage.save()
+      console.log("voice message", newVoiceMessage)
+      if (newVoiceMessage == null) return
+
+      const receiver = await getRedisSocketCached(receiverId)
+      if (receiver != null) {
+        socket.to(receiver.socketId).emit("message:receiveAudioMessage", {
+          chatRoomId,
+          message: { file: cloudinaryUpload.url },
+          receiverId,
+          senderId,
+        })
+      }
+
       await ChatRoomModel.addChatConversation({
         chatRoomId,
-        messageId: voiceMessage._id,
+        messageId: newVoiceMessage._id,
         messageType: "voiceMessage",
       })
-      console.log("remove file sync")
       // fs.unlinkSync(filepath)
     } catch (error) {
       console.log(error)

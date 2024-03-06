@@ -11,8 +11,7 @@ export const uploadSingleImageHandler = async (req: MulterRequest, res: Response
     console.log("file created ", req)
     if (req.file == undefined) return
     const cloudinaryUpload = await cloudinaryFileUploadHandler(req.file.path, { resource_type: "image" })
-    if (cloudinaryUpload.imageUrl)
-      res.status(200).json({ isvalid: true, isUploaded: true, fileUrl: cloudinaryUpload.imageUrl })
+    if (cloudinaryUpload.url) res.status(200).json({ isvalid: true, isUploaded: true, fileUrl: cloudinaryUpload.url })
     fs.unlinkSync(req.file.path)
   } catch (error) {
     return res.status(400).json({})
@@ -37,7 +36,7 @@ export const uploadMultipleImageHandler = async (req: MultipleUploadMulterReqque
     //@ts-ignore
     imageFiles.forEach(async (imageFile) => {
       const cloudinarUploadResponse = await cloudinaryFileUploadHandler(imageFile.path)
-      if (cloudinarUploadResponse.imageUrl) imageFilesPath.push(cloudinarUploadResponse.imageUrl)
+      if (cloudinarUploadResponse.url) imageFilesPath.push(cloudinarUploadResponse.url)
     })
     res.status(200).json({ isValid: true, isUploaded: true, filesUrl: imageFilesPath })
 
@@ -55,8 +54,7 @@ export const uploadSingleDocumentHandler = async (req: MulterRequest, res: Respo
     const file = req.file
     if (file == undefined) return res.status(400).json({ errorType: FILENOTINCLUEDED })
     const cloudinaryUpload = await cloudinaryFileUploadHandler(file.path, { resource_type: "raw" })
-    if (cloudinaryUpload.imageUrl)
-      res.status(200).json({ isvalid: true, isUploaded: true, fileUrl: cloudinaryUpload.imageUrl })
+    if (cloudinaryUpload.url) res.status(200).json({ isvalid: true, isUploaded: true, fileUrl: cloudinaryUpload.url })
     fs.unlinkSync(file.path)
   } catch (error) {
     return res.status(400).json({})
@@ -68,9 +66,20 @@ export const uploadVideoHandler = async (req: MulterRequest, res: Response) => {
     const videoFile = req.file
     if (videoFile == undefined) return res.status(400).json({ errorType: FILENOTINCLUEDED })
     const cloudinaryUpload = await cloudinaryFileUploadHandler(videoFile.path, { resource_type: "video" })
-    if (cloudinaryUpload.imageUrl)
-      res.status(200).json({ isvalid: true, isUploaded: true, fileUrl: cloudinaryUpload.imageUrl })
+    if (cloudinaryUpload.url) res.status(200).json({ isvalid: true, isUploaded: true, fileUrl: cloudinaryUpload.url })
     fs.unlinkSync(videoFile.path)
+  } catch (error) {
+    return res.status(400).json({})
+  }
+}
+
+export const uploadAudioHandler = async (req: Request, res: Response) => {
+  try {
+    const audioFile = req.file
+    if (audioFile == undefined) return res.status(400).json({ errorType: FILENOTINCLUEDED })
+    const cloudinaryUpload = await cloudinaryFileUploadHandler(audioFile.path, { resource_type: "auto" })
+    if (cloudinaryUpload.url) res.status(200).json({ isvalid: true, isUploaded: true, fileUrl: cloudinaryUpload.url })
+    fs.unlinkSync(audioFile.path)
   } catch (error) {
     return res.status(400).json({})
   }

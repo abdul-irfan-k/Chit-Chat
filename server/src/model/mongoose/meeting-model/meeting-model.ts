@@ -12,6 +12,7 @@ const CallRoomSchema = new Schema(
   {
     chatRoomId: { type: String, required: true },
     callCurrentStatus: { type: String },
+    userIds: { type: [String], default: [] },
     callStatus: { type: String },
     callIntiatorUserId: { type: Schema.Types.ObjectId, required: true },
     callType: { type: String },

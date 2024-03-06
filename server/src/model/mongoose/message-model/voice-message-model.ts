@@ -45,12 +45,9 @@ voiceMessageSchema.statics.createNewMessageInChatRoom = async function ({
   postedByUser,
   voiceMessageSrc,
 }: createNewMessageInChatRoom) {
-  try {
     const post = await this.create({ postedByUser, voiceMessageSrc })
     return post
-  } catch (error) {
-    console.log(error)
-  }
+  
 }
 
 export interface VoiceMessageDocument extends voiceMessageSchemaInerface, Document {}

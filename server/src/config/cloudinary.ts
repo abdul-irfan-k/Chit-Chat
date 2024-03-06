@@ -2,7 +2,7 @@ import { UploadApiOptions, v2 as cloudinary } from "cloudinary"
 
 interface cloudinaryFileUploadHandlerReturn {
   isSuccess: Boolean
-  imageUrl?: string
+  url?: string
   errorType?: string
 }
 export const cloudinaryFileUploadHandler = (file: string,options?: UploadApiOptions): Promise<cloudinaryFileUploadHandlerReturn> => {
@@ -19,7 +19,7 @@ export const cloudinaryFileUploadHandler = (file: string,options?: UploadApiOpti
       const { url } = cloudinaryFileUploadResponseData
 
       if (!url) return reject({ isSuccess: false })
-      return resolve({ isSuccess: true, imageUrl: url })
+      return resolve({ isSuccess: true, url: url })
     } catch (error) {
       console.log(error)
       reject({ isSuccess: false })

@@ -601,9 +601,9 @@ export const updateUserProfileHandler = async (req: MulterRequest, res: Response
     if (req.file == undefined) return res.status(400).json({ errorType: FILENOTINCLUEDED })
 
     const cloudinaryUpload = await cloudinaryFileUploadHandler(req.file.path, { resource_type: "image" })
-    if (cloudinaryUpload.imageUrl) {
-      await UserModel.findOneAndUpdate({ _id: userObjectId }, { profileImageUrl: cloudinaryUpload.imageUrl })
-      res.status(200).json({ isvalid: true, isUploadedImage: true, fileUrl: cloudinaryUpload.imageUrl })
+    if (cloudinaryUpload.url) {
+      await UserModel.findOneAndUpdate({ _id: userObjectId }, { profileImageUrl: cloudinaryUpload.url })
+      res.status(200).json({ isvalid: true, isUploadedImage: true, fileUrl: cloudinaryUpload.url })
     }
     fs.unlinkSync(req.file.path)
   } catch (error) {
@@ -621,8 +621,8 @@ export const updateUserDetailHandler = async (req: MulterRequest, res: Response)
     console.log("user updated details", userUpdatedDetails)
     if (req.file != undefined) {
       const cloudinaryUpload = await cloudinaryFileUploadHandler(req.file.path, { resource_type: "image" })
-      if (cloudinaryUpload.imageUrl) {
-        profileImageUrl = cloudinaryUpload.imageUrl
+      if (cloudinaryUpload.url) {
+        profileImageUrl = cloudinaryUpload.url
       }
       fs.unlinkSync(req.file.path)
     }

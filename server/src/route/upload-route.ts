@@ -3,7 +3,13 @@ import multer from "multer"
 import path from "path"
 import { fileURLToPath } from "node:url"
 
-import { uploadMultipleImageHandler, uploadSingleDocumentHandler, uploadSingleImageHandler, uploadVideoHandler } from "../controller/upload-controller.js"
+import {
+  uploadAudioHandler,
+  uploadMultipleImageHandler,
+  uploadSingleDocumentHandler,
+  uploadSingleImageHandler,
+  uploadVideoHandler,
+} from "../controller/upload-controller.js"
 
 const router = express.Router()
 
@@ -22,9 +28,9 @@ const storage = multer.diskStorage({
 const upload = multer({ storage })
 
 router.post("/uploadSingleImage", upload.single("image"), uploadSingleImageHandler)
-router.post("/uploadDocument",upload.single("document"),uploadSingleDocumentHandler)
-router.post("/uploadMultipleImage", upload.array("image"),uploadMultipleImageHandler)
-router.post("/uploadVideo", upload.single("video"),uploadVideoHandler)
-
+router.post("/uploadDocument", upload.single("document"), uploadSingleDocumentHandler)
+router.post("/uploadMultipleImage", upload.array("image"), uploadMultipleImageHandler)
+router.post("/uploadVideo", upload.single("video"), uploadVideoHandler)
+router.post("/uploadAudio", upload.single("audio"), uploadAudioHandler)
 
 export default router
