@@ -8,7 +8,8 @@
     "format": "npm run prettier",
     "start": "next start",
     "lint": "next lint",
-    "prettier": "prettier --write ."
+    "prettier": "prettier --write .",
+    "type-check": "tsc"
   },
   "dependencies": {
     "@emoji-mart/data": "^1.1.2",
@@ -39,6 +40,7 @@
     "peerjs": "^1.5.1",
     "postcss": "8.4.28",
     "react": "18.2.0",
+    "react-audio-voice-recorder": "^2.2.0",
     "react-dom": "18.2.0",
     "react-dropzone": "^14.2.3",
     "react-infinite-scroll-component": "^6.1.0",

@@ -162,55 +162,6 @@ export const sendGroupPollMessageHandler =
     )
   }
 // receiving group poll message
-export const receivePollMessageHandler =
-  ({
-    chatRoomId,
-    message,
-    senderId,
-  }: {
-    chatRoomId: string
-    message: { title: string; options: Array<Object> }
-    senderId: string
-  }) =>
-  async (dispatch: AppDispatch) => {
-    dispatch(
-      chatRoomMessageAction.addSendedChatRoomMessage({
-        chatRoomId,
-        newMessage: {
-          messegeChannelType: "incomingMessage",
-          messageData: {
-            messageType: "pollMessage",
-            _id: "",
-            chatRoomId,
-            messageSendedTime: new Date(),
-            options: message.options,
-            postedByUser: senderId,
-            title: message.title,
-          },
-        },
-      }),
-    )
-  }
-
-export const receiveMessageHandler =
-  ({ chatRoomId, message }: { chatRoomId: string; message: string }) =>
-  async (dispatch: AppDispatch) => {
-    dispatch(
-      chatRoomMessageAction.addSendedChatRoomMessage({
-        chatRoomId,
-        newMessage: {
-          messegeChannelType: "incomingMessage",
-          messageData: {
-            chatRoomId,
-            message,
-            messageType: "textMessage",
-            messageSendedTime: new Date(),
-            postedByUser: "irfan",
-          },
-        },
-      }),
-    )
-  }
 
 interface sendImageMessageArguments extends groupMessageSourceAndDestinationDetail {
   imageLocalPath: string
@@ -246,6 +197,60 @@ export const sendNewImagemessageHandler =
     // })
     // socket.emit("")
   }
+
+export const sendAudioMessageHandler =
+  (
+    {
+      chatRoomId,
+      message,
+      receiverId,
+      senderId,
+    }: { message: { file: Buffer; url: string }; receiverId: string; senderId: string; chatRoomId: string },
+    socket: SocketIO,
+  ) =>
+  async (dispatch: AppDispatch) => {
+    dispatch(
+      chatRoomMessageAction.addSendedChatRoomMessage({
+        chatRoomId,
+        newMessage: {
+          messegeChannelType: "incomingMessage",
+          messageData: {
+            messageType: "voiceMessage",
+            _id: "",
+            chatRoomId,
+            voiceMessageSrc: message.url,
+            messageSendedTime: new Date(),
+            postedByUser: "a",
+          },
+        },
+      }),
+    )
+    socket.emit("message:newAudioMessage", { chatRoomId, message, receiverId, senderId })
+  }
+
+
+
+  
+export const receiveMessageHandler =
+  ({ chatRoomId, message }: { chatRoomId: string; message: string }) =>
+  async (dispatch: AppDispatch) => {
+    dispatch(
+      chatRoomMessageAction.addSendedChatRoomMessage({
+        chatRoomId,
+        newMessage: {
+          messegeChannelType: "incomingMessage",
+          messageData: {
+            chatRoomId,
+            message,
+            messageType: "textMessage",
+            messageSendedTime: new Date(),
+            postedByUser: "irfan",
+          },
+        },
+      }),
+    )
+  }
+
 export const recieveNewImageMessageHandler =
   ({ chatRoomId, message }: { chatRoomId: string; message: { imageMessageSrc: string } }) =>
   async (dispatch: AppDispatch) => {
@@ -282,6 +287,57 @@ export const recieveVideoMessageHandler =
             videoMessageSrc: message.videoMessageSrc,
             messageSendedTime: new Date(),
             postedByUser: "a",
+          },
+        },
+      }),
+    )
+  }
+
+export const recieveAudioMessageHandler =
+  ({ chatRoomId, message }: { chatRoomId: string; message: { audoMessageSrc: string; _id: string } }) =>
+  async (dispatch: AppDispatch) => {
+    dispatch(
+      chatRoomMessageAction.addSendedChatRoomMessage({
+        chatRoomId,
+        newMessage: {
+          messegeChannelType: "incomingMessage",
+          messageData: {
+            messageType: "voiceMessage",
+            _id: message._id,
+            chatRoomId,
+            voiceMessageSrc: message.audoMessageSrc,
+            messageSendedTime: new Date(),
+            postedByUser: "a",
+          },
+        },
+      }),
+    )
+  }
+
+export const receivePollMessageHandler =
+  ({
+    chatRoomId,
+    message,
+    senderId,
+  }: {
+    chatRoomId: string
+    message: { title: string; options: Array<Object> }
+    senderId: string
+  }) =>
+  async (dispatch: AppDispatch) => {
+    dispatch(
+      chatRoomMessageAction.addSendedChatRoomMessage({
+        chatRoomId,
+        newMessage: {
+          messegeChannelType: "incomingMessage",
+          messageData: {
+            messageType: "pollMessage",
+            _id: "",
+            chatRoomId,
+            messageSendedTime: new Date(),
+            options: message.options,
+            postedByUser: senderId,
+            title: message.title,
           },
         },
       }),

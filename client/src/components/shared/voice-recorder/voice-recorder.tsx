@@ -6,6 +6,9 @@ import { chatUsersListReducerState } from "@/redux/reducers/chat-user-reducer/ch
 import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 import React, { useRef, useState } from "react"
 import { useSelector } from "react-redux"
+import { AudioRecorder, useAudioRecorder } from "react-audio-voice-recorder"
+import { axiosUploadInstance } from "@/constants/axios"
+import { sendAudioMessageHandler } from "@/redux/actions/chat-action/chat-action"
 
 const mimeType = "audio/mp3"
 const VoiceRecorder = () => {
@@ -16,6 +19,8 @@ const VoiceRecorder = () => {
   const [audio, setAudio] = useState(null)
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null)
 
+  const [selectedAudioFile, setSelectedAudioFile] = useState<File | undefined>(undefined)
+
   const mediaRecorder = useRef<MediaRecorder | null>(null)
 
   const { currentChaterDetail } = useSelector(
@@ -23,7 +28,7 @@ const VoiceRecorder = () => {
   )
   const { userDetail } = useSelector((state: { userDetail: userDetailState }) => state.userDetail)
   const { socket } = useSocketIoContext()
-  const getMicrophonePermission = async (): { isAllowedPermission: Boolean } => {
+  const getMicrophonePermission = async () => {
     try {
       const constraints = {
         audio: true,
@@ -34,7 +39,7 @@ const VoiceRecorder = () => {
 
       setPermission(true)
       setStream(streamData)
-      return { isAllowedPermission: true }
+      return
     } catch (error) {
       console.log(error)
     }
@@ -69,25 +74,48 @@ const VoiceRecorder = () => {
     }
   }
 
-  const sendButtonHandler = () => {
-    socket?.emit("message:newAudioMessage", {
-      file: audioBlob,
-      postedByUser: userDetail?._id,
-      chatRoomId: currentChaterDetail?.chatRoom?.chatRoomId,
-    })
+  const sendButtonHandler = async () => {
+    try {
+      if (selectedAudioFile == undefined) return console.log("no file selected")
+      const formData = new FormData()
+      formData.append("video", selectedAudioFile)
+
+      const { data: response } = await axiosUploadInstance.post("/uploadAudio", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      })
+      socket?.emit("message:newAudioMessage", {
+        file: audioBlob,
+        postedByUser: userDetail?._id,
+        chatRoomId: currentChaterDetail?.chatRoom?.chatRoomId,
+      })
+    } catch (error) {}
+  }
+  const recorderControls = useAudioRecorder()
+  const addAudioElement = (blob) => {
+    const url = URL.createObjectURL(blob)
+    if (currentChaterDetail?.currentChaterType == "user")
+      sendAudioMessageHandler(
+        {
+          chatRoomId: currentChaterDetail.chatRoom.chatRoomId,
+          receiverId: currentChaterDetail._id,
+          message: { file: blob, url },
+          senderId: userDetail?._id,
+        },
+        socket,
+      )
   }
 
   return (
-    <div>
-      {recordingStatus == "inactive" && !permission && (
+    <div className="bg-slate-300 rounded-full dark:bg-slate-800">
+      {/* {recordingStatus == "inactive" && !permission && (
         <div
           className="w-10 flex justify-center items-center aspect-square bg-slate-300 fill-slate-950 rounded-full dark:fill-slate-50    dark:bg-slate-800"
           onClick={getMicrophonePermission}
         >
           <MicIcon />
         </div>
-      )}
-      {recordingStatus == "inactive" && permission && (
+      )} */}
+      {/* {recordingStatus == "inactive" && permission && (
         <div
           className="w-10 flex justify-center items-center aspect-square bg-slate-300 fill-slate-950 rounded-full dark:fill-slate-50    dark:bg-slate-800"
           onClick={startRecording}
@@ -112,7 +140,23 @@ const VoiceRecorder = () => {
           se
         </div>
       )}
-      {audio != null && <audio src={audio} controls></audio>}
+      //  */}
+      {audio == null && (
+        <AudioRecorder
+          onRecordingComplete={(blob) => addAudioElement(blob)}
+          recorderControls={recorderControls}
+          // downloadOnSavePress={true}
+          // downloadFileExtension="mp3"
+          showVisualizer={true}
+          // classes={{}}
+        />
+      )}
+      {/* {audio != null && (
+        <div className="absolute w-[90%] left-0 top-0 h-full overflow-hidden">
+          <audio src={audio} controls></audio>
+        </div>
+      )} */}
+      {/* <div onClick={() => recorderControls.togglePauseResume()} className="ml-5">stop</div> */}
     </div>
   )
 }

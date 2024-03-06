@@ -13,6 +13,7 @@ import {
   onGroupSettingChangeHandler,
   receiveMessageHandler,
   receivePollMessageHandler,
+  recieveAudioMessageHandler,
   recieveNewImageMessageHandler,
   recieveVideoMessageHandler,
 } from "@/redux/actions/chat-action/chat-action"
@@ -36,7 +37,6 @@ const SocketIoChatUserEventProvider = () => {
   const { userDetail, isLogedIn } = useSelector((state: { userDetail: userDetailState }) => state.userDetail)
 
   useEffect(() => {
-
     socket.on("message:receiveMessage", (messageResponse) => {
       if (currentChaterDetail?._id != messageResponse.senderId)
         dispatch(addNewMessageNotificationHandler({ _id: messageResponse.senderId }))
@@ -44,7 +44,6 @@ const SocketIoChatUserEventProvider = () => {
     })
 
     socket.on("message:recieveNewImageMessage", (messageResponse) => {
-      console.log("new image message", messageResponse)
       if (currentChaterDetail != null && currentChaterDetail._id != messageResponse.senderId)
         dispatch(addNewMessageNotificationHandler({ _id: messageResponse.senderId }))
       dispatch(
@@ -57,13 +56,24 @@ const SocketIoChatUserEventProvider = () => {
         dispatch(addNewMessageNotificationHandler({ _id: senderId }))
       dispatch(recieveVideoMessageHandler({ chatRoomId, message }))
     })
+    socket.on("groupMessage:receivePollMessage", ({ chatRoomId, message, senderId, groupDetail }) => {
+      dispatch(receivePollMessageHandler({ chatRoomId, message, senderId }))
+    })
+
+    socket.on("groupMessage:receiveAudioMessage", (messageResponse) => {
+      console.log("new audio mesasge")
+      if (currentChaterDetail != null && currentChaterDetail._id != chatRoomId)
+        dispatch(addNewMessageNotificationHandler({ _id: messageResponse.senderId }))
+      dispatch(
+        recieveAudioMessageHandler({
+          chatRoomId: messageResponse.chatRoomId,
+          message: { _id: messageResponse.message._id, audoMessageSrc: messageResponse.message.file },
+        }),
+      )
+    })
 
     socket.on("message:deleteMessage", ({ chatRoomId, message }) => {
       dispatch(onChaterdeleteMessageHandler({ chatRoomId, message }))
-    })
-
-    socket.on("groupMessage:receivePollMessage", ({ chatRoomId, message, senderId, groupDetail }) => {
-      dispatch(receivePollMessageHandler({ chatRoomId, message, senderId }))
     })
 
     // group controll
@@ -98,7 +108,7 @@ const SocketIoChatUserEventProvider = () => {
       console.log("new user joined ")
       dispatch(addGroupCallConnectionRequiredPeers({ ...details.newUserDetail }))
     })
-  }, [ dispatch, isLogedIn])
+  }, [dispatch, isLogedIn])
   return <div></div>
 }
 
