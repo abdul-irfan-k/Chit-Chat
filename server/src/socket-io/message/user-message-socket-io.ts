@@ -39,7 +39,6 @@ const userMessageSocketIo = (io: Server, socket: SocketIo) => {
 
   socket.on("message:newAudioMessage", async ({ message, senderId, chatRoomId, receiverId }) => {
     try {
-      console.log("new audio message")
       // const receiver = awiat getRedisSocketCached(receiverId)
       const randomId = uuidv4()
       const filepath = path.join(__dirname, "..", "public", "upload", `${randomId}.mp3`)
@@ -54,7 +53,6 @@ const userMessageSocketIo = (io: Server, socket: SocketIo) => {
         postedByUser: senderId,
       })
       await newVoiceMessage.save()
-      console.log("voice message", newVoiceMessage)
       if (newVoiceMessage == null) return
 
       const receiver = await getRedisSocketCached(receiverId)
@@ -72,14 +70,13 @@ const userMessageSocketIo = (io: Server, socket: SocketIo) => {
         messageId: newVoiceMessage._id,
         messageType: "voiceMessage",
       })
-      // fs.unlinkSync(filepath)
+      fs.unlinkSync(filepath)
     } catch (error) {
       console.log(error)
     }
   })
 
   socket.on("message:newImageMessage", async ({ chatRoomId, message, receiverId, senderId }) => {
-    console.log("new message", receiverId)
     const newMessage = new ImageMessageModel({
       chatRoomId,
       postedByUser: senderId,

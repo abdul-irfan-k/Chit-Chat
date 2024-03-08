@@ -19,19 +19,18 @@ export interface callSetting {
   isAllowedMicrophone: boolean
 }
 
-interface communicatorsDetail {
+interface communicatorsDetail extends userBasicDetail {
   peerId: string
-  userId: string
   videoStatus: "inActive" | "active"
   camaraStatus: "inActive" | "active"
 }
 
-interface callDetail {
+interface privateCallDetail {
   callRoomId: string
   chatRoomId: string
   referenceId?: string
   callType: "audioCall" | "videoCall"
-  callChannelType: "single"
+  callChannelType: "private"
   avilableTotalUserCount?: number
   myDetail: {
     peerId: string
@@ -46,7 +45,9 @@ interface callDetail {
 interface groupCallDetail {
   callRoomId: string
   referenceId: string
+  callType: "audioCall" | "videoCall"
   callChannelType: "group"
+  avilableTotalUserCount?: number
   myDetail: {
     peerId: string
     userId: string
@@ -60,17 +61,37 @@ interface groupCallDetail {
   communicatorsDetail: communicatorsDetail[]
 }
 
-interface peerDetail {
+interface userBasicDetail {
+  userName: string
+  userId: string
+  profileImageUrl: string
+}
+
+interface peerDetail extends userBasicDetail {
   userId: string
   peerId: string
 }
 
-interface joinRequestedUserDetail {
-  userName: string
-  userId: string
+interface joinRequestedUserDetail extends userBasicDetail {}
+
+interface privateCallRequest {
+  callType: "audioCall" | "videoCall"
+  callChannelType: "private"
+  communicatorsDetail: userBasicDetail
 }
+interface groupCallRequest {
+  callType: "audioCall" | "videoCall"
+  callChannelType: "group"
+  communicatorsDetail: userBasicDetail[]
+}
+
+interface callRequest {
+  isCalling: boolean
+  callRequestData?: privateCallRequest | groupCallRequest
+}
+
 export type callReducerSlate = {
-  callDetail?: callDetail | groupCallDetail
+  callDetail?: privateCallDetail | groupCallDetail
   isChanged: boolean
   callStatus?: "active" | "inActive"
   isAvailableCallRoom: boolean
@@ -85,6 +106,7 @@ export type callReducerSlate = {
     latestJoinRequestor?: joinRequestedUserDetail
     allJoinRequestors: joinRequestedUserDetail[]
   }
+  callRequestDetail?: callRequest
 }
 const callReducerIntialState: callReducerSlate = {
   callDetail: undefined,
@@ -108,13 +130,9 @@ export const callRedcuer = createSlice({
       )
 
       const communicatorsDetail = updatedCommunicatorDetails != undefined ? updatedCommunicatorDetails : []
+
       const avilableTotalUserCount =
         state.callDetail?.avilableTotalUserCount != undefined ? state.callDetail.avilableTotalUserCount - 1 : undefined
-
-      // return {
-      //   ...state,
-      //   callDetail: { ...state.callDetail, communicatorsDetail, avilableTotalUserCount },
-      // }
     },
     updateUserStatus: (state, action) => {},
     addCallSetting: (state, action) => {
@@ -150,6 +168,12 @@ export const callRedcuer = createSlice({
           latestJoinRequestor: { ...action.payload },
         }
       }
+    },
+    addCallRequest: (state, action: { payload: callRequest }) => {
+      return { ...state, callRequestDetail: action.payload }
+    },
+    removeCallRequest: (state, action) => {
+      return { ...state, callRequestDetail: undefined }
     },
   },
 })

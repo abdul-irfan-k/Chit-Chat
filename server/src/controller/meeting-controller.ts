@@ -42,7 +42,7 @@ export const getAllCallLogsHandler = async (req: Request, res: Response) => {
     const callLogs = await CallRoomModel.aggregate([
       {
         $match: {
-          $expr: { $in: [_id, "$userIds"] },
+          $expr: { $in: [_id, "$participants"] },
         },
       },
     ])

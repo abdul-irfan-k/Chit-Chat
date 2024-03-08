@@ -9,6 +9,7 @@ import { callRedcuer } from "./redux/reducers/call-reducer/call-reducer"
 import { notificationReducer } from "./redux/reducers/notification-reducer/notification-reducer"
 import { sidebarSortReducer } from "./redux/reducers/sidebar-sort-reducer/sidebar-sort-reducer"
 import { userSettingReducer } from "./redux/reducers/user-setting-reducer/user-setting-reducer"
+import { callLogsReducer } from "./redux/reducers/call-log-reducer/call-log-reducer"
 
 const combinedReducers = combineReducers({
   messengerSort: messengerSortReducer.reducer,
@@ -21,6 +22,7 @@ const combinedReducers = combineReducers({
   callRedcuer: callRedcuer.reducer,
   sidebarSort: sidebarSortReducer.reducer,
   userSetting: userSettingReducer.reducer,
+  callLogs: callLogsReducer.reducer,
 })
 
 export const store = configureStore({

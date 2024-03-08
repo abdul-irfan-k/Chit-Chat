@@ -1,6 +1,6 @@
 "use client"
 import { CallEndIcon, FullScreenIcon, MicIcon, VideoCamIcon } from "@/constants/icon-constant"
-import { videoCallRequestRemoveHandler } from "@/redux/actions/call-request-action/call-request-action"
+import { videoCallRequestRemoveHandler } from "@/redux/actions/call-action/call-action"
 import { useAppDispatch } from "@/store"
 import Image from "next/image"
 import React, { FC, useState } from "react"

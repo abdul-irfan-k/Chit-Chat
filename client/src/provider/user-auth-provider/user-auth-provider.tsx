@@ -7,6 +7,7 @@ import { useAppDispatch } from "@/store"
 import React, { FC, useEffect } from "react"
 import { useSelector } from "react-redux"
 import { useSocketIoContext } from "../socket-io-provider/socket-io-provider"
+import { callLogsReducerState } from "@/redux/reducers/call-log-reducer/call-log-reducer"
 
 interface UserAuthProviderProps {
   children: React.ReactNode
@@ -21,27 +22,29 @@ const UserAuthProvider: FC<UserAuthProviderProps> = ({ children }) => {
     isChanged,
     isLogedIn,
   } = useSelector((state: { userDetail: userDetailState }) => state.userDetail)
-  const {socket} = useSocketIoContext()
+  const { callLogs, isInitial: isInitialCallLogs } = useSelector(
+    (state: { callLogs: callLogsReducerState }) => state.callLogs,
+  )
+  const { socket } = useSocketIoContext()
 
   useEffect(() => {
     dispatch(addAllChatUsers())
     dispatch(addAllChatGroups())
-  }, [isChatUserListChanged,dispatch])
+  }, [isChatUserListChanged, dispatch])
 
+  useEffect(() => {
+    // if(isInitialCallLogs)
+  }, [isInitialCallLogs])
   useEffect(() => {
     if (isLogedIn) {
       socket.emit("socket:join", { userId: userDetails?._id })
       dispatch(getIntialOnlineChatUsers(socket))
     }
-  }, [isLogedIn,dispatch])
-
+  }, [isLogedIn, dispatch])
 
   useEffect(() => {
     dispatch(checkUserIsLogedIn())
   }, [])
-
-
-  
 
   return <>{children}</>
 }

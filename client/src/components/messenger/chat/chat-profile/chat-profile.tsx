@@ -4,11 +4,11 @@ import Image from "next/image"
 import { FC, MouseEvent, useEffect } from "react"
 import { useSelector } from "react-redux"
 import { useAppDispatch } from "@/store"
-import { videoCallRequestHandler } from "@/redux/actions/call-request-action/call-request-action"
 import { chatUsersListReducerState } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 import { ArrowLeftIcon, PhoneIcon, SearchIcon, VideoIcon, VolumeHighIcon } from "@/constants/icon-constant"
 import { useSocketIoContext } from "@/provider/socket-io-provider/socket-io-provider"
+import { videoCallRequestHandler } from "@/redux/actions/call-action/call-action"
 
 interface ChatProfileInstance {
   name: string
@@ -28,7 +28,7 @@ const ChatProfile: FC<ChatProfileInstance> = ({ name, profileImageSrc, currentSt
 
   const videoCallIconClickHandler = (e: MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation()
-    socket.emit("videoCall:intialise", {
+    socket.emit("privateCall:intialise", {
       userDetail: userDetail,
       chatRoomId: currentChaterDetail?.chatRoom?.chatRoomId,
       receiverId: currentChaterDetail?._id,

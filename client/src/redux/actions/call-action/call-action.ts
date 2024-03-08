@@ -146,3 +146,12 @@ export const addGroupCallJoinRequestedUser =
   async (dispatch: AppDispatch) => {
     dispatch(callReducerAction.addJoinRequestedUser({ userName, userId }))
   }
+
+
+  export const videoCallRequestHandler = (details) => async(dispatch: AppDispatch) =>  {
+    dispatch(callReducerAction.addCallRequest(details))
+}
+
+export const videoCallRequestRemoveHandler = () => async(dispatch: AppDispatch) => {
+    dispatch(callReducerAction.removeCallRequest())
+}

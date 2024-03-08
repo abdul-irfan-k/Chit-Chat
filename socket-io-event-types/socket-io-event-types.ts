@@ -8,15 +8,20 @@ interface newImageMessageInterface extends messageSourceAndDestinationDetail {
     imageMessageSrc: string
   }
 }
-interface newMessageInterface extends messageSourceAndDestinationDetail {
+interface newTextMessageInterface extends messageSourceAndDestinationDetail {
   message: string
 }
-interface newAudiomessageDetails extends messageSourceAndDestinationDetail {
+interface newAudiomessage extends messageSourceAndDestinationDetail {
   message: {
     file: Buffer
   }
 }
 
+interface reciveAudioMessageInterface extends messageSourceAndDestinationDetail {
+  message: {
+    file: string
+  }
+}
 interface newVideoMessageInterface extends messageSourceAndDestinationDetail {
   message: {
     videoMessageSrc: string
@@ -66,7 +71,7 @@ interface pollMessageVoteUpdateInterface extends groupMessageSourceAndDestinatio
   }
 }
 
-interface deleteMessageInterface extends messageSourceAndDestinationDetail {
+export interface deleteMessageInterface extends messageSourceAndDestinationDetail {
   message: {
     _id: string
     messageType: "textMessage" | "voiceMessage" | "imageMessage" | "pollMessage" | "videoMessage"
@@ -78,12 +83,20 @@ interface deleteGroupMessageInterface extends groupMessageSourceAndDestinationDe
     messageType: "textMessage" | "voiceMessage" | "imageMessage" | "pollMessage" | "videoMessage"
   }
 }
+export interface reactMeessageInterface extends messageSourceAndDestinationDetail {
+  message: {
+    _id: string
+    emojiId: string
+    emoji: string
+  }
+}
 
 interface ClientToServerMessageEvents {
   "message:newImageMessage": (messageDetails: newImageMessageInterface) => void
-  "message:newMessage": (messageDetails: newMessageInterface) => void
-  "message:newAudioMessage": (messageDetails: newAudiomessageDetails) => void
+  "message:newMessage": (messageDetails: newTextMessageInterface) => void
+  "message:newAudioMessage": (messageDetails: newAudiomessage) => void
   "message:newVideoMessage": (messageDetails: newVideoMessageInterface) => void
+  "message:reactMessage": (messageDetails: reactMeessageInterface) => void
   // "groupMessage:newTextMessage"
 
   "groupMessage:newTextMessage": (messageDetails: groupNewTextMessageInterface) => void
@@ -97,12 +110,13 @@ interface ClientToServerMessageEvents {
   "groupMessage:deleteMessage": (messageDetails: deleteMessageInterface) => void
 }
 interface ServerToClientMessageEvents {
-  "message:receiveMessage": (messageDetails: newMessageInterface) => void
+  "message:receiveMessage": (messageDetails: newTextMessageInterface) => void
   "message:recieveNewImageMessage": (messageDetails: newImageMessageInterface) => void
   "message:receiveVideoMessage": (messageDetails: newVideoMessageInterface) => void
+  "message:receiveAudioMessage": (messageDetails: reciveAudioMessageInterface) => void
 
   "groupMessage:receiveTextMessage": (messageDetails: groupNewTextMessageInterface) => void
-  "groupMessage:receiveAudioMessage": (messageDetails: groupNewAudioMessageInterface) => void
+  "groupMessage:receiveAudioMessage": (messageDetails: reciveAudioMessageInterface) => void
   "groupMessage:receivePollMessage": (messageDetails: groupNewPollMessageInterface) => void
   "groupMessage:receiveImageMessage": (messageDetails: groupNewImageMessageInterface) => void
 

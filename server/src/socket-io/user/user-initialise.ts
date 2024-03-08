@@ -21,7 +21,6 @@ export const userSocketIntialization = async (socket: Socket) => {
     const joinRequiredGroups = await ConnectionModel.findOne({ userId: userObjectId })
     if (joinRequiredGroups == null) return
     joinRequiredGroups.groups.forEach((group) => {
-      console.log("group",group)
       socket.join(`group:${group.groupId}`)
     })
   })
