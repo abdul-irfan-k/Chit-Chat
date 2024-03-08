@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit"
+import { IncomingMessage, OutgoingMessage } from "http";
 
 const chatRoomMessagesIntialState: chatRoomMessagesReducerSlate = {
   chatRoomMessages: [],
@@ -67,6 +68,20 @@ export const chatRoomsMessageReducer = createSlice({
         (chatRoom) => chatRoom.chatRoomId == action.payload.chatRoomId,
       )[0]
       updatedChatRoomMessage.messages = [{ ...action.payload.newMessage }, ...updatedChatRoomMessage.messages]
+      state.chatRoomMessages = [
+        ...state.chatRoomMessages.filter((chatRoom) => chatRoom.chatRoomId != action.payload.chatRoomId),
+        { ...updatedChatRoomMessage },
+      ]
+      state.currentChaterMessage = updatedChatRoomMessage
+    },
+    addSendedChatRoomMultipleMessage: (
+      state,
+      action: { payload: { chatRoomId: string; newMessage: Array<messageTypes> } },
+    ) => {
+      const updatedChatRoomMessage = state.chatRoomMessages.filter(
+        (chatRoom) => chatRoom.chatRoomId == action.payload.chatRoomId,
+      )[0]
+      updatedChatRoomMessage.messages = [...action.payload.newMessage, ...updatedChatRoomMessage.messages]
       state.chatRoomMessages = [
         ...state.chatRoomMessages.filter((chatRoom) => chatRoom.chatRoomId != action.payload.chatRoomId),
         { ...updatedChatRoomMessage },
@@ -245,16 +260,17 @@ type messageType = textMessage | voiceMessage | imageMessage | pollMessage | vid
 export type messageStatus = "sended" | "notSended"
 export type messageDeliveryStatus = "notDelivered" | "delivered" | "watched"
 
-interface outGoingMessage {
+export interface outGoingMessage {
   messegeChannelType: "outgoingMessage"
   messageData: messageType
   messageStatus?: messageStatus
   messageDeliveryStatus?: messageDeliveryStatus
 }
-interface incomingMessage {
+export interface incomingMessage {
   messegeChannelType: "incomingMessage"
   messageData: messageType
 }
+export type messageTypes =  OutgoingMessage | IncomingMessage
 
 interface chatRoomMessages {
   chatRoomId: string

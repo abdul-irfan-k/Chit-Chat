@@ -50,6 +50,7 @@ const InputBox = () => {
         socket,
       ),
     )
+    setInputMessage("")
   }
 
   return (

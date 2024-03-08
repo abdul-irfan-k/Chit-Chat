@@ -1,6 +1,6 @@
-import { axiosChatInstance } from "@/constants/axios"
+import { axiosChatInstance, axiosUploadInstance } from "@/constants/axios"
 import { chatUserListAction, groupSetting } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
-import { chatRoomMessageAction } from "@/redux/reducers/message-reducer/message-reducer"
+import { chatRoomMessageAction, messageTypes } from "@/redux/reducers/message-reducer/message-reducer"
 import { AppDispatch } from "@/store"
 import {
   SocketIO,
@@ -112,7 +112,7 @@ export const sendMessageHandler =
       senderId,
       chatRoomId,
     }: { message: string; receiverId: string; senderId: string; chatRoomId: string },
-    socket: Socket,
+    socket: SocketIO,
   ) =>
   async (dispatch: AppDispatch) => {
     socket.emit("message:newMessage", { message, receiverId, senderId, chatRoomId })
@@ -164,13 +164,13 @@ export const sendGroupPollMessageHandler =
 // receiving group poll message
 
 interface sendImageMessageArguments extends groupMessageSourceAndDestinationDetail {
-  imageLocalPath: string
+  imageUrl: string
+  formData: FormData
 }
 // send image message
-export const sendNewImagemessageHandler =
+export const sendImageMessageHandler =
   (
-    { chatRoomId, senderId, groupDetail, imageLocalPath }: sendImageMessageArguments,
-    formData: FormData,
+    { chatRoomId, senderId, groupDetail, imageUrl, formData, receiverId }: sendImageMessageArguments,
     socket: SocketIO,
   ) =>
   async (dispatch: AppDispatch) => {
@@ -185,17 +185,63 @@ export const sendNewImagemessageHandler =
             messageType: "imageMessage",
             messageSendedTime: new Date(),
             postedByUser: "",
-            imageMessageSrc: [imageLocalPath],
+            imageMessageSrc: [imageUrl],
           },
           messageStatus: "notSended",
         },
       }),
     )
 
-    // const { data: response } = await axiosUploadInstance.post("/uploadSingleImage", formData, {
-    //   headers: { "Content-Type": "multipart/form-data" },
-    // })
-    // socket.emit("")
+    const { data: response } = await axiosUploadInstance.post("/uploadSingleImage", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    })
+
+    socket.emit("message:newImageMessage", {
+      chatRoomId,
+      message: { imageMessageSrc: response.fileUrl },
+      receiverId,
+      senderId,
+    })
+  }
+
+interface sendMultipleImageMessageHandlerArgs {
+  imageUrls: string[]
+  formData: FormData
+}
+export const sendMultipleImageMessageHandler =
+  (
+    { chatRoomId, senderId, groupDetail, imageUrls, formData,receiverId }: sendMultipleImageMessageHandlerArgs,
+    socket: SocketIO,
+  ) =>
+  async (dispatch: AppDispatch) => {
+    const newMessage: Array<messageTypes> = []
+    imageUrls.forEach((imageUrl) => {
+      newMessage.push({
+        messegeChannelType: "outgoingMessage",
+        messageData: {
+          _id: "",
+          chatRoomId,
+          messageType: "imageMessage",
+          messageSendedTime: new Date(),
+          postedByUser: "",
+          imageMessageSrc: [imageUrl],
+        },
+        messageStatus: "notSended",
+      })
+    })
+
+    dispatch(chatRoomMessageAction.addSendedChatRoomMultipleMessage({ chatRoomId, newMessage: newMessage }))
+
+    const { data: response } = await axiosUploadInstance.post("/uploadMultipleImage", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    })
+
+    socket.emit("message:newImageMessage", {
+      chatRoomId,
+      message: { imageMessageSrc: response.fileUrl },
+      receiverId,
+      senderId,
+    })
   }
 
 export const sendAudioMessageHandler =

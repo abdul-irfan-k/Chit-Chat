@@ -1,8 +1,10 @@
 import { axiosUploadInstance } from "@/constants/axios"
 import { FolderIcon, PersonIcon, XMarkIcon } from "@/constants/icon-constant"
 import { useSocketIoContext } from "@/provider/socket-io-provider/socket-io-provider"
+import { sendImageMessageHandler, sendMultipleImageMessageHandler } from "@/redux/actions/chat-action/chat-action"
 import { chatUsersListReducerState } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
+import { useAppDispatch } from "@/store"
 import Image from "next/image"
 import React, { FC, useEffect, useRef, useState } from "react"
 import { Socket } from "socket.io-client"
@@ -12,11 +14,12 @@ interface ImageSelectionProps {
   currentChaterDetail: chatUsersListReducerState["currentChaterDetail"]
 }
 const ImageSelection: FC<ImageSelectionProps> = ({ userDetail, currentChaterDetail }) => {
+  const dispatch = useAppDispatch()
   const { socket } = useSocketIoContext()
   const inputRef = useRef<HTMLInputElement>(null)
   const [selectedFile, setSelectedFile] = useState<Array<File>>([])
 
-  const [fileImageUrl, setFileImageUrl] = useState<Array<string>>([])
+  const [selectedImageUrl, setSelectedImageUrl] = useState<Array<string>>([])
   const [videoUrl, setVideoUrl] = useState<Array<string>>([])
   const [] = useState<Array<{ name: string; type: string }>>([])
 
@@ -26,7 +29,7 @@ const ImageSelection: FC<ImageSelectionProps> = ({ userDetail, currentChaterDeta
       const type = mimeType[0]
 
       const url = URL.createObjectURL(file)
-      if (type == "image") setFileImageUrl([...fileImageUrl, url])
+      if (type == "image") setSelectedImageUrl([...selectedImageUrl, url])
       if (type == "video") setVideoUrl([...videoUrl, url])
     })
   }, [selectedFile])
@@ -60,27 +63,44 @@ const ImageSelection: FC<ImageSelectionProps> = ({ userDetail, currentChaterDeta
           formData.append("image", imageFile)
         })
 
-        const axiosUploadPath = isUploadSingleImage ? "/uploadSingleImage" : "/uploadMultipleImage"
-        const { data: response } = await axiosUploadInstance.post(axiosUploadPath, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        })
-
         if (
-          response.isUploaded != undefined &&
           currentChaterDetail.currentChaterType == "user" &&
-          currentChaterDetail.chatRoom != undefined
+          currentChaterDetail.chatRoom != undefined &&
+          isUploadSingleImage
         ) {
-          socket.emit("message:newImageMessage", {
-            chatRoomId: currentChaterDetail.chatRoom.chatRoomId,
-            message: { imageMessageSrc: response.fileUrl },
-            receiverId: currentChaterDetail._id,
-            senderId: userDetail._id,
-          })
+          dispatch(
+            sendImageMessageHandler(
+              {
+                chatRoomId: currentChaterDetail.chatRoom,
+                formData,
+                imageUrl: selectedImageUrl[0],
+                senderId: userDetail._id,
+              },
+              socket,
+            ),
+          )
+        }
+        if (
+          currentChaterDetail.currentChaterType == "user" &&
+          currentChaterDetail.chatRoom != undefined &&
+          !isUploadSingleImage
+        ) {
+          dispatch(
+            sendMultipleImageMessageHandler(
+              {
+                chatRoomId: currentChaterDetail.chatRoom,
+                formData,
+                imageUrl: selectedImageUrl,
+                senderId: userDetail._id,
+              },
+              socket,
+            ),
+          )
         }
       }
 
       // video uploading and sending
-      const selectedVideoFiles = selectedFile.filter((file) => file.type.split("/")[0] == "video")  
+      const selectedVideoFiles = selectedFile.filter((file) => file.type.split("/")[0] == "video")
       if (selectedVideoFiles.length > 0) {
         const formData = new FormData()
         formData.append("video", selectedVideoFiles[0])
@@ -109,7 +129,7 @@ const ImageSelection: FC<ImageSelectionProps> = ({ userDetail, currentChaterDeta
   const sendFileHandler = () => {}
   const cancelButtonHandler = () => {
     setSelectedFile([])
-    setFileImageUrl([])
+    setSelectedImageUrl([])
   }
 
   return (
@@ -133,7 +153,7 @@ const ImageSelection: FC<ImageSelectionProps> = ({ userDetail, currentChaterDeta
               </div>
               <span className="text-lg">send {selectedFile.length} Photos</span>
             </div>
-            {fileImageUrl.map((url, index) => {
+            {selectedImageUrl.map((url, index) => {
               return (
                 <div className="mt-5 relative w-full aspect-video" key={index}>
                   <Image src={url} alt="image" fill />
