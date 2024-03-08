@@ -46,7 +46,6 @@ const CurrentChatingGroupProfile: FC<CurrentChatingGroupProfileProps> = ({
   useDebounce(
     () => {
       if (initialRender) return
-      console.log("debounce ")
     },
     2000,
     [groupSetting],

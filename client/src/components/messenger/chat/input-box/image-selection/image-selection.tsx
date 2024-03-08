@@ -37,7 +37,6 @@ const ImageSelection: FC<ImageSelectionProps> = ({ userDetail, currentChaterDeta
   }
 
   const handleInputFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("file ", event.target.files)
     const filesCollection = event.target.files && event.target.files
     if (!filesCollection) return
 
@@ -49,7 +48,6 @@ const ImageSelection: FC<ImageSelectionProps> = ({ userDetail, currentChaterDeta
   const fileUploadHandler = async () => {
     try {
       if (currentChaterDetail == null || userDetail == null) return
-      console.log("file upload handler ")
 
       // image upllading and sending in socker io
       const selectedImages = selectedFile.filter((file) => file.type.split("/")[0] == "image")
@@ -84,7 +82,6 @@ const ImageSelection: FC<ImageSelectionProps> = ({ userDetail, currentChaterDeta
       // video uploading and sending
       const selectedVideoFiles = selectedFile.filter((file) => file.type.split("/")[0] == "video")  
       if (selectedVideoFiles.length > 0) {
-        console.log("selected video files",selectedVideoFiles.length)
         const formData = new FormData()
         formData.append("video", selectedVideoFiles[0])
 

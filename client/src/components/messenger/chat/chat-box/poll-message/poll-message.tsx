@@ -49,7 +49,6 @@ const PollMessage: FC<PollMessageProps> = ({
   useDebounce(
     () => {
       if (selectedOption == undefined || userAndChaterDetails == undefined) return
-      console.log("debounce", options[selectedOption])
 
       socket.emit("groupMessage:pollMessageVoteUpdate", {
         ...userAndChaterDetails,

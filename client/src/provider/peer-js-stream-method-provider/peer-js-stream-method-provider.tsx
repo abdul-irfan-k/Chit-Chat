@@ -19,11 +19,11 @@ const PeerJsStreamMethodProvider = () => {
   )
 
   const { userDetail, isLogedIn } = useSelector((state: { userDetail: userDetailState }) => state.userDetail)
+  const peerRef = useRef<Array<{ peerid: string; peerConnection: RTCPeerConnection }>>([])
 
   const videoContext = useContext(PeerVideoRefContext)
   const peerContext = useContext(PeerContext)
 
-  const peerRef = useRef<Array<{ peerid: string; peerConnection: RTCPeerConnection }>>([])
 
   const [isReadyForCall, setIsReadyForCall] = useState<boolean>(false)
   const [remoteSessionDescription, setRemoteSessionDescripition] =
@@ -31,8 +31,9 @@ const PeerJsStreamMethodProvider = () => {
   const [remoteIceCandidate, setRemoteIceCandidate] = useState<
     Array<{ userId: string; iceCandidate: RTCIceCandidateInit }>
   >([])
-
   const [isUpdatedRemoteSesssion, setIsUpdatedRemoteSession] = useState<boolean>(false)
+
+
 
   useEffect(() => {
     if (remoteIceCandidate?.length < 1 || !isReadyForCall || !isUpdatedRemoteSesssion) return
@@ -48,7 +49,6 @@ const PeerJsStreamMethodProvider = () => {
     const remoteSessionOnChangeHandler = async () => {
       remoteSessionDescription?.forEach(async (remoteSession) => {
         try {
-          console.log("get web cam stream", peerRef.current, remoteSession)
           // const stream = isReadyForCall == false ? await getWebCamStream() : new MediaStream()
           // console.log("stream is ", stream)
 
@@ -340,7 +340,6 @@ const PeerJsStreamMethodProvider = () => {
     addUserMediaTrack(peerConnection, mediaStream)
     peerRef.current = [...peerRef.current, { peerConnection, peerid: id }]
 
-    console.log("media stream", videoContext.videoStream, mediaStream, video)
     // replaceStreamTrack(peerConnection, mediaStream)
 
     peerConnection.ontrack = (event) => {
@@ -368,7 +367,7 @@ const PeerJsStreamMethodProvider = () => {
   const handleIceCandidate = (event: RTCPeerConnectionIceEvent, connection: RTCPeerConnection, id: string) => {
     // console.log("handler ice candidate event ", event.candidate)
     const offer = connection.localDescription
-    console.log("handler ice candidate event ", event.candidate)
+    // console.log("handler ice candidate event ", event.candidate)
     if (iceRef.current == undefined) iceRef.current = event.candidate
 
     if (!event.candidate) {
@@ -379,7 +378,7 @@ const PeerJsStreamMethodProvider = () => {
   }
 
   const handleTrack = (event: RTCTrackEvent, id: string) => {
-    console.log("on tarck event ", event, event.streams[0], event.streams[0].getTracks())
+    // console.log("on tarck event ", event, event.streams[0], event.streams[0].getTracks())
     const newStream = new MediaStream()
     newStream.addTrack(event.streams[0].getTracks()[0])
 

@@ -15,7 +15,6 @@ const DropZone: FC<DropZoneProps> = ({ onDropHandler }) => {
     },
     onDrop: onDropHandler,
     onDragEnter: (e) => {
-      console.log("er", e)
     },
   })
 
