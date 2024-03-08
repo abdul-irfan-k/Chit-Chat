@@ -1,17 +1,11 @@
 "use client"
-import React, { useContext, useEffect, useState } from "react"
+import React, { useContext,  useState } from "react"
 import VideoCallViews from "./video-call-views/video-call-views"
 import { PeerVideoRefContext } from "@/provider/peer-js-video-provider.tsx/peer-js-video-provider"
-
-
-
-
 
 const VideoCallViewsContainer = () => {
   const peerVideoContext = useContext(PeerVideoRefContext)
   const [isShowingLiveChat, setIsShowingliveChat] = useState<boolean>(false)
-
- 
 
   return (
     <>

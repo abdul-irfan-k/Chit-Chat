@@ -2,7 +2,6 @@
 import React, { useContext, useEffect, useRef, useState } from "react"
 import { PeerContext } from "../peer-js-provider/peer-js-context-provider"
 import { PeerVideoRefContext } from "../peer-js-video-provider.tsx/peer-js-video-provider"
-import Peer, { MediaConnection } from "peerjs"
 import { useSelector } from "react-redux"
 import { callReducerSlate } from "@/redux/reducers/call-reducer/call-reducer"
 
@@ -14,7 +13,7 @@ import { useSocketIoContext } from "../socket-io-provider/socket-io-provider"
 const PeerJsStreamMethodProvider = () => {
   const dispatch = useAppDispatch()
 
-  const {socket} = useSocketIoContext()
+  const { socket } = useSocketIoContext()
   const { isAvailableCallRoom, callDetail, callSetting, connectionRequiredPeers } = useSelector(
     (state: { callRedcuer: callReducerSlate }) => state.callRedcuer,
   )
@@ -40,7 +39,6 @@ const PeerJsStreamMethodProvider = () => {
     if (isReadyForCall) {
       const peerConnection = getPeerConnectionById(remoteIceCandidate[0].userId)
       setIceCandidate(peerConnection, remoteIceCandidate[0])
-      console.log("user video ", videoContext.communicatorsVideoStream)
     }
     // setIsReloadVideoRef(true)
   }, [remoteIceCandidate, isReadyForCall, isUpdatedRemoteSesssion])
@@ -78,16 +76,14 @@ const PeerJsStreamMethodProvider = () => {
     ;(async () => {
       if (isReadyForCall) {
         const peerConnection = await getPeerConnectionById(connectionRequiredPeers?.allPeers[0].userId)
-        console.log("peer connection",peerConnection)
         createAndSetOffer(peerConnection).then((sessionDescription) => {
           sendRtcSessionOffer(connectionRequiredPeers?.allPeers[0].userId, sessionDescription)
         })
-        return 
+        return
       }
       if (connectionRequiredPeers == undefined) return
       const isCallInitiator = callDetail?.callInitiator?.userId == userDetail?._id
       if (isCallInitiator) return
-      console.log("get web cam stream joiner")
       const stream = await getAvailableOrNewMediaStream()
       videoContext.setVideoStream(stream)
       const peerConnection = await createPeer(connectionRequiredPeers?.allPeers[0].userId, stream)
@@ -102,15 +98,11 @@ const PeerJsStreamMethodProvider = () => {
 
   useEffect(() => {
     ;(async () => {
-      console.log("use Effect")
       if (isAvailableCallRoom) {
-        console.log("is available call room")
         const isCallInitiator = callDetail?.callInitiator?.userId == userDetail?._id
         if (isCallInitiator && connectionRequiredPeers?.latestPeer != undefined) {
-          console.log("creating peer user id", connectionRequiredPeers.latestPeer.userId)
 
           const stream = await getAvailableOrNewMediaStream()
-          console.log("3")
           addMyVideoStreamToContext(stream)
           createPeer(connectionRequiredPeers.latestPeer.userId, stream)
 
@@ -174,7 +166,7 @@ const PeerJsStreamMethodProvider = () => {
         })
       })
     }
-  }, [callSetting?.isAllowedMicrophone]) 
+  }, [callSetting?.isAllowedMicrophone])
 
   useEffect(() => {
     if (!isAvailableCallRoom) return
@@ -188,24 +180,23 @@ const PeerJsStreamMethodProvider = () => {
     if (!callSetting?.isAllowedScreenShare) {
       const videoStream = videoContext.videoStream
       if (videoStream != undefined) stopStreamTrack(videoStream, "video")
-    }
-
-    getDisplayMediaStream().then((stream) => {
-      const oldStream = videoContext.videoStream
-      videoContext.setVideoStream(stream)
-      if (oldStream != undefined) stopStreamTrack(oldStream, "video")
-      peerRef.current.forEach((peer) => {
-        replaceStreamTrack(peer.peerConnection, stream)
+    } else {
+      getDisplayMediaStream().then((stream) => {
+        const oldStream = videoContext.videoStream
+        videoContext.setVideoStream(stream)
+        if (oldStream != undefined) stopStreamTrack(oldStream, "video")
+        peerRef.current.forEach((peer) => {
+          replaceStreamTrack(peer.peerConnection, stream)
+        })
       })
-    })
+    }
   }, [callSetting?.isAllowedScreenShare])
 
   // socket events
   useEffect(() => {
-    if ( !isLogedIn) return
+    if (!isLogedIn) return
     socket.on("call:peer:getOfferPeer", async ({ receiverId, peerSdp, senderId }) => {
       console.log("get offer peer event ", receiverId, senderId, userDetail?._id)
-
       setRemoteSessionDescripition([{ sessionDescription: { type: "offer", sdp: peerSdp }, userId: senderId }])
     })
 
@@ -223,7 +214,7 @@ const PeerJsStreamMethodProvider = () => {
       // setIceCandidate(peerRef.current[0].peerConnection, iceCandidate)
       setRemoteIceCandidate([{ iceCandidate: iceCandidate, userId: senderId }])
     })
-  }, [ isLogedIn])
+  }, [isLogedIn])
 
   useEffect(() => {
     getAvailableMediaDevices()

@@ -28,18 +28,24 @@ const ChatProfile: FC<ChatProfileInstance> = ({ name, profileImageSrc, currentSt
 
   const videoCallIconClickHandler = (e: MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation()
-    socket.emit("privateCall:intialise", {
-      userDetail: userDetail,
-      chatRoomId: currentChaterDetail?.chatRoom?.chatRoomId,
-      receiverId: currentChaterDetail?._id,
-    })
-    dispatch(
-      videoCallRequestHandler({
-        callType: "videoCall",
+    if(currentChaterDetail?.currentChaterType == "user"){
+
+      socket.emit("privateCall:intialise", {
+        userDetail: userDetail,
         chatRoomId: currentChaterDetail?.chatRoom?.chatRoomId,
-        userDetail: currentChaterDetail,
-      }),
-    )
+        receiverId: currentChaterDetail?._id,
+      })
+      dispatch(
+        videoCallRequestHandler({
+          isCalling:true,
+          callRequestData:{
+            callChannelType:"private",
+            callType:"videoCall",
+            communicatorsDetail:{...currentChaterDetail}
+          }
+        }),
+        )
+      }
   }
 
   return (

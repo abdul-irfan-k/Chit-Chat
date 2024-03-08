@@ -1,5 +1,5 @@
 import { axiosMeetingInstance } from "@/constants/axios"
-import { callReducerAction, callReducerSlate } from "@/redux/reducers/call-reducer/call-reducer"
+import { callReducerAction, callReducerState } from "@/redux/reducers/call-reducer/call-reducer"
 import { AppDispatch } from "@/store"
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context"
 
@@ -20,9 +20,9 @@ export const addInitialCallDataHandler = (data: any, id: string) => async (dispa
       },
       callStatus: "active",
       isAvailableCallRoom: true,
-      connectionRequiredPeers:{
-        allPeers:communicatorsDetail
-      }
+      connectionRequiredPeers: {
+        allPeers: communicatorsDetail,
+      },
     }),
   )
 }
@@ -95,7 +95,7 @@ export const createGroupMeetingHandler =
             myDetail: { peerId: data.peerId, userId: meetingDetail.userId },
             referenceId: data.referenceId,
             adminDetail: data.adminDetail,
-            callInitiator: {userId:data.callInitiator.userId},
+            callInitiator: { userId: data.callInitiator.userId },
           },
         }),
       )
@@ -147,11 +147,19 @@ export const addGroupCallJoinRequestedUser =
     dispatch(callReducerAction.addJoinRequestedUser({ userName, userId }))
   }
 
-
-  export const videoCallRequestHandler = (details) => async(dispatch: AppDispatch) =>  {
+export const videoCallRequestHandler =
+  (details: callReducerState["callRequestDetail"]) => async (dispatch: AppDispatch) => {
     dispatch(callReducerAction.addCallRequest(details))
-}
+    dispatch(
+      callReducerAction.addCallSetting({
+        isAllowedScreenShare: false,
+        isAllowedCamara: true,
+        isAllowedMicrophone: false,
+        callType: "videoCall",
+      }),
+    )
+  }
 
-export const videoCallRequestRemoveHandler = () => async(dispatch: AppDispatch) => {
-    dispatch(callReducerAction.removeCallRequest())
+export const videoCallRequestRemoveHandler = () => async (dispatch: AppDispatch) => {
+  dispatch(callReducerAction.removeCallRequest({}))
 }

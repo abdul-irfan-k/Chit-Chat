@@ -62,9 +62,10 @@ interface groupCallDetail {
 }
 
 interface userBasicDetail {
-  userName: string
+  _id: string
+  name: string
   userId: string
-  profileImageUrl: string
+  profileImageUrl?: string
 }
 
 interface peerDetail extends userBasicDetail {
@@ -90,7 +91,7 @@ interface callRequest {
   callRequestData?: privateCallRequest | groupCallRequest
 }
 
-export type callReducerSlate = {
+export type callReducerState = {
   callDetail?: privateCallDetail | groupCallDetail
   isChanged: boolean
   callStatus?: "active" | "inActive"
@@ -108,7 +109,7 @@ export type callReducerSlate = {
   }
   callRequestDetail?: callRequest
 }
-const callReducerIntialState: callReducerSlate = {
+const callReducerIntialState: callReducerState = {
   callDetail: undefined,
   isChanged: false,
   isAvailableCallRoom: false,
@@ -135,7 +136,7 @@ export const callRedcuer = createSlice({
         state.callDetail?.avilableTotalUserCount != undefined ? state.callDetail.avilableTotalUserCount - 1 : undefined
     },
     updateUserStatus: (state, action) => {},
-    addCallSetting: (state, action) => {
+    addCallSetting: (state, action: { payload: callReducerState["callSetting"] }) => {
       return { ...state, callSetting: { ...action.payload } }
     },
     changeCallSetting: (state, action) => {

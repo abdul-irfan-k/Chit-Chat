@@ -1,26 +1,33 @@
 "use client"
 import { CallEndIcon, FullScreenIcon, MicIcon, VideoCamIcon } from "@/constants/icon-constant"
-import { videoCallRequestRemoveHandler } from "@/redux/actions/call-action/call-action"
+import { PeerVideoRefContext } from "@/provider/peer-js-video-provider.tsx/peer-js-video-provider"
+import { changeCallSettingHandler, videoCallRequestRemoveHandler } from "@/redux/actions/call-action/call-action"
+import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 import { useAppDispatch } from "@/store"
 import Image from "next/image"
-import React, { FC, useState } from "react"
+import React, { FC, useContext, useState } from "react"
+import { useSelector } from "react-redux"
 
-interface VideoCallRequestMenuFullSizeProps {
-  userDetail?: {
-    _id: string
-    name: string
-    userId: string
-    email: string
-    profileImageUrl?: string
-  }
-}
-const VideoCallRequestMenuFullSize: FC<VideoCallRequestMenuFullSizeProps> = ({ userDetail }) => {
+interface VideoCallRequestMenuFullSizeProps {}
+const VideoCallRequestMenuFullSize: FC<VideoCallRequestMenuFullSizeProps> = () => {
   const [isAllowedVideoRecording, setIsAllowedVideoRecording] = useState<boolean>(false)
   const [isAllowedVoiceRecording, setIsAllowedVoiceRecording] = useState<boolean>(false)
-
   const dispatch = useAppDispatch()
+
+  const { userDetail } = useSelector((state: { userDetail: userDetailState }) => state.userDetail)
+  const videoContext = useContext(PeerVideoRefContext)
+
   const callEndIconClickHandler = () => {
     dispatch(videoCallRequestRemoveHandler())
+  }
+
+  const camaraToggleButtonHandler = () => {
+    dispatch(changeCallSettingHandler({ isAllowedCamara: !isAllowedVideoRecording }))
+    setIsAllowedVideoRecording(!isAllowedVideoRecording)
+  }
+  const micToggleButtonHandler = () => {
+    dispatch(changeCallSettingHandler({ isAllowedMicrophone: !isAllowedVoiceRecording }))
+    setIsAllowedVoiceRecording(!isAllowedVoiceRecording)
   }
 
   return (
@@ -37,14 +44,28 @@ const VideoCallRequestMenuFullSize: FC<VideoCallRequestMenuFullSizeProps> = ({ u
             </div>
           </div>
 
-          <div className="absolute left-5 bottom-5 w-[20%] aspect-[3/4] z-30">
-            <Image src={"/Asset/avatar.jpg"} alt="image" fill />
-          </div>
-
+          {videoContext.videoStream == undefined ? (
+            <div className="absolute left-5 bottom-5 w-[20%] aspect-[3/4] z-30">
+              {userDetail?.profileImageUrl && <Image src={userDetail?.profileImageUrl} alt="image" fill />}
+            </div>
+          ) : (
+            <div className="absolute left-5 bottom-5 w-[20%] aspect-[3/4] z-30">
+              <video
+                autoPlay
+                className="w-full h-full"
+                ref={(ref) => {
+                  if (ref != null) ref.srcObject = videoContext.videoStream
+                }}
+              />
+            </div>
+          )}
           <div className="absolute gap-5   bottom-10 flex flex-col justify-center items-center z-30  w-full">
             <div className="text-lg font-bold text-slate-50"> Ringing </div>
             <div className="gap-3 flex items-center">
-              <div className="w-14 relative overflow-hidden flex items-center justify-center aspect-square rounded-full bg-slate-300 fill-slate-950 dark:fill-slate-50 dark:bg-neutral-900">
+              <div
+                className="w-14 relative overflow-hidden flex items-center justify-center aspect-square rounded-full bg-slate-300 fill-slate-950 dark:fill-slate-50 dark:bg-neutral-900"
+                onClick={micToggleButtonHandler}
+              >
                 <MicIcon height="" width="" className="w-8 aspect-square" />
               </div>
               <div
@@ -53,7 +74,10 @@ const VideoCallRequestMenuFullSize: FC<VideoCallRequestMenuFullSizeProps> = ({ u
               >
                 <CallEndIcon height="" width="" className="w-8 aspect-square" />
               </div>
-              <div className="w-14 relative overflow-hidden flex items-center justify-center aspect-square rounded-full bg-slate-300 fill-slate-950 dark:fill-slate-50 dark:bg-neutral-900">
+              <div
+                className="w-14 relative overflow-hidden flex items-center justify-center aspect-square rounded-full bg-slate-300 fill-slate-950 dark:fill-slate-50 dark:bg-neutral-900"
+                onClick={camaraToggleButtonHandler}
+              >
                 <VideoCamIcon height="" width="" className="w-8 aspect-square" />
               </div>
             </div>
