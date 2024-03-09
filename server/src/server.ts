@@ -26,8 +26,7 @@ import GroupCallSocketIo from "./socket-io/meeting/group-call-socket-io.js"
 import callPeerHandlerSocketIo from "./socket-io/meeting/call-peer-handler-socket-io.js"
 import groupControllSocketIo from "./socket-io/group/group-control-socket-io.js"
 
-import { ClientToServerEvents, ServerToClientEvents } from "../../socket-io-event-types/socket-io-event-types.js"
-
+import { ClientToServerEvents, ServerToClientEvents } from "chit-chat-events"
 
 const app: Application = express()
 const server = http.createServer(app)

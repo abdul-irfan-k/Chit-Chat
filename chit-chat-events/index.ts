@@ -77,6 +77,7 @@ export interface deleteMessageInterface extends messageSourceAndDestinationDetai
     messageType: "textMessage" | "voiceMessage" | "imageMessage" | "pollMessage" | "videoMessage"
   }
 }
+export type testing = "test"
 interface deleteGroupMessageInterface extends groupMessageSourceAndDestinationDetail {
   message: {
     _id: string
