@@ -1,7 +1,11 @@
 import { axiosUploadInstance } from "@/constants/axios"
 import { FolderIcon, PersonIcon, XMarkIcon } from "@/constants/icon-constant"
 import { useSocketIoContext } from "@/provider/socket-io-provider/socket-io-provider"
-import { sendImageMessageHandler, sendMultipleImageMessageHandler } from "@/redux/actions/chat-action/chat-action"
+import {
+  sendImageMessageHandler,
+  sendMultipleImageMessageHandler,
+  sendVideoMessageHandler,
+} from "@/redux/actions/chat-action/chat-action"
 import { chatUsersListReducerState } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 import { useAppDispatch } from "@/store"
@@ -88,7 +92,7 @@ const ImageSelection: FC<ImageSelectionProps> = ({ userDetail, currentChaterDeta
           dispatch(
             sendMultipleImageMessageHandler(
               {
-                chatRoomId: currentChaterDetail.chatRoom,
+                chatRoomId: currentChaterDetail.chatRoom.chatRoomId,
                 formData,
                 imageUrl: selectedImageUrl,
                 senderId: userDetail._id,
@@ -105,22 +109,19 @@ const ImageSelection: FC<ImageSelectionProps> = ({ userDetail, currentChaterDeta
         const formData = new FormData()
         formData.append("video", selectedVideoFiles[0])
 
-        const axiosUploadPath = "uploadVideo"
-        const { data: response } = await axiosUploadInstance.post(axiosUploadPath, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        })
-
-        if (
-          response.isUploaded != undefined &&
-          currentChaterDetail.currentChaterType == "user" &&
-          currentChaterDetail.chatRoom != undefined
-        ) {
-          socket.emit("message:newVideoMessage", {
-            chatRoomId: currentChaterDetail.chatRoom.chatRoomId,
-            message: { videoMessageSrc: response.fileUrl },
-            receiverId: currentChaterDetail._id,
-            senderId: userDetail._id,
-          })
+        if (currentChaterDetail.currentChaterType == "user" && currentChaterDetail.chatRoom != undefined) {
+          dispatch(
+            sendVideoMessageHandler(
+              {
+                chatRoomId: currentChaterDetail.chatRoom.chatRoomId,
+                formData,
+                receiverId: currentChaterDetail._id,
+                senderId: userDetail._id,
+                videoUrl: videoUrl[0],
+              },
+              socket,
+            ),
+          )
         }
       }
     } catch (error) {}

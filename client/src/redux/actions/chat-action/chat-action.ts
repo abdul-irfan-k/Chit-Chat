@@ -210,7 +210,7 @@ interface sendMultipleImageMessageHandlerArgs {
 }
 export const sendMultipleImageMessageHandler =
   (
-    { chatRoomId, senderId, groupDetail, imageUrls, formData,receiverId }: sendMultipleImageMessageHandlerArgs,
+    { chatRoomId, senderId, groupDetail, imageUrls, formData, receiverId }: sendMultipleImageMessageHandlerArgs,
     socket: SocketIO,
   ) =>
   async (dispatch: AppDispatch) => {
@@ -273,6 +273,34 @@ export const sendAudioMessageHandler =
       }),
     )
     socket.emit("message:newAudioMessage", { chatRoomId, message, receiverId, senderId })
+  }
+
+export const sendVideoMessageHandler =
+  (
+    {
+      chatRoomId,
+      receiverId,
+      senderId,
+      formData,
+    }: {
+      receiverId: string
+      senderId: string
+      chatRoomId: string
+      formData: FormDatastring
+      videoUrl: string
+    },
+    socket: SocketIO,
+  ) =>
+  async (dispatch: AppDispatch) => {
+    const { data: response } = await axiosUploadInstance.post("/uploadVideo", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    })
+    socket.emit("message:newVideoMessage", {
+      message: { videoMessageSrc: response.fileUrl },
+      senderId,
+      receiverId,
+      chatRoomId,
+    })
   }
 
 export const receiveMessageHandler =
