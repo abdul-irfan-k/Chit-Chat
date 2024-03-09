@@ -16,13 +16,13 @@ import VideoMessageModel from "../../model/mongoose/message-model/video-message-
 import MessageReactionModel from "../../model/mongoose/message-model/message-reaction-model.js"
 
 const userMessageSocketIo = (io: Server, socket: SocketIo) => {
-  socket.on("message:newMessage", async ({ message, receiverId, senderId, chatRoomId }) => {
+  socket.on("message:newTextMessage", async ({ message, receiverId, senderId, chatRoomId }) => {
     try {
       const receiver = await getRedisSocketCached(receiverId)
 
       ChatRoomModel.initiateChat([receiverId, senderId])
       if (receiver != null) {
-        socket.to(receiver.socketId).emit("message:receiveMessage", { message, senderId, chatRoomId, receiverId })
+        socket.to(receiver.socketId).emit("message:receiveTextMessage", { message, senderId, chatRoomId, receiverId })
       }
 
       const textMessage = await textMessageModel.createNewMessageInChatRoom({
