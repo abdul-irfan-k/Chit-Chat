@@ -8,7 +8,7 @@ import {
   groupMessageSourceAndDestinationDetail,
   groupNewPollMessageInterface,
   reactMeessageInterface,
-} from "@/types/socket-io-event-type/socket-io-event-type"
+} from "chit-chat-events"
 import { Socket } from "socket.io-client"
 
 export const addAllChatUsers = () => async (dispatch: AppDispatch) => {

@@ -1,4 +1,4 @@
-import { ClientToServerEvents, ServerToClientEvents } from "@/types/socket-io-event-type/socket-io-event-type"
+import { ClientToServerEvents, ServerToClientEvents } from "chit-chat-events"
 import { Socket, io } from "socket.io-client"
 
 const serverPort = process.env.SERVER_PORT || 8000

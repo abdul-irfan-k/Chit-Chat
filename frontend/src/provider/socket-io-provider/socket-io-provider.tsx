@@ -1,7 +1,7 @@
 "use client"
 import { SocketClient } from "@/socket-io-client/socket"
 import { useAppDispatch } from "@/store"
-import { ClientToServerEvents, ServerToClientEvents } from "@/types/socket-io-event-type/socket-io-event-type"
+import { ClientToServerEvents, ServerToClientEvents } from "chit-chat-events"
 import React, { FC, useEffect, useState } from "react"
 import { Socket } from "socket.io-client"
 
