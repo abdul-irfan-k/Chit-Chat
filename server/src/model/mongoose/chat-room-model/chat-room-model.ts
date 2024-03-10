@@ -6,12 +6,12 @@ interface chatRoomSchemaInterface {
 }
 
 interface chatRoomConversationsInterface {
-  messageId: Schema.Types.ObjectId
+  messageId: string
   messageType: string
 }
 
 const chatRoomConversationsSchema = new Schema({
-  messageId: Schema.Types.ObjectId,
+  messageId: String,
   messageType: String,
 })
 

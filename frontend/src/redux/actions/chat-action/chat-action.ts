@@ -5,9 +5,15 @@ import { AppDispatch } from "@/store"
 import {
   SocketIO,
   deleteMessageInterface,
-  groupMessageSourceAndDestinationDetail,
+  groupMessageBasicDetail,
   groupNewPollMessageInterface,
+  messageEmitCallBackArgs,
+  privateTextMessageEvent,
   reactMeessageInterface,
+  groupMessageArgs,
+  privateMessageArgs,
+  groupMessageActionArgs,
+  privateMessageActionArgs,
 } from "chit-chat-events"
 import { Socket } from "socket.io-client"
 
@@ -115,11 +121,11 @@ export const sendMessageHandler =
     socket: SocketIO,
   ) =>
   async (dispatch: AppDispatch) => {
-    socket.emit("message:newMessage", { message, receiverId, senderId, chatRoomId })
     dispatch(
       chatRoomMessageAction.addSendedChatRoomMessage({
         chatRoomId,
         newMessage: {
+          _id: "",
           messegeChannelType: "outgoingMessage",
           messageData: {
             chatRoomId,
@@ -128,8 +134,16 @@ export const sendMessageHandler =
             messageSendedTime: new Date(),
             postedByUser: "irfan",
           },
+          messageStatus: "notSended",
         },
       }),
+    )
+    socket.emit(
+      "message:newTextMessage",
+      { message, receiverId, senderId, chatRoomId },
+      (response: messageEmitCallBackArgs) => {
+        // if(response.isSended) dispatch(chatRoomMessageAction.updateMessageStatus())
+      },
     )
   }
 
@@ -140,7 +154,7 @@ interface sendGroupPollMessageArguments extends groupNewPollMessageInterface {
   postedByUser: string
 }
 export const sendGroupPollMessageHandler =
-  ({ chatRoomId, groupDetail, message, postedByUser, senderId }: sendGroupPollMessageArguments, socket: SocketIO) =>
+  ({ chatRoomId, groupDetail, message, postedByUser, senderId }: groupMessageArgs['PollMessage'], socket: SocketIO) =>
   async (dispatch: AppDispatch) => {
     socket.emit("groupMessage:newPollMessage", { chatRoomId, groupDetail, message, senderId })
     dispatch(
@@ -163,7 +177,7 @@ export const sendGroupPollMessageHandler =
   }
 // receiving group poll message
 
-interface sendImageMessageArguments extends groupMessageSourceAndDestinationDetail {
+interface sendImageMessageArguments extends groupMessageBasicDetail {
   imageUrl: string
   formData: FormData
 }
@@ -204,7 +218,7 @@ export const sendImageMessageHandler =
     })
   }
 
-interface sendMultipleImageMessageHandlerArgs {
+interface sendMultipleImageMessageHandlerArgs extends  {
   imageUrls: string[]
   formData: FormData
 }
@@ -304,7 +318,7 @@ export const sendVideoMessageHandler =
   }
 
 export const receiveMessageHandler =
-  ({ chatRoomId, message }: { chatRoomId: string; message: string }) =>
+  ({ chatRoomId, message }: privateTextMessageEvent) =>
   async (dispatch: AppDispatch) => {
     dispatch(
       chatRoomMessageAction.addSendedChatRoomMessage({
@@ -313,7 +327,8 @@ export const receiveMessageHandler =
           messegeChannelType: "incomingMessage",
           messageData: {
             chatRoomId,
-            message,
+            _id: message._id,
+            message: message.messageContent,
             messageType: "textMessage",
             messageSendedTime: new Date(),
             postedByUser: "irfan",
@@ -335,11 +350,35 @@ export const recieveNewImageMessageHandler =
             messageType: "imageMessage",
             _id: "",
             chatRoomId,
-            imageMessageSrc: message.imageMessageSrc,
+            imageMessageSrc: [message.imageMessageSrc],
             messageSendedTime: new Date(),
             postedByUser: "asdf",
           },
         },
+      }),
+    )
+  }
+export const recieveMultipleNewImageMessageHandler =
+  ({ chatRoomId, message }: { chatRoomId: string; message: { imageMessageSrc: string[] } }) =>
+  async (dispatch: AppDispatch) => {
+    const newMessages: Array<messageTypes> = []
+    message.imageMessageSrc.forEach((imageSrc) => {
+      newMessages.push({
+        messegeChannelType: "incomingMessage",
+        messageData: {
+          messageType: "imageMessage",
+          _id: "",
+          chatRoomId,
+          imageMessageSrc: [imageSrc],
+          messageSendedTime: new Date(),
+          postedByUser: "asdf",
+        },
+      })
+    })
+    dispatch(
+      chatRoomMessageAction.addSendedChatRoomMultipleMessage({
+        chatRoomId,
+        newMessage: newMessages,
       }),
     )
   }

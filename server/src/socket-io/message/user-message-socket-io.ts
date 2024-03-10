@@ -16,7 +16,7 @@ import VideoMessageModel from "../../model/mongoose/message-model/video-message-
 import MessageReactionModel from "../../model/mongoose/message-model/message-reaction-model.js"
 
 const userMessageSocketIo = (io: Server, socket: SocketIo) => {
-  socket.on("message:newTextMessage", async ({ message, receiverId, senderId, chatRoomId }) => {
+  socket.on("message:newTextMessage", async ({ message, receiverId, senderId, chatRoomId }, callback) => {
     try {
       const receiver = await getRedisSocketCached(receiverId)
 
@@ -27,11 +27,13 @@ const userMessageSocketIo = (io: Server, socket: SocketIo) => {
 
       const textMessage = await textMessageModel.createNewMessageInChatRoom({
         chatRoomId,
-        message,
+        message:message.messageContent,
         postedByUser: senderId,
+        _id:message._id
       })
-      console.log(textMessage._id)
+      console.log(textMessage)
       await ChatRoomModel.addChatConversation({ chatRoomId, messageId: textMessage._id, messageType: "textMessage" })
+      if (callback != undefined) callback({ isSended: true })
     } catch (error) {
       console.log(error)
     }
@@ -77,6 +79,7 @@ const userMessageSocketIo = (io: Server, socket: SocketIo) => {
   })
 
   socket.on("message:newImageMessage", async ({ chatRoomId, message, receiverId, senderId }) => {
+    console.log("new image")
     const newMessage = new ImageMessageModel({
       chatRoomId,
       postedByUser: senderId,
@@ -126,7 +129,7 @@ const userMessageSocketIo = (io: Server, socket: SocketIo) => {
       const chatRoomObjectId = new mongoose.Types.ObjectId(chatRoomId)
 
       if (message.messageType == "textMessage")
-        await textMessageModel.deleteOne({ _id: messageObjectId, postedByUser: senderId })
+        await textMessageModel.deleteOne({ _id: message._id, postedByUser: senderId })
       else if (message.messageType == "imageMessage")
         await ImageMessageModel.deleteOne({ _id: messageObjectId, postedByUser: senderId })
       else if (message.messageType == "voiceMessage")
@@ -138,7 +141,7 @@ const userMessageSocketIo = (io: Server, socket: SocketIo) => {
 
       await ChatRoomModel.findOneAndUpdate(
         { _id: chatRoomObjectId },
-        { $pull: { chatRoomConversations: { messageId: messageObjectId, messageType: message.messageType } } },
+        { $pull: { chatRoomConversations: { messageId: message._id, messageType: message.messageType } } },
       )
 
       const receiver = await getRedisSocketCached(receiverId)

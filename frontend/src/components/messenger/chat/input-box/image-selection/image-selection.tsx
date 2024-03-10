@@ -75,10 +75,11 @@ const ImageSelection: FC<ImageSelectionProps> = ({ userDetail, currentChaterDeta
           dispatch(
             sendImageMessageHandler(
               {
-                chatRoomId: currentChaterDetail.chatRoom,
+                chatRoomId: currentChaterDetail.chatRoom.chatRoomId,
                 formData,
                 imageUrl: selectedImageUrl[0],
                 senderId: userDetail._id,
+                receiverId:currentChaterDetail._id
               },
               socket,
             ),
@@ -124,6 +125,7 @@ const ImageSelection: FC<ImageSelectionProps> = ({ userDetail, currentChaterDeta
           )
         }
       }
+      setSelectedFile([])
     } catch (error) {}
   }
 

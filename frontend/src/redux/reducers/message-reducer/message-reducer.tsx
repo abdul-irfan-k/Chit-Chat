@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit"
-import { IncomingMessage, OutgoingMessage } from "http";
 
 const chatRoomMessagesIntialState: chatRoomMessagesReducerSlate = {
   chatRoomMessages: [],
@@ -270,7 +269,7 @@ export interface incomingMessage {
   messegeChannelType: "incomingMessage"
   messageData: messageType
 }
-export type messageTypes =  OutgoingMessage | IncomingMessage
+export type messageTypes =  outGoingMessage | incomingMessage
 
 interface chatRoomMessages {
   chatRoomId: string

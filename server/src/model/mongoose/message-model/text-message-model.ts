@@ -1,5 +1,5 @@
-import { Model, Schema, model,Types } from "mongoose"
-
+import { Model, Schema, model, Types } from "mongoose"
+import { v4 as uuidv4 } from "uuid"
 interface readByRecipientSchemaInterface {
   readByUserId: string
   readAt: Date
@@ -10,6 +10,7 @@ const readByRecipientSchema = new Schema({
 })
 
 interface textMessageSchemaInterface {
+  _id: string
   chatRoomId: string
   postedByUser: string
   message: string
@@ -19,12 +20,13 @@ interface textMessageSchemaInterface {
 }
 const textMessageSchema = new Schema(
   {
+    _id: { type: String, default: uuidv4 },
     chatRoomId: { type: String, required: true },
     postedByUser: { type: String, required: true },
     message: { type: String, required: true },
     messageType: { type: String, default: "textMessage" },
     readByRecipient: { type: [readByRecipientSchema], default: [] },
-    reactions:{type:Schema.Types.ObjectId}
+    reactions: { type: Schema.Types.ObjectId },
   },
   {
     timestamps: true,
@@ -35,14 +37,16 @@ interface createNewMessageInChatRoom {
   chatRoomId: string
   postedByUser: string
   message: string
+  _id?: string
 }
 textMessageSchema.statics.createNewMessageInChatRoom = async function ({
   chatRoomId,
   postedByUser,
   message,
+  _id,
 }: createNewMessageInChatRoom) {
   try {
-    const post = await this.create({ chatRoomId, postedByUser, message })
+    const post = await this.create({ chatRoomId, postedByUser, message,"_id":_id })
     return post
   } catch (error) {
     console.log(error)
