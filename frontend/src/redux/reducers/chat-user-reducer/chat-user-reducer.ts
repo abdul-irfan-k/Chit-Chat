@@ -20,7 +20,7 @@ interface chatUserDetail {
   userId: string
   email: string
   profileImageUrl?: string
-  chatRoom: chatRoom
+  chatRoomId: string
   isStoredChatRoomMessages?: boolean
   notification?: chatRoomNotification
   status?: ChatRoomUserStatus

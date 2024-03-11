@@ -6,7 +6,7 @@ import { faMicrophone, faFaceSmile, faPlus, faPaperPlane, faStickyNote } from "@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useSelector } from "react-redux"
 import { useAppDispatch } from "@/store"
-import { sendMessageHandler } from "@/redux/actions/chat-action/chat-action"
+import { sendTextMessageHandler } from "@/redux/actions/chat-action/chat-action"
 import { chatUsersListReducerState } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 import VoiceRecorder from "@/components/shared/voice-recorder/voice-recorder"
@@ -40,7 +40,7 @@ const InputBox = () => {
     if (currentChaterDetail == null || currentChaterDetail.chatRoom == undefined || userDetail == null)
       return console.log("user id not found")
     dispatch(
-      sendMessageHandler(
+      sendTextMessageHandler(
         {
           message: inputMessage,
           receiverId: currentChaterDetail._id,

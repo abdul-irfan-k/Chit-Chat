@@ -2,47 +2,63 @@ export type messageEmitCallBackArgs = { isSended: boolean; status?: "ok" }
 export type messageEmitCallBack = (response: messageEmitCallBackArgs) => void
 
 export interface privateMessageBasicDetail {
-  receiverId: string
-  senderId: string
-  chatRoomId: string
-}
-export interface groupMessageBasicDetail {
-  senderId: string
-  chatRoomId: string
-  groupDetail: {
+  receiverDetails: {
     _id: string
   }
+  senderDetails: {
+    _id: string
+    name: string
+    profileImageUrl: string
+  }
+  chatRoomDetail: {
+    _id: string
+  }
+  messageChannelType: "private"
+}
+export interface groupMessageBasicDetail {
+  groupDetails: {
+    _id: string
+  }
+  senderDetails: {
+    _id: string
+    name: string
+    profileImageUrl: string
+  }
+  chatRoomDetail: {
+    _id: string
+  }
+  messageChannelType: "group"
 }
 
 interface privateNewImageMessageArgs extends privateMessageBasicDetail {
   message: {
     imageMessageSrc: string
-    _id: string
+    _id?: string
   }
 }
 interface privateNewMultipleImageMessageArgs extends privateMessageBasicDetail {
   message: {
     imageMessageSrc: string[]
-    _id: string
+    _id?: string
   }
 }
 interface privateNewTextMessageArgs extends privateMessageBasicDetail {
   message: {
     messageContent: string
-    _id: string
+    _id?: string
   }
 }
 interface privateAudioMessageArgs extends privateMessageBasicDetail {
   message: {
     file: Buffer
-    _id: string
+    _id?: string
   }
 }
 
 interface privateNewAudioMessageArgs extends privateMessageBasicDetail {
   message: {
     file: string
-    _id: string
+    _id?: string
   }
 }
 interface privateNewVideoMessageArgs extends privateMessageBasicDetail {
@@ -55,25 +71,25 @@ interface privateNewVideoMessageArgs extends privateMessageBasicDetail {
 interface groupNewTextMessageArgs extends groupMessageBasicDetail {
   message: {
     messageContent: string
-    _id: string
+    _id?: string
   }
 }
 interface groupAudioMessageArgs extends groupMessageBasicDetail {
   message: {
     file: Buffer
-    _id: string
+    _id?: string
   }
 }
-interface privateNewAudioMessageArgs extends privateMessageBasicDetail {
+interface groupNewAudioMessageArgs extends groupMessageBasicDetail {
   message: {
     file: string
-    _id: string
+    _id?: string
   }
 }
-interface groupNewMultipleImageMessageArgs extends privateMessageBasicDetail {
+interface groupNewMultipleImageMessageArgs extends groupMessageBasicDetail {
   message: {
     imageMessageSrc: string[]
-    _id: string
+    _id?: string
   }
 }
 
@@ -83,14 +99,14 @@ export interface groupNewPollMessageArgs extends groupMessageBasicDetail {
     options: {
       title: string
     }[]
-    _id: string
+    _id?: string
   }
 }
 
 export interface groupNewImageMessageArgs extends groupMessageBasicDetail {
   message: {
     filepath: string
-    _id: string
+    _id?: string
   }
 }
 

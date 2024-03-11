@@ -8,16 +8,16 @@ import { Socket } from "socket.io-client"
 interface SocketIoProviderProps {
   children: React.ReactNode
 }
-
+export type SocketIO =  Socket<ServerToClientEvents, ClientToServerEvents> 
 const socketClientObj = new SocketClient()
 export const socketContext = React.createContext<{
-  socket: SocketClient | Socket<ServerToClientEvents, ClientToServerEvents>
+  socket: SocketClient
 }>({ socket: socketClientObj })
 export const useSocketIoContext = () => React.useContext(socketContext)
 
 const SocketIoProvider: FC<SocketIoProviderProps> = ({ children }) => {
   const dispatch = useAppDispatch()
-  const [socket, setSocket] = useState<SocketClient | Socket<DefaultEventsMap, DefaultEventsMap>>(socketClientObj)
+  const [socket, setSocket] = useState<SocketClient>(socketClientObj)
   useEffect(() => {
     ;(async () => {
       try {

@@ -203,49 +203,39 @@ export interface messageReaction {
     }[]
   }[]
 }
-
-interface textMessage extends messageReaction {
+interface messageBasicDetails {
   _id: string
   chatRoomId: string
-  postedByUser: string
-  message: string
-  messageType: "textMessage"
-  messageSendedTime: Date
+  postedByUser: {
+    _id?: string
+    name: string
+    profileImageUrl: string
+  }
+  messageSendedTime?: Date | string
 }
 
-interface voiceMessage extends messageReaction {
-  _id: string
-  chatRoomId: string
-  postedByUser: string
+interface textMessage extends messageReaction, messageBasicDetails {
+  message: string
+  messageType: "textMessage"
+}
+
+interface voiceMessage extends messageReaction, messageBasicDetails {
   message: string
   messageType: "voiceMessage"
-  messageSendedTime: Date
   voiceMessageSrc: string
 }
 
-interface imageMessage extends messageReaction {
-  _id: string
-  chatRoomId: string
-  postedByUser: string
+interface imageMessage extends messageReaction, messageBasicDetails {
   messageType: "imageMessage"
-  messageSendedTime: Date
   imageMessageSrc: string[]
 }
-interface videoMessage extends messageReaction {
-  _id: string
-  chatRoomId: string
-  postedByUser: string
+interface videoMessage extends messageReaction, messageBasicDetails {
   messageType: "videoMessage"
-  messageSendedTime: Date
   videoMessageSrc: string
 }
 
-interface pollMessage extends messageReaction {
-  _id: string
-  chatRoomId: string
-  postedByUser: string
+interface pollMessage extends messageReaction, messageBasicDetails {
   messageType: "pollMessage"
-  messageSendedTime: Date
   title: string
   options: {
     title: string
@@ -269,7 +259,7 @@ export interface incomingMessage {
   messegeChannelType: "incomingMessage"
   messageData: messageType
 }
-export type messageTypes =  outGoingMessage | incomingMessage
+export type messageTypes = outGoingMessage | incomingMessage
 
 interface chatRoomMessages {
   chatRoomId: string
