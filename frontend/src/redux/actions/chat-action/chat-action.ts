@@ -241,7 +241,7 @@ export const sendImageMessageHandler =
         chatRoomDetail,
         receiverDetails,
         senderDetails,
-        messageChannelType = "private",
+        messageChannelType :"private",
         message: { ...message, imageMessageSrc: response },
       })
     else
@@ -261,13 +261,19 @@ type sendMultipleImageMessageHandlerArgs = multipleImageMessage & {
 }
 export const sendMultipleImageMessageHandler =
   (
-    { chatRoomDetail, formData, imageUrls, message, messageChannelType }: sendMultipleImageMessageHandlerArgs,
+    {
+      chatRoomDetail,
+      formData,
+      imageUrls,
+      message,
+      messageChannelType,
+      senderDetails,
+    }: sendMultipleImageMessageHandlerArgs,
     socket: SocketIO,
   ) =>
   async (dispatch: AppDispatch) => {
     const newMessage: Array<messageTypes> = []
     imageUrls.forEach((imageUrl) => {
-      message._id = generateUUIDString()
       newMessage.push({
         messegeChannelType: "outgoingMessage",
         messageData: {

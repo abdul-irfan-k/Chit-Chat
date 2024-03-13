@@ -40,7 +40,7 @@ interface privateNewMultipleImageMessageArgs extends privateMessageBasicDetail {
   message: {
     imageMessageSrc: string[]
     _id?: string
-  }
+  }[]
 }
 interface privateNewTextMessageArgs extends privateMessageBasicDetail {
   message: {
@@ -90,7 +90,7 @@ interface groupNewMultipleImageMessageArgs extends groupMessageBasicDetail {
   message: {
     imageMessageSrc: string[]
     _id?: string
-  }
+  }[]
 }
 
 export interface groupNewPollMessageArgs extends groupMessageBasicDetail {
