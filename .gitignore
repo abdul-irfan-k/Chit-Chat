@@ -12,6 +12,8 @@ node_modules
 
 # production
 /build
+/dist
+dist/
 
 # misc
 .DS_Store
@@ -34,4 +36,3 @@ next-env.d.ts
 
 
 .env
-/dist
