@@ -1,120 +1,97 @@
 "use client"
-import Image from "next/image"
-import SocialMediaLoginContainer from "../social-media-login/social-media-login-container"
 import { useAppDispatch } from "@/store"
 import { signUpHandler } from "@/redux/actions/user-action/user-action"
 import { useState } from "react"
+import { Loader2 } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import Link from "next/link"
 
-const SignUp = () => {
+const SignUpForm = () => {
   const dispatch = useAppDispatch()
+
   const [userDetail, setUserDetail] = useState({
-    firstName: "",
-    lastName: "",
+    name: "",
     email: "",
     userId: "",
     password: "",
     confirmPassword: "",
   })
+  const [loading, setLoading] = useState(false)
 
   const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) =>
     setUserDetail({ ...userDetail, [e.target.name]: e.target.value })
 
-  const signUpButtonHandler = () => {
-    dispatch(signUpHandler({...userDetail,name:`${userDetail.firstName} ${userDetail.lastName}`}))
+  const signUpButtonHandler = async () => {
+    setLoading(true)
+    await dispatch(signUpHandler({ ...userDetail }))
+    setLoading(false)
   }
   return (
-    <div className="w-full h-screen flex items-center justify-center">
-      <div className="flex  rounded-3xl xl:w-[70vw]">
-        <div className="px-6 py-3  flex flex-col xl:w-[30%]" style={{ backgroundColor: "rgba(38, 43, 72, 0.92)" }}>
-          <div className="mt-5 flex ">
-            <div className="relative w-[15%] aspect-square">
-              <Image alt="logo" src={"/Asset/logo.png"} fill />
-            </div>
-            <div className="ml-3  font-bold text-4xl">ChitChat</div>
-          </div>
-
-          <SocialMediaLoginContainer />
+    <div>
+      <div className="mt-10   flex-1 flex flex-col  text-neutral-800 dark:text-slate-200">
+        <span className="text-lg font-medium">Name</span>
+        <div className="border-[1px] border-neutral-500 rounded-md">
+          <input
+            type="text"
+            placeholder="Enter Name"
+            className="px-4 py-2 border-none outline-none rounded-md  w-full text-base  bg-transparent "
+            name="name"
+            onChange={inputChangeHandler}
+          />
+        </div>
+        <span className="mt-5 text-lg font-medium">Email Address</span>
+        <div className="border-[1px] border-neutral-500 rounded-md">
+          <input
+            type="text"
+            placeholder="Enter Email"
+            className="px-4 py-2 border-none outline-none rounded-md  w-full text-base  bg-transparent "
+            name="email"
+            onChange={inputChangeHandler}
+          />
+        </div>
+        <span className="mt-5 text-lg font-medium">User Id</span>
+        <div className="border-[1px] border-neutral-500 rounded-md">
+          <input
+            type="text"
+            placeholder="Enter Email"
+            className="px-4 py-2 border-none outline-none rounded-md  w-full text-base  bg-transparent "
+            name="email"
+            onChange={inputChangeHandler}
+          />
+        </div>
+        <span className="mt-5 text-lg font-medium">Password</span>
+        <div className="border-[1px] border-neutral-500 rounded-md">
+          <input
+            type="text"
+            placeholder="Enter Password"
+            className="px-4 py-2 border-none outline-none rounded-md  w-full text-base  bg-transparent "
+            name="password"
+            onChange={inputChangeHandler}
+          />
+        </div>
+        <span className="mt-5 text-lg font-medium">Comfri Password</span>
+        <div className="border-[1px] border-neutral-500 rounded-md">
+          <input
+            type="text"
+            placeholder="Enter Password"
+            className="px-4 py-2 border-none outline-none rounded-md  w-full text-base  bg-transparent "
+            name="password"
+            onChange={inputChangeHandler}
+          />
         </div>
 
-        <div className=" gap-6 px-6 py-6 flex-1 flex flex-col bg-slate-200 dark:bg-neutral-950 ">
-          <h1 className="text-xl font-semibold">Sign Up</h1>
-
-          <div className="flex gap-3">
-            <div className="flex-1 border-b-[3px] border-neutral-800">
-              <input
-                type="text"
-                placeholder="Enter First Name"
-                className="px-4 py-2 border-none rounded-md  w-full text-base   dark:bg-neutral-950  dark:text-slate-50"
-                name="firstname"
-                onChange={inputChangeHandler}
-              />
-            </div>
-            <div className="flex-1 border-b-[3px] border-neutral-800">
-              <input
-                type="text"
-                placeholder="Enter Last Name"
-                className="px-4 py-2 border-none rounded-md  w-full text-base  dark:bg-neutral-950 dark:text-slate-50"
-                name="lastName"
-                onChange={inputChangeHandler}
-              />
-            </div>
-          </div>
-
-          <div className="border-b-[3px] border-neutral-800">
-            <input
-              type="text"
-              placeholder="Enter user id"
-              className="px-4 py-2 border-none rounded-md  w-full text-base  dark:bg-neutral-950 dark:text-slate-50"
-              name="userId"
-              onChange={inputChangeHandler}
-            />
-          </div>
-          <div className="border-b-[3px] border-neutral-800">
-            <input
-              type="text"
-              placeholder="Enter Email"
-              className="px-4 py-2 border-none rounded-md  w-full text-base  dark:bg-neutral-950 dark:text-slate-50"
-              name="email"
-              onChange={inputChangeHandler}
-            />
-          </div>
-          <div className="border-b-[3px] border-neutral-800">
-            <input
-              type="text"
-              placeholder="Enter Password"
-              className="px-4 py-2 border-none rounded-md  w-full text-base  dark:bg-neutral-950 dark:text-slate-50"
-              name="password"
-              onChange={inputChangeHandler}
-            />
-          </div>
-          <div className="border-b-[3px] border-neutral-800">
-            <input
-              type="password"
-              placeholder="Enter Comfirm Password"
-              className="px-4 py-2 border-none rounded-md  w-full text-base  dark:bg-neutral-950 dark:text-slate-50"
-              name="firstname"
-              onChange={inputChangeHandler}
-            />
-          </div>
-          <div className="border-b-[3px] border-neutral-800">
-            <input
-              type="password"
-              placeholder="Enter user id"
-              className="px-4 py-2 border-none rounded-md  w-full text-base  dark:bg-neutral-950 dark:text-slate-50"
-              name="confirmPassword"
-              onChange={inputChangeHandler}
-            />
-          </div>
-
-          <div className="mt-3 py-2 text-xl font-extrabold flex items-center justify-center rounded-full bg-blue-500 "
-          onClick={signUpButtonHandler}
-          >
+        <div className="gap-5 mt-10 px-2 flex justify-between ">
+          <Button className="w-full text-lg" onClick={signUpButtonHandler}>
+            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Sign Up
-          </div>
+          </Button>
+          <Button variant={"secondary"} className="w-full text-lg" asChild>
+            <Link href={"/login"}>Login</Link>
+          </Button>
         </div>
       </div>
     </div>
   )
 }
 
-export default SignUp
+export default SignUpForm

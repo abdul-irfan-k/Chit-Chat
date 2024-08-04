@@ -62,7 +62,7 @@ const Login = () => {
             Login
           </Button>
           <Button variant={"secondary"} className="w-full text-lg" asChild>
-            <Link href={"/sign-up"}>Sign Up</Link>
+            <Link href={"/signup"}>Sign Up</Link>
           </Button>
         </div>
 
