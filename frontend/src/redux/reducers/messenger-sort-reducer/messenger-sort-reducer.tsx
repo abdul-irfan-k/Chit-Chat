@@ -23,7 +23,7 @@ const messengerSortIntialState: messengerSortState = {
 
 export const messengerSortReducer = createSlice({
   name: "messengerSortReducer",
-  initialState: messengerSortIntialState ,
+  initialState: messengerSortIntialState,
   reducers: {
     changeMessengerSort: (state, action) => {
       state.messengerSortType = action.payload.messengerSortType

@@ -1,15 +1,5 @@
 "use client"
-import {
-  BellIcon,
-  ChatIcon,
-  FileIcon,
-  GearIcon,
-  IdBadgeIcon,
-  LogoutIcon,
-  MoonIcon,
-  StarIcon,
-  VideoCamIcon,
-} from "@/constants/icon-constant"
+
 import Image from "next/image"
 import { FC, useState } from "react"
 import { useRouter } from "next/navigation"
@@ -19,6 +9,8 @@ import FullScreenNotification from "@/components/notificaton/full-screen-notific
 import { useAppDispatch } from "@/store"
 import { sidebarReducerAction } from "@/redux/reducers/sidebar-sort-reducer/sidebar-sort-reducer"
 import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
+import { Button } from "@/components/ui/button"
+import { Bell, Contact, MessageCircle, Moon, Power, Settings, Video } from "lucide-react"
 
 const SideMenu = () => {
   const dispatch = useAppDispatch()
@@ -41,40 +33,41 @@ const SideMenu = () => {
   }
 
   return (
-    <div className="hidden  py-20 h-[90vh]  md:block   ">
-      <div className="  h-full w-16  flex flex-col justify-between items-center   ">
-        <div className="w-10 relative overflow-hidden flex items-center justify-center aspect-square rounded-full ">
-          <Image
-            alt="profile-image"
-            src={
-              userDetail != null && userDetail?.profileImageUrl != undefined
-                ? userDetail?.profileImageUrl
-                : ""
-            }
-            fill
-          />
+    <div className="  py-10 h-[100vh] bg-background-primary border-r-[1px] dark:border-neutral-600   md:flex   md:flex-col ">
+      <div className="relative w-10 mx-auto aspect-square">
+        <Image alt="logo" src={"/Asset/logo.png"} fill />
+      </div>
+      <div className=" gap-5 my-auto  h-fit w-20  flex flex-col justify-between items-center   ">
+        <div className="p-[3px]  w-12 bg-primary  overflow-hidden flex items-center justify-center aspect-square rounded-full ">
+          <div className="relative w-full h-full  rounded-full overflow-hidden">
+            <Image
+              alt="profile-image"
+              src={userDetail != null && userDetail?.profileImageUrl != undefined ? userDetail?.profileImageUrl : ""}
+              fill
+            />
+          </div>
         </div>
 
         <SideMenuIcon onClickHandler={() => router.push("/messenger")}>
-          <ChatIcon className="w-6 aspect-square" />
+          <MessageCircle className="w-6 aspect-square" />
         </SideMenuIcon>
         <SideMenuIcon onClickHandler={videoCallButtonHandler}>
-          <VideoCamIcon className="w-6 aspect-square" />
+          <Video className="w-6 aspect-square" />
         </SideMenuIcon>
         <SideMenuIcon>
-          <IdBadgeIcon className="w-6 aspect-square" />
+          <Contact className="w-6 aspect-square" />
         </SideMenuIcon>
         <SideMenuIcon onClickHandler={notificationButtonHandler}>
-          <BellIcon className="w-6 aspect-square" />
+          <Bell className="w-6 aspect-square" />
         </SideMenuIcon>
         <SideMenuIcon onClickHandler={settingButtonHandler}>
-          <GearIcon className="w-6 aspect-square" />
+          <Settings className="w-6 aspect-square" />
         </SideMenuIcon>
         <SideMenuIcon>
-          <LogoutIcon className="w-6 aspect-square" />
+          <Moon className="w-6 aspect-square" />
         </SideMenuIcon>
         <SideMenuIcon>
-          <MoonIcon className="w-6 aspect-square" />
+          <Power className="w-6 aspect-square" />
         </SideMenuIcon>
       </div>
       {showNotification && <FullScreenNotification />}
@@ -90,11 +83,14 @@ interface SideMenuIconInterface {
 }
 const SideMenuIcon: FC<SideMenuIconInterface> = ({ children, onClickHandler }) => {
   return (
-    <div
-      className="w-10 relative overflow-hidden flex items-center justify-center aspect-square rounded-full bg-slate-300 fill-slate-950 dark:fill-slate-50 dark:bg-neutral-900"
+    <Button
+      size={"icon"}
+      rounded
       onClick={onClickHandler}
+      variant={"ghost"}
+      className="hover:bg-primary hover:text-black"
     >
       {children}
-    </div>
+    </Button>
   )
 }

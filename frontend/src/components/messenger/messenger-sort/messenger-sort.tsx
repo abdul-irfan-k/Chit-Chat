@@ -8,6 +8,8 @@ import { useSelector } from "react-redux"
 import { CallIcon, CallMadeIcon, CallMissedIcon, CallReceivedIcon } from "@/constants/icon-constant"
 import { changeMessengerSortState } from "@/redux/actions/messenger-action/messenger-action"
 import { useAppDispatch } from "@/store"
+import { Contact, MessageCircle, Phone } from "lucide-react"
+import { Button } from "@/components/ui/button"
 
 const MessengerSort = () => {
   const dispatch = useAppDispatch()
@@ -52,7 +54,7 @@ const MessengerSort = () => {
           onClick={() => messengerPrimarySortHandler("chat")}
         >
           <div className="relative w-5 ">
-            <MessageSvg className="aspect-square" />
+            <MessageCircle className="aspect-square" />
           </div>
           <div className=""> Chat</div>
         </div>
@@ -64,7 +66,7 @@ const MessengerSort = () => {
           onClick={() => messengerPrimarySortHandler("call")}
         >
           <div className="relative w-5">
-            <PhoneSvg className="aspect-square" />
+            <Phone className="aspect-square" />
           </div>
           <div className=""> Call</div>
         </div>
@@ -76,50 +78,31 @@ const MessengerSort = () => {
           onClick={() => messengerPrimarySortHandler("contact")}
         >
           <div className="relative w-5 ">
-            <IdBadge className="aspect-square" />
+            <Contact className="aspect-square" />
           </div>
-          <div className=""> Chat</div>
+          <div className=""> Contact</div>
         </div>
       </div>
 
       {messengerSortType == "chat" && (
         <div className="gap-5 mt-5  flex justify-between items-center fill-slate-950 font-medium text-base dark:fill-slate-50">
-          <div
-            className={
-              "gap-1  py-2  w-[50%] rounded-full flex justify-center items-center " +
-              (subSelectionType == "all" ? "dark:bg-blue-500" : "bg-slate-300 dark:bg-neutral-800")
-            }
-            onClick={() => chatSubSortHandler("all")}
-          >
-            {/* <div className="relative w-5 ">
-              <IdBadge className="aspect-square" />
-            </div> */}
-            <div className="">All</div>
-          </div>
-          <div
+          <Button
             className={
               "gap-1  py-2 w-full rounded-full flex justify-center items-center " +
-              (subSelectionType == "direct" ? "dark:bg-blue-500" : "bg-slate-300 dark:bg-neutral-800")
+              (subSelectionType != "direct" ? "bg-[#2e3038]" : "")
             }
             onClick={() => chatSubSortHandler("direct")}
+            variant={subSelectionType == "direct" ? "secondary" : "ghost"}
           >
-            <div className="relative w-5 ">
-              <IdBadge className="aspect-square" />
-            </div>
-            <div className=""> Person</div>
-          </div>
-          <div
-            className={
-              "gap-1  py-2 w-full rounded-full flex justify-center items-center " +
-              (subSelectionType == "group" ? "dark:bg-blue-500" : "bg-slate-300 dark:bg-neutral-800")
-            }
+            Direct
+          </Button>
+          <Button
+            className={"gap-1  py-2 w-full rounded-full flex justify-center items-center "}
             onClick={() => chatSubSortHandler("group")}
+            variant={subSelectionType == "group" ? "secondary" : "ghost"}
           >
-            <div className="relative w-5 ">
-              <IdBadge className="aspect-square" />
-            </div>
-            <div className=""> Group</div>
-          </div>
+            Group
+          </Button>
         </div>
       )}
       {messengerSortType == "call" && (

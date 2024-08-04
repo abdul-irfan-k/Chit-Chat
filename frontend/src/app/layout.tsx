@@ -18,7 +18,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="en">
       <body
-        className={`${inter.className} dark:bg-black text-slate-950 fill-slate-950 dark:fill-slate-50 dark:text-slate-50`}
+        className={`${inter.className}  text-slate-950 fill-slate-950 dark:fill-slate-50 dark:text-slate-50 dark:bg-background-secondary `}
       >
         <ThemeProvider>
           {/* <SessionProviders session={session}>

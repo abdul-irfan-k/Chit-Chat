@@ -11,7 +11,7 @@ const SideBar = () => {
     (state: { sidebarSort: sidebarSortReducerState }) => state.sidebarSort,
   )
   return (
-    <div className="relative flex flex-col px-5 pt-4  h-[100vh]  bg-slate-200 dark:bg-neutral-950 overflow-hidden  ">
+    <div className="relative flex flex-col px-5 pt-4  h-[100vh]  bg-slate-200 dark:bg-background-primary overflow-hidden  ">
       {currentSideBarSortOption == "messenger" && <MessengerSidebar isInitialRender={isInitialRender} />}
       {currentSideBarSortOption == "settting" && <SettingContainer />}
       {currentSideBarSortOption == "notification" && <SideBarNotificationContainer />}

@@ -31,7 +31,7 @@ const Login = () => {
         <span className="text-lg font-medium">Email Address</span>
         <div className="border-[1px] border-neutral-500 rounded-md">
           <input
-            type="text"
+            type="email"
             placeholder="Enter Email"
             className="px-4 py-2 border-none outline-none rounded-md  w-full text-base  bg-transparent "
             name="email"
@@ -41,7 +41,7 @@ const Login = () => {
         <span className="mt-10 text-lg font-medium">Password</span>
         <div className="border-[1px] border-neutral-500 rounded-md">
           <input
-            type="text"
+            type="password"
             placeholder="Enter Password"
             className="px-4 py-2 border-none outline-none rounded-md  w-full text-base  bg-transparent "
             name="password"

@@ -18,8 +18,12 @@ const config: Config = {
         border: "var(--border)",
         input: "var(--input)",
         ring: "var(--ring)",
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        background: {
+          DEFAULT: "var(--background)",
+          primary: "var(--background-primary)",
+          secondary: "var(--background-secondary)",
+        },
+        foreground: { DEFAULT: "var(--foreground)" },
         primary: {
           DEFAULT: "var(--primary)",
           foreground: "var(--primary-foreground)",

@@ -10,7 +10,9 @@ const Recent = () => {
   return (
     <div className="relative w-[100%]  flex flex-col ">
       <div className="text-slate-950 font-extrabold text-lg md:text-xl xl:text-2xl dark:text-slate-50">Recent</div>
-      <div className="text-slate-800 font-normal text-sm md:text-base dark:text-slate-200">Chat from your freinds</div>
+      <div className="text-slate-800 font-normal text-sm md:text-base dark:text-slate-200">
+        Chat from your freinds 😘
+      </div>
       <div className="mt-5 gap-2 flex overflow-x-auto no-scrollbar md:gap-3">
         <RecentCard imageSrc="/Asset/avatar.jpg" name="imran" status="ofline" />
         <RecentCard imageSrc="/Asset/avatar.jpg" name="kaleel" status="online" />
