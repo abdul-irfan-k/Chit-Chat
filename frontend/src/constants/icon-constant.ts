@@ -67,8 +67,14 @@ import Stickerscon from "/public/Asset/Icon/stickers.svg"
 import LockIcon from "/public/Asset/Icon/lock.svg"
 import ArrowForwardIcon from "/public/Asset/Icon/arrow-forward.svg"
 import ArrowBackIcon from "/public/Asset/Icon/arrow-back.svg"
+import GoogleIcon from "/public/Asset/Icon/google.svg"
+import FacebookIcon from "/public/Asset/Icon/facebook.svg"
+import GithubIcon from "/public/Asset/Icon/github.svg"
 
 export {
+  GoogleIcon,
+  FacebookIcon,
+  GithubIcon,
   ArrowBackIcon,
   ArrowForwardIcon,
   AddIcon,

@@ -4,6 +4,7 @@ import { Inter } from "next/font/google"
 import "@fortawesome/fontawesome-svg-core/styles.css"
 import SessionProviders from "@/provider/session-provider/session-provider"
 import { getServerSession } from "next-auth"
+import ThemeProvider from "@/provider/theme-provider/theme-provider"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -19,9 +20,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body
         className={`${inter.className} dark:bg-black text-slate-950 fill-slate-950 dark:fill-slate-50 dark:text-slate-50`}
       >
-        {/* <SessionProviders session={session}>
+        <ThemeProvider>
+          {/* <SessionProviders session={session}>
           </SessionProviders> */}
           {children}
+        </ThemeProvider>
       </body>
     </html>
   )

@@ -2,6 +2,55 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  :root {
+    --background: #ffffff;
+    --foreground: #0c1a2b;
+    --muted: #f5f9fc;
+    --muted-foreground: #6b7685;
+    --popover: #ffffff;
+    --popover-foreground: #0c1a2b;
+    --border: #e9eff5;
+    --input: #e9eff5;
+    --card: #ffffff;
+    --card-foreground: #0c1a2b;
+    --primary: #1c9dea;
+    --primary-foreground: #ffffff;
+    --secondary: #223645;
+    --secondary-foreground: #fff;
+    --accent: #f5f9fc;
+    --accent-foreground: #0c1a2b;
+    --destructive: #ff0000;
+    --destructive-foreground: #fafdff;
+    --ring: #97a7c2;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: #0b0d13;
+    --foreground: #e9efff;
+    --muted: #0c1b2e;
+    --muted-foreground: #8a94a7;
+    --accent: #17222d;
+    --accent-foreground: #fafdff;
+    --popover: #0b0d13;
+    --popover-foreground: #97a7c2;
+    --border: #17222d;
+    --input: #17222d;
+    --card: #0b0d13;
+    --card-foreground: #e9efff;
+    --primary: #1c9dea;
+    --primary-foreground: #ffffff;
+
+
+    /* --secondary-foreground: #fafdff; */
+    --destructive: #a6101a;
+    --destructive-foreground: #fafdff;
+    --ring: #17222d;
+    --radius: 0.5rem;
+  }
+}
+
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
@@ -69,6 +118,7 @@
   color: inherit !important;
   box-shadow: none !important;
 }
+
 .recording .audio-recorder-mic {
   display: none;
 }
