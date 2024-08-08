@@ -12,8 +12,7 @@
     "format": "npm run prettier",
     "start": "node .",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prettier": "prettier --write .",
-    "a": "  ts-node-esm src/server.ts"
+    "prettier": "prettier --write ."
   },
   "author": "",
   "license": "ISC",

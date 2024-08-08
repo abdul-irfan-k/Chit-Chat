@@ -30,10 +30,8 @@ const CommunicatorProvider = () => {
       return
     }
 
-    if ( currentChaterDetail?.currentChaterType == "user") {
-      dispatch(
-        getChatRoomMessageHandler({ chatRoomId: currentChaterDetail?.chatRoom?.chatRoomId, myUserId: userDetail?._id }),
-      )
+    if (currentChaterDetail?.currentChaterType == "user") {
+      dispatch(getChatRoomMessageHandler({ chatRoomId: currentChaterDetail.chatRoomId, myUserId: userDetail?._id }))
     } else {
       dispatch(
         getGroupChatRoomMessageHandler({

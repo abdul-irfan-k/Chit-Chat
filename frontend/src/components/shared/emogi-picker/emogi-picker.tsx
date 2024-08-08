@@ -1,43 +1,40 @@
 "use client"
 import data from "@emoji-mart/data"
 import Picker from "@emoji-mart/react"
-import axios from "axios"
 import React, { FC, useEffect, useState } from "react"
+import { motion } from "framer-motion"
 
 interface EmogiPickerProps {
   emojiSelectHandler: React.Dispatch<React.SetStateAction<string>>
 }
 
 const EmogiPicker: FC<EmogiPickerProps> = ({ emojiSelectHandler }) => {
-  const [emojiData, setEmojiData] = useState()
-  const [isLoadedEmojiData, setIsLoadedEmojiData] = useState(false)
-
-  const getEmojiDataHandler = async () => {
-    const { data } = await axios.get("https://cdn.jsdelivr.net/npm/@emoji-mart/data")
-    setEmojiData(data)
-    setIsLoadedEmojiData(true)
-  }
-  useEffect(() => {
-    getEmojiDataHandler()
-  }, [])
-
   const onEmojiSelectHandler = (data: any) => {
     const emoji = data.native
-    console.log("emijis",data, { id: data.id, unified: data.unified, shortcodes: data.shortcodes, native: data.native })
     emojiSelectHandler((val) => {
       return val + emoji
     })
   }
 
   return (
-    <div className="absolute bottom-[200%]">
-      {/* {isLoadedEmojiData && (
-        <div >
-          <Picker data={emojiData} onEmojiSelect={onEmojiSelectHandler} />
-        </div>
-      )} */}
+    <motion.div
+      className="absolute bottom-[100%]  overflow-hidden "
+      variants={{
+        initial: {
+          width: "0",
+          height: "0",
+        },
+        active: {
+          width: "auto",
+          height: "auto",
+        },
+      }}
+      initial="initial"
+      whileInView={"active"}
+      transition={{ duration: "0.3", ease: "easeOut" }}
+    >
       <Picker data={data} onEmojiSelect={onEmojiSelectHandler} />
-    </div>
+    </motion.div>
   )
 }
 

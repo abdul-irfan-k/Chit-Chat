@@ -3,6 +3,8 @@ import { ChatIcon, GroupIcon, PersonAddIcon, PlusIcon } from "@/constants/icon-c
 import React, { useState } from "react"
 import SearchBar from "../search-bar/search-bar"
 import GroupCreationForm from "../form/group-creation-form/group-creation-form"
+import { Button } from "@/components/ui/button"
+import { Plus } from "lucide-react"
 
 const AddButton = () => {
   const [isButtonClicked, setIsButtonClicked] = useState<boolean>(false)
@@ -20,9 +22,9 @@ const AddButton = () => {
         className="absolute bottom-5 rounded-full right-4 w-10 aspect-square bg-blue-500 fill-slate-50 flex items-center justify-center"
         onClick={addButtonClickHandler}
       >
-        <div className="relative">
-          <PlusIcon className="aspect-square w-6" width="" height="" />
-        </div>
+        <Button className="relative w-full h-full" rounded size={"icon"}>
+          <Plus className="aspect-square w-6" />
+        </Button>
 
         {isButtonClicked && (
           <div className="absolute gap-3 px-2 py-2 right-0 translate-y-[-70%] w-36 z-30 flex flex-col  bg-neutral-950 text-sm">

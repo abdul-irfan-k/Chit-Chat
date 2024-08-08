@@ -46,42 +46,39 @@ const MessengerSort = () => {
       <div className="text-slate-800 font-normal text-sm md:text-base dark:text-slate-200">Start New Converstion</div>
 
       <div className="mt-10 gap-5 flex justify-between items-center  fill-slate-950 font-medium text-base  dark:fill-slate-50">
-        <div
+        <Button
           className={
-            "gap-1 py-2 w-full rounded-full flex justify-center items-center " +
-            (messengerSortType == "chat" ? "dark:bg-blue-500" : "bg-slate-300 dark:bg-neutral-800")
+            "relative gap-1  py-2 w-full rounded-full flex justify-center items-center " +
+            (messengerSortType != "chat" ? "bg-[#2e3038]" : "")
           }
           onClick={() => messengerPrimarySortHandler("chat")}
+          variant={messengerSortType == "chat" ? "secondary" : "ghost"}
         >
-          <div className="relative w-5 ">
-            <MessageCircle className="aspect-square" />
-          </div>
+          <MessageCircle className="relative w-5 aspect-square " />
           <div className=""> Chat</div>
-        </div>
-        <div
+        </Button>
+        <Button
           className={
-            "gap-1 py-2 w-full rounded-full flex justify-center items-center " +
-            (messengerSortType == "call" ? "dark:bg-blue-500" : "bg-slate-300 dark:bg-neutral-800")
+            "relative gap-1  py-2 w-full rounded-full flex justify-center items-center " +
+            (messengerSortType != "call" ? "bg-[#2e3038]" : "")
           }
           onClick={() => messengerPrimarySortHandler("call")}
+          variant={messengerSortType == "call" ? "secondary" : "ghost"}
         >
-          <div className="relative w-5">
-            <Phone className="aspect-square" />
-          </div>
+          <Phone className="aspect-square w-5" />
           <div className=""> Call</div>
-        </div>
-        <div
+        </Button>
+        <Button
           className={
-            "gap-1 py-2 w-full rounded-full flex justify-center items-center " +
-            (messengerSortType == "contact" ? "dark:bg-blue-500" : "bg-slate-300 dark:bg-neutral-800")
+            "relative gap-1  py-2 w-full rounded-full flex justify-center items-center " +
+            (messengerSortType != "contact" ? "bg-[#2e3038]" : "")
           }
           onClick={() => messengerPrimarySortHandler("contact")}
+          variant={messengerSortType == "contact" ? "secondary" : "ghost"}
         >
-          <div className="relative w-5 ">
-            <Contact className="aspect-square" />
-          </div>
+          <Contact className="aspect-square w-5" />
           <div className=""> Contact</div>
-        </div>
+        </Button>
       </div>
 
       {messengerSortType == "chat" && (
@@ -97,7 +94,10 @@ const MessengerSort = () => {
             Direct
           </Button>
           <Button
-            className={"gap-1  py-2 w-full rounded-full flex justify-center items-center "}
+            className={
+              "gap-1  py-2 w-full rounded-full flex justify-center items-center " +
+              (subSelectionType != "group" ? "bg-[#2e3038]" : "")
+            }
             onClick={() => chatSubSortHandler("group")}
             variant={subSelectionType == "group" ? "secondary" : "ghost"}
           >

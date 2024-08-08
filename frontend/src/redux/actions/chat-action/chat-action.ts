@@ -114,14 +114,15 @@ export const getGroupChatRoomMessageHandler =
 type sendTextMessageHandlerArgs = privateMessageArgs["TextMessage"] | groupMessageArgs["TextMessage"]
 export const sendTextMessageHandler =
   (
-    { chatRoomDetail, message, messageChannelType, receiverDetails, senderDetails }: sendTextMessageHandlerArgs,
+    //@ts-ignore
+    { chatRoomDetail, message, messageChannelType, senderDetails, receiverDetails }: sendTextMessageHandlerArgs,
     socket: SocketIO,
   ) =>
   async (dispatch: AppDispatch) => {
     message._id = generateUUIDString()
     dispatch(
       chatRoomMessageAction.addSendedChatRoomMessage({
-        chatRoomId,
+        chatRoomId: chatRoomDetail._id,
         newMessage: {
           _id: message._id,
           messegeChannelType: "outgoingMessage",
@@ -129,7 +130,8 @@ export const sendTextMessageHandler =
             chatRoomId: chatRoomDetail._id,
             message: message.messageContent,
             messageType: "textMessage",
-            postedByUser: senderDetails.name,
+            //@ts-ignore
+            postedByUser: { name: senderDetails.name },
           },
           messageStatus: "notSended",
         },
@@ -241,7 +243,7 @@ export const sendImageMessageHandler =
         chatRoomDetail,
         receiverDetails,
         senderDetails,
-        messageChannelType :"private",
+        messageChannelType: "private",
         message: { ...message, imageMessageSrc: response },
       })
     else

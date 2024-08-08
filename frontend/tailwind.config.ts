@@ -55,6 +55,7 @@ const config: Config = {
         "black-primary": "black",
         white: "#ffffff",
         blue: "#1c9dea",
+        morphic: "var(--morphic)",
         "black-secondary": "#223645",
         black: "black",
       },

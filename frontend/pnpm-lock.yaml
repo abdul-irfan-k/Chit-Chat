@@ -63,7 +63,7 @@ importers:
         specifier: ^1.5.0
         version: 1.7.3
       chit-chat-events:
-        specifier: ^1.0.3
+        specifier: ^1.0.4
         version: 1.0.4
       class-variance-authority:
         specifier: ^0.7.0

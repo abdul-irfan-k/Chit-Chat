@@ -18,7 +18,7 @@ interface ChatProfileInstance {
 }
 
 const ChatProfile: FC<ChatProfileInstance> = ({ name, profileImageSrc, currentStatus, backButtonHandler }) => {
-  const {socket} = useSocketIoContext()
+  const { socket } = useSocketIoContext()
   const { currentChaterDetail } = useSelector(
     (state: { chatUsersList: chatUsersListReducerState }) => state.chatUsersList,
   )
@@ -28,8 +28,7 @@ const ChatProfile: FC<ChatProfileInstance> = ({ name, profileImageSrc, currentSt
 
   const videoCallIconClickHandler = (e: MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation()
-    if(currentChaterDetail?.currentChaterType == "user"){
-
+    if (currentChaterDetail?.currentChaterType == "user") {
       socket.emit("privateCall:intialise", {
         userDetail: userDetail,
         chatRoomId: currentChaterDetail?.chatRoom?.chatRoomId,
@@ -37,19 +36,19 @@ const ChatProfile: FC<ChatProfileInstance> = ({ name, profileImageSrc, currentSt
       })
       dispatch(
         videoCallRequestHandler({
-          isCalling:true,
-          callRequestData:{
-            callChannelType:"private",
-            callType:"videoCall",
-            communicatorsDetail:{...currentChaterDetail}
-          }
+          isCalling: true,
+          callRequestData: {
+            callChannelType: "private",
+            callType: "videoCall",
+            communicatorsDetail: { ...currentChaterDetail },
+          },
         }),
-        )
-      }
+      )
+    }
   }
 
   return (
-    <div className="w-full py-4 px-4    rounded-md flex items-center bg-slate-200 fill-slate-950 dark:bg-neutral-950 dark:fill-slate-50 md:p-5">
+    <div className="w-full py-4 px-4    rounded-md flex items-center bg-slate-200 fill-slate-950 dark:bg-background-primary dark:fill-slate-50 md:p-5">
       <div className="block md:hidden">
         <div
           className=" relative flex items-center justify-center w-10 aspect-square bg-slate-300 rounded-full dark:bg-slate-800"

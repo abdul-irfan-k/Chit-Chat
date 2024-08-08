@@ -113,7 +113,7 @@ const VoiceRecorder = () => {
   }
 
   return (
-    <div className="bg-slate-300 rounded-full dark:bg-slate-800">
+    <div className="bg-slate-300 rounded-full dark:bg-background-primary ">
       {/* {recordingStatus == "inactive" && !permission && (
         <div
           className="w-10 flex justify-center items-center aspect-square bg-slate-300 fill-slate-950 rounded-full dark:fill-slate-50    dark:bg-slate-800"

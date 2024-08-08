@@ -24,6 +24,8 @@
     --destructive-foreground: #fafdff;
     --ring: #97a7c2;
     --radius: 0.5rem;
+
+    --morphic: #2e3038;
   }
 
   .dark {
@@ -53,6 +55,7 @@
     --destructive-foreground: #fafdff;
     --ring: #17222d;
     --radius: 0.5rem;
+    --morphic: #2e3038;
   }
 }
 

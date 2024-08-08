@@ -12,6 +12,8 @@ import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 import VoiceRecorder from "@/components/shared/voice-recorder/voice-recorder"
 import { useSocketIoContext } from "@/provider/socket-io-provider/socket-io-provider"
 import InputSelectionBox from "./input-selection-box/input-selection-box"
+import { Button } from "@/components/ui/button"
+import { Plus, Send, Smile, Sticker } from "lucide-react"
 //@ts-ignore
 
 type inputPopUpMenuType = "emoji" | "sticker" | "media" | undefined
@@ -37,15 +39,16 @@ const InputBox = () => {
   }
 
   const sendButtonHandler = () => {
-    if (currentChaterDetail == null || currentChaterDetail.chatRoom == undefined || userDetail == null)
+    if (currentChaterDetail == null || currentChaterDetail.chatRoomId == undefined || userDetail == null)
       return console.log("user id not found")
     dispatch(
       sendTextMessageHandler(
         {
-          message: inputMessage,
-          receiverId: currentChaterDetail._id,
-          senderId: userDetail?._id,
-          chatRoomId: currentChaterDetail.chatRoom?.chatRoomId,
+          message: { messageContent: inputMessage },
+          receiverDetails: { _id: currentChaterDetail._id },
+          //@ts-ignore
+          senderDetails: { _id: userDetail?._id },
+          chatRoomDetail: { _id: currentChaterDetail.chatRoomId },
         },
         socket,
       ),
@@ -56,29 +59,38 @@ const InputBox = () => {
   return (
     <div className="mt-auto flex  items-center md:gap-3">
       <div className="hidden md:block">
-        <div
-          className="relative w-10 flex justify-center items-center aspect-square bg-slate-300 rounded-full dark:bg-slate-800"
+        <Button
+          className="relative w-10 bg-background-primary"
           onClick={() => setInputPopUpMenuType("sticker")}
+          variant={"secondary"}
+          rounded
+          size={"icon"}
         >
-          <FontAwesomeIcon icon={faStickyNote} />
-        </div>
+          <Sticker className="relative w-5 aspect-square" />
+        </Button>
       </div>
       <div className="relative">
-        <div
-          className="relative w-10 flex flex-col justify-center items-center aspect-square bg-slate-300 rounded-full dark:bg-slate-800"
+        <Button
+          className="relative w-10 bg-background-primary"
+          variant={"secondary"}
+          rounded
           onClick={() => popUpMenuButtonHandler("emoji")}
+          size={"icon"}
         >
-          <FontAwesomeIcon icon={faFaceSmile} />
-        </div>
+          <Smile className="w-5 aspect-square" />
+        </Button>
         {inputPopUpMenuType == "emoji" && <EmogiPicker emojiSelectHandler={setInputMessage} />}
       </div>
       <div className="relative">
-        <div
-          className="w-10 flex justify-center items-center aspect-square bg-slate-300 rounded-full dark:bg-slate-800"
+        <Button
+          className="relative w-10 bg-background-primary"
+          variant={"secondary"}
+          rounded
           onClick={() => popUpMenuButtonHandler("media")}
+          size={"icon"}
         >
-          <FontAwesomeIcon icon={faPlus} />
-        </div>
+          <Plus className="w-5 aspect-square" />
+        </Button>
         {inputPopUpMenuType == "media" && (
           <InputSelectionBox outsideClickHandler={() => setInputPopUpMenuType(undefined)} />
         )}
@@ -90,15 +102,18 @@ const InputBox = () => {
             type="text"
             value={inputMessage}
             onChange={inputChangeHandler}
-            className="px-4 py-2 w-full rounded-full text-slate-950  bg-slate-300 outline-none dark:text-slate-50 dark:bg-slate-800"
+            className="px-4 py-2 w-full rounded-full text-slate-950  bg-slate-300 outline-none dark:text-slate-50 dark:bg-background-primary"
           />
         </div>
-        <div
+        <Button
+          className="relative w-10 bg-background-primary"
+          variant={"secondary"}
+          rounded
           onClick={sendButtonHandler}
-          className="w-10 flex justify-center items-center aspect-square bg-slate-300 rounded-full dark:bg-slate-800"
+          size={"icon"}
         >
-          <FontAwesomeIcon icon={faPaperPlane} />
-        </div>
+          <Send className="w-5 aspect-square" />
+        </Button>
         <VoiceRecorder />
       </div>
     </div>

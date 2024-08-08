@@ -10,6 +10,8 @@ import ImageMessage from "./image-message/image-message"
 import PollMessage from "./poll-message/poll-message"
 import VideoMessage from "./video-message/video-message"
 import MessageInfiniteScroll from "@/components/shared/infinite-scroll/infinite-scroll"
+import { AnimatePresence, motion } from "framer-motion"
+
 const ChatBox = () => {
   const { currentChaterMessage } = useSelector(
     (state: { chatRoomsMessageReducer: chatRoomMessagesReducerSlate }) => state.chatRoomsMessageReducer,
@@ -28,33 +30,49 @@ const ChatBox = () => {
           totalFetchedMessages={currentChaterMessage?.totalFetchedMessages}
           totatMessages={currentChaterMessage?.totatMessages}
         >
-          {currentChaterMessage?.messages.map((message) => {
-            return (
-              <>
-                <div>
+          <AnimatePresence mode="popLayout">
+            {currentChaterMessage?.messages.map((message, index) => {
+              return (
+                <motion.div
+                  key={message.messageData._id}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  layout
+                  transition={{
+                    opacity: { duration: 0.2 },
+                    layout: {
+                      type: "spring",
+                      bounce: 0.4,
+                      duration: (index + 1) * 0.15 + 0.5,
+                    },
+                  }}
+                  className={
+                    "mb-3  clear-both  flex items-start" +
+                    (message.messegeChannelType == "incomingMessage" ? " float-lef" : " float-right flex-row-reverse")
+                  }
+                  style={{ originX: message.messegeChannelType == "outgoingMessage" ? 0 : 1 }}
+                >
                   {message.messageData.messageType == "textMessage" && (
-                    <>
-                      <TextMessage
-                        messageContent={message.messageData.message}
-                        messegeChannelType={message.messegeChannelType}
-                        time={message.messageData.messageSendedTime}
-                        userImageSrc={
-                          message.messegeChannelType == "incomingMessage"
-                            ? currentChaterDetail.currentChaterType == "user" && currentChaterDetail.profileImageUrl
-                              ? currentChaterDetail.profileImageUrl
-                              : "/Asset/avatar.jpg"
-                            : userDetail.profileImageUrl
-                        }
-                        userName={
-                          message.messegeChannelType == "incomingMessage" ? currentChaterDetail.name : userDetail?.name
-                        }
-                        _id={message.messageData._id}
-                        reactions={message.messageData.reactions}
-                      />
-                    </>
+                    <TextMessage
+                      messageContent={message.messageData.message}
+                      messegeChannelType={message.messegeChannelType}
+                      time={message.messageData.messageSendedTime}
+                      userImageSrc={
+                        message.messegeChannelType == "incomingMessage"
+                          ? currentChaterDetail.currentChaterType == "user" && currentChaterDetail.profileImageUrl
+                            ? currentChaterDetail.profileImageUrl
+                            : "/Asset/avatar.jpg"
+                          : userDetail.profileImageUrl
+                      }
+                      userName={
+                        message.messegeChannelType == "incomingMessage" ? currentChaterDetail.name : userDetail?.name
+                      }
+                      _id={message.messageData._id}
+                      reactions={message.messageData.reactions}
+                    />
                   )}
 
-                  {message.messageData.messageType == "voiceMessage" && (
+                  {/* {message.messageData.messageType == "voiceMessage" && (
                     <VoiceMessage
                       _id={message.messageData._id}
                       messageChannelType={message.messegeChannelType}
@@ -136,11 +154,11 @@ const ChatBox = () => {
                         message.messegeChannelType == "incomingMessage" ? currentChaterDetail?.name : userDetail?.name
                       }
                     />
-                  )}
-                </div>
-              </>
-            )
-          })}
+                  )} */}
+                </motion.div>
+              )
+            })}
+          </AnimatePresence>
         </MessageInfiniteScroll>
       )}
     </div>

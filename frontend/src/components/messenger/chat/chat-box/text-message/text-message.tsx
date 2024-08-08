@@ -29,26 +29,23 @@ const TextMessage: FC<TextMessageInterface> = ({
   const contextMenu = useContextMenuContext()
 
   return (
-    <div
-      className={
-        "gap-3 mb-5  clear-both  flex items-start" +
-        (messegeChannelType == "incomingMessage" ? " float-lef" : " float-right flex-row-reverse")
-      }
-    >
+    <div className={"gap-5  flex items-start" + (messegeChannelType == "incomingMessage" ? " " : "  flex-row-reverse")}>
       <div className="relative aspect-square w-14">
         <Image alt="user-image" src={userImageSrc} fill className="aspect-square rounded-2xl" />
       </div>
 
-      <div className="gap-1 flex flex-col">
+      <div className="gap-2 flex flex-col">
         <div className={"flex gap-1 items-center " + (messegeChannelType == "incomingMessage" ? "" : " ml-auto")}>
-          <div className="font-medium text-base text-slate-950 dark:text-slate-50 ">{userName}</div>
-          <div className="font-light text-xs text-slate-800 dark:text-slate-200">{time.toDateString()}</div>
+          <span className="font-medium text-base text-slate-950 dark:text-slate-50 ">{userName}</span>
+          <span className="font-light text-xs text-slate-800 dark:text-slate-200">{time?.toDateString()}</span>
         </div>
         <MessageReactionMenuProvider messageId={_id}>
           <div
             className={
-              "px-4 py-2 rounded-full" +
-              (messegeChannelType == "incomingMessage" ? " bg-blue-500 text-slate-50" : " bg-slate-300 text-slate-950")
+              "px-4 py-2 " +
+              (messegeChannelType == "incomingMessage"
+                ? " bg-[#3a62b8] text-slate-50 rounded-full rounded-tl-none "
+                : " bg-[#191b1f] text-slate-50 rounded-full")
             }
             onContextMenu={(e) => {
               e.preventDefault()
