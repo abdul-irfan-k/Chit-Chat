@@ -34,7 +34,7 @@ const InputBox = () => {
   }
 
   const popUpMenuButtonHandler = (popUpMenuType: inputPopUpMenuType) => {
-    if (popUpMenuType == inputPopUpMenuType) return setInputPopUpMenuType(undefined)
+    if (popUpMenuType == inputPopUpMenuType && popUpMenuType != undefined) return setInputPopUpMenuType(undefined)
     setInputPopUpMenuType(popUpMenuType)
   }
 

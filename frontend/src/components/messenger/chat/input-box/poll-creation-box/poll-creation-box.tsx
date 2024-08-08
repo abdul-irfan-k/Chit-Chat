@@ -5,6 +5,7 @@ import { sendGroupPollMessageHandler } from "@/redux/actions/chat-action/chat-ac
 import { chatUsersListReducerState } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 import { useAppDispatch } from "@/store"
+import { Vote } from "lucide-react"
 import React, { useState } from "react"
 import { useSelector } from "react-redux"
 
@@ -49,8 +50,8 @@ const PollCreationBox = () => {
   return (
     <>
       <div className="gap-1 py-2 flex items-center" onClick={() => setShowPollCreationForm(true)}>
-        <div className="relative w-6 aspect-square">
-          <PersonIcon className="w-6 aspect-square" width="" height="" />
+        <div className="relative w-5 aspect-square">
+          <Vote className="w-5 aspect-square" />
         </div>
         <span className="text-base">Poll</span>
       </div>

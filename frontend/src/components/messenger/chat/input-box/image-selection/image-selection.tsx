@@ -9,6 +9,7 @@ import {
 import { chatUsersListReducerState } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 import { useAppDispatch } from "@/store"
+import { Images } from "lucide-react"
 import Image from "next/image"
 import React, { FC, useEffect, useRef, useState } from "react"
 import { Socket } from "socket.io-client"
@@ -79,7 +80,7 @@ const ImageSelection: FC<ImageSelectionProps> = ({ userDetail, currentChaterDeta
                 formData,
                 imageUrl: selectedImageUrl[0],
                 senderId: userDetail._id,
-                receiverId:currentChaterDetail._id
+                receiverId: currentChaterDetail._id,
               },
               socket,
             ),
@@ -138,8 +139,8 @@ const ImageSelection: FC<ImageSelectionProps> = ({ userDetail, currentChaterDeta
   return (
     <>
       <div className="gap-1 py-2 flex items-center" onClick={handlerGalleryButtonClick}>
-        <div className="relative w-6 aspect-square">
-          <FolderIcon className="w-6 aspect-square" width="" height="" />
+        <div className="relative w-5 aspect-square">
+          <Images className="w-5 aspect-square" />
         </div>
         <span className="text-base">Gallery</span>
       </div>
