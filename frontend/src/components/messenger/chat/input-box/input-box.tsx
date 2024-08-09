@@ -79,7 +79,7 @@ const InputBox = () => {
         >
           <Smile className="w-5 aspect-square" />
         </Button>
-        {inputPopUpMenuType == "emoji" && <EmogiPicker emojiSelectHandler={setInputMessage} />}
+        <EmogiPicker emojiSelectHandler={setInputMessage} isActive={inputPopUpMenuType == "emoji"} />
       </div>
       <div className="relative">
         <Button
@@ -91,9 +91,10 @@ const InputBox = () => {
         >
           <Plus className="w-5 aspect-square" />
         </Button>
-        {inputPopUpMenuType == "media" && (
-          <InputSelectionBox outsideClickHandler={() => setInputPopUpMenuType(undefined)} />
-        )}
+        <InputSelectionBox
+          outsideClickHandler={() => setInputPopUpMenuType(undefined)}
+          isActive={inputPopUpMenuType == "media"}
+        />
       </div>
 
       <div className="relative flex w-full md:gap-3">

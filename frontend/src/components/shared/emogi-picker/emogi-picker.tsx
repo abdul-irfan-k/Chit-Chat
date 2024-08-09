@@ -6,9 +6,10 @@ import { motion } from "framer-motion"
 
 interface EmogiPickerProps {
   emojiSelectHandler: React.Dispatch<React.SetStateAction<string>>
+  isActive: boolean
 }
 
-const EmogiPicker: FC<EmogiPickerProps> = ({ emojiSelectHandler }) => {
+const EmogiPicker: FC<EmogiPickerProps> = ({ emojiSelectHandler, isActive }) => {
   const onEmojiSelectHandler = (data: any) => {
     const emoji = data.native
     emojiSelectHandler((val) => {
@@ -30,7 +31,7 @@ const EmogiPicker: FC<EmogiPickerProps> = ({ emojiSelectHandler }) => {
         },
       }}
       initial="initial"
-      whileInView={"active"}
+      whileInView={isActive ? "active" : "initial"}
       transition={{ duration: "0.3", ease: "easeOut" }}
     >
       <Picker data={data} onEmojiSelect={onEmojiSelectHandler} />

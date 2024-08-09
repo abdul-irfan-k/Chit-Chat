@@ -14,8 +14,9 @@ import { motion } from "framer-motion"
 
 interface InputSelectionBoxProps {
   outsideClickHandler(): void
+  isActive: boolean
 }
-const InputSelectionBox: FC<InputSelectionBoxProps> = ({ outsideClickHandler }) => {
+const InputSelectionBox: FC<InputSelectionBoxProps> = ({ outsideClickHandler, isActive }) => {
   const { currentChaterDetail } = useSelector(
     (state: { chatUsersList: chatUsersListReducerState }) => state.chatUsersList,
   )
@@ -42,7 +43,7 @@ const InputSelectionBox: FC<InputSelectionBoxProps> = ({ outsideClickHandler }) 
         },
       }}
       initial="initial"
-      whileInView={"active"}
+      animate={isActive ? "active" : "initial"}
       transition={{ duration: "0.3", ease: "easeOut" }}
     >
       <ImageSelection currentChaterDetail={currentChaterDetail} userDetail={userDetail} />

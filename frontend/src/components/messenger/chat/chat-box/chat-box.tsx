@@ -72,6 +72,25 @@ const ChatBox = () => {
                     />
                   )}
 
+                  {message.messageData.messageType == "imageMessage" && (
+                    <ImageMessage
+                      _id={message.messageData._id}
+                      messageImageSrc={message.messageData.imageMessageSrc}
+                      messegeChannelType={message.messegeChannelType}
+                      time={new Date()}
+                      userImageSrc={
+                        message.messegeChannelType == "incomingMessage"
+                          ? currentChaterDetail.currentChaterType == "user" && currentChaterDetail.profileImageUrl
+                            ? currentChaterDetail.profileImageUrl
+                            : "/Asset/avatar.jpg"
+                          : userDetail.profileImageUrl
+                      }
+                      userName={
+                        message.messegeChannelType == "incomingMessage" ? currentChaterDetail?.name : userDetail?.name
+                      }
+                    />
+                  )}
+
                   {/* {message.messageData.messageType == "voiceMessage" && (
                     <VoiceMessage
                       _id={message.messageData._id}
@@ -91,24 +110,7 @@ const ChatBox = () => {
                     />
                   )}
 
-                  {message.messageData.messageType == "imageMessage" && (
-                    <ImageMessage
-                      _id={message.messageData._id}
-                      messageImageSrc={message.messageData.imageMessageSrc}
-                      messegeChannelType={message.messegeChannelType}
-                      time={new Date()}
-                      userImageSrc={
-                        message.messegeChannelType == "incomingMessage"
-                          ? currentChaterDetail.currentChaterType == "user" && currentChaterDetail.profileImageUrl
-                            ? currentChaterDetail.profileImageUrl
-                            : "/Asset/avatar.jpg"
-                          : userDetail.profileImageUrl
-                      }
-                      userName={
-                        message.messegeChannelType == "incomingMessage" ? currentChaterDetail?.name : userDetail?.name
-                      }
-                    />
-                  )}
+                 
 
                   {message.messageData.messageType == "pollMessage" && (
                     <PollMessage

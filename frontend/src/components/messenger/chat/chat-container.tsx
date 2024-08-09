@@ -81,6 +81,7 @@ const ChatContainer = () => {
             currentStatus="ofline"
             chaterType="single"
             isChatingWithGroup={isCurrentChatingWithGroup}
+            closeButtonHanlder={() => setShowChaterToggleProfile(false)}
           />
         )}
         {showChaterToggleProfile && currentChaterDetail != null && currentChaterDetail.currentChaterType == "group" && (
