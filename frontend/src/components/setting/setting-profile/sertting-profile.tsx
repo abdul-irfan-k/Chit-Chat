@@ -1,4 +1,6 @@
+import { Button } from "@/components/ui/button"
 import { CallIcon, MailIcon } from "@/constants/icon-constant"
+import { FilePenLine } from "lucide-react"
 import Image from "next/image"
 import React, { FC } from "react"
 
@@ -7,36 +9,29 @@ interface SettingProfileProps {
   name: string
   phoneNumber: string
   email: string
+  handleCloseButtonClick(): void
 }
-const SettingProfile: FC<SettingProfileProps> = ({ email, name, phoneNumber, profileImageSrc }) => {
+const SettingProfile: FC<SettingProfileProps> = ({
+  email,
+  name,
+  phoneNumber,
+  profileImageSrc,
+  handleCloseButtonClick,
+}) => {
   return (
-    <div>
-      <div className="flex justify-center">
-        <div className="mt-5 relative  w-[20%] aspect-square rounded-full overflow-hidden">
-          <Image src={profileImageSrc} alt="image" fill />
-        </div>
+    <div className="relative mt-5 flex ">
+      <div className="relative w-[20%] bg-red-300 aspect-square rounded-[20%] overflow-hidden">
+        <Image src={profileImageSrc} fill alt="profile-image" />
       </div>
 
-      <div className="mt-5 gap-1 flex flex-col">
-        <div className="gap-5 flex  items-center">
-          <div className="relative  w-6 aspect-square ">
-            <CallIcon />
-          </div>
-          <div className="gap-1 flex flex-col">
-            <span className="text-md">{phoneNumber}</span>
-            <span className="text-base dark:text-slate-200 ">phone</span>
-          </div>
-        </div>
-        <div className="gap-5 flex items-center">
-          <div className="relative  w-6 aspect-square ">
-            <MailIcon />
-          </div>
-          <div className="gap-1 flex flex-col">
-            <span className="text-md">{email}</span>
-            <span className="text-base dark:text-slate-200 ">email</span>
-          </div>
-        </div>
+      <div className="ml-5 my-auto gap-1 flex flex-col text-teal-50">
+        <span className="text-lg font-medium">{name}</span>
+        <span className="">{phoneNumber}</span>
       </div>
+
+      <Button className="ml-auto relative w-10 bg-[#303237]" rounded onClick={handleCloseButtonClick} size={"icon"}>
+        <FilePenLine className="w-5 aspect-square" />
+      </Button>
     </div>
   )
 }

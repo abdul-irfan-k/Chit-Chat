@@ -23,6 +23,11 @@ const config: Config = {
           primary: "var(--background-primary)",
           secondary: "var(--background-secondary)",
         },
+        text: {
+          DEFAULT: "var(--text-primary)",
+          primary: "var(--text-primary)",
+          secondary: "var(--text-secondary)",
+        },
         foreground: { DEFAULT: "var(--foreground)" },
         primary: {
           DEFAULT: "var(--primary)",

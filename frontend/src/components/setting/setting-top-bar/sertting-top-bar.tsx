@@ -1,44 +1,21 @@
 "use client"
-import { ArrowBackIcon, CallIcon, EditIcon } from "@/constants/icon-constant"
-import { useAppDispatch } from "@/store"
+import { Button } from "@/components/ui/button"
+import { X } from "lucide-react"
 import React, { FC, useState } from "react"
 
 interface SettingTopBarProps {
-  backButtonClickHandler(): void
-  editButtonClickHandler(): void
+  handleCloseButtonClick(): void
 }
-const SettingTopBar: FC<SettingTopBarProps> = ({ editButtonClickHandler, backButtonClickHandler }) => {
-  const [showMoreOption, setShowMoreOption] = useState<boolean>(false)
-
+const SettingTopBar: FC<SettingTopBarProps> = ({ handleCloseButtonClick }) => {
   return (
-    <div className="flex justify-between items-center">
-      <div className="flex gap-3 items-center">
-        <div className="relative  w-5 aspect-square" onClick={backButtonClickHandler}>
-          <ArrowBackIcon />
-        </div>
-        <span>Setting</span>
+    <div className="flex justify-between ">
+      <div className=" flex flex-col">
+        <span className="font-bold text-text text-2xl">Settings</span>
+        <span>Change your app setting.</span>
       </div>
-      <div className="flex gap-3 items-center">
-        <div className="relative  w-5 aspect-square" onClick={editButtonClickHandler}>
-          <EditIcon />
-        </div>
-        <div
-          className="relative  w-5 aspect-square"
-          onClick={() => {
-            setShowMoreOption(!showMoreOption)
-          }}
-        >
-          <CallIcon />
-          {showMoreOption && (
-            <div className="absolute gap-1 top-[100%] px-4 py-2 flex items-center rounded-md dark:bg-neutral-950 ">
-              <div className="w-4 aspect-square">
-                <CallIcon className="w-4 aspect-square" width="" height="" />
-              </div>
-              <span>Logout</span>
-            </div>
-          )}
-        </div>
-      </div>
+      <Button className="relative w-10 bg-[#383a42]" rounded onClick={handleCloseButtonClick} size={"icon"}>
+        <X className="w-5 aspect-square" />
+      </Button>
     </div>
   )
 }

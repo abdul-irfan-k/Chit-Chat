@@ -1,41 +1,49 @@
-import { ArrowForwardIcon, BellIcon, DatabaseIcon, DevicesIcon, FolderIcon, GearIcon, LockIcon } from "@/constants/icon-constant"
+import {
+  ArrowForwardIcon,
+  BellIcon,
+  DatabaseIcon,
+  DevicesIcon,
+  FolderIcon,
+  GearIcon,
+  LockIcon,
+} from "@/constants/icon-constant"
 import React, { FC } from "react"
 import { settingMenuType } from "../setting-container"
 
 interface SettingMenuProps {
-  settingMenuClickHandler(currentMenuType: settingMenuType): void
+  handleSettingMenuClick(currentMenuType: settingMenuType): void
 }
-const SettingMenu: FC<SettingMenuProps> = ({ settingMenuClickHandler }) => {
+const SettingMenu: FC<SettingMenuProps> = ({ handleSettingMenuClick }) => {
   return (
     <div className="gap-5 mt-10 flex flex-col ">
       <SettingMenuItems
         title="Notification and Sounds"
-        onClickHandler={() => settingMenuClickHandler("notificationAndSound")}
+        onClickHandler={() => handleSettingMenuClick("notificationAndSound")}
       >
         <BellIcon width="" height="" className="w-6 aspect-square" />
       </SettingMenuItems>
-      <SettingMenuItems title="Data and Storage" onClickHandler={() => settingMenuClickHandler("dataAndStorage")}>
+      <SettingMenuItems title="Data and Storage" onClickHandler={() => handleSettingMenuClick("dataAndStorage")}>
         <DatabaseIcon width="" height="" className="w-6 aspect-square" />
       </SettingMenuItems>
       <SettingMenuItems
         title="Privacy And Security"
-        onClickHandler={() => settingMenuClickHandler("privacyAndSecurity")}
+        onClickHandler={() => handleSettingMenuClick("privacyAndSecurity")}
       >
         <LockIcon width="" height="" className="w-6 aspect-square" />
       </SettingMenuItems>
-      <SettingMenuItems title="General Setting" onClickHandler={() => settingMenuClickHandler("generalSetting")}>
+      <SettingMenuItems title="General Setting" onClickHandler={() => handleSettingMenuClick("generalSetting")}>
         <GearIcon width="" height="" className="w-6 aspect-square" />
       </SettingMenuItems>
-      <SettingMenuItems title="Chat Folders" onClickHandler={() => settingMenuClickHandler("chatFolders")}>
+      <SettingMenuItems title="Chat Folders" onClickHandler={() => handleSettingMenuClick("chatFolders")}>
         <FolderIcon width="" height="" className="w-6 aspect-square" />
       </SettingMenuItems>
-      <SettingMenuItems title="Stickers And Emoji" onClickHandler={() => settingMenuClickHandler("strickersAndEmoji")}>
+      <SettingMenuItems title="Stickers And Emoji" onClickHandler={() => handleSettingMenuClick("strickersAndEmoji")}>
         <BellIcon width="" height="" className="w-6 aspect-square" />
       </SettingMenuItems>
-      <SettingMenuItems title="Devices" onClickHandler={() => settingMenuClickHandler("devices")}>
+      <SettingMenuItems title="Devices" onClickHandler={() => handleSettingMenuClick("devices")}>
         <DevicesIcon width="" height="" className="w-6 aspect-square" />
       </SettingMenuItems>
-      <SettingMenuItems title="Language" onClickHandler={() => settingMenuClickHandler("language")}>
+      <SettingMenuItems title="Language" onClickHandler={() => handleSettingMenuClick("language")}>
         <BellIcon width="" height="" className="w-6 aspect-square" />
       </SettingMenuItems>
     </div>

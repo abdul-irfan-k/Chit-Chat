@@ -26,6 +26,8 @@
     --radius: 0.5rem;
 
     --morphic: #2e3038;
+
+    --text-primary: #000;
   }
 
   .dark {
@@ -56,6 +58,8 @@
     --ring: #17222d;
     --radius: 0.5rem;
     --morphic: #2e3038;
+
+    --text-primary: #fff;
   }
 }
 

@@ -23,26 +23,25 @@ export type settingMenuType =
   | "profileEdit"
   | undefined
 
-
 const SettingContainer = () => {
   const dispatch = useAppDispatch()
-  const [settingSelectedMenu, setSettingSelectedMenu] = useState<settingMenuType>()
+  const [selectedSettingMenu, setSelectedSettingMenu] = useState<settingMenuType>()
 
-  const settingMenuListClickHandler = (selectedMenuType: settingMenuType) => {
-    setSettingSelectedMenu(selectedMenuType)
+  const handleSettingMenuClick = (selectedMenuType: settingMenuType) => {
+    setSelectedSettingMenu(selectedMenuType)
   }
 
   const { userDetail } = useSelector((state: { userDetail: userDetailState }) => state.userDetail)
-  const settingBackButtonHandler = () => setSettingSelectedMenu(undefined)
+  const handleBackButtonClick = () => setSelectedSettingMenu(undefined)
 
   return (
     <div className="relative  overflow-hidden w-full h-full">
-      {userDetail != null && (
+      {userDetail && (
         <>
           <AnimatePresence>
-            {settingSelectedMenu == undefined && (
+            {selectedSettingMenu == undefined && (
               <motion.div
-                key={settingSelectedMenu}
+                key={selectedSettingMenu}
                 initial={{ translateX: "-100%" }}
                 animate={{ translateX: "0%" }}
                 exit={{ translateX: "-100%" }}
@@ -50,10 +49,9 @@ const SettingContainer = () => {
                 className="absolute w-full"
               >
                 <SettingTopBar
-                  backButtonClickHandler={() => {
+                  handleCloseButtonClick={() => {
                     dispatch(sidebarReducerAction.changeSideBarSortOption({ currentSideBarSortOption: "messenger" }))
                   }}
-                  editButtonClickHandler={() => setSettingSelectedMenu("profileEdit")}
                 />
                 <SettingProfile
                   {...userDetail}
@@ -61,39 +59,40 @@ const SettingContainer = () => {
                   profileImageSrc={
                     userDetail.profileImageUrl == undefined ? "/Asset/avatar.jpg" : userDetail.profileImageUrl
                   }
+                  handleCloseButtonClick={() => handleSettingMenuClick("profileEdit")}
                 />
-                <SettingMenu settingMenuClickHandler={settingMenuListClickHandler} />
+                <SettingMenu handleSettingMenuClick={handleSettingMenuClick} />
               </motion.div>
             )}
 
-            {settingSelectedMenu == "notificationAndSound" && (
+            {selectedSettingMenu == "notificationAndSound" && (
               <motion.div
-                key={settingSelectedMenu}
+                key={selectedSettingMenu}
                 initial={{ translateX: "100%" }}
                 animate={{ translateX: "0%" }}
                 exit={{ translateX: "100%" }}
                 transition={{ duration: 0.4 }}
                 className="absolute w-full"
               >
-                <SettingNotificationControll backButtonHandler={settingBackButtonHandler} />
+                <SettingNotificationControll backButtonHandler={handleBackButtonClick} />
               </motion.div>
             )}
 
-            {settingSelectedMenu == "generalSetting" && (
+            {selectedSettingMenu == "generalSetting" && (
               <motion.div
-                key={settingSelectedMenu}
+                key={selectedSettingMenu}
                 initial={{ translateX: "100%" }}
                 animate={{ translateX: "0%" }}
                 exit={{ translateX: "100%" }}
                 transition={{ duration: 0.4 }}
                 className="absolute w-full"
               >
-                <GeneralSetting key={settingSelectedMenu} backButtonHandler={settingBackButtonHandler} />
+                <GeneralSetting key={selectedSettingMenu} backButtonHandler={handleBackButtonClick} />
               </motion.div>
             )}
-            {settingSelectedMenu == "profileEdit" && (
+            {selectedSettingMenu == "profileEdit" && (
               <motion.div
-                key={settingSelectedMenu}
+                key={selectedSettingMenu}
                 initial={{ translateX: "100%" }}
                 animate={{ translateX: "0%" }}
                 exit={{ translateX: "100%" }}
@@ -101,8 +100,8 @@ const SettingContainer = () => {
                 className="absolute w-full"
               >
                 <SettingEditProfile
-                  key={settingSelectedMenu}
-                  backButtonHandler={settingBackButtonHandler}
+                  key={selectedSettingMenu}
+                  backButtonHandler={handleBackButtonClick}
                   // profileImageUrl={"/Asset/avatar.jpg"}
                   userDetail={userDetail}
                 />
