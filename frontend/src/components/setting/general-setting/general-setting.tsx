@@ -1,25 +1,58 @@
-import { ArrowBackIcon } from "@/constants/icon-constant"
-import React, { FC } from "react"
-import NormalSetting from "./normal-setting/normal-setting"
-import ColorThemeSetting from "./color-theme-setting/color-theme-setting"
-import KeyboardAndTimeSetting from "./keyboard-and-time-setting/keyboard-and-time-setting"
+import { Button } from "@/components/ui/button"
+import Switch from "@/components/ui/switch"
+import { ChevronLeft } from "lucide-react"
+import React from "react"
 
 interface GeneralSettingProps {
-  backButtonHandler(): void
+  handleBackButtonClick: () => void
 }
-const GeneralSetting: FC<GeneralSettingProps> = ({ backButtonHandler }) => {
+
+const GeneralSetting: React.FC<GeneralSettingProps> = ({ handleBackButtonClick }) => {
   return (
-    <div className="overflow-y-scroll h-screen no-scrollbar ">
-      <div className="fixed gap-3 py-2 flex items-center bg-neutral-950 z-[20] w-full">
-        <div className="w-6 aspect-square" onClick={backButtonHandler}>
-          <ArrowBackIcon className="w-6 aspect-square" />
+    <div>
+      <div className="flex justify-between ">
+        <div className=" flex flex-col">
+          <span className="font-bold text-text text-2xl">General Setting</span>
         </div>
-        <span className="font-semibold text-xl">General</span>
+        <Button className="relative w-10 bg-[#383a42]" rounded onClick={handleBackButtonClick} size={"icon"}>
+          <ChevronLeft className="w-5 aspect-square" />
+        </Button>
       </div>
-      <div className="py-5 gap-2">
-        <NormalSetting />
-        <ColorThemeSetting />
-        <KeyboardAndTimeSetting />
+
+      <div className="mt-5 py-5 border-t-[2px]  dark:border-slate-500">
+        <span className=" text-lg font-medium">Chat backup</span>
+        <div className="mt-5 gap-0 flex flex-col dark:text-neutral-300">
+          <span className="gap-2 flex items-start">
+            <Switch enabled variant={"green"} />
+            Auto backup
+          </span>
+          <span className="gap-2 flex items-start">
+            <Switch enabled variant={"green"} />
+            Include document
+          </span>
+          <span className="gap-2 flex items-start">
+            <Switch enabled variant={"green"} />
+            Include videos
+          </span>
+        </div>
+      </div>
+
+      <div className="mt-5 py-5 border-t-[2px]  dark:border-slate-500">
+        <span className=" text-lg font-medium">Chat walpaper</span>
+
+        <div className="gap-2 mt-5 flex ">
+          <div className="relative w-10 aspect-square rounded-md bg-white block"></div>
+          <div className="relative w-10 aspect-square rounded-md bg-white block"></div>
+          <div className="relative w-10 aspect-square rounded-md bg-white block"></div>
+          <div className="relative w-10 aspect-square rounded-md bg-white block"></div>
+          <div className="relative w-10 aspect-square rounded-md bg-white block"></div>
+          <div className="relative w-10 aspect-square rounded-md bg-white block"></div>
+        </div>
+      </div>
+      <div className="mt-5 py-5 gap-2 border-t-[2px] flex flex-col  dark:border-slate-500">
+        <span className=" text-lg font-medium">Arhive all chat</span>
+        <span className=" text-lg font-medium">Clear all chat</span>
+        <span className="text-red-500  text-lg font-medium">Delete all chat</span>
       </div>
     </div>
   )

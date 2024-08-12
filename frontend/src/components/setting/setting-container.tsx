@@ -87,7 +87,7 @@ const SettingContainer = () => {
                 transition={{ duration: 0.4 }}
                 className="absolute w-full"
               >
-                <GeneralSetting key={selectedSettingMenu} backButtonHandler={handleBackButtonClick} />
+                <GeneralSetting key={selectedSettingMenu} handleBackButtonClick={handleBackButtonClick} />
               </motion.div>
             )}
             {selectedSettingMenu == "profileEdit" && (

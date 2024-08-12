@@ -1,36 +1,40 @@
 "use client"
-
-import { ExpandLessIcon, ExpandMoreIcon, FolderIcon } from "@/constants/icon-constant"
+import { Button } from "@/components/ui/button"
+import { ChevronDown, ChevronUp, File } from "lucide-react"
 import { FC, useState } from "react"
 
 interface SharedDocument {
   name: string
 }
 interface CallSharedDocumentProps {
-  sharedDocument: Array<SharedDocument>
+  sharedDocuments: Array<SharedDocument>
 }
-const CallSharedDocument: FC<CallSharedDocumentProps> = ({ sharedDocument }) => {
-  const [isShowsSharedDocument, setIsShowsSharedDocument] = useState(true)
+const CallSharedDocument: FC<CallSharedDocumentProps> = ({ sharedDocuments }) => {
+  const [isSharedDocumentsVisible, setIsSharedDocumentsVisible] = useState(true)
 
-  const expandIconClickHandler = () => {
-    setIsShowsSharedDocument(!isShowsSharedDocument)
+  const handleExpandIconClick = () => {
+    setIsSharedDocumentsVisible(!isSharedDocumentsVisible)
   }
   return (
-    <div className="rounded-sm p-10 bg-slate-200 fill-slate-950 dark:bg-neutral-950 dark:fill-slate-50">
+    <div className="rounded-sm p-5 bg-slate-200 fill-slate-950 dark:bg-background-primary">
       <div className="flex  justify-between items-center">
         <div className="text-lg font-medium text-slate-950  dark:text-slate-50">Shared Document</div>
-        <div className="w-10 flex justify-center items-cente aspect-square rounded-full bg-slate-300 dark:bg-neutral-800 " onClick={expandIconClickHandler} >
-         {isShowsSharedDocument ? <ExpandLessIcon className="w-8 aspect-square" height="" width="" />: <ExpandMoreIcon className="w-8 aspect-square" height="" width="" />}
-        </div>
+        <Button className=" relative w-10 aspect-square bg-[#303237]" rounded size={"icon"}>
+          {isSharedDocumentsVisible ? (
+            <ChevronUp className="w-5 aspect-square" />
+          ) : (
+            <ChevronDown className="w-5 aspect-square" />
+          )}
+        </Button>
       </div>
 
-      {isShowsSharedDocument && (
+      {isSharedDocumentsVisible && (
         <div className="gap-2 flex flex-col">
-          {sharedDocument.map((document, index) => {
+          {sharedDocuments.map((document, index) => {
             return (
               <div key={index} className="flex gap-2 items-center">
                 <div>
-                  <FolderIcon className="w-5 aspect-square" />
+                  <File className="w-5 aspect-square" />
                 </div>
                 <div className="text-slate-800 dark:text-slate-200">{document.name}</div>
               </div>
