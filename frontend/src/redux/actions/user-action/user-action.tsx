@@ -2,6 +2,7 @@ import { axiosUserInstance } from "@/constants/axios"
 import { userDetailAction, userDetailState, userSignUpAction } from "@/redux/reducers/user-redicer/user-reducer"
 import { AppDispatch } from "@/store"
 import axios from "axios"
+//@ts-ignore
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context"
 
 export const loginHandler = (details: Object, router: AppRouterInstance) => async (dispatch: AppDispatch) => {
@@ -87,5 +88,11 @@ export const userIntialSettingSetupHandler = async (data: Object, router: AppRou
     if (response.isUpdated) {
       router.push("/messenger")
     }
+  } catch (error) {}
+}
+
+export const logoutHandler = async () => {
+  try {
+    const { data } = await axiosUserInstance.post("/logout")
   } catch (error) {}
 }

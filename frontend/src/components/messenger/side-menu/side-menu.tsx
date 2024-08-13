@@ -4,18 +4,19 @@ import Image from "next/image"
 import { FC, useState } from "react"
 import { useRouter } from "next/navigation"
 import { useSelector } from "react-redux"
-import { callReducerSlate } from "@/redux/reducers/call-reducer/call-reducer"
+import { callReducerState } from "@/redux/reducers/call-reducer/call-reducer"
 import FullScreenNotification from "@/components/notificaton/full-screen-notification/full-screen-notification"
 import { useAppDispatch } from "@/store"
 import { sidebarReducerAction } from "@/redux/reducers/sidebar-sort-reducer/sidebar-sort-reducer"
 import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 import { Button } from "@/components/ui/button"
 import { Bell, Contact, MessageCircle, Moon, Power, Settings, Video } from "lucide-react"
+import { logoutHandler } from "@/redux/actions/user-action/user-action"
 
 const SideMenu = () => {
   const dispatch = useAppDispatch()
   const router = useRouter()
-  const { isAvailableCallRoom } = useSelector((state: { callRedcuer: callReducerSlate }) => state.callRedcuer)
+  const { isAvailableCallRoom } = useSelector((state: { callRedcuer: callReducerState }) => state.callRedcuer)
   const { userDetail } = useSelector((state: { userDetail: userDetailState }) => state.userDetail)
   const [showNotification, setShowNotification] = useState<boolean>(false)
 
@@ -30,6 +31,11 @@ const SideMenu = () => {
 
   const notificationButtonHandler = () => {
     dispatch(sidebarReducerAction.changeSideBarSortOption({ currentSideBarSortOption: "notification" }))
+  }
+
+  const handleSignOutButtonClick = async () => {
+    await logoutHandler()
+    window.location.href = window.location.origin
   }
 
   return (
@@ -66,7 +72,7 @@ const SideMenu = () => {
         <SideMenuIcon>
           <Moon className="w-6 aspect-square" />
         </SideMenuIcon>
-        <SideMenuIcon>
+        <SideMenuIcon onClickHandler={handleSignOutButtonClick}>
           <Power className="w-6 aspect-square" />
         </SideMenuIcon>
       </div>

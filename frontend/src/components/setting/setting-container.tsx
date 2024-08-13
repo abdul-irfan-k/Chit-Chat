@@ -10,6 +10,7 @@ import GeneralSetting from "./general-setting/general-setting"
 import SettingEditProfile from "./setting-edit-profile/setting-editprofile"
 import { useAppDispatch } from "@/store"
 import { sidebarReducerAction } from "@/redux/reducers/sidebar-sort-reducer/sidebar-sort-reducer"
+import AccountSettng from "./account-setting/account-settng"
 
 export type settingMenuType =
   | "notificationAndSound"
@@ -21,6 +22,7 @@ export type settingMenuType =
   | "devices"
   | "language"
   | "profileEdit"
+  | "acountSetting"
   | undefined
 
 const SettingContainer = () => {
@@ -75,6 +77,18 @@ const SettingContainer = () => {
                 className="absolute w-full"
               >
                 <SettingNotificationControll backButtonHandler={handleBackButtonClick} />
+              </motion.div>
+            )}
+            {selectedSettingMenu == "acountSetting" && (
+              <motion.div
+                key={selectedSettingMenu}
+                initial={{ translateX: "100%" }}
+                animate={{ translateX: "0%" }}
+                exit={{ translateX: "100%" }}
+                transition={{ duration: 0.4 }}
+                className="absolute w-full"
+              >
+                <AccountSettng handleBackButtonClick={handleBackButtonClick} />
               </motion.div>
             )}
 

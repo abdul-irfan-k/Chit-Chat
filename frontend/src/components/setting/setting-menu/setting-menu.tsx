@@ -20,7 +20,7 @@ const SettingMenu: FC<SettingMenuProps> = ({ handleSettingMenuClick }) => {
     <div className="gap-1 mt-10 flex flex-col bg-background-secondary ">
       <SettingMenuItems
         message="Update your account Details"
-        onClickHandler={() => handleSettingMenuClick("profileEdit")}
+        onClickHandler={() => handleSettingMenuClick("acountSetting")}
         title="Account"
       />
       <SettingMenuItems
