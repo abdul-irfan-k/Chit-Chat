@@ -1,7 +1,7 @@
 import { Request, Response } from "express"
-import { cloudinaryFileUploadHandler } from "../config/cloudinary.js"
+import { cloudinaryFileUploadHandler } from "../config/cloudinary"
 import fs from "fs"
-import { FILENOTINCLUEDED } from "../constants/constants.js"
+import { FILENOTINCLUEDED } from "../constants/constants"
 interface MulterRequest extends Request {
   file?: Express.Multer.File | undefined
 }

@@ -1,12 +1,12 @@
 import { Request, Response } from "express"
-import textMessageModel from "../model/mongoose/message-model/text-message-model.js"
-import ChatRoomModel from "../model/mongoose/chat-room-model/chat-room-model.js"
-import GroupModel from "../model/mongoose/group-model.js"
+import textMessageModel from "../model/mongoose/message-model/text-message-model"
+import ChatRoomModel from "../model/mongoose/chat-room-model/chat-room-model"
+import GroupModel from "../model/mongoose/group-model"
 import mongoose from "mongoose"
-import ConnectionModel from "../model/mongoose/connections-model.js"
-import UserModel from "../model/mongoose/user-model.js"
-import GroupChatRoomModel from "../model/mongoose/chat-room-model/group-chat-room-model.js"
-import MessageReactionModel from "../model/mongoose/message-model/message-reaction-model.js"
+import ConnectionModel from "../model/mongoose/connections-model"
+import UserModel from "../model/mongoose/user-model"
+import GroupChatRoomModel from "../model/mongoose/chat-room-model/group-chat-room-model"
+import MessageReactionModel from "../model/mongoose/message-model/message-reaction-model"
 
 export const sendMessageToUserHandler = async (req: Request, res: Response) => {
   try {

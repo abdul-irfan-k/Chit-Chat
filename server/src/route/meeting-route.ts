@@ -1,6 +1,6 @@
 import express from "express"
-import { checkisLogedInMiddleware } from "../middleware/user-middleware.js"
-import { createGroupVideoCallHandler, getAllCallLogsHandler } from "../controller/meeting-controller.js"
+import { checkisLogedInMiddleware } from "../middleware/user-middleware"
+import { createGroupVideoCallHandler, getAllCallLogsHandler } from "../controller/meeting-controller"
 
 const router = express.Router()
 

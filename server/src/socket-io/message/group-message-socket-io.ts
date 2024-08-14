@@ -1,8 +1,8 @@
 import { Socket } from "socket.io"
-import { SocketIo } from "../../types/socket-io/socket-io.js"
-import PollMessageModel from "../../model/mongoose/message-model/poll-message-model.js"
-import textMessageModel from "../../model/mongoose/message-model/text-message-model.js"
-import GroupChatRoomModel from "../../model/mongoose/chat-room-model/group-chat-room-model.js"
+import { SocketIo } from "../../types/socket-io/socket-io"
+import PollMessageModel from "../../model/mongoose/message-model/poll-message-model"
+import textMessageModel from "../../model/mongoose/message-model/text-message-model"
+import GroupChatRoomModel from "../../model/mongoose/chat-room-model/group-chat-room-model"
 import mongoose from "mongoose"
 
 const groupMessageSocketIo = (socket: SocketIo) => {
@@ -24,8 +24,6 @@ const groupMessageSocketIo = (socket: SocketIo) => {
         messageId: newMessage._id.toString(),
         messageType: "textMessage",
       })
-
-      
     } catch (error) {
       console.log(error)
     }

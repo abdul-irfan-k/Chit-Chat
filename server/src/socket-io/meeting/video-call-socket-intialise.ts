@@ -1,6 +1,6 @@
 import { Socket } from "socket.io"
-import { getRedisSocketCached } from "../../model/redis/redis.js"
-import CallRoomModel from "../../model/mongoose/meeting-model/meeting-model.js"
+import { getRedisSocketCached } from "../../model/redis/redis"
+import CallRoomModel from "../../model/mongoose/meeting-model/meeting-model"
 import { v4 as uuidv4 } from "uuid"
 import mongoose from "mongoose"
 

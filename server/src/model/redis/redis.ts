@@ -1,6 +1,6 @@
 import mongoose from "mongoose"
-import { redisClient } from "../../config/redis.js"
-import SocketModel from "../mongoose/socket-model.js"
+import { redisClient } from "../../config/redis"
+import SocketModel from "../mongoose/socket-model"
 
 export const getRedisSocketCached = async (receiverId: string) => {
   try {

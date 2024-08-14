@@ -9,22 +9,22 @@ import url from "url"
 import * as socketIo from "socket.io"
 dotEnv.config()
 
-import userRouter from "./route/user-route.js"
-import chatRouter from "./route/chat-route.js"
-import meetingRouter from "./route/meeting-route.js"
-import uploadRouter from "./route/upload-route.js"
+import userRouter from "./route/user-route"
+import chatRouter from "./route/chat-route"
+import meetingRouter from "./route/meeting-route"
+import uploadRouter from "./route/upload-route"
 
-import { connnectDB } from "./config/mongoose.js"
-import { connectRedis } from "./config/redis.js"
+import { connnectDB } from "./config/mongoose"
+import { connectRedis } from "./config/redis"
 
-import userMessageSocketIo from "./socket-io/message/user-message-socket-io.js"
-import groupMessageSocketIo from "./socket-io/message/group-message-socket-io.js"
-import { userSocketIntialization } from "./socket-io/user/user-initialise.js"
-import { userStatusSocketIo } from "./socket-io/user/user-status-socket-io.js"
-import callSocketIo from "./socket-io/meeting/video-call-socket-intialise.js"
-import GroupCallSocketIo from "./socket-io/meeting/group-call-socket-io.js"
-import callPeerHandlerSocketIo from "./socket-io/meeting/call-peer-handler-socket-io.js"
-import groupControllSocketIo from "./socket-io/group/group-control-socket-io.js"
+import userMessageSocketIo from "./socket-io/message/user-message-socket-io"
+import groupMessageSocketIo from "./socket-io/message/group-message-socket-io"
+import { userSocketIntialization } from "./socket-io/user/user-initialise"
+import { userStatusSocketIo } from "./socket-io/user/user-status-socket-io"
+import callSocketIo from "./socket-io/meeting/video-call-socket-intialise"
+import GroupCallSocketIo from "./socket-io/meeting/group-call-socket-io"
+import callPeerHandlerSocketIo from "./socket-io/meeting/call-peer-handler-socket-io"
+import groupControllSocketIo from "./socket-io/group/group-control-socket-io"
 
 import { ClientToServerEvents, ServerToClientEvents } from "chit-chat-events"
 
@@ -33,8 +33,7 @@ const server = http.createServer(app)
 const port = process.env.PORT || 8000
 const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000"
 
-const __filename = url.fileURLToPath(import.meta.url)
-export const __dirname = path.dirname(__filename)
+export const dirpath = path.dirname(__filename)
 
 const corsOptions = {
   origin: frontendUrl,

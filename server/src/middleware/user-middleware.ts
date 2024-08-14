@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express"
-import { TOKENEXPIRED, TOKENNOTFOUND } from "../constants/constants.js"
-import { verifyJwtTokenHandler } from "../util/jwt.js"
+import { TOKENEXPIRED, TOKENNOTFOUND } from "../constants/constants"
+import { verifyJwtTokenHandler } from "../util/jwt"
 
 export const checkisLogedInMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   try {

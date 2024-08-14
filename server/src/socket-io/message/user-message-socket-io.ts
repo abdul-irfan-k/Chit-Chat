@@ -1,19 +1,19 @@
 import { Server } from "socket.io"
-import { getRedisSocketCached } from "../../model/redis/redis.js"
-import ChatRoomModel from "../../model/mongoose/chat-room-model/chat-room-model.js"
-import textMessageModel from "../../model/mongoose/message-model/text-message-model.js"
-import { cloudinaryFileUploadHandler } from "../../config/cloudinary.js"
+import { getRedisSocketCached } from "../../model/redis/redis"
+import ChatRoomModel from "../../model/mongoose/chat-room-model/chat-room-model"
+import textMessageModel from "../../model/mongoose/message-model/text-message-model"
+import { cloudinaryFileUploadHandler } from "../../config/cloudinary"
 import fs from "fs"
 import path from "path"
 import { v4 as uuidv4 } from "uuid"
-import { __dirname } from "../../server.js"
-import voiceMessageModel from "../../model/mongoose/message-model/voice-message-model.js"
-import { SocketIo } from "../../types/socket-io/socket-io.js"
-import ImageMessageModel from "../../model/mongoose/message-model/image-message-model.js"
+import { dirpath } from "../../server"
+import voiceMessageModel from "../../model/mongoose/message-model/voice-message-model"
+import { SocketIo } from "../../types/socket-io/socket-io"
+import ImageMessageModel from "../../model/mongoose/message-model/image-message-model"
 import mongoose from "mongoose"
-import PollMessageModel from "../../model/mongoose/message-model/poll-message-model.js"
-import VideoMessageModel from "../../model/mongoose/message-model/video-message-model.js"
-import MessageReactionModel from "../../model/mongoose/message-model/message-reaction-model.js"
+import PollMessageModel from "../../model/mongoose/message-model/poll-message-model"
+import VideoMessageModel from "../../model/mongoose/message-model/video-message-model"
+import MessageReactionModel from "../../model/mongoose/message-model/message-reaction-model"
 
 const userMessageSocketIo = (io: Server, socket: SocketIo) => {
   socket.on("message:newTextMessage", async ({ message, receiverId, senderId, chatRoomId }, callback) => {
@@ -27,9 +27,9 @@ const userMessageSocketIo = (io: Server, socket: SocketIo) => {
 
       const textMessage = await textMessageModel.createNewMessageInChatRoom({
         chatRoomId,
-        message:message.messageContent,
+        message: message.messageContent,
         postedByUser: senderId,
-        _id:message._id
+        _id: message._id,
       })
       console.log(textMessage)
       await ChatRoomModel.addChatConversation({ chatRoomId, messageId: textMessage._id, messageType: "textMessage" })
@@ -43,7 +43,7 @@ const userMessageSocketIo = (io: Server, socket: SocketIo) => {
     try {
       // const receiver = awiat getRedisSocketCached(receiverId)
       const randomId = uuidv4()
-      const filepath = path.join(__dirname, "..", "public", "upload", `${randomId}.mp3`)
+      const filepath = path.join(dirpath, "..", "public", "upload", `${randomId}.mp3`)
 
       // const base64ConvertedData = file.toString("base64")
       await fs.writeFileSync(filepath, message.file)

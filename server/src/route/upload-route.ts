@@ -9,12 +9,9 @@ import {
   uploadSingleDocumentHandler,
   uploadSingleImageHandler,
   uploadVideoHandler,
-} from "../controller/upload-controller.js"
+} from "../controller/upload-controller"
 
 const router = express.Router()
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {

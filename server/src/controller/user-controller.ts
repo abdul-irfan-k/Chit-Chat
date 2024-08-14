@@ -1,5 +1,5 @@
 import { Request, Response } from "express"
-import User from "../model/mongoose/user-model.js"
+import User from "../model/mongoose/user-model"
 import {
   ACESSTOKENNOTPROIVIDED,
   FILENOTINCLUEDED,
@@ -10,22 +10,22 @@ import {
   USERALREADEXIST,
   USERNOTFOUND,
   USERNOTGLOGEDIN,
-} from "../constants/constants.js"
-import { createJwtTokenHandler } from "../util/jwt.js"
-import { assignCookiesHandler } from "../util/cookies.js"
-import Otp from "../model/mongoose/otp-model.js"
+} from "../constants/constants"
+import { createJwtTokenHandler } from "../util/jwt"
+import { assignCookiesHandler } from "../util/cookies"
+import Otp from "../model/mongoose/otp-model"
 import otpGenerator from "otp-generator"
-import { nodeMailerSendEmailer } from "../util/node-mailer.js"
-import { getOtpEmailSubject } from "../util/email-subject.js"
-import { getOtpEmailTemplate } from "../util/email-template.js"
+import { nodeMailerSendEmailer } from "../util/node-mailer"
+import { getOtpEmailSubject } from "../util/email-subject"
+import { getOtpEmailTemplate } from "../util/email-template"
 import axios from "axios"
 import jwt from "jsonwebtoken"
-import ConnectionModel from "../model/mongoose/connections-model.js"
+import ConnectionModel from "../model/mongoose/connections-model"
 import mongoose from "mongoose"
 import fs from "fs"
-import UserModel from "../model/mongoose/user-model.js"
-import { cloudinaryFileUploadHandler } from "../config/cloudinary.js"
-import UserSettingModel from "../model/mongoose/user-setting-model.js"
+import UserModel from "../model/mongoose/user-model"
+import { cloudinaryFileUploadHandler } from "../config/cloudinary"
+import UserSettingModel from "../model/mongoose/user-setting-model"
 
 interface MulterRequest extends Request {
   file?: Express.Multer.File | undefined

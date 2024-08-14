@@ -1,8 +1,8 @@
 import { Request, Response } from "express"
-import GroupCallRoomModel from "../model/mongoose/meeting-model/group-meetingn-model.js"
-import { generateRandomUUID } from "../util/random-text-generator.js"
+import GroupCallRoomModel from "../model/mongoose/meeting-model/group-meetingn-model"
+import { generateRandomUUID } from "../util/random-text-generator"
 import { v4 as uuidv4 } from "uuid"
-import CallRoomModel from "../model/mongoose/meeting-model/meeting-model.js"
+import CallRoomModel from "../model/mongoose/meeting-model/meeting-model"
 import mongoose from "mongoose"
 
 export const createGroupVideoCallHandler = async (req: Request, res: Response) => {

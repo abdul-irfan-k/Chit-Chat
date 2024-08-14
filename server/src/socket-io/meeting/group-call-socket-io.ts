@@ -1,6 +1,6 @@
 import { Server, Socket } from "socket.io"
-import GroupCallRoomModel from "../../model/mongoose/meeting-model/group-meetingn-model.js"
-import { getRedisSocketCached } from "../../model/redis/redis.js"
+import GroupCallRoomModel from "../../model/mongoose/meeting-model/group-meetingn-model"
+import { getRedisSocketCached } from "../../model/redis/redis"
 import { v4 as uuidv4 } from "uuid"
 
 const groupCallSocketIo = (io: Server, socket: Socket) => {

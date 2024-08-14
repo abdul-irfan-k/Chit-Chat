@@ -1,9 +1,9 @@
 import { Socket } from "socket.io"
-import { getSocketIp } from "../../util/socket.js"
-import SocketModel from "../../model/mongoose/socket-model.js"
+import { getSocketIp } from "../../util/socket"
+import SocketModel from "../../model/mongoose/socket-model"
 import mongoose from "mongoose"
-import { removeRedisSocketCachedData } from "../../model/redis/redis.js"
-import ConnectionModel from "../../model/mongoose/connections-model.js"
+import { removeRedisSocketCachedData } from "../../model/redis/redis"
+import ConnectionModel from "../../model/mongoose/connections-model"
 
 export const userSocketIntialization = async (socket: Socket) => {
   const ip = getSocketIp(socket)

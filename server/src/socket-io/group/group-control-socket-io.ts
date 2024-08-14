@@ -1,6 +1,6 @@
 import mongoose from "mongoose"
-import { SocketIo } from "../../types/socket-io/socket-io.js"
-import GroupModel from "../../model/mongoose/group-model.js"
+import { SocketIo } from "../../types/socket-io/socket-io"
+import GroupModel from "../../model/mongoose/group-model"
 
 const groupControlSocketIo = (socket: SocketIo) => {
   socket.on("group:updateSetting", async ({ chatRoomId, groupDetail, senderId, setting }) => {

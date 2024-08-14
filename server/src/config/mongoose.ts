@@ -1,5 +1,5 @@
 import mongoose from "mongoose"
-import SocketModel from "../model/mongoose/socket-model.js"
+import SocketModel from "../model/mongoose/socket-model"
 
 type callbackType = () => void
 export const connnectDB = async (callback: callbackType) => {
