@@ -13,7 +13,7 @@ import MessageInfiniteScroll from "@/components/shared/infinite-scroll/infinite-
 import { AnimatePresence, motion } from "framer-motion"
 
 const ChatBox = () => {
-  const { currentChaterMessage } = useSelector(
+  const { currentChatRoomMessages } = useSelector(
     (state: { chatRoomsMessageReducer: chatRoomMessagesReducerSlate }) => state.chatRoomsMessageReducer,
   )
   const { currentChaterDetail } = useSelector(
@@ -27,11 +27,11 @@ const ChatBox = () => {
         <MessageInfiniteScroll
           currentChaterDetail={currentChaterDetail}
           userDetail={userDetail}
-          totalFetchedMessages={currentChaterMessage?.totalFetchedMessages}
-          totatMessages={currentChaterMessage?.totatMessages}
+          totalFetchedMessages={currentChatRoomMessages?.totalFetchedMessages}
+          totatMessages={currentChatRoomMessages?.totatMessages}
         >
           <AnimatePresence mode="popLayout">
-            {currentChaterMessage?.messages.map((message, index) => {
+            {currentChatRoomMessages?.messages.map((message, index) => {
               return (
                 <motion.div
                   key={message.messageData._id}

@@ -19,7 +19,7 @@
     "axios": "^1.6.2",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
-    "chit-chat-events": "^1.0.2",
+    "chit-chat-events": "link:/home/irfanki/Code Folder/Next js /Video-Conferencing-Web-Application/chit-chat-events",
     "cloudinary": "^1.41.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
@@ -42,7 +42,9 @@
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
+    "@types/body-parser": "^1.19.5",
     "@types/cookie-parser": "^1.4.4",
+    "@types/cors": "^2.8.17",
     "@types/express": "^4.17.17",
     "@types/jsonwebtoken": "^9.0.2",
     "@types/multer": "^1.4.11",
@@ -55,6 +57,7 @@
     "nodemon": "^3.0.1",
     "otp-generator": "^4.0.1",
     "prettier": "^3.0.3",
-    "ts-node": "^10.9.1"
+    "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0"
   }
 }

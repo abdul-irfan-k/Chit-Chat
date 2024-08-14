@@ -17,7 +17,7 @@ export const chatRoomsMessageReducer = createSlice({
         return {
           ...state,
           chatRoomMessages: [{ ...action.payload.messageAndChatRoomDetails, totalFetchedMessages: 10 }],
-          currentChaterMessage: { ...action.payload.messageAndChatRoomDetails, totalFetchedMessages: 10 },
+          currentChatRoomMessages: { ...action.payload.messageAndChatRoomDetails, totalFetchedMessages: 10 },
         }
 
       const oldMessages = state.chatRoomMessages.filter(
@@ -28,7 +28,7 @@ export const chatRoomsMessageReducer = createSlice({
         (chatRoom) => chatRoom.chatRoomId != action.payload.messageAndChatRoomDetails.chatRoomId,
       )
 
-      const currentChaterMessage: chatRoomMessages = {
+      const currentChatRoomMessages: chatRoomMessages = {
         ...action.payload.messageAndChatRoomDetails,
         messages: [...oldMessages.messages, ...action.payload.messageAndChatRoomDetails.messages],
         totatMessages: oldMessages.totatMessages,
@@ -42,22 +42,22 @@ export const chatRoomsMessageReducer = createSlice({
           ...otherChatRoomMessages,
           {
             ...action.payload.messageAndChatRoomDetails,
-            messages: [...currentChaterMessage.messages],
+            messages: [...currentChatRoomMessages.messages],
           },
         ],
-        currentChaterMessage,
+        currentChatRoomMessages,
       }
       // return {...state}
     },
 
     removeCurrentChaterMessage: (state, action) => {
-      return { ...state, currentChaterMessage: undefined }
+      return { ...state, currentChatRoomMessages: undefined }
     },
     addCurrentChaterMessage: (state, action) => {
-      const currentChaterMessage = state.chatRoomMessages.filter(
+      const currentChatRoomMessages = state.chatRoomMessages.filter(
         (chatRoom) => chatRoom.chatRoomId == action.payload.chatRoomId,
       )
-      state.currentChaterMessage = currentChaterMessage[0]
+      state.currentChatRoomMessages = currentChatRoomMessages[0]
     },
     addSendedChatRoomMessage: (
       state,
@@ -71,7 +71,7 @@ export const chatRoomsMessageReducer = createSlice({
         ...state.chatRoomMessages.filter((chatRoom) => chatRoom.chatRoomId != action.payload.chatRoomId),
         { ...updatedChatRoomMessage },
       ]
-      state.currentChaterMessage = updatedChatRoomMessage
+      state.currentChatRoomMessages = updatedChatRoomMessage
     },
     addSendedChatRoomMultipleMessage: (
       state,
@@ -85,7 +85,7 @@ export const chatRoomsMessageReducer = createSlice({
         ...state.chatRoomMessages.filter((chatRoom) => chatRoom.chatRoomId != action.payload.chatRoomId),
         { ...updatedChatRoomMessage },
       ]
-      state.currentChaterMessage = updatedChatRoomMessage
+      state.currentChatRoomMessages = updatedChatRoomMessage
     },
     addMessageAvailableChatRooms: (state, action) => {
       const isAlreadAvailableMessage = state.messageAvailableChatRoom.some(
@@ -132,7 +132,7 @@ export const chatRoomsMessageReducer = createSlice({
         { chatRoomId: action.payload.chatRoomId, messages: updatedAllMessageOfChatRoom },
       ]
 
-      state.currentChaterMessage = { chatRoomId: action.payload.chatRoomId, messages: updatedAllMessageOfChatRoom }
+      state.currentChatRoomMessages = { chatRoomId: action.payload.chatRoomId, messages: updatedAllMessageOfChatRoom }
     },
     updateMessageReaction: (
       state,
@@ -186,8 +186,8 @@ export const chatRoomsMessageReducer = createSlice({
         ...state.chatRoomMessages.filter((chatroom) => chatroom.chatRoomId != action.payload.chatRoomId),
         { chatRoomId: action.payload.chatRoomId, messages: updatedAllMessageOfChatRoom },
       ]
-      if (state.currentChaterMessage?.chatRoomId == action.payload.chatRoomId) {
-        state.currentChaterMessage = { chatRoomId: action.payload.chatRoomId, messages: updatedAllMessageOfChatRoom }
+      if (state.currentChatRoomMessages?.chatRoomId == action.payload.chatRoomId) {
+        state.currentChatRoomMessages = { chatRoomId: action.payload.chatRoomId, messages: updatedAllMessageOfChatRoom }
       }
     },
   },
@@ -271,7 +271,7 @@ interface chatRoomMessages {
 
 interface allChatRoomMessages {
   chatRoomMessages: chatRoomMessages[]
-  currentChaterMessage?: chatRoomMessages
+  currentChatRoomMessages?: chatRoomMessages
   messageAvailableChatRoom: availabeChatRoom[]
 }
 

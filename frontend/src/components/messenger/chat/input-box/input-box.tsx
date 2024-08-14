@@ -39,8 +39,9 @@ const InputBox = () => {
   }
 
   const sendButtonHandler = () => {
-    if (currentChaterDetail == null || currentChaterDetail.chatRoomId == undefined || userDetail == null)
-      return console.log("user id not found")
+    if (currentChaterDetail == null || currentChaterDetail.chatRoomId == undefined || userDetail == null) return
+
+    const messageChannelType = currentChaterDetail.currentChaterType == "user" ? "private" : "group"
     dispatch(
       sendTextMessageHandler(
         {
@@ -49,6 +50,7 @@ const InputBox = () => {
           //@ts-ignore
           senderDetails: { _id: userDetail?._id },
           chatRoomDetail: { _id: currentChaterDetail.chatRoomId },
+          messageChannelType,
         },
         socket,
       ),

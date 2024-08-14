@@ -141,7 +141,7 @@ export const sendTextMessageHandler =
     if (messageChannelType == "private") {
       socket.emit(
         "message:newTextMessage",
-        { message, receiverId, senderId, chatRoomId },
+        { message, chatRoomDetail, receiverDetails, senderDetails, messageChannelType },
         (response: messageEmitCallBackArgs) => {
           // if(response.isSended) dispatch(chatRoomMessageAction.updateMessageStatus())
         },
@@ -153,7 +153,7 @@ export const sendTextMessageHandler =
           message,
           chatRoomDetail,
           messageChannelType,
-          receiverDetails,
+          groupDetails: { _id: chatRoomDetail._id },
           senderDetails,
         },
         (response) => {},

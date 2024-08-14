@@ -16,13 +16,13 @@ import VideoMessageModel from "../../model/mongoose/message-model/video-message-
 import MessageReactionModel from "../../model/mongoose/message-model/message-reaction-model"
 
 const userMessageSocketIo = (io: Server, socket: SocketIo) => {
-  socket.on("message:newTextMessage", async ({ message, receiverId, senderId, chatRoomId }, callback) => {
+  socket.on("message:newTextMessage", async ({ message, chatRoomId, receiverId, senderId }, callback) => {
     try {
       const receiver = await getRedisSocketCached(receiverId)
 
       ChatRoomModel.initiateChat([receiverId, senderId])
       if (receiver != null) {
-        socket.to(receiver.socketId).emit("message:receiveTextMessage", { message, senderId, chatRoomId, receiverId })
+        socket.to(receiver.socketId).emit("message:receiveTextMessage", { message, chatRoomId, receiverId, senderId })
       }
 
       const textMessage = await textMessageModel.createNewMessageInChatRoom({
@@ -31,15 +31,19 @@ const userMessageSocketIo = (io: Server, socket: SocketIo) => {
         postedByUser: senderId,
         _id: message._id,
       })
-      console.log(textMessage)
-      await ChatRoomModel.addChatConversation({ chatRoomId, messageId: textMessage._id, messageType: "textMessage" })
-      if (callback != undefined) callback({ isSended: true })
+
+      await ChatRoomModel.addChatConversation({
+        chatRoomId,
+        messageId: textMessage._id,
+        messageType: "textMessage",
+      })
+      if (callback != undefined) callback({ isSent: true })
     } catch (error) {
       console.log(error)
     }
   })
 
-  socket.on("message:newAudioMessage", async ({ message, senderId, chatRoomId, receiverId }) => {
+  socket.on("message:newAudioMessage", async ({ message, chatRoomId, receiverId, senderId }) => {
     try {
       // const receiver = awiat getRedisSocketCached(receiverId)
       const randomId = uuidv4()
@@ -62,7 +66,7 @@ const userMessageSocketIo = (io: Server, socket: SocketIo) => {
         socket.to(receiver.socketId).emit("message:receiveAudioMessage", {
           chatRoomId,
           message: { file: cloudinaryUpload.url },
-          receiverId,
+          receiverId: receiverId,
           senderId,
         })
       }
@@ -79,11 +83,10 @@ const userMessageSocketIo = (io: Server, socket: SocketIo) => {
   })
 
   socket.on("message:newImageMessage", async ({ chatRoomId, message, receiverId, senderId }) => {
-    console.log("new image")
     const newMessage = new ImageMessageModel({
       chatRoomId,
       postedByUser: senderId,
-      imageMessageSrc: [message.imageMessageSrc],
+      imageMessageSrc: [message.imageSource],
       messageType: "imageMessage",
     })
     await newMessage.save()
@@ -128,15 +131,12 @@ const userMessageSocketIo = (io: Server, socket: SocketIo) => {
       const messageObjectId = new mongoose.Types.ObjectId(message._id)
       const chatRoomObjectId = new mongoose.Types.ObjectId(chatRoomId)
 
-      if (message.messageType == "textMessage")
-        await textMessageModel.deleteOne({ _id: message._id, postedByUser: senderId })
-      else if (message.messageType == "imageMessage")
+      if (message.messageType == "Text") await textMessageModel.deleteOne({ _id: message._id, postedByUser: senderId })
+      else if (message.messageType == "Image")
         await ImageMessageModel.deleteOne({ _id: messageObjectId, postedByUser: senderId })
-      else if (message.messageType == "voiceMessage")
+      else if (message.messageType == "Video")
         await voiceMessageModel.deleteOne({ _id: messageObjectId, postedByUser: senderId })
-      else if (message.messageType == "pollMessage")
-        await PollMessageModel.deleteOne({ _id: messageObjectId, postedByUser: senderId })
-      else if (message.messageType == "videoMessage")
+      else if (message.messageType == "Voice")
         await VideoMessageModel.deleteOne({ _id: messageObjectId, postedByUser: senderId })
 
       await ChatRoomModel.findOneAndUpdate(
