@@ -205,8 +205,8 @@ export interface messageReaction {
 }
 interface messageBasicDetails {
   _id: string
-  chatRoomId: string
-  postedByUser: {
+  chatRoomId?: string
+  postedByUser?: {
     _id?: string
     name: string
     profileImageUrl: string
@@ -220,7 +220,6 @@ interface textMessage extends messageReaction, messageBasicDetails {
 }
 
 interface voiceMessage extends messageReaction, messageBasicDetails {
-  message: string
   messageType: "voiceMessage"
   voiceMessageSrc: string
 }

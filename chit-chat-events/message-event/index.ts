@@ -1,81 +1,58 @@
-export type messageEmitCallBackArgs = { isSent: boolean; status?: "ok" }
+export type messageEmitCallBackArgs = { isSent: boolean; isReached: boolean }
 export type messageEmitCallBack = (response: messageEmitCallBackArgs) => void
 
 export interface PrivateMessageBasicDetail {
   receiverId: string
   senderId: string
   chatRoomId: string
+  messageChannelType: "private"
 }
 export interface GroupMessageBasicDetail {
   groupId: string
   senderId: string
   chatRoomId: string
+  messageChannelType: "group"
 }
 
-interface PrivateNewImageMessageArgs extends PrivateMessageBasicDetail {
+interface ImageMessageArgs {
   message: {
     imageSource: string
     _id?: string
   }
 }
-interface PrivateNewMultipleImageMessageArgs extends PrivateMessageBasicDetail {
+interface MultipleImageMessageArgs {
   message: {
     imageSources: string[]
     _id?: string
   }[]
 }
-interface PrivateNewTextMessageArgs extends PrivateMessageBasicDetail {
+interface TextMessageArgs {
   message: {
     messageContent: string
     _id?: string
   }
 }
-interface PrivateAudioMessageArgs extends PrivateMessageBasicDetail {
+interface AudioBufferMessageArgs {
   message: {
     audioBuffer: Buffer
     _id?: string
   }
 }
 
-interface PrivateNewAudioMessageArgs extends PrivateMessageBasicDetail {
+interface AudioFileMessageArgs {
   message: {
     file: string
     _id?: string
   }
 }
-interface PrivateNewVideoMessageArgs extends PrivateMessageBasicDetail {
+interface VideoMessageArgs {
   message: {
     videoMessageSrc: string
     _id: string
   }
 }
 
-interface groupNewTextMessageArgs extends GroupMessageBasicDetail {
-  message: {
-    messageContent: string
-    _id?: string
-  }
-}
-interface groupAudioMessageArgs extends GroupMessageBasicDetail {
-  message: {
-    file: Buffer
-    _id?: string
-  }
-}
-interface groupNewAudioMessageArgs extends GroupMessageBasicDetail {
-  message: {
-    file: string
-    _id?: string
-  }
-}
-interface groupNewMultipleImageMessageArgs extends GroupMessageBasicDetail {
-  message: {
-    imageMessageSrc: string[]
-    _id?: string
-  }[]
-}
-
-export interface groupNewPollMessageArgs extends GroupMessageBasicDetail {
+interface PollMessageArgs {
   message: {
     title: string
     options: {
@@ -85,39 +62,22 @@ export interface groupNewPollMessageArgs extends GroupMessageBasicDetail {
   }
 }
 
-export interface groupNewImageMessageArgs extends GroupMessageBasicDetail {
-  message: {
-    filepath: string
-    _id?: string
-  }
-}
+type MessageType = "Text" | "Voice" | "Image" | "Video" | "Poll"
 
-interface groupPollMessageVoteUpdateArgs extends GroupMessageBasicDetail {
-  message: {
-    _id: string
-    selectedOption: {
-      _id: string
-      currentVotingStatus: boolean
-    }
-  }
-}
-
-export type MessageType = "Text" | "Voice" | "Image" | "Video" | "Poll"
-
-export interface deleteMessageArgs extends PrivateMessageBasicDetail {
+export interface deleteMessageArgs {
   message: {
     _id: string
     messageType: Exclude<MessageType, "Poll">
   }
 }
 
-interface deleteGroupMessageArgs extends GroupMessageBasicDetail {
+interface deleteGroupMessageArgs {
   message: {
     _id: string
     messageType: MessageType
   }
 }
-export interface reactMessage extends PrivateMessageBasicDetail {
+export interface reactMessage {
   message: {
     _id: string
     emojiId: string
@@ -126,34 +86,36 @@ export interface reactMessage extends PrivateMessageBasicDetail {
 }
 
 export interface PrivateMessageArgs {
-  AudioMessageSend: PrivateAudioMessageArgs
-  ImageMessage: PrivateNewImageMessageArgs
-  MultipleImageMessage: PrivateNewMultipleImageMessageArgs
-  TextMessage: PrivateNewTextMessageArgs
-  AudioMessage: PrivateNewAudioMessageArgs
-  VideoMessage: PrivateNewVideoMessageArgs
+  AudioMessageSend: AudioBufferMessageArgs & PrivateMessageBasicDetail
+  ImageMessage: ImageMessageArgs & PrivateMessageBasicDetail
+  MultipleImageMessage: MultipleImageMessageArgs & PrivateMessageBasicDetail
+  TextMessage: TextMessageArgs & PrivateMessageBasicDetail
+  AudioMessage: AudioFileMessageArgs & PrivateMessageBasicDetail
+  VideoMessage: VideoMessageArgs & PrivateMessageBasicDetail
 }
 
 export interface PrivateMessageActionArgs {
-  deleteMessage: deleteMessageArgs
-  reactMessage: reactMessage
+  deleteMessage: deleteMessageArgs & PrivateMessageBasicDetail
+  reactMessage: reactMessage & PrivateMessageBasicDetail
 }
 
-export interface groupMessageArgs {
-  AudioMessageSend: groupAudioMessageArgs
-  ImageMessage: groupNewImageMessageArgs
-  MultipleImageMessage: groupNewMultipleImageMessageArgs
-  TextMessage: groupNewTextMessageArgs
-  AudioMessage: groupNewAudioMessageArgs
-  VideoMessage: PrivateNewVideoMessageArgs
-  PollMessage: groupNewPollMessageArgs
+export interface GroupMessageArgs {
+  AudioMessageSend: AudioBufferMessageArgs & GroupMessageBasicDetail
+  ImageMessage: ImageMessageArgs & GroupMessageBasicDetail
+  MultipleImageMessage: MultipleImageMessageArgs & GroupMessageBasicDetail
+  TextMessage: TextMessageArgs & GroupMessageBasicDetail
+  AudioMessage: AudioFileMessageArgs & GroupMessageBasicDetail
+  VideoMessage: VideoMessageArgs & GroupMessageBasicDetail
+  PollMessage: PollMessageArgs & GroupMessageBasicDetail
 }
 
-export interface groupMessageActionArgs {
+export interface GroupMessageActionArgs {
+  deleteMessage: deleteGroupMessageArgs & GroupMessageBasicDetail
+  reactMessage: reactMessage & GroupMessageBasicDetail
   pollMessageVoteUpdate: groupPollMessageVoteUpdateArgs
-  deleteMessage: deleteGroupMessageArgs
 }
 
+type ExcludeMessageChannelType<T> = Exclude<T, "messageChannelType">
 interface ClientToServerPrivateMessageEvents {
   "message:newTextMessage": (messageDetails: PrivateMessageArgs["TextMessage"], callback?: messageEmitCallBack) => void
   "message:newAudioMessage": (
@@ -184,46 +146,67 @@ interface ClientToServerPrivateMessageEvents {
 
 interface ClientToServerGroupMessageEvents {
   "groupMessage:newTextMessage": (
-    messageDetails: groupMessageArgs["TextMessage"],
+    messageDetails: GroupMessageArgs["TextMessage"],
     callback?: messageEmitCallBack,
   ) => void
   "groupMessage:newAudioMessage": (
-    messageDetails: groupMessageArgs["AudioMessage"],
+    messageDetails: GroupMessageArgs["AudioMessage"],
     callback?: messageEmitCallBack,
   ) => void
   "groupMessage:newImageMessage": (
-    messageDetails: groupMessageArgs["ImageMessage"],
+    messageDetails: GroupMessageArgs["ImageMessage"],
+    callback?: messageEmitCallBack,
+  ) => void
+  "groupMessage:newVideoMessage": (
+    messageDetails: GroupMessageArgs["VideoMessage"],
     callback?: messageEmitCallBack,
   ) => void
   "groupMessage:newPollMessage": (
-    messageDetails: groupMessageArgs["PollMessage"],
+    messageDetails: GroupMessageArgs["PollMessage"],
     callback?: messageEmitCallBack,
   ) => void
 
   "groupMessage:pollMessageVoteUpdate": (
-    messageDetails: groupMessageActionArgs["pollMessageVoteUpdate"],
+    messageDetails: GroupMessageActionArgs["pollMessageVoteUpdate"],
     callback?: messageEmitCallBack,
   ) => void
-  "groupMessage:deleteMessage": (messageDetails: deleteGroupMessageArgs) => void
+  "groupMessage:deleteMessage": (messageDetails: GroupMessageActionArgs["deleteMessage"]) => void
+  "groupMessage:reactMessage": (messageDetails: GroupMessageActionArgs["reactMessage"]) => void
 }
 
 export interface ClientToServerMessageEvents
   extends ClientToServerPrivateMessageEvents,
     ClientToServerGroupMessageEvents {}
 export interface ServerToClientMessageEvents {
-  "message:receiveTextMessage": (messageDetails: PrivateMessageArgs["TextMessage"]) => void
-  "message:recieveNewImageMessage": (messageDetails: PrivateMessageArgs["ImageMessage"]) => void
-  "message:receiveVideoMessage": (messageDetails: PrivateMessageArgs["VideoMessage"]) => void
-  "message:receiveAudioMessage": (messageDetails: PrivateMessageArgs["AudioMessage"]) => void
-  "message:receiveMultipleImageMessage": (messageDetail: PrivateMessageArgs["MultipleImageMessage"]) => void
+  "message:receiveTextMessage": (messageDetails: ExcludeMessageChannelType<PrivateMessageArgs["TextMessage"]>) => void
+  "message:recieveNewImageMessage": (
+    messageDetails: ExcludeMessageChannelType<PrivateMessageArgs["ImageMessage"]>,
+  ) => void
+  "message:receiveVideoMessage": (messageDetails: ExcludeMessageChannelType<PrivateMessageArgs["VideoMessage"]>) => void
+  "message:receiveAudioMessage": (messageDetails: ExcludeMessageChannelType<PrivateMessageArgs["AudioMessage"]>) => void
+  "message:receiveMultipleImageMessage": (
+    messageDetail: ExcludeMessageChannelType<PrivateMessageArgs["MultipleImageMessage"]>,
+  ) => void
 
-  "groupMessage:receiveTextMessage": (messageDetails: groupMessageArgs["TextMessage"]) => void
-  "groupMessage:receiveAudioMessage": (messageDetails: groupMessageArgs["AudioMessage"]) => void
-  "groupMessage:receiveImageMessage": (messageDetails: groupMessageArgs["ImageMessage"]) => void
-  "groupMessage:receivePollMessage": (messageDetails: groupMessageArgs["PollMessage"]) => void
-  "groupMessage:receiveVideoMessage": (messageDetails: groupMessageArgs["VideoMessage"]) => void
-  "groupMessage:receiveMultipleImageMessage": (messageDetail: groupMessageArgs["MultipleImageMessage"]) => void
+  "groupMessage:receiveTextMessage": (
+    messageDetails: ExcludeMessageChannelType<GroupMessageArgs["TextMessage"]>,
+  ) => void
+  "groupMessage:receiveAudioMessage": (
+    messageDetails: ExcludeMessageChannelType<GroupMessageArgs["AudioMessage"]>,
+  ) => void
+  "groupMessage:receiveImageMessage": (
+    messageDetails: ExcludeMessageChannelType<GroupMessageArgs["ImageMessage"]>,
+  ) => void
+  "groupMessage:receivePollMessage": (
+    messageDetails: ExcludeMessageChannelType<GroupMessageArgs["PollMessage"]>,
+  ) => void
+  "groupMessage:receiveVideoMessage": (
+    messageDetails: ExcludeMessageChannelType<GroupMessageArgs["VideoMessage"]>,
+  ) => void
+  "groupMessage:receiveMultipleImageMessage": (
+    messageDetail: ExcludeMessageChannelType<GroupMessageArgs["MultipleImageMessage"]>,
+  ) => void
 
   "message:deleteMessage": (response: PrivateMessageActionArgs["deleteMessage"]) => void
-  "groupMessage:deleteMessage": (response: groupMessageActionArgs["deleteMessage"]) => void
+  "groupMessage:deleteMessage": (response: GroupMessageActionArgs["deleteMessage"]) => void
 }

@@ -1,22 +1,19 @@
+import { generateUUIDString } from "@/util/uuid"
 import { axiosChatInstance, axiosUploadInstance } from "@/constants/axios"
-import { SocketIO } from "@/provider/socket-io-provider/socket-io-provider"
+
+import { AppDispatch } from "@/store"
 import { chatUserListAction, groupSetting } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import { chatRoomMessageAction, messageTypes } from "@/redux/reducers/message-reducer/message-reducer"
-import { AppDispatch } from "@/store"
-import { generateUUIDString } from "@/util/uuid"
-import {
-  deleteMessageInterface,
-  groupMessageBasicDetail,
-  groupNewPollMessageInterface,
-  messageEmitCallBackArgs,
-  privateTextMessageEvent,
-  reactMeessageInterface,
-  groupMessageArgs,
-  privateMessageArgs,
-  groupMessageActionArgs,
-  privateMessageActionArgs,
-} from "chit-chat-events"
+
 import { Socket } from "socket.io-client"
+import { SocketIO } from "@/provider/socket-io-provider/socket-io-provider"
+import {
+  messageEmitCallBackArgs,
+  GroupMessageArgs,
+  PrivateMessageArgs,
+  PrivateMessageActionArgs,
+  GroupMessageActionArgs,
+} from "chit-chat-events"
 
 export const addAllChatUsers = () => async (dispatch: AppDispatch) => {
   try {
@@ -24,7 +21,6 @@ export const addAllChatUsers = () => async (dispatch: AppDispatch) => {
     // dispatch(chatUserListAction.addIntialAllUserList(usersDeatail))
     const { data: groupDetail } = await axiosChatInstance.post("/getAllChatGroups")
     // console.log("user details", usersDeatail)
-    // console.log("all chat groups", data)
     dispatch(chatUserListAction.addIntialAllUserAndGroupList({ usersDeatail, groupDetail }))
   } catch (error) {}
 }
@@ -42,10 +38,10 @@ export const createGroupHandler = (details: Object) => async (dispatch: AppDispa
   } catch (error) {}
 }
 
-export const updateCurrentChaterHandler = (details) => async (dispatch: AppDispatch) => {
+export const updateCurrentChaterHandler = (details: any) => async (dispatch: AppDispatch) => {
   dispatch(chatUserListAction.updateCurrentUser(details))
 }
-export const updateCurrentChatingGroupHandler = (details) => async (dispatch: AppDispatch) => {
+export const updateCurrentChatingGroupHandler = (details: any) => async (dispatch: AppDispatch) => {
   dispatch(chatUserListAction.updateCurrentChatingGroup(details))
 }
 
@@ -74,15 +70,16 @@ export const getChatRoomMessageHandler =
       })
       if (data == undefined) return dispatch(chatRoomMessageAction.removeCurrentChaterMessage({}))
 
-      const messageData = data[0].messages.map((elm) => {
+      const messageData = data[0].messages.map((elm: any) => {
         const messegeChannelType = elm.postedByUser == myUserId ? "outgoingMessage" : "incomingMessage"
         return { messageData: { ...elm, messageSendedTime: new Date(elm.createdAt) }, messegeChannelType }
       })
 
       const isInitialMessages = skip == 0
+      //@ts-ignore
       dispatch(
         chatRoomMessageAction.addChatRoomMessage({
-          messageAndChatRoomDetails: { chatRoomId, messages: messageData, totatMessages: data.totalMessages },
+          messageAndChatRoomDetails: { messages: messageData, totatMessages: data.totalMessages, chatRoomId },
           isInitialMessages,
         }),
       )
@@ -100,118 +97,109 @@ export const getGroupChatRoomMessageHandler =
       const { data } = await axiosChatInstance.post("/getGroupChatRoomMessage", { chatRoomId })
       if (data == undefined) return dispatch(chatRoomMessageAction.removeCurrentChaterMessage({}))
 
-      const newData = data[0].messages.map((elm) => {
+      const newData = data[0].messages.map((elm: any) => {
         const messegeChannelType = elm.postedByUser == myUserId ? "outgoingMessage" : "incomingMessage"
         return { messageData: { ...elm, messageSendedTime: new Date(elm.createdAt) }, messegeChannelType }
       })
-      dispatch(chatRoomMessageAction.addIntialChatRoomMessage({ chatRoomId, messages: newData }))
+
+      //@ts-ignore
+      dispatch(chatRoomMessageAction.addChatRoomMessage({ messages: newData, isInitialMessages: true }))
       dispatch(chatRoomMessageAction.addMessageAvailableChatRooms({ chatRoomId }))
     } catch (error) {
       console.log(error)
       return dispatch(chatRoomMessageAction.removeCurrentChaterMessage({}))
     }
   }
-type sendTextMessageHandlerArgs = privateMessageArgs["TextMessage"] | groupMessageArgs["TextMessage"]
-export const sendTextMessageHandler =
-  (
-    //@ts-ignore
-    { chatRoomDetail, message, messageChannelType, senderDetails, receiverDetails }: sendTextMessageHandlerArgs,
-    socket: SocketIO,
-  ) =>
-  async (dispatch: AppDispatch) => {
-    message._id = generateUUIDString()
-    dispatch(
-      chatRoomMessageAction.addSendedChatRoomMessage({
-        chatRoomId: chatRoomDetail._id,
-        newMessage: {
+
+type textMessageArgs = PrivateMessageArgs["TextMessage"] | GroupMessageArgs["TextMessage"]
+export const sendTextMessageHandler = (args: textMessageArgs, socket: SocketIO) => async (dispatch: AppDispatch) => {
+  const { chatRoomId, message, senderId, messageChannelType } = args
+  message._id = generateUUIDString()
+  dispatch(
+    chatRoomMessageAction.addSendedChatRoomMessage({
+      chatRoomId: chatRoomId,
+      newMessage: {
+        messegeChannelType: "outgoingMessage",
+        messageData: {
+          message: message.messageContent,
+          messageType: "textMessage",
           _id: message._id,
-          messegeChannelType: "outgoingMessage",
-          messageData: {
-            chatRoomId: chatRoomDetail._id,
-            message: message.messageContent,
-            messageType: "textMessage",
-            //@ts-ignore
-            postedByUser: { name: senderDetails.name },
-          },
-          messageStatus: "notSended",
         },
-      }),
+      },
+    }),
+  )
+
+  if (messageChannelType == "private") {
+    socket.emit(
+      "message:newTextMessage",
+      { message, chatRoomId, receiverId: args.receiverId, senderId, messageChannelType },
+      (response: messageEmitCallBackArgs) => {},
     )
-
-    if (messageChannelType == "private") {
-      socket.emit(
-        "message:newTextMessage",
-        { message, chatRoomDetail, receiverDetails, senderDetails, messageChannelType },
-        (response: messageEmitCallBackArgs) => {
-          // if(response.isSended) dispatch(chatRoomMessageAction.updateMessageStatus())
-        },
-      )
-    } else {
-      socket.emit(
-        "groupMessage:newTextMessage",
-        {
-          message,
-          chatRoomDetail,
-          messageChannelType,
-          groupDetails: { _id: chatRoomDetail._id },
-          senderDetails,
-        },
-        (response) => {},
-      )
-    }
+  } else {
+    socket.emit(
+      "groupMessage:newTextMessage",
+      {
+        message,
+        chatRoomId,
+        groupId: args.groupId,
+        senderId,
+        messageChannelType,
+      },
+      (response) => {},
+    )
   }
-
-export const sendPollMessageHandler = () => async (dispatch: AppDispatch) => {}
-
-// sending group poll message
-interface sendGroupPollMessageArguments extends groupNewPollMessageInterface {
-  postedByUser: string
 }
 
-export const sendGroupPollMessageHandler =
-  ({ chatRoomId, groupDetail, message, postedByUser, senderId }: groupMessageArgs["PollMessage"], socket: SocketIO) =>
-  async (dispatch: AppDispatch) => {
-    socket.emit("groupMessage:newPollMessage", { chatRoomId, groupDetail, message, senderId })
+type audioMessageArgs = PrivateMessageArgs["AudioMessage"] | GroupMessageArgs["AudioMessage"]
+type sendAudioMessageHandleArgs = audioMessageArgs & {
+  messageSrc: string
+}
+export const sendAudioMessageHandler =
+  (details: sendAudioMessageHandleArgs, socket: SocketIO) => async (dispatch: AppDispatch) => {
+    const { chatRoomId, message, senderId, messageChannelType, messageSrc } = details
+    message._id = generateUUIDString()
     dispatch(
       chatRoomMessageAction.addSendedChatRoomMessage({
         chatRoomId,
         newMessage: {
           messegeChannelType: "outgoingMessage",
           messageData: {
-            messageType: "pollMessage",
-            _id: "",
-            chatRoomId,
+            messageType: "voiceMessage",
+            _id: message._id,
+            voiceMessageSrc: messageSrc,
             messageSendedTime: new Date(),
-            options: message.options,
-            postedByUser: postedByUser,
-            title: message.title,
           },
         },
       }),
     )
+    if (messageChannelType == "private")
+      socket.emit("message:newAudioMessage", {
+        chatRoomId,
+        message,
+        senderId,
+        messageChannelType,
+        receiverId: details.senderId,
+      })
+    else {
+      socket.emit("groupMessage:newAudioMessage", {
+        chatRoomId,
+        message,
+        groupId: details.groupId,
+        senderId,
+        messageChannelType,
+      })
+    }
   }
-// receiving group poll message
 
-type imageMessage = privateMessageArgs["ImageMessage"] | groupMessageArgs["ImageMessage"]
+type imageMessage = PrivateMessageArgs["ImageMessage"] | GroupMessageArgs["ImageMessage"]
 type sendImageMessageArguments = imageMessage & {
   imageUrl: string
   formData: FormData
 }
 // send image message
 export const sendImageMessageHandler =
-  (
-    {
-      chatRoomDetail,
-      formData,
-      imageUrl,
-      message,
-      messageChannelType,
-      receiverDetails,
-      senderDetails,
-    }: sendImageMessageArguments,
-    socket: SocketIO,
-  ) =>
-  async (dispatch: AppDispatch) => {
+  (args: sendImageMessageArguments, socket: SocketIO) => async (dispatch: AppDispatch) => {
+    const { chatRoomId, formData, imageUrl, message, messageChannelType, senderId } = args
     message._id = generateUUIDString()
     dispatch(
       chatRoomMessageAction.addSendedChatRoomMessage({
@@ -220,11 +208,8 @@ export const sendImageMessageHandler =
           messegeChannelType: "outgoingMessage",
           messageData: {
             _id: message._id,
-            chatRoomId: chatRoomDetail._id,
+            chatRoomId: chatRoomId,
             messageType: "imageMessage",
-            postedByUser: {
-              ...senderDetails,
-            },
             imageMessageSrc: [imageUrl],
           },
           messageStatus: "notSended",
@@ -240,40 +225,31 @@ export const sendImageMessageHandler =
 
     if (messageChannelType == "private")
       socket.emit("message:newImageMessage", {
-        chatRoomDetail,
-        receiverDetails,
-        senderDetails,
+        chatRoomId,
         messageChannelType: "private",
-        message: { ...message, imageMessageSrc: response },
+        message: { ...message, imageSource: response },
+        receiverId: args.receiverId,
+        senderId,
       })
     else
       socket.emit("groupMessage:newImageMessage", {
-        chatRoomDetail,
-        message: { ...message, imageMessageSrc: response },
+        chatRoomId,
         messageChannelType,
-        receiverDetails,
-        senderDetails,
+        message: { ...message, imageSource: response },
+        groupId: args.groupId,
+        senderId,
       })
   }
 
-type multipleImageMessage = privateMessageArgs["MultipleImageMessage"] | groupMessageArgs["MultipleImageMessage"]
+type multipleImageMessage = PrivateMessageArgs["MultipleImageMessage"] | GroupMessageArgs["MultipleImageMessage"]
 type sendMultipleImageMessageHandlerArgs = multipleImageMessage & {
   imageUrls: string[]
   formData: FormData
 }
 export const sendMultipleImageMessageHandler =
-  (
-    {
-      chatRoomDetail,
-      formData,
-      imageUrls,
-      message,
-      messageChannelType,
-      senderDetails,
-    }: sendMultipleImageMessageHandlerArgs,
-    socket: SocketIO,
-  ) =>
-  async (dispatch: AppDispatch) => {
+  (args: sendMultipleImageMessageHandlerArgs, socket: SocketIO) => async (dispatch: AppDispatch) => {
+    const { chatRoomId, formData, imageUrls, message, messageChannelType, senderId } = args
+
     const newMessage: Array<messageTypes> = []
     imageUrls.forEach((imageUrl) => {
       newMessage.push({
@@ -283,7 +259,6 @@ export const sendMultipleImageMessageHandler =
           chatRoomId,
           messageType: "imageMessage",
           messageSendedTime: new Date(),
-          postedByUser: "",
           imageMessageSrc: [imageUrl],
         },
         messageStatus: "notSended",
@@ -299,75 +274,76 @@ export const sendMultipleImageMessageHandler =
     if (messageChannelType == "private")
       socket.emit("message:newImageMessage", {
         chatRoomId,
-        message: { imageMessageSrc: response.fileUrl },
-        receiverId,
+        message: { imageSource: response.fileUrl },
+        receiverId: args.receiverId,
+        senderId,
+        messageChannelType,
+      })
+    else
+      socket.emit("groupMessage:newImageMessage", {
+        chatRoomId,
+        groupId: args.groupId,
+        message: { imageSource: response.fileUrl },
+        messageChannelType,
         senderId,
       })
-    else messageChannelType == "group"
-    socket.emit("groupMessage:newImageMessage", { chatRoomDetail, messageChannelType, groupDetails })
   }
 
-export const sendAudioMessageHandler =
-  (
-    {
-      chatRoomId,
-      message,
-      receiverId,
-      senderId,
-    }: { message: { file: Buffer; url: string }; receiverId: string; senderId: string; chatRoomId: string },
-    socket: SocketIO,
-  ) =>
+type videoMessage = PrivateMessageArgs["VideoMessage"] | GroupMessageArgs["VideoMessage"]
+type sendVideoMessageArgs = videoMessage & {
+  formData: string
+  videoUrl: string
+}
+export const sendVideoMessageHandler =
+  (args: sendVideoMessageArgs, socket: SocketIO) => async (dispatch: AppDispatch) => {
+    const { chatRoomId, formData, message, messageChannelType, senderId, videoUrl } = args
+    message._id = generateUUIDString()
+    const { data: response } = await axiosUploadInstance.post("/uploadVideo", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    })
+    if (messageChannelType == "private")
+      socket.emit("message:newVideoMessage", {
+        message: { videoMessageSrc: response.fileUrl, _id: message._id },
+        senderId,
+        receiverId: args.receiverId,
+        chatRoomId,
+        messageChannelType,
+      })
+    else
+      socket.emit("groupMessage:newVideoMessage", {
+        message: { videoMessageSrc: response.fileUrl, _id: message._id },
+        senderId,
+        groupId: args.groupId,
+        chatRoomId,
+        messageChannelType,
+      })
+  }
+
+type sendGroupPollMessageArgs = GroupMessageArgs["PollMessage"]
+export const sendGroupPollMessageHandler =
+  ({ chatRoomId, groupId, message, senderId, messageChannelType }: sendGroupPollMessageArgs, socket: SocketIO) =>
   async (dispatch: AppDispatch) => {
-    console.log("send audio message")
+    message._id = generateUUIDString()
     dispatch(
       chatRoomMessageAction.addSendedChatRoomMessage({
         chatRoomId,
         newMessage: {
           messegeChannelType: "outgoingMessage",
+          //@ts-ignore
           messageData: {
-            messageType: "voiceMessage",
-            _id: "",
-            chatRoomId,
-            voiceMessageSrc: message.url,
-            messageSendedTime: new Date(),
-            postedByUser: "a",
+            messageType: "pollMessage",
+            ...message,
           },
         },
       }),
     )
-    socket.emit("message:newAudioMessage", { chatRoomId, message, receiverId, senderId })
+    socket.emit("groupMessage:newPollMessage", { chatRoomId, groupId, message, senderId, messageChannelType })
   }
 
-export const sendVideoMessageHandler =
-  (
-    {
-      chatRoomId,
-      receiverId,
-      senderId,
-      formData,
-    }: {
-      receiverId: string
-      senderId: string
-      chatRoomId: string
-      formData: FormDatastring
-      videoUrl: string
-    },
-    socket: SocketIO,
-  ) =>
-  async (dispatch: AppDispatch) => {
-    const { data: response } = await axiosUploadInstance.post("/uploadVideo", formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    })
-    socket.emit("message:newVideoMessage", {
-      message: { videoMessageSrc: response.fileUrl },
-      senderId,
-      receiverId,
-      chatRoomId,
-    })
-  }
+//======================================== RECEIVE MESSAGE ============================
 
 export const receiveMessageHandler =
-  ({ chatRoomId, message }: privateTextMessageEvent) =>
+  ({ chatRoomId, message }: any) =>
   async (dispatch: AppDispatch) => {
     dispatch(
       chatRoomMessageAction.addSendedChatRoomMessage({
@@ -380,7 +356,26 @@ export const receiveMessageHandler =
             message: message.messageContent,
             messageType: "textMessage",
             messageSendedTime: new Date(),
-            postedByUser: "irfan",
+          },
+        },
+      }),
+    )
+  }
+
+export const recieveAudioMessageHandler =
+  ({ chatRoomId, message }: { chatRoomId: string; message: { audoMessageSrc: string; _id: string } }) =>
+  async (dispatch: AppDispatch) => {
+    dispatch(
+      chatRoomMessageAction.addSendedChatRoomMessage({
+        chatRoomId,
+        newMessage: {
+          messegeChannelType: "incomingMessage",
+          messageData: {
+            messageType: "voiceMessage",
+            _id: message._id,
+            chatRoomId,
+            voiceMessageSrc: message.audoMessageSrc,
+            messageSendedTime: new Date(),
           },
         },
       }),
@@ -401,7 +396,6 @@ export const recieveNewImageMessageHandler =
             chatRoomId,
             imageMessageSrc: [message.imageMessageSrc],
             messageSendedTime: new Date(),
-            postedByUser: "asdf",
           },
         },
       }),
@@ -420,7 +414,6 @@ export const recieveMultipleNewImageMessageHandler =
           chatRoomId,
           imageMessageSrc: [imageSrc],
           messageSendedTime: new Date(),
-          postedByUser: "asdf",
         },
       })
     })
@@ -446,28 +439,6 @@ export const recieveVideoMessageHandler =
             chatRoomId,
             videoMessageSrc: message.videoMessageSrc,
             messageSendedTime: new Date(),
-            postedByUser: "a",
-          },
-        },
-      }),
-    )
-  }
-
-export const recieveAudioMessageHandler =
-  ({ chatRoomId, message }: { chatRoomId: string; message: { audoMessageSrc: string; _id: string } }) =>
-  async (dispatch: AppDispatch) => {
-    dispatch(
-      chatRoomMessageAction.addSendedChatRoomMessage({
-        chatRoomId,
-        newMessage: {
-          messegeChannelType: "incomingMessage",
-          messageData: {
-            messageType: "voiceMessage",
-            _id: message._id,
-            chatRoomId,
-            voiceMessageSrc: message.audoMessageSrc,
-            messageSendedTime: new Date(),
-            postedByUser: "a",
           },
         },
       }),
@@ -495,8 +466,8 @@ export const receivePollMessageHandler =
             _id: "",
             chatRoomId,
             messageSendedTime: new Date(),
+            //@ts-ignore
             options: message.options,
-            postedByUser: senderId,
             title: message.title,
           },
         },
@@ -510,21 +481,44 @@ export const onChaterdeleteMessageHandler =
     dispatch(chatRoomMessageAction.deleteMessageFromChatRoom({ chatRoomId, message }))
   }
 
-export const deleteMessageHandler =
-  ({ chatRoomId, message, receiverId, senderId }: deleteMessageInterface, socket: SocketIO) =>
-  async (dispatch: AppDispatch) => {
-    socket.emit("message:deleteMessage", { chatRoomId, message, receiverId, senderId })
-    dispatch(chatRoomMessageAction.deleteMessageFromChatRoom({ chatRoomId, message }))
-  }
+type deleteMessageArgs = PrivateMessageActionArgs["deleteMessage"] | GroupMessageActionArgs["deleteMessage"]
+export const deleteMessageHandler = (args: deleteMessageArgs, socket: SocketIO) => async (dispatch: AppDispatch) => {
+  const { message, chatRoomId, messageChannelType, senderId } = args
+  dispatch(chatRoomMessageAction.deleteMessageFromChatRoom({ chatRoomId, message }))
 
-export const messageReactionHandler =
-  ({ chatRoomId, message, receiverId, senderId }: reactMeessageInterface, socket: SocketIO) =>
-  async (dispatch: AppDispatch) => {
-    try {
-      socket.emit("message:reactMessage", { chatRoomId, message, receiverId, senderId })
-      dispatch(chatRoomMessageAction.updateMessageReaction({ chatRoomId, userId: senderId, message }))
-    } catch (error) {}
-  }
+  if (messageChannelType == "private")
+    socket.emit("message:deleteMessage", {
+      chatRoomId,
+      message,
+      receiverId: args.receiverId,
+      senderId,
+      messageChannelType,
+    })
+  else
+    socket.emit("groupMessage:deleteMessage", {
+      chatRoomId,
+      message,
+      groupId: args.groupId,
+      senderId,
+      messageChannelType,
+    })
+}
+
+type reactMeessageArgs = PrivateMessageActionArgs["reactMessage"] | GroupMessageActionArgs["reactMessage"]
+export const messageReactionHandler = (args: reactMeessageArgs, socket: SocketIO) => async (dispatch: AppDispatch) => {
+  try {
+    const { chatRoomId, message, messageChannelType, senderId } = args
+    dispatch(chatRoomMessageAction.updateMessageReaction({ chatRoomId, userId: senderId, message }))
+    if (messageChannelType == "private")
+      socket.emit("message:reactMessage", {
+        chatRoomId,
+        message,
+        receiverId: args.receiverId,
+        senderId,
+        messageChannelType,
+      })
+  } catch (error) {}
+}
 
 //user action
 export const onGroupSettingChangeHandler =
@@ -546,7 +540,7 @@ export const addNewMessageNotificationHandler =
 
 export const getIntialOnlineChatUsers = (socket: Socket) => async (dispatch: AppDispatch) => {
   try {
-    socket.emit("status:getOnlineUsers", (onlineUsers) => {
+    socket.emit("status:getOnlineUsers", (onlineUsers: any) => {
       dispatch(chatUserListAction.addintialOnlineUsers({ onlineUsers }))
     })
   } catch (error) {}
