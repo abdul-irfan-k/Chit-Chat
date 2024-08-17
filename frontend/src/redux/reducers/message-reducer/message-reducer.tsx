@@ -205,7 +205,6 @@ export interface messageReaction {
 }
 interface messageBasicDetails {
   _id: string
-  chatRoomId?: string
   postedByUser?: {
     _id?: string
     name: string
@@ -215,22 +214,22 @@ interface messageBasicDetails {
 }
 
 interface textMessage extends messageReaction, messageBasicDetails {
-  message: string
+  content: string
   messageType: "textMessage"
 }
 
 interface voiceMessage extends messageReaction, messageBasicDetails {
   messageType: "voiceMessage"
-  voiceMessageSrc: string
+  audioSrc: string
 }
 
 interface imageMessage extends messageReaction, messageBasicDetails {
   messageType: "imageMessage"
-  imageMessageSrc: string[]
+  imageSrc: string[]
 }
 interface videoMessage extends messageReaction, messageBasicDetails {
   messageType: "videoMessage"
-  videoMessageSrc: string
+  videoSrc: string
 }
 
 interface pollMessage extends messageReaction, messageBasicDetails {

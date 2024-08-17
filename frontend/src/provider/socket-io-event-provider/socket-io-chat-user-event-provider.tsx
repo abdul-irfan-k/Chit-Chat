@@ -37,10 +37,10 @@ const SocketIoChatUserEventProvider = () => {
   const { userDetail, isLogedIn } = useSelector((state: { userDetail: userDetailState }) => state.userDetail)
 
   useEffect(() => {
-    socket.on("message:receiveTextMessage", (messageResponse) => {
+    socket.on("message:receiveTextMessage", (messageResponse: any) => {
       if (currentChaterDetail?._id != messageResponse.senderId)
         dispatch(addNewMessageNotificationHandler({ _id: messageResponse.senderId }))
-      dispatch(receiveMessageHandler(messageResponse))
+      dispatch(receiveMessageHandler({ ...messageResponse, messageType: "textMessage" }))
     })
 
     socket.on("message:recieveNewImageMessage", (messageResponse) => {
@@ -54,7 +54,7 @@ const SocketIoChatUserEventProvider = () => {
     socket.on("message:receiveMultipleImageMessage", (messageResponse) => {
       if (currentChaterDetail != null && currentChaterDetail._id != messageResponse.senderId)
         dispatch(addNewMessageNotificationHandler({ _id: messageResponse.senderId }))
-      })
+    })
     socket.on("message:receiveVideoMessage", ({ chatRoomId, message, receiverId, senderId }) => {
       if (currentChaterDetail != null && currentChaterDetail._id != chatRoomId)
         dispatch(addNewMessageNotificationHandler({ _id: senderId }))

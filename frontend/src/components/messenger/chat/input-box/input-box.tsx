@@ -41,16 +41,18 @@ const InputBox = () => {
   const sendButtonHandler = () => {
     if (currentChaterDetail == null || currentChaterDetail.chatRoomId == undefined || userDetail == null) return
 
-    const messageChannelType = currentChaterDetail.currentChaterType == "user" ? "private" : "group"
+    const details =
+      currentChaterDetail.currentChaterType == "user"
+        ? { receiverId: currentChaterDetail._id, messageChannelType: "private" }
+        : { groupId: currentChaterDetail._id, messageChannelType: "group" }
     dispatch(
       sendTextMessageHandler(
         {
-          message: { messageContent: inputMessage },
-          receiverDetails: { _id: currentChaterDetail._id },
           //@ts-ignore
-          senderDetails: { _id: userDetail?._id },
-          chatRoomDetail: { _id: currentChaterDetail.chatRoomId },
-          messageChannelType,
+          message: { content: inputMessage },
+          chatRoomId: currentChaterDetail.chatRoomId,
+          senderId: userDetail?._id,
+          ...details,
         },
         socket,
       ),

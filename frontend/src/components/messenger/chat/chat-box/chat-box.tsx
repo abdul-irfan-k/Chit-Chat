@@ -54,7 +54,7 @@ const ChatBox = () => {
                 >
                   {message.messageData.messageType == "textMessage" && (
                     <TextMessage
-                      messageContent={message.messageData.message}
+                      messageContent={message.messageData.content}
                       messegeChannelType={message.messegeChannelType}
                       time={message.messageData.messageSendedTime}
                       userImageSrc={

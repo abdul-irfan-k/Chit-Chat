@@ -1,18 +1,16 @@
+import { Socket } from "socket.io-client"
 import { generateUUIDString } from "@/util/uuid"
 import { axiosChatInstance, axiosUploadInstance } from "@/constants/axios"
-
 import { AppDispatch } from "@/store"
-import { chatUserListAction, groupSetting } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import { chatRoomMessageAction, messageTypes } from "@/redux/reducers/message-reducer/message-reducer"
-
-import { Socket } from "socket.io-client"
+import { chatUserListAction, groupSetting } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import { SocketIO } from "@/provider/socket-io-provider/socket-io-provider"
 import {
-  messageEmitCallBackArgs,
-  GroupMessageArgs,
-  PrivateMessageArgs,
-  PrivateMessageActionArgs,
   GroupMessageActionArgs,
+  GroupMessageArgs,
+  messageEmitCallBackArgs,
+  PrivateMessageActionArgs,
+  PrivateMessageArgs,
 } from "chit-chat-events"
 
 export const addAllChatUsers = () => async (dispatch: AppDispatch) => {
@@ -121,9 +119,8 @@ export const sendTextMessageHandler = (args: textMessageArgs, socket: SocketIO) 
       newMessage: {
         messegeChannelType: "outgoingMessage",
         messageData: {
-          message: message.messageContent,
+          ...message,
           messageType: "textMessage",
-          _id: message._id,
         },
       },
     }),
@@ -165,9 +162,7 @@ export const sendAudioMessageHandler =
           messegeChannelType: "outgoingMessage",
           messageData: {
             messageType: "voiceMessage",
-            _id: message._id,
-            voiceMessageSrc: messageSrc,
-            messageSendedTime: new Date(),
+            ...message,
           },
         },
       }),
@@ -207,10 +202,9 @@ export const sendImageMessageHandler =
         newMessage: {
           messegeChannelType: "outgoingMessage",
           messageData: {
-            _id: message._id,
-            chatRoomId: chatRoomId,
             messageType: "imageMessage",
-            imageMessageSrc: [imageUrl],
+            ...message,
+            imageSrc: [message.imageSrc],
           },
           messageStatus: "notSended",
         },
@@ -227,7 +221,7 @@ export const sendImageMessageHandler =
       socket.emit("message:newImageMessage", {
         chatRoomId,
         messageChannelType: "private",
-        message: { ...message, imageSource: response },
+        message: { ...message, imageSrc: response },
         receiverId: args.receiverId,
         senderId,
       })
@@ -235,7 +229,7 @@ export const sendImageMessageHandler =
       socket.emit("groupMessage:newImageMessage", {
         chatRoomId,
         messageChannelType,
-        message: { ...message, imageSource: response },
+        message: { ...message, imageSrc: response },
         groupId: args.groupId,
         senderId,
       })
@@ -255,11 +249,11 @@ export const sendMultipleImageMessageHandler =
       newMessage.push({
         messegeChannelType: "outgoingMessage",
         messageData: {
+          messageType: "imageMessage",
+          imageSrc: [imageUrl],
           _id: "",
           chatRoomId,
-          messageType: "imageMessage",
           messageSendedTime: new Date(),
-          imageMessageSrc: [imageUrl],
         },
         messageStatus: "notSended",
       })
@@ -274,7 +268,7 @@ export const sendMultipleImageMessageHandler =
     if (messageChannelType == "private")
       socket.emit("message:newImageMessage", {
         chatRoomId,
-        message: { imageSource: response.fileUrl },
+        message: { imageSrc: response.fileUrl },
         receiverId: args.receiverId,
         senderId,
         messageChannelType,
@@ -283,7 +277,7 @@ export const sendMultipleImageMessageHandler =
       socket.emit("groupMessage:newImageMessage", {
         chatRoomId,
         groupId: args.groupId,
-        message: { imageSource: response.fileUrl },
+        message: { imageSrc: response.fileUrl },
         messageChannelType,
         senderId,
       })
@@ -303,7 +297,7 @@ export const sendVideoMessageHandler =
     })
     if (messageChannelType == "private")
       socket.emit("message:newVideoMessage", {
-        message: { videoMessageSrc: response.fileUrl, _id: message._id },
+        message: { videoSrc: response.fileUrl, _id: message._id },
         senderId,
         receiverId: args.receiverId,
         chatRoomId,
@@ -311,7 +305,7 @@ export const sendVideoMessageHandler =
       })
     else
       socket.emit("groupMessage:newVideoMessage", {
-        message: { videoMessageSrc: response.fileUrl, _id: message._id },
+        message: { videoSrc: response.fileUrl, _id: message._id },
         senderId,
         groupId: args.groupId,
         chatRoomId,
@@ -343,7 +337,15 @@ export const sendGroupPollMessageHandler =
 //======================================== RECEIVE MESSAGE ============================
 
 export const receiveMessageHandler =
-  ({ chatRoomId, message }: any) =>
+  ({
+    chatRoomId,
+    message,
+    messageType,
+  }: {
+    chatRoomId: string
+    message: any
+    messageType: "textMessage" | "voiceMessage" | "imageMessage" | "videoMessage" | "pollMessage"
+  }) =>
   async (dispatch: AppDispatch) => {
     dispatch(
       chatRoomMessageAction.addSendedChatRoomMessage({
@@ -351,56 +353,14 @@ export const receiveMessageHandler =
         newMessage: {
           messegeChannelType: "incomingMessage",
           messageData: {
-            chatRoomId,
-            _id: message._id,
-            message: message.messageContent,
-            messageType: "textMessage",
-            messageSendedTime: new Date(),
+            ...message,
+            messageType,
           },
         },
       }),
     )
   }
 
-export const recieveAudioMessageHandler =
-  ({ chatRoomId, message }: { chatRoomId: string; message: { audoMessageSrc: string; _id: string } }) =>
-  async (dispatch: AppDispatch) => {
-    dispatch(
-      chatRoomMessageAction.addSendedChatRoomMessage({
-        chatRoomId,
-        newMessage: {
-          messegeChannelType: "incomingMessage",
-          messageData: {
-            messageType: "voiceMessage",
-            _id: message._id,
-            chatRoomId,
-            voiceMessageSrc: message.audoMessageSrc,
-            messageSendedTime: new Date(),
-          },
-        },
-      }),
-    )
-  }
-
-export const recieveNewImageMessageHandler =
-  ({ chatRoomId, message }: { chatRoomId: string; message: { imageMessageSrc: string } }) =>
-  async (dispatch: AppDispatch) => {
-    dispatch(
-      chatRoomMessageAction.addSendedChatRoomMessage({
-        chatRoomId,
-        newMessage: {
-          messegeChannelType: "incomingMessage",
-          messageData: {
-            messageType: "imageMessage",
-            _id: "",
-            chatRoomId,
-            imageMessageSrc: [message.imageMessageSrc],
-            messageSendedTime: new Date(),
-          },
-        },
-      }),
-    )
-  }
 export const recieveMultipleNewImageMessageHandler =
   ({ chatRoomId, message }: { chatRoomId: string; message: { imageMessageSrc: string[] } }) =>
   async (dispatch: AppDispatch) => {
@@ -421,56 +381,6 @@ export const recieveMultipleNewImageMessageHandler =
       chatRoomMessageAction.addSendedChatRoomMultipleMessage({
         chatRoomId,
         newMessage: newMessages,
-      }),
-    )
-  }
-
-export const recieveVideoMessageHandler =
-  ({ chatRoomId, message }: { chatRoomId: string; message: { videoMessageSrc: string } }) =>
-  async (dispatch: AppDispatch) => {
-    dispatch(
-      chatRoomMessageAction.addSendedChatRoomMessage({
-        chatRoomId,
-        newMessage: {
-          messegeChannelType: "incomingMessage",
-          messageData: {
-            messageType: "videoMessage",
-            _id: "",
-            chatRoomId,
-            videoMessageSrc: message.videoMessageSrc,
-            messageSendedTime: new Date(),
-          },
-        },
-      }),
-    )
-  }
-
-export const receivePollMessageHandler =
-  ({
-    chatRoomId,
-    message,
-    senderId,
-  }: {
-    chatRoomId: string
-    message: { title: string; options: Array<Object> }
-    senderId: string
-  }) =>
-  async (dispatch: AppDispatch) => {
-    dispatch(
-      chatRoomMessageAction.addSendedChatRoomMessage({
-        chatRoomId,
-        newMessage: {
-          messegeChannelType: "incomingMessage",
-          messageData: {
-            messageType: "pollMessage",
-            _id: "",
-            chatRoomId,
-            messageSendedTime: new Date(),
-            //@ts-ignore
-            options: message.options,
-            title: message.title,
-          },
-        },
       }),
     )
   }
