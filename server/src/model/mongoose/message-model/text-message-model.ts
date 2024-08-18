@@ -13,7 +13,7 @@ interface textMessageSchemaInterface {
   _id: string
   chatRoomId: string
   postedByUser: string
-  message: string
+  content: string
   messageType: string
   readByRecipient?: readByRecipientSchemaInterface[]
   reactions?: Types.ObjectId | undefined
@@ -23,7 +23,7 @@ const textMessageSchema = new Schema(
     _id: { type: String, default: uuidv4 },
     chatRoomId: { type: String, required: true },
     postedByUser: { type: String, required: true },
-    message: { type: String, required: true },
+    content: { type: String, required: true },
     messageType: { type: String, default: "textMessage" },
     readByRecipient: { type: [readByRecipientSchema], default: [] },
     reactions: { type: Schema.Types.ObjectId },
@@ -36,17 +36,17 @@ const textMessageSchema = new Schema(
 interface createNewMessageInChatRoom {
   chatRoomId: string
   postedByUser: string
-  message: string
+  content: string
   _id?: string
 }
 textMessageSchema.statics.createNewMessageInChatRoom = async function ({
   chatRoomId,
   postedByUser,
-  message,
+  content,
   _id,
 }: createNewMessageInChatRoom) {
   try {
-    const post = await this.create({ chatRoomId, postedByUser, message,"_id":_id })
+    const post = await this.create({ chatRoomId, postedByUser, content, _id: _id })
     return post
   } catch (error) {
     console.log(error)

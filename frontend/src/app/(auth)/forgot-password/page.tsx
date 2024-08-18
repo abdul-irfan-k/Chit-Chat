@@ -1,9 +1,9 @@
 import BannerAnimation from "@/components/authentication/banner-animation"
-import LoginForm from "@/components/authentication/login/login"
+import ForgotPasswordForm from "@/components/authentication/forgot-password/forgot-password-form"
 import { Dot } from "lucide-react"
 import Image from "next/image"
 
-const LoginPage = () => {
+const ForgotPasswordPage = () => {
   return (
     <div>
       <div className="w-full h-screen flex  ">
@@ -18,14 +18,11 @@ const LoginPage = () => {
             </div>
           </div>
           <div className="mt-10 flex flex-col">
-            <span className="text-2xl font-semibold dark:text-slate-50">Hello Everyone We Are ChitChat</span>
-            <span className="text-neutral-600 text-sm dark:text-slate-300">
-              Welcome to chitchat please login to your account
-            </span>
+            <span className="text-2xl font-semibold dark:text-slate-50">Reset Password</span>
           </div>
-          <LoginForm />
+          <ForgotPasswordForm />
 
-          <div className="mt-20 gap-2  flex justify-center dark:text-slate-300 ">
+          <div className="mt-auto gap-2  flex justify-center dark:text-slate-300 ">
             <span className="flex items-center">
               <Dot />
               Terms and Condition
@@ -39,4 +36,4 @@ const LoginPage = () => {
   )
 }
 
-export default LoginPage
+export default ForgotPasswordPage

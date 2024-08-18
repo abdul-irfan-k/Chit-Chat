@@ -82,17 +82,23 @@ export const loginWithGithubHandler = (data: Object, router: AppRouterInstance) 
   } catch (error) {}
 }
 
+export const forgotPasswordRequestHandler = async (data: Object) => {
+  try {
+    const { data: response } = await axiosUserInstance.post("/forgotPassword", data)
+    return response
+  } catch (error) {}
+}
+export const logoutHandler = async () => {
+  try {
+    const { data } = await axiosUserInstance.post("/logout")
+  } catch (error) {}
+}
+
 export const userIntialSettingSetupHandler = async (data: Object, router: AppRouterInstance) => {
   try {
     const { data: response } = await axiosUserInstance.post("/gettingStartedSettingSetup", data)
     if (response.isUpdated) {
       router.push("/messenger")
     }
-  } catch (error) {}
-}
-
-export const logoutHandler = async () => {
-  try {
-    const { data } = await axiosUserInstance.post("/logout")
   } catch (error) {}
 }

@@ -27,9 +27,8 @@ const userMessageSocketIo = (io: Server, socket: SocketIo) => {
 
       const textMessage = await textMessageModel.createNewMessageInChatRoom({
         chatRoomId,
-        message: message.messageContent,
         postedByUser: senderId,
-        _id: message._id,
+        ...message,
       })
 
       await ChatRoomModel.addChatConversation({
@@ -55,8 +54,9 @@ const userMessageSocketIo = (io: Server, socket: SocketIo) => {
       const cloudinaryUpload = await cloudinaryFileUploadHandler(filepath, { resource_type: "auto" })
       if (!cloudinaryUpload.isSuccess || cloudinaryUpload.url == undefined) return
       const newVoiceMessage = new voiceMessageModel({
-        voiceMessageSrc: cloudinaryUpload.url,
+        audioSrc: cloudinaryUpload.url,
         postedByUser: senderId,
+        _id: message._id,
       })
       await newVoiceMessage.save()
       if (newVoiceMessage == null) return
@@ -65,7 +65,7 @@ const userMessageSocketIo = (io: Server, socket: SocketIo) => {
       if (receiver != null) {
         socket.to(receiver.socketId).emit("message:receiveAudioMessage", {
           chatRoomId,
-          message: { file: cloudinaryUpload.url },
+          message: { ...message, audioSrc: cloudinaryUpload.url },
           receiverId: receiverId,
           senderId,
         })
@@ -86,8 +86,9 @@ const userMessageSocketIo = (io: Server, socket: SocketIo) => {
     const newMessage = new ImageMessageModel({
       chatRoomId,
       postedByUser: senderId,
-      imageMessageSrc: [message.imageSource],
       messageType: "imageMessage",
+      _id: message._id,
+      imageSrc: [message.imageSrc],
     })
     await newMessage.save()
 
@@ -108,8 +109,8 @@ const userMessageSocketIo = (io: Server, socket: SocketIo) => {
     const newMessage = new VideoMessageModel({
       chatRoomId,
       postedByUser: senderId,
-      videoMessageSrc: message.videoMessageSrc,
       messageType: "videoMessage",
+      ...message,
     })
     await newMessage.save()
 

@@ -54,7 +54,9 @@ const Login = () => {
             <Checkbox />
             Remember me
           </span>
-          <span>Forgot Password</span>
+          <Link href={"/forgot-password"}>
+            <span>Forgot Password</span>
+          </Link>
         </div>
         <div className="gap-5 mt-5 px-2 flex justify-between ">
           <Button className="w-full text-lg" onClick={loginButtonHandler}>

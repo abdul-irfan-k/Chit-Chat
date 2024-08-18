@@ -1,3 +1,4 @@
+import BannerAnimation from "@/components/authentication/banner-animation"
 import SignUpForm from "@/components/authentication/sign-up/sign-up"
 import { Dot } from "lucide-react"
 import Image from "next/image"
@@ -6,7 +7,7 @@ const SignUpPage = () => {
   return (
     <div>
       <div className="w-full h-screen flex  ">
-        <div className="px-6 py-3 flex flex-col h-screen bg-background text-black  rounded-3xl  xl:w-[40vw] dark:bg-[#121212]">
+        <div className="px-6 py-3 w-full flex flex-col h-screen bg-background text-black  rounded-3xl   md:w-[50%] xl:w-[40vw]  dark:bg-[#121212]">
           <div className="mt-5 flex ">
             <div className="relative w-[10%] aspect-square ">
               <Image alt="logo" src={"/Asset/logo.png"} fill />
@@ -32,11 +33,7 @@ const SignUpPage = () => {
             <span>& Privary and Policy</span>
           </div>
         </div>
-        <div className="relative w-full h-screen flex bg-[#eff7fe] dark:bg-[#1d2328] ">
-          <div className="relative mx-auto mt-auto  w-[70%] aspect-square bg-transparent">
-            <Image alt="logo" src={"/Asset/banner.png"} fill />
-          </div>
-        </div>
+        <BannerAnimation />
       </div>
     </div>
   )

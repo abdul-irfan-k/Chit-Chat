@@ -16,38 +16,38 @@ export interface GroupMessageBasicDetail {
 
 interface ImageMessageArgs {
   message: {
-    imageSource: string
-    _id?: string
+    imageSrc: string
+    _id: string
   }
 }
 interface MultipleImageMessageArgs {
   message: {
-    imageSources: string[]
-    _id?: string
+    imageSrcs: string[]
+    _id: string
   }[]
 }
 interface TextMessageArgs {
   message: {
-    messageContent: string
-    _id?: string
+    content: string
+    _id: string
   }
 }
 interface AudioBufferMessageArgs {
   message: {
     audioBuffer: Buffer
-    _id?: string
+    _id: string
   }
 }
 
 interface AudioFileMessageArgs {
   message: {
-    file: string
-    _id?: string
+    audioSrc: string
+    _id: string
   }
 }
 interface VideoMessageArgs {
   message: {
-    videoMessageSrc: string
+    videoSrc: string
     _id: string
   }
 }
@@ -57,8 +57,12 @@ interface PollMessageArgs {
     title: string
     options: {
       title: string
+      _id: string
+      votedMembers: {
+        userId: string
+      }[]
     }[]
-    _id?: string
+    _id: string
   }
 }
 
@@ -115,7 +119,7 @@ export interface GroupMessageActionArgs {
   pollMessageVoteUpdate: groupPollMessageVoteUpdateArgs
 }
 
-type ExcludeMessageChannelType<T> = Exclude<T, "messageChannelType">
+type ExcludeMessageChannelType<T> = Omit<T, "messageChannelType">
 interface ClientToServerPrivateMessageEvents {
   "message:newTextMessage": (messageDetails: PrivateMessageArgs["TextMessage"], callback?: messageEmitCallBack) => void
   "message:newAudioMessage": (

@@ -286,13 +286,13 @@ export const requestChangePasswordWithOtpHandler = async (req: Request, res: Res
     await otp.save()
 
     const subject = getOtpEmailSubject()
-    const html = getOtpEmailTemplate({ otp: generatedOtp, userName: "irfan" })
+    const html = getOtpEmailTemplate({ otp: generatedOtp, userName: user.name })
 
     const { isSendedEmail, isValid } = await nodeMailerSendEmailer({
       email: user.email,
       subject,
       html,
-      text: "hello",
+      text: "",
     })
     if (isSendedEmail && isValid) return res.status(200).json({ isValid, isSendedEmail })
   } catch (error) {

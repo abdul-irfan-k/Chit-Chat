@@ -1,13 +1,13 @@
-import { Document, Schema, model,Types } from "mongoose"
+import { Document, Schema, model, Types } from "mongoose"
 
 const videoMessageSchema = new Schema(
   {
     chatRoomId: { type: String, required: true },
     postedByUser: { type: String, required: true },
-    videoMessageSrc: { type: String, required: true },
+    videoSrc: { type: String, required: true },
     messageType: { type: String },
     readreadByRecipient: [{ readByUserId: { type: String }, readAt: { type: Date, default: Date.now() } }],
-    reactions:{type:Schema.Types.ObjectId}
+    reactions: { type: Schema.Types.ObjectId },
   },
   {
     timestamps: true,
@@ -17,7 +17,7 @@ const videoMessageSchema = new Schema(
 interface videoMessageSchemaInterface {
   chatRoomId: string
   postedByUser: string
-  videoMessageSrc: string[]
+  videoSrc: string[]
   messageType?: string | undefined
   readreadByRecipient: {
     readAt: Date

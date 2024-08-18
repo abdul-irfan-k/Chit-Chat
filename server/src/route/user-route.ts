@@ -54,7 +54,7 @@ router.post("/verifyEmail", checkisLogedInMiddleware, verifyUserEmailHandler)
 router.post("/changePassword", checkisLogedInMiddleware, changePasswordHanldler)
 router.post("/changePasswordWithOtp", checkisLogedInMiddleware, changePasswordWithOtpHandler)
 router.post("/requestChangePasswordWithOtp", checkisLogedInMiddleware, requestChangePasswordWithOtpHandler)
-router.post("/forgotPassword")
+router.post("/forgotPassword", requestChangePasswordWithOtpHandler)
 
 // update user details
 router.post("/updateUserProfile", checkisLogedInMiddleware, upload.single("profileImage"), updateUserProfileHandler)
