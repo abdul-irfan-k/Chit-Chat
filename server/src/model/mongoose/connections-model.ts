@@ -28,13 +28,6 @@ const connectionSchema = new Schema({
       userId: { type: Schema.Types.ObjectId },
     },
   ],
-  chatRooms: [
-    {
-      chatRoomId: {
-        type: Schema.Types.ObjectId,
-      },
-    },
-  ],
 })
 
 interface connectionSchemaInterface {

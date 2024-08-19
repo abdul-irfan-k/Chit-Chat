@@ -24,6 +24,8 @@ export const getAllChatUsersHandler = async (req: Request, res: Response) => {
     const { _id } = req.user as userInterface
     const allChatUser = await UserModel.getAllChatUser(_id)
 
+    const connection = await ConnectionModel.findOne({ userId: _id })
+    console.log("all chat user", allChatUser, connection)
     return res.status(200).json(allChatUser)
   } catch (error) {
     console.log(error)

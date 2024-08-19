@@ -49,6 +49,7 @@ userSchema.methods.changePassword = async function (password: string) {
 userSchema.statics.getAllChatUser = async function (myUserId: string) {
   try {
     const id = new mongoose.Types.ObjectId(myUserId)
+    console.log("id", id)
     const allChatUsers = await this.aggregate([
       { $match: { _id: { $ne: id } } },
       {

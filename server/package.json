@@ -10,6 +10,7 @@
     "debug": "nodemon --inspect ",
     "format": "npm run prettier",
     "start": "node .",
+    "seed":"ts-node seeders/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prettier": "prettier --write ."
   },
