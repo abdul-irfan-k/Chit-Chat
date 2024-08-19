@@ -28,19 +28,11 @@ const VoiceMessage: FC<VoiceMessageInterface> = ({
 
   const [isPlaying, setIsPlaying] = useState<boolean>(false)
   const [duration, setDuration] = useState<number>()
-  const [audioCurrentPlayingTime, setAudioCurrentPlayingTime] = useState<number>(0)
+  const [playingTime, setPlayingTime] = useState<number>(0)
 
+  const [formattedDuration, setFormattedDuration] = useState<string>("00:00")
+  const [formattedPlayingTime, setFormattedPlayingTime] = useState<string>("00:00")
   const contextMenu = useContextMenuContext()
-
-  const audioProgressUpdateHandler = useCallback(() => {
-    if (audioRef.current != undefined && audioProgressBarRef.current != undefined) {
-      const currentTime = audioRef.current.currentTime
-      audioProgressBarRef.current.value = currentTime.toString()
-      setAudioCurrentPlayingTime(currentTime)
-    }
-
-    playAnimationRef.current = requestAnimationFrame(audioProgressUpdateHandler)
-  }, [])
 
   const formatTime = (time: number) => {
     if (time) {
@@ -72,10 +64,18 @@ const VoiceMessage: FC<VoiceMessageInterface> = ({
     wavesurfer.current.load(AudioSrc)
 
     wavesurfer.current.on("ready", () => {
-      console.log("duration", wavesurfer.current.getDuration())
-      setDuration(wavesurfer.current.getDuration())
+      // setDuration(wavesurfer.current.getDuration())
+      setFormattedDuration(formatTime(wavesurfer.current.getDuration()))
     })
-    return () => wavesurfer?.current.destroy()
+
+    wavesurfer.current.on("audioprocess", () => {
+      setFormattedPlayingTime(formatTime(wavesurfer.current.getCurrentTime()))
+    })
+    return () => {
+      wavesurfer?.current?.un("ready")
+      wavesurfer?.current?.un("audioprocess")
+      wavesurfer?.current.destroy()
+    }
   }, [waveformRef.current])
 
   const handlePlayButtonClick = () => {
@@ -90,7 +90,7 @@ const VoiceMessage: FC<VoiceMessageInterface> = ({
   //     }
   //   },
   //   500,
-  //   [audioCurrentPlayingTime],
+  //   [playingTime],
   // )
   return (
     <div className={"gap-5  flex items-start" + (messageChannelType == "incomingMessage" ? " " : "  flex-row-reverse")}>
@@ -124,22 +124,16 @@ const VoiceMessage: FC<VoiceMessageInterface> = ({
             contextMenu.setShowContextMenu(true)
           }}
         >
-          {isPlaying && (
-            <div
-              className="flex items-center justify-center w-14 aspect-square bg-slate-300 text-slate-50 fill-slate-50 rounded-full dark:bg-neutral-900"
-              onClick={handlePlayButtonClick}
-            >
+          <div
+            className="flex items-center justify-center w-14 aspect-square bg-slate-300 text-slate-50 fill-slate-50 rounded-full dark:bg-neutral-900"
+            onClick={handlePlayButtonClick}
+          >
+            {isPlaying ? (
               <PauseIcon className="w-8 aspect-square " width="" height="" />
-            </div>
-          )}
-          {!isPlaying && (
-            <div
-              className="flex items-center justify-center w-14 aspect-square bg-slate-300 text-slate-50 fill-slate-50 rounded-full dark:bg-neutral-900"
-              onClick={handlePlayButtonClick}
-            >
+            ) : (
               <PlayIcon className="w-8 aspect-square " width="" height="" />
-            </div>
-          )}
+            )}
+          </div>
 
           <audio
             ref={audioRef}
@@ -147,7 +141,13 @@ const VoiceMessage: FC<VoiceMessageInterface> = ({
             // src={"https://aac.saavncdn.com/862/e277c1b441b562640c6b264aa3335a83_160.mp4"}
             src={AudioSrc}
           />
-          <div className="relative h-full   gap-1 my-auto w-48 " ref={waveformRef}></div>
+          <div className="flex flex-col">
+            <div className="relative h-full   gap-1 my-auto w-48 " ref={waveformRef}></div>
+
+            <span className="text-[10px] dark:text-slate-300">
+              {formattedPlayingTime}/{formattedDuration}
+            </span>
+          </div>
         </div>
       </div>
     </div>
