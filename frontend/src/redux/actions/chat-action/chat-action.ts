@@ -17,10 +17,12 @@ export const addAllChatUsers = () => async (dispatch: AppDispatch) => {
   try {
     const { data: usersDeatail } = await axiosChatInstance.post("/getAllChatUsers")
     // dispatch(chatUserListAction.addIntialAllUserList(usersDeatail))
-    const { data: groupDetail } = await axiosChatInstance.post("/getAllChatGroups")
+    // const { data: groupDetail } = await axiosChatInstance.post("/getAllChatGroups")
     // console.log("user details", usersDeatail)
-    dispatch(chatUserListAction.addIntialAllUserAndGroupList({ usersDeatail, groupDetail }))
-  } catch (error) {}
+    dispatch(chatUserListAction.addIntialAllUserAndGroupList({ usersDeatail, groupDetail: [] }))
+  } catch (error) {
+    console.log("eror", error)
+  }
 }
 
 export const addAllChatGroups = () => async (dispatch: AppDispatch) => {

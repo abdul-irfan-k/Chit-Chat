@@ -5,7 +5,7 @@ const connectionSchema = new Schema({
     type: Schema.Types.ObjectId,
     required: true,
   },
-  freinds: [
+  friends: [
     {
       userId: { type: Schema.Types.ObjectId },
       chatRoomId: { type: Schema.Types.ObjectId },
@@ -32,7 +32,7 @@ const connectionSchema = new Schema({
 
 interface connectionSchemaInterface {
   userId: Types.ObjectId
-  freinds: {
+  friends: {
     userId?: Types.ObjectId | undefined
     chatRoomId?: Types.ObjectId | undefined
   }[]

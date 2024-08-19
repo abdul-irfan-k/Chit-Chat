@@ -36,7 +36,6 @@ const userMessageSocketIo = (io: Server, socket: SocketIo) => {
         messageId: textMessage._id,
         messageType: "textMessage",
       })
-      if (callback != undefined) callback({ isSent: true })
     } catch (error) {
       console.log(error)
     }

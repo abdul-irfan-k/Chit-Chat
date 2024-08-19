@@ -5,14 +5,17 @@ const nextConfig = {
       test: /\.svg$/,
       use: ["@svgr/webpack"],
     })
- 
+
     return config
   },
-  images:{
-    remotePatterns:[
+  images: {
+    remotePatterns: [
       {
         protocol: 'http',
         hostname: 'res.cloudinary.com',
+      },
+      {
+        hostname: 'images.unsplash.com',
       }
     ]
   }

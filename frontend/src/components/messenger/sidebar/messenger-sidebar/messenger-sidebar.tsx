@@ -21,7 +21,7 @@ const MessengerSidebar: FC<MessengerSidebarProps> = ({ isInitialRender }) => {
           className="h-full "
         >
           <Recent />
-          <div className="mt-10 flex flex-col overflow-y-scroll no-scrollbar">
+          <div className="mt-10 flex flex-col overflow-y-scroll h-[70vh] no-scrollbar">
             <MessengerSort />
             <ChatList />
           </div>

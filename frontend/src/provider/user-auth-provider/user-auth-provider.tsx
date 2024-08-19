@@ -28,17 +28,15 @@ const UserAuthProvider: FC<UserAuthProviderProps> = ({ children }) => {
   const { socket } = useSocketIoContext()
 
   useEffect(() => {
-    dispatch(addAllChatUsers())
-    dispatch(addAllChatGroups())
-  }, [isChatUserListChanged, dispatch])
-
-  useEffect(() => {
     // if(isInitialCallLogs)
   }, [isInitialCallLogs])
   useEffect(() => {
     if (isLogedIn) {
+      console.log("user is loged in")
       socket.emit("socket:join", { userId: userDetails?._id })
       dispatch(getIntialOnlineChatUsers(socket))
+      dispatch(addAllChatUsers())
+      dispatch(addAllChatGroups())
     }
   }, [isLogedIn, dispatch])
 

@@ -63,10 +63,15 @@ export const chatRoomsMessageReducer = createSlice({
       state,
       action: { payload: { chatRoomId: string; newMessage: incomingMessage | outGoingMessage } },
     ) => {
-      const updatedChatRoomMessage = state.chatRoomMessages.filter(
+      let updatedChatRoomMessage = state.chatRoomMessages.filter(
         (chatRoom) => chatRoom.chatRoomId == action.payload.chatRoomId,
       )[0]
-      updatedChatRoomMessage.messages = [{ ...action.payload.newMessage }, ...updatedChatRoomMessage.messages]
+      if (updatedChatRoomMessage)
+        updatedChatRoomMessage.messages = [{ ...action.payload.newMessage }, ...updatedChatRoomMessage.messages]
+      else {
+        //@ts-ignore
+        updatedChatRoomMessage = { chatRoomId: action.payload.chatRoomId, messages: [{ ...action.payload.newMessage }] }
+      }
       state.chatRoomMessages = [
         ...state.chatRoomMessages.filter((chatRoom) => chatRoom.chatRoomId != action.payload.chatRoomId),
         { ...updatedChatRoomMessage },

@@ -21,6 +21,8 @@ const connectDb = async () => {
 const seedDb = async () => {
   console.log("started mongoose seed")
   await UserModel.deleteMany({})
+  await ChatRoomModel.deleteMany({})
+  await ConnectionModel.deleteMany({})
 
   userSeedData.forEach(async (data: any) => {
     const user = new UserModel(data)

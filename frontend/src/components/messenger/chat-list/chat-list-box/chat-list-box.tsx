@@ -78,5 +78,4 @@ const ChatListBox: FC<ChatListBoxInterface> = ({
   )
 }
 
-
 export default ChatListBox

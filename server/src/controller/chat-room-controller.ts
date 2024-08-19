@@ -22,11 +22,44 @@ export const sendMessageToUserHandler = async (req: Request, res: Response) => {
 export const getAllChatUsersHandler = async (req: Request, res: Response) => {
   try {
     const { _id } = req.user as userInterface
-    const allChatUser = await UserModel.getAllChatUser(_id)
 
-    const connection = await ConnectionModel.findOne({ userId: _id })
-    console.log("all chat user", allChatUser, connection)
-    return res.status(200).json(allChatUser)
+    const userObjectId = new mongoose.Types.ObjectId(_id)
+
+    const chatUser = await ConnectionModel.aggregate([
+      { $match: { userId: userObjectId } },
+      { $unwind: "$friends" },
+      {
+        $lookup: {
+          from: "users", // The 'users' collection name in MongoDB
+          localField: "friends.userId",
+          foreignField: "_id",
+          pipeline: [
+            {
+              $project: { name: 1, email: 1, profileImageUrl: 1, _id: 1, userId: 1, chatRoomId: "friends.chatRoomId" },
+            },
+          ],
+          as: "friendsDetails",
+        },
+      },
+      { $unwind: "$friendsDetails" },
+      {
+        $addFields: {
+          "friendsDetails.chatRoomId": "$friends.chatRoomId", // Add chatRoomId from the friends array to friendDetails
+        },
+      },
+      {
+        $group: {
+          _id: "$_id", // Group by the Connection document's _id
+          friendsDetails: { $push: "$friendsDetails" }, // Push the friendDetails with chatRoomId into an array
+        },
+      },
+
+      {
+        // $project: { friendsDetails: { $first: "$friendsDetails" } },
+        $project: { friendsDetails: 1 },
+      },
+    ])
+    return res.status(200).json(chatUser[0]?.friendsDetails)
   } catch (error) {
     console.log(error)
   }

@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "devDependencies": {
+    "mongo-seeding": "^4.0.0",
     "prettier": "^3.0.3"
   },
   "scripts": {
