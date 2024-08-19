@@ -30,86 +30,30 @@ const VoiceRecorder = () => {
   )
   const { userDetail } = useSelector((state: { userDetail: userDetailState }) => state.userDetail)
   const { socket } = useSocketIoContext()
-  const getMicrophonePermission = async () => {
-    try {
-      const constraints = {
-        audio: true,
-        video: false,
-      }
 
-      const streamData = await navigator.mediaDevices.getUserMedia(constraints)
-
-      setPermission(true)
-      setStream(streamData)
-      return
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  const startRecording = async () => {
-    if (!permission) return
-    if (stream == null) return
-    setRecordingStatus("recording")
-
-    const media = new MediaRecorder(stream, { type: mimeType })
-    mediaRecorder.current = media
-    mediaRecorder.current.start()
-    const localAudioChunks = []
-    mediaRecorder.current.ondataavailable = (event) => {
-      if (event.data == undefined) return
-      if (event.data.size == 0) return
-      localAudioChunks.push(event.data)
-    }
-
-    setAudioChunks(localAudioChunks)
-  }
-
-  const stopRecording = async () => {
-    setRecordingStatus("recorded")
-    mediaRecorder.current.stop()
-    mediaRecorder.current.onstop = () => {
-      const blob = new Blob(audioChunks, { type: mimeType })
-      const audioUrl = URL.createObjectURL(blob)
-      setAudioBlob(blob)
-      setAudio(audioUrl)
-    }
-  }
-
-  const sendButtonHandler = async () => {
-    try {
-      if (selectedAudioFile == undefined) return console.log("no file selected")
-      const formData = new FormData()
-      formData.append("video", selectedAudioFile)
-
-      const { data: response } = await axiosUploadInstance.post("/uploadAudio", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      })
-      socket?.emit("message:newAudioMessage", {
-        file: audioBlob,
-        postedByUser: userDetail?._id,
-        chatRoomId: currentChaterDetail?.chatRoom?.chatRoomId,
-      })
-    } catch (error) {}
-  }
   const recorderControls = useAudioRecorder()
   const addAudioElement = (blob) => {
-    const url = URL.createObjectURL(blob)
-    console.log("add audio", currentChaterDetail)
+    if (currentChaterDetail == null || currentChaterDetail.chatRoomId == undefined || userDetail == null) return
 
-    if (currentChaterDetail?.currentChaterType == "user") {
-      dispatch(
-        sendAudioMessageHandler(
-          {
-            chatRoomId: currentChaterDetail.chatRoom.chatRoomId,
-            receiverId: currentChaterDetail._id,
-            message: { file: blob, url },
-            senderId: userDetail?._id,
-          },
-          socket,
-        ),
-      )
-    }
+    const url = URL.createObjectURL(blob)
+
+    const details =
+      currentChaterDetail.currentChaterType == "user"
+        ? { receiverId: currentChaterDetail._id, messageChannelType: "private" }
+        : { groupId: currentChaterDetail._id, messageChannelType: "group" }
+
+    dispatch(
+      sendAudioMessageHandler(
+        {
+          chatRoomId: currentChaterDetail?.chatRoomId,
+          message: { audioBuffer: blob },
+          senderId: userDetail?._id,
+          messageSrc: url,
+          ...details,
+        },
+        socket,
+      ),
+    )
   }
 
   return (
@@ -148,22 +92,14 @@ const VoiceRecorder = () => {
         </div>
       )}
       //  */}
-      {audio == null && (
-        <AudioRecorder
-          onRecordingComplete={(blob) => addAudioElement(blob)}
-          recorderControls={recorderControls}
-          // downloadOnSavePress={true}
-          // downloadFileExtension="mp3"
-          showVisualizer={true}
-          // classes={{}}
-        />
-      )}
-      {/* {audio != null && (
-        <div className="absolute w-[90%] left-0 top-0 h-full overflow-hidden">
-          <audio src={audio} controls></audio>
-        </div>
-      )} */}
-      {/* <div onClick={() => recorderControls.togglePauseResume()} className="ml-5">stop</div> */}
+      <AudioRecorder
+        onRecordingComplete={(blob) => addAudioElement(blob)}
+        recorderControls={recorderControls}
+        // downloadOnSavePress={true}
+        // downloadFileExtension="mp3"
+        showVisualizer={true}
+        // classes={{}}
+      />
     </div>
   )
 }

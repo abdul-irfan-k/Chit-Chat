@@ -123,7 +123,7 @@ type ExcludeMessageChannelType<T> = Omit<T, "messageChannelType">
 interface ClientToServerPrivateMessageEvents {
   "message:newTextMessage": (messageDetails: PrivateMessageArgs["TextMessage"], callback?: messageEmitCallBack) => void
   "message:newAudioMessage": (
-    messageDetails: PrivateMessageArgs["AudioMessage"],
+    messageDetails: PrivateMessageArgs["AudioMessageSend"],
     callback?: messageEmitCallBack,
   ) => void
   "message:newVideoMessage": (
@@ -154,7 +154,7 @@ interface ClientToServerGroupMessageEvents {
     callback?: messageEmitCallBack,
   ) => void
   "groupMessage:newAudioMessage": (
-    messageDetails: GroupMessageArgs["AudioMessage"],
+    messageDetails: GroupMessageArgs["AudioMessageSend"],
     callback?: messageEmitCallBack,
   ) => void
   "groupMessage:newImageMessage": (

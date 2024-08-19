@@ -4,6 +4,7 @@ import useDebounce from "@/hooks/use-debounce/use-debounce"
 import { useContextMenuContext } from "@/provider/context-menu-provider/context-menu-provider"
 import Image from "next/image"
 import React, { FC, useCallback, useEffect, useRef, useState } from "react"
+import WaveSurfer from "wavesurfer.js"
 
 interface VoiceMessageInterface {
   _id: string
@@ -13,57 +14,23 @@ interface VoiceMessageInterface {
   userImageSrc: string
   AudioSrc: string
 }
-const VoiceMessage: FC<VoiceMessageInterface> = ({ _id,AudioSrc, messageChannelType, time, userImageSrc, userName }) => {
+const VoiceMessage: FC<VoiceMessageInterface> = ({
+  _id,
+  AudioSrc,
+  messageChannelType,
+  time,
+  userImageSrc,
+  userName,
+}) => {
   const audioRef = useRef<HTMLAudioElement>()
   const audioProgressBarRef = useRef<HTMLInputElement>()
   const playAnimationRef = useRef<number>()
 
-  const [isPlayingVoiceMessage, setIsPlayingVoiceMessage] = useState<boolean>(false)
-  const [audioMaxDuration, setAudioMaxDuration] = useState<number>()
+  const [isPlaying, setIsPlaying] = useState<boolean>(false)
+  const [duration, setDuration] = useState<number>()
   const [audioCurrentPlayingTime, setAudioCurrentPlayingTime] = useState<number>(0)
 
   const contextMenu = useContextMenuContext()
-
-  const playButtonHandler = () => {
-    setIsPlayingVoiceMessage(true)
-    audioRef.current?.play()
-    playAnimationRef.current = requestAnimationFrame(audioProgressUpdateHandler)
-  }
-  const pauseButtonHandler = () => {
-    setIsPlayingVoiceMessage(false)
-    audioRef.current?.pause()
-    cancelAnimationFrame(playAnimationRef.current)
-  }
-
-  const audioOnLoadMetaDataHandler = () => {
-    setAudioMaxDuration(audioRef.current?.duration)
-  }
-
-  const audioOnEndHandler = () => {
-    setIsPlayingVoiceMessage(false)
-    audioRef.current.pause()
-    cancelAnimationFrame(playAnimationRef.current)
-  }
-
-  const progressChangeHandler = () => {
-    if (audioRef.current != undefined && audioProgressBarRef.current != undefined) {
-      audioRef.current.pause()
-      const currentTime = audioProgressBarRef.current.value
-
-      audioRef.current.currentTime = Number(currentTime)
-      setAudioCurrentPlayingTime(Number(currentTime))
-    }
-  }
-
-  useDebounce(
-    () => {
-      if (isPlayingVoiceMessage) {
-        audioRef.current?.play()
-      }
-    },
-    500,
-    [audioCurrentPlayingTime],
-  )
 
   const audioProgressUpdateHandler = useCallback(() => {
     if (audioRef.current != undefined && audioProgressBarRef.current != undefined) {
@@ -74,10 +41,6 @@ const VoiceMessage: FC<VoiceMessageInterface> = ({ _id,AudioSrc, messageChannelT
 
     playAnimationRef.current = requestAnimationFrame(audioProgressUpdateHandler)
   }, [])
-
-  useEffect(() => {
-    setAudioMaxDuration(audioRef.current?.duration)
-  }, [audioRef.current, audioProgressBarRef.current])
 
   const formatTime = (time: number) => {
     if (time) {
@@ -90,13 +53,47 @@ const VoiceMessage: FC<VoiceMessageInterface> = ({ _id,AudioSrc, messageChannelT
     return "00:00"
   }
 
+  const waveformRef = useRef(null)
+  const wavesurfer = useRef(null)
+
+  useEffect(() => {
+    if (!waveformRef.current || waveformRef == null) return
+    wavesurfer.current = WaveSurfer.create({
+      container: waveformRef.current,
+      height: 30,
+      barWidth: 2,
+      waveColor: "#38599f",
+      progressColor: "#fff",
+      responsive: true,
+      normalize: true,
+      barGap: 1,
+    })
+
+    wavesurfer.current.load(AudioSrc)
+
+    wavesurfer.current.on("ready", () => {
+      console.log("duration", wavesurfer.current.getDuration())
+      setDuration(wavesurfer.current.getDuration())
+    })
+    return () => wavesurfer?.current.destroy()
+  }, [waveformRef.current])
+
+  const handlePlayButtonClick = () => {
+    setIsPlaying(!isPlaying)
+    wavesurfer?.current?.playPause()
+  }
+
+  // useDebounce(
+  //   () => {
+  //     if (isPlaying) {
+  //       // wavesurfer?.current?.playPause()
+  //     }
+  //   },
+  //   500,
+  //   [audioCurrentPlayingTime],
+  // )
   return (
-    <div
-      className={
-        "gap-3 mb-5  clear-both  flex items-start" +
-        (messageChannelType == "incomingMessage" ? " float-lef" : " float-right flex-row-reverse")
-      }
-    >
+    <div className={"gap-5  flex items-start" + (messageChannelType == "incomingMessage" ? " " : "  flex-row-reverse")}>
       <div className="relative aspect-square w-14">
         <Image alt="user-image" src={userImageSrc} fill className="aspect-square rounded-2xl" />
       </div>
@@ -109,8 +106,10 @@ const VoiceMessage: FC<VoiceMessageInterface> = ({ _id,AudioSrc, messageChannelT
 
         <div
           className={
-            "gap-2 flex px-4 py-2 rounded-full " +
-            (messageChannelType == "incomingMessage" ? " bg-blue-500 text-slate-50" : " bg-slate-300 text-slate-950")
+            "gap-2 flex px-4 py-2 rounded-xl " +
+            (messageChannelType == "incomingMessage"
+              ? " bg-[rgb(56,89,159)] text-slate-50"
+              : " bg-[#191b1f] text-slate-50")
           }
           onContextMenu={(e) => {
             e.preventDefault()
@@ -125,18 +124,18 @@ const VoiceMessage: FC<VoiceMessageInterface> = ({ _id,AudioSrc, messageChannelT
             contextMenu.setShowContextMenu(true)
           }}
         >
-          {isPlayingVoiceMessage && (
+          {isPlaying && (
             <div
               className="flex items-center justify-center w-14 aspect-square bg-slate-300 text-slate-50 fill-slate-50 rounded-full dark:bg-neutral-900"
-              onClick={pauseButtonHandler}
+              onClick={handlePlayButtonClick}
             >
               <PauseIcon className="w-8 aspect-square " width="" height="" />
             </div>
           )}
-          {!isPlayingVoiceMessage && (
+          {!isPlaying && (
             <div
               className="flex items-center justify-center w-14 aspect-square bg-slate-300 text-slate-50 fill-slate-50 rounded-full dark:bg-neutral-900"
-              onClick={playButtonHandler}
+              onClick={handlePlayButtonClick}
             >
               <PlayIcon className="w-8 aspect-square " width="" height="" />
             </div>
@@ -145,27 +144,10 @@ const VoiceMessage: FC<VoiceMessageInterface> = ({ _id,AudioSrc, messageChannelT
           <audio
             ref={audioRef}
             preload="metadata"
-            onLoadedMetadata={audioOnLoadMetaDataHandler}
             // src={"https://aac.saavncdn.com/862/e277c1b441b562640c6b264aa3335a83_160.mp4"}
             src={AudioSrc}
-            onEnded={audioOnEndHandler}
           />
-          <div className="relative h-full   gap-1 my-auto ">
-            <input
-              type="range"
-              className="input-range h-3 rounded-full"
-              ref={audioProgressBarRef}
-              onChange={progressChangeHandler}
-              max={audioMaxDuration}
-              defaultValue={0}
-            />
-
-            {audioMaxDuration != undefined && (
-              <div className="bottom-0  text-[0.7rem]">
-                {formatTime(audioCurrentPlayingTime)} /{formatTime(audioMaxDuration)}
-              </div>
-            )}
-          </div>
+          <div className="relative h-full   gap-1 my-auto w-48 " ref={waveformRef}></div>
         </div>
       </div>
     </div>

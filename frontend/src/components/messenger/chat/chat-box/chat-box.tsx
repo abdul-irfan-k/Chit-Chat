@@ -90,12 +90,11 @@ const ChatBox = () => {
                       }
                     />
                   )}
-
-                  {/* {message.messageData.messageType == "voiceMessage" && (
+                  {message.messageData.messageType == "voiceMessage" && (
                     <VoiceMessage
                       _id={message.messageData._id}
                       messageChannelType={message.messegeChannelType}
-                      AudioSrc={message.messageData.voiceMessageSrc}
+                      AudioSrc={message.messageData.audioSrc}
                       time={new Date()}
                       userImageSrc={
                         message.messegeChannelType == "incomingMessage"
@@ -109,6 +108,7 @@ const ChatBox = () => {
                       }
                     />
                   )}
+                  {/* 
 
                  
 

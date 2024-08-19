@@ -165,6 +165,7 @@ export const sendAudioMessageHandler =
           messageData: {
             messageType: "voiceMessage",
             ...message,
+            audioSrc: messageSrc,
           },
         },
       }),

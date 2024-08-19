@@ -1,4 +1,5 @@
 import { Schema, Document, model, Model, Types } from "mongoose"
+import { v4 as uuidv4 } from "uuid"
 
 interface readByRecipientSchemaInterface {
   readByUserId: string
@@ -19,6 +20,7 @@ interface voiceMessageSchemaInerface {
 }
 const voiceMessageSchema = new Schema(
   {
+    _id: { type: String, default: uuidv4 },
     chatRoomId: { type: String },
     postedByUser: { type: String, required: true },
     audioSrc: { type: String, required: true },

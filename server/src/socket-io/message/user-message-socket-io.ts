@@ -48,10 +48,12 @@ const userMessageSocketIo = (io: Server, socket: SocketIo) => {
       const filepath = path.join(dirpath, "..", "public", "upload", `${randomId}.mp3`)
 
       // const base64ConvertedData = file.toString("base64")
-      await fs.writeFileSync(filepath, message.file)
+      await fs.writeFileSync(filepath, message.audioBuffer)
 
       const cloudinaryUpload = await cloudinaryFileUploadHandler(filepath, { resource_type: "auto" })
       if (!cloudinaryUpload.isSuccess || cloudinaryUpload.url == undefined) return
+
+      console.log("url ", cloudinaryUpload.url)
       const newVoiceMessage = new voiceMessageModel({
         audioSrc: cloudinaryUpload.url,
         postedByUser: senderId,
