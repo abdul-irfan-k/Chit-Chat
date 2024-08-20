@@ -8,7 +8,6 @@ interface MulterRequest extends Request {
 
 export const uploadSingleImageHandler = async (req: MulterRequest, res: Response) => {
   try {
-    console.log("file created ", req)
     if (req.file == undefined) return
     const cloudinaryUpload = await cloudinaryFileUploadHandler(req.file.path, { resource_type: "image" })
     if (cloudinaryUpload.url) res.status(200).json({ isvalid: true, isUploaded: true, fileUrl: cloudinaryUpload.url })

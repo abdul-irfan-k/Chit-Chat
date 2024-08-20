@@ -88,15 +88,14 @@ const userMessageSocketIo = (io: Server, socket: SocketIo) => {
       chatRoomId,
       postedByUser: senderId,
       messageType: "imageMessage",
-      _id: message._id,
-      imageSrc: [message.imageSrc],
+      ...message,
     })
     await newMessage.save()
 
     if (newMessage == null) return
     const receiver = await getRedisSocketCached(receiverId)
     if (receiver != null) {
-      socket.to(receiver.socketId).emit("message:recieveNewImageMessage", { chatRoomId, message, receiverId, senderId })
+      socket.to(receiver.socketId).emit("message:recieveImageMessage", { chatRoomId, message, receiverId, senderId })
     }
 
     ChatRoomModel.addChatConversation({

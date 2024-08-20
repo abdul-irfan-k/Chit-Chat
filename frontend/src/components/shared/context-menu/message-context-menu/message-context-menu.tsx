@@ -9,6 +9,7 @@ import React, { FC, useState } from "react"
 import { useSelector } from "react-redux"
 import { saveAs } from "file-saver"
 import { Reactions } from "../../message-reaction-menu/message-reaction-constant"
+import { Copy, Download, Forward, Pin, Reply } from "lucide-react"
 
 interface MessageContextMenuProps {
   xPosition: number
@@ -76,7 +77,7 @@ const MessageContextMenu: FC<MessageContextMenuProps> = ({
         style={{ transform: `translate(${xPosition}px, ${yPosition}px)` }}
       >
         {!isOutGoingMessage && (
-          <div className="gap-2 px-2 py-1 flex items-center rounded-full w-fit dark:bg-neutral-700 z-[110] ">
+          <div className="gap-2 px-2 py-1 flex items-center rounded-full w-fit dark:bg-background-primary z-[110] ">
             {Reactions.map((reaction, index) => {
               return (
                 <span key={index} onClick={() => messageReactionButtonHandler(reaction.id, reaction.native)}>
@@ -86,17 +87,17 @@ const MessageContextMenu: FC<MessageContextMenuProps> = ({
             })}
           </div>
         )}
-        <div className="gap-2 px-4 py-4 flex flex-col z-[110] w-fit z-[110] dark:bg-neutral-700 ">
+        <div className="gap-2 px-4 py-4 flex flex-col z-[110] w-fit z-[110] dark:bg-background-primary">
           <div className=" gap-2 flex items-center ">
             <div className="relative">
-              <DeleteIcon className="w-5 aspect-square" width="" height="" />
+              <Reply className="w-5 aspect-square" />
             </div>
             <span>Reply</span>
           </div>
           {messageDetail != undefined && messageDetail.messageType == "textMessage" && (
             <div className="gap-2 flex items-center" onClick={() => copyButtonHandler(messageDetail.messageContent)}>
               <div className="relative">
-                <CopyIcon className="w-5 aspect-square" width="" height="" />
+                <Copy className="w-5 aspect-square" />
               </div>
               <span>Copy</span>
             </div>
@@ -105,33 +106,33 @@ const MessageContextMenu: FC<MessageContextMenuProps> = ({
             (messageDetail?.messageType == "voiceMessage" && (
               <div className="gap-2 flex items-center" onClick={() => downloadButtonHandler(messageDetail.messageSrc)}>
                 <div className="relative">
-                  <CopyIcon className="w-5 aspect-square" width="" height="" />
+                  <Download className="w-5 aspect-square" />
                 </div>
                 <span>Download</span>
               </div>
             ))}
           <div className="gap-2 flex items-center">
             <div className="relative">
-              <DeleteIcon className="w-5 aspect-square" width="" height="" />
+              <Pin className="w-5 aspect-square" />
             </div>
             <span>Pin</span>
           </div>
           <div className="gap-2 flex items-center">
             <div className="relative">
-              <DeleteIcon className="w-5 aspect-square" width="" height="" />
+              <Forward className="w-5 aspect-square" />
             </div>
             <span>Forward</span>
           </div>
           <div className="gap-2 flex items-center">
             <div className="relative">
-              <DeleteIcon className="w-5 aspect-square" width="" height="" />
+              <DeleteIcon className="w-5 aspect-square" />
             </div>
             <span>Select</span>
           </div>
           {isOutGoingMessage && (
             <div className="gap-2 flex items-center" onClick={deleteMessageButtonHandler}>
               <div className="relative">
-                <DeleteIcon className="w-5 aspect-square" width="" height="" />
+                <DeleteIcon className="w-5 aspect-square" />
               </div>
               <span>delete</span>
             </div>

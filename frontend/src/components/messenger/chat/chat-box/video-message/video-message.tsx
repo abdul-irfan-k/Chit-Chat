@@ -30,12 +30,7 @@ const VideoMessage: FC<VideoMessageProps> = ({
   const [previewVideo, setPreviewVideo] = useState<boolean>(false)
   const contextMenu = useContextMenuContext()
   return (
-    <div
-      className={
-        "gap-3 mb-5  clear-both  flex items-start" +
-        (messegeChannelType == "incomingMessage" ? " float-lef" : " float-right flex-row-reverse")
-      }
-    >
+    <div className={"gap-5  flex items-start" + (messegeChannelType == "incomingMessage" ? " " : "  flex-row-reverse")}>
       <div className="relative aspect-square w-14">
         <Image alt="user-image" src={userImageSrc} fill className="aspect-square rounded-2xl" />
       </div>
@@ -48,8 +43,10 @@ const VideoMessage: FC<VideoMessageProps> = ({
 
         <div
           className={
-            "relative mt-5 px-4 py-2 w-[30vw] rounded-md overflow-hidden aspect-video" +
-            (messegeChannelType == "incomingMessage" ? " bg-blue-500 text-slate-50" : " bg-slate-300 text-slate-950")
+            "relative mt-5 px-4 py-4 w-fit ml-auto " +
+            (messegeChannelType == "incomingMessage"
+              ? " bg-[#3a62b8] text-slate-50 rounded-[5px] rounded-tl-none "
+              : " bg-[#4e5f7f] text-slate-50 rounded-[5px]")
           }
           onContextMenu={(e) => {
             e.preventDefault()
@@ -64,11 +61,8 @@ const VideoMessage: FC<VideoMessageProps> = ({
             contextMenu.setShowContextMenu(true)
           }}
         >
-          <div className="w-full h-full ">
-            <video
-              className=" w-full h-full"
-              src={messageVideoSrc}
-            ></video>
+          <div className={"relative  w-[18vw] aspect-video rounded-[8%] overflow-hidden "}>
+            <video className=" w-full h-full" src={messageVideoSrc}></video>
           </div>
           {previewVideo && <VideoMessagePreview messageVideoSrc={messageVideoSrc} />}
           <div className="absolute">

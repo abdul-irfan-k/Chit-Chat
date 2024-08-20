@@ -23,12 +23,7 @@ const VoiceMessage: FC<VoiceMessageInterface> = ({
   userName,
 }) => {
   const audioRef = useRef<HTMLAudioElement>()
-  const audioProgressBarRef = useRef<HTMLInputElement>()
-  const playAnimationRef = useRef<number>()
-
   const [isPlaying, setIsPlaying] = useState<boolean>(false)
-  const [duration, setDuration] = useState<number>()
-  const [playingTime, setPlayingTime] = useState<number>(0)
 
   const [formattedDuration, setFormattedDuration] = useState<string>("00:00")
   const [formattedPlayingTime, setFormattedPlayingTime] = useState<string>("00:00")

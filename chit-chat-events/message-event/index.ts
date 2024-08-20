@@ -16,7 +16,7 @@ export interface GroupMessageBasicDetail {
 
 interface ImageMessageArgs {
   message: {
-    imageSrc: string
+    imageSrc: string[]
     _id: string
   }
 }
@@ -183,9 +183,7 @@ export interface ClientToServerMessageEvents
     ClientToServerGroupMessageEvents {}
 export interface ServerToClientMessageEvents {
   "message:receiveTextMessage": (messageDetails: ExcludeMessageChannelType<PrivateMessageArgs["TextMessage"]>) => void
-  "message:recieveNewImageMessage": (
-    messageDetails: ExcludeMessageChannelType<PrivateMessageArgs["ImageMessage"]>,
-  ) => void
+  "message:recieveImageMessage": (messageDetails: ExcludeMessageChannelType<PrivateMessageArgs["ImageMessage"]>) => void
   "message:receiveVideoMessage": (messageDetails: ExcludeMessageChannelType<PrivateMessageArgs["VideoMessage"]>) => void
   "message:receiveAudioMessage": (messageDetails: ExcludeMessageChannelType<PrivateMessageArgs["AudioMessage"]>) => void
   "message:receiveMultipleImageMessage": (

@@ -1,7 +1,9 @@
 import { Document, Schema, model, Types } from "mongoose"
+import { v4 as uuidv4 } from "uuid"
 
 const imageMessageSchema = new Schema(
   {
+    _id: { type: String, default: uuidv4 },
     chatRoomId: { type: String, required: true },
     postedByUser: { type: String, required: true },
     imageSrc: { type: [String], required: true },

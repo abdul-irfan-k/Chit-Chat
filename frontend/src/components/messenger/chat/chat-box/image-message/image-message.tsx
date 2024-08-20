@@ -35,7 +35,11 @@ const ImageMessage: FC<ImageMessageProps> = ({
       </div>
 
       <div className="gap-1 flex flex-col">
-        <div className={"flex gap-1 items-center " + (messegeChannelType == "incomingMessage" ? "" : " ml-auto")}>
+        <div
+          className={
+            "flex gap-1 items-center rounded-[8%]  " + (messegeChannelType == "incomingMessage" ? "" : " ml-auto")
+          }
+        >
           <div className="font-medium text-base text-slate-950 dark:text-slate-50 ">{userName}</div>
           <div className="font-light text-xs text-slate-800 dark:text-slate-200">{time.toDateString()}</div>
         </div>
@@ -50,7 +54,7 @@ const ImageMessage: FC<ImageMessageProps> = ({
             }
           >
             <div
-              className={"relative  w-[6vw] aspect-square rounded-xl overflow-hidden "}
+              className={"relative  w-[18vw] aspect-video rounded-[8%] overflow-hidden "}
               onContextMenu={(e) => {
                 e.preventDefault()
                 if (contextMenu == null) return

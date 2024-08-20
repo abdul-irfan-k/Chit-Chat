@@ -191,13 +191,12 @@ export const sendAudioMessageHandler =
 
 type imageMessage = PrivateMessageArgs["ImageMessage"] | GroupMessageArgs["ImageMessage"]
 type sendImageMessageArguments = imageMessage & {
-  imageUrl: string
   formData: FormData
 }
 // send image message
 export const sendImageMessageHandler =
   (args: sendImageMessageArguments, socket: SocketIO) => async (dispatch: AppDispatch) => {
-    const { chatRoomId, formData, imageUrl, message, messageChannelType, senderId } = args
+    const { chatRoomId, formData, message, messageChannelType, senderId } = args
     message._id = generateUUIDString()
     dispatch(
       chatRoomMessageAction.addSendedChatRoomMessage({
@@ -206,10 +205,11 @@ export const sendImageMessageHandler =
           messegeChannelType: "outgoingMessage",
           messageData: {
             messageType: "imageMessage",
-            ...message,
-            imageSrc: [message.imageSrc],
+            _id: message._id,
+            imageSrc: message.imageSrc,
           },
           messageStatus: "notSended",
+          messageDeliveryStatus: "notDelivered",
         },
       }),
     )
@@ -223,8 +223,8 @@ export const sendImageMessageHandler =
     if (messageChannelType == "private")
       socket.emit("message:newImageMessage", {
         chatRoomId,
-        messageChannelType: "private",
-        message: { ...message, imageSrc: response },
+        messageChannelType,
+        message: { ...message, imageSrc: [response.fileUrl] },
         receiverId: args.receiverId,
         senderId,
       })
@@ -232,7 +232,7 @@ export const sendImageMessageHandler =
       socket.emit("groupMessage:newImageMessage", {
         chatRoomId,
         messageChannelType,
-        message: { ...message, imageSrc: response },
+        message: { ...message, imageSrc: [response.fileUrl] },
         groupId: args.groupId,
         senderId,
       })
@@ -289,12 +289,26 @@ export const sendMultipleImageMessageHandler =
 type videoMessage = PrivateMessageArgs["VideoMessage"] | GroupMessageArgs["VideoMessage"]
 type sendVideoMessageArgs = videoMessage & {
   formData: string
-  videoUrl: string
 }
 export const sendVideoMessageHandler =
   (args: sendVideoMessageArgs, socket: SocketIO) => async (dispatch: AppDispatch) => {
     const { chatRoomId, formData, message, messageChannelType, senderId, videoUrl } = args
     message._id = generateUUIDString()
+
+    dispatch(
+      chatRoomMessageAction.addSendedChatRoomMessage({
+        chatRoomId,
+        newMessage: {
+          messegeChannelType: "outgoingMessage",
+          messageData: {
+            messageType: "videoMessage",
+            ...message,
+          },
+          messageStatus: "notSended",
+          messageDeliveryStatus: "notDelivered",
+        },
+      }),
+    )
     const { data: response } = await axiosUploadInstance.post("/uploadVideo", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     })

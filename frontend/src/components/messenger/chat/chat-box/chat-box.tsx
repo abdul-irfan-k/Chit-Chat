@@ -75,7 +75,7 @@ const ChatBox = () => {
                   {message.messageData.messageType == "imageMessage" && (
                     <ImageMessage
                       _id={message.messageData._id}
-                      messageImageSrc={message.messageData.imageMessageSrc}
+                      messageImageSrc={message.messageData.imageSrc}
                       messegeChannelType={message.messegeChannelType}
                       time={new Date()}
                       userImageSrc={
@@ -95,6 +95,25 @@ const ChatBox = () => {
                       _id={message.messageData._id}
                       messageChannelType={message.messegeChannelType}
                       AudioSrc={message.messageData.audioSrc}
+                      time={new Date()}
+                      userImageSrc={
+                        message.messegeChannelType == "incomingMessage"
+                          ? currentChaterDetail.currentChaterType == "user" && currentChaterDetail.profileImageUrl
+                            ? currentChaterDetail.profileImageUrl
+                            : "/Asset/avatar.jpg"
+                          : userDetail.profileImageUrl
+                      }
+                      userName={
+                        message.messegeChannelType == "incomingMessage" ? currentChaterDetail?.name : userDetail?.name
+                      }
+                    />
+                  )}
+
+                  {message.messageData.messageType == "videoMessage" && (
+                    <VideoMessage
+                      _id={message.messageData._id}
+                      messageVideoSrc={message.messageData.videoSrc}
+                      messegeChannelType={message.messegeChannelType}
                       time={new Date()}
                       userImageSrc={
                         message.messegeChannelType == "incomingMessage"
@@ -139,24 +158,7 @@ const ChatBox = () => {
                     />
                   )}
 
-                  {message.messageData.messageType == "videoMessage" && (
-                    <VideoMessage
-                      _id={message.messageData._id}
-                      messageVideoSrc={message.messageData.videoMessageSrc}
-                      messegeChannelType={message.messegeChannelType}
-                      time={new Date()}
-                      userImageSrc={
-                        message.messegeChannelType == "incomingMessage"
-                          ? currentChaterDetail.currentChaterType == "user" && currentChaterDetail.profileImageUrl
-                            ? currentChaterDetail.profileImageUrl
-                            : "/Asset/avatar.jpg"
-                          : userDetail.profileImageUrl
-                      }
-                      userName={
-                        message.messegeChannelType == "incomingMessage" ? currentChaterDetail?.name : userDetail?.name
-                      }
-                    />
-                  )} */}
+                  */}
                 </motion.div>
               )
             })}

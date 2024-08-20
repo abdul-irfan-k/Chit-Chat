@@ -43,11 +43,15 @@ const SocketIoChatUserEventProvider = () => {
       dispatch(receiveMessageHandler({ ...messageResponse, messageType: "textMessage" }))
     })
 
-    socket.on("message:recieveNewImageMessage", (messageResponse) => {
+    socket.on("message:recieveImageMessage", (messageResponse) => {
       if (currentChaterDetail != null && currentChaterDetail._id != messageResponse.senderId)
         dispatch(addNewMessageNotificationHandler({ _id: messageResponse.senderId }))
       dispatch(
-        recieveNewImageMessageHandler({ chatRoomId: messageResponse.chatRoomId, message: messageResponse.message }),
+        receiveMessageHandler({
+          chatRoomId: messageResponse.chatRoomId,
+          message: messageResponse.message,
+          messageType: "imageMessage",
+        }),
       )
     })
 
@@ -58,7 +62,7 @@ const SocketIoChatUserEventProvider = () => {
     socket.on("message:receiveVideoMessage", ({ chatRoomId, message, receiverId, senderId }) => {
       if (currentChaterDetail != null && currentChaterDetail._id != chatRoomId)
         dispatch(addNewMessageNotificationHandler({ _id: senderId }))
-      dispatch(recieveVideoMessageHandler({ chatRoomId, message }))
+      dispatch(receiveMessageHandler({ chatRoomId, message, messageType: "videoMessage" }))
     })
 
     socket.on("groupMessage:receivePollMessage", ({ chatRoomId, message, senderId, groupDetail }) => {

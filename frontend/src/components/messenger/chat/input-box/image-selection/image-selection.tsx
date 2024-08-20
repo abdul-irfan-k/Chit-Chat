@@ -24,7 +24,7 @@ const ImageSelection: FC<ImageSelectionProps> = ({ userDetail, currentChaterDeta
   const inputRef = useRef<HTMLInputElement>(null)
   const [selectedFile, setSelectedFile] = useState<Array<File>>([])
 
-  const [selectedImageUrl, setSelectedImageUrl] = useState<Array<string>>([])
+  const [selectedImageUrl, setSelectedImageUrl] = useState<Array<any>>([])
   const [videoUrl, setVideoUrl] = useState<Array<string>>([])
   const [] = useState<Array<{ name: string; type: string }>>([])
 
@@ -32,7 +32,6 @@ const ImageSelection: FC<ImageSelectionProps> = ({ userDetail, currentChaterDeta
     selectedFile.forEach((file) => {
       const mimeType = file.type.split("/")
       const type = mimeType[0]
-
       const url = URL.createObjectURL(file)
       if (type == "image") setSelectedImageUrl([...selectedImageUrl, url])
       if (type == "video") setVideoUrl([...videoUrl, url])
@@ -55,7 +54,12 @@ const ImageSelection: FC<ImageSelectionProps> = ({ userDetail, currentChaterDeta
 
   const fileUploadHandler = async () => {
     try {
-      if (currentChaterDetail == null || userDetail == null) return
+      if (currentChaterDetail == null || currentChaterDetail.chatRoomId == undefined || userDetail == null) return
+
+      const details =
+        currentChaterDetail.currentChaterType == "user"
+          ? { receiverId: currentChaterDetail._id, messageChannelType: "private" }
+          : { groupId: currentChaterDetail._id, messageChannelType: "group" }
 
       // image upllading and sending in socker io
       const selectedImages = selectedFile.filter((file) => file.type.split("/")[0] == "image")
@@ -68,33 +72,27 @@ const ImageSelection: FC<ImageSelectionProps> = ({ userDetail, currentChaterDeta
           formData.append("image", imageFile)
         })
 
-        if (
-          currentChaterDetail.currentChaterType == "user" &&
-          currentChaterDetail.chatRoom != undefined &&
-          isUploadSingleImage
-        ) {
+        console.log("selectedImageUrl[0]", selectedImageUrl[0], selectedImageUrl)
+        if (isUploadSingleImage) {
           dispatch(
             sendImageMessageHandler(
               {
-                chatRoomId: currentChaterDetail.chatRoom.chatRoomId,
+                //@ts-ignore
+                chatRoomId: currentChaterDetail.chatRoomId,
                 formData,
-                imageUrl: selectedImageUrl[0],
                 senderId: userDetail._id,
-                receiverId: currentChaterDetail._id,
+                ...details,
+                message: { imageSrc: selectedImageUrl },
               },
               socket,
             ),
           )
         }
-        if (
-          currentChaterDetail.currentChaterType == "user" &&
-          currentChaterDetail.chatRoom != undefined &&
-          !isUploadSingleImage
-        ) {
+        if (!isUploadSingleImage) {
           dispatch(
             sendMultipleImageMessageHandler(
               {
-                chatRoomId: currentChaterDetail.chatRoom.chatRoomId,
+                chatRoomId: currentChaterDetail.chatRoomId,
                 formData,
                 imageUrl: selectedImageUrl,
                 senderId: userDetail._id,
@@ -111,26 +109,27 @@ const ImageSelection: FC<ImageSelectionProps> = ({ userDetail, currentChaterDeta
         const formData = new FormData()
         formData.append("video", selectedVideoFiles[0])
 
-        if (currentChaterDetail.currentChaterType == "user" && currentChaterDetail.chatRoom != undefined) {
-          dispatch(
-            sendVideoMessageHandler(
-              {
-                chatRoomId: currentChaterDetail.chatRoom.chatRoomId,
-                formData,
-                receiverId: currentChaterDetail._id,
-                senderId: userDetail._id,
-                videoUrl: videoUrl[0],
-              },
-              socket,
-            ),
-          )
-        }
+        dispatch(
+          sendVideoMessageHandler(
+            {
+              chatRoomId: currentChaterDetail.chatRoomId,
+              formData,
+              senderId: userDetail._id,
+              ...details,
+              //@ts-ignore
+              message: { videoSrc: videoUrl[0] },
+            },
+            socket,
+          ),
+        )
       }
+
       setSelectedFile([])
-    } catch (error) {}
+    } catch (error) {
+      console.log("eror", error)
+    }
   }
 
-  const sendFileHandler = () => {}
   const cancelButtonHandler = () => {
     setSelectedFile([])
     setSelectedImageUrl([])
