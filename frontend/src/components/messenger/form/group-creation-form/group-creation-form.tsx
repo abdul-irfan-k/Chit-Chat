@@ -4,11 +4,13 @@ import AddMembersFrom from "../add-members-form/add-members-form"
 import { useAppDispatch } from "@/store"
 import { createGroupHandler } from "@/redux/actions/chat-action/chat-action"
 import useOutsideClick from "@/hooks/use-outside-click/use-outside-click"
+import { Button } from "@/components/ui/button"
+import { X } from "lucide-react"
 
 interface GroupCreationFormProps {
-  onOutsideClickHandler(): void
+  handleOutsideClick(): void
 }
-const GroupCreationForm: FC<GroupCreationFormProps> = ({ onOutsideClickHandler }) => {
+const GroupCreationForm: FC<GroupCreationFormProps> = ({ handleOutsideClick }) => {
   const dispatch = useAppDispatch()
   const [groupName, setGroupName] = useState<string>("")
   const [groupMembers, setGroupMembers] = useState<Array<{ userId: string; _id: string }>>([])
@@ -17,10 +19,10 @@ const GroupCreationForm: FC<GroupCreationFormProps> = ({ onOutsideClickHandler }
   const groupCreationFormRef = useRef<HTMLDivElement>(null)
 
   const onMemberSelectHandler = () => {}
-  const closePopUpedMemberFormHandler = () => {
+  const closeAddMemberForm = () => {
     setIsPopUpedAddMemberForm(false)
   }
-  const createGroupButtonHandler = (event: React.MouseEvent) => {
+  const handleCreateButtonClick = (event: React.MouseEvent) => {
     event.stopPropagation()
     const members = groupMembers.map((member) => {
       return { userId: member._id }
@@ -29,66 +31,65 @@ const GroupCreationForm: FC<GroupCreationFormProps> = ({ onOutsideClickHandler }
     dispatch(createGroupHandler({ groupName, groupMembers: members }))
   }
 
-  const cancelButtonHandler = () => {
-    onOutsideClickHandler()
+  const handleCloseButtonClick = () => {
+    handleOutsideClick()
   }
 
-  // useOutsideClick(groupCreationFormRef, onOutsideClickHandler)
   return (
     <>
       {!isPopUpedAddMemberForm && (
-        <div
-          className="fixed left-0 top-0 w-screen h-screen z-30"
-          style={{ background: "rgba(0,0,0,0.9 )" }}
-        >
+        <div className="fixed left-0 top-0 w-screen h-screen z-[200]" style={{ background: "rgba(0,0,0,0.9 )" }}>
           <div
-            className="absolute px-5 py-5 w-[50%]  left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] flex flex-col rounded-lg  z-50 dark:bg-neutral-950"
+            className="absolute  py-5 w-[50%]  left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] flex flex-col rounded-lg  z-50 dark:bg-background-primary"
             ref={groupCreationFormRef}
           >
-            <h1 className="font-semibold text-4xl">Group</h1>
+            <div className="px-10  py-5 flex justify-between bg-background-secondary">
+              <span className="text-2xl font-medium">Create Group</span>
 
-            <div className="mt-10 flex-1 border-b-[3px] border-neutral-800">
+              <Button onClick={handleCloseButtonClick} rounded size={"icon"}>
+                <X className="relative w-5 aspect-square" />
+              </Button>
+            </div>
+
+            <div className="px-10 mt-10 flex-1 border-b-[3px] border-neutral-800">
+              <span className="text-lg">Group Name</span>
               <input
                 type="text"
                 placeholder="Enter Group Name"
-                className="px-4 py-2 border-none rounded-md  w-full text-base   dark:bg-neutral-950  dark:text-slate-50"
-                name="firstname"
+                className="px-4 py-2 border-none rounded-md  outline-none w-full text-base border-none bg-background-secondary   dark:text-slate-50"
                 onChange={(e) => setGroupName(e.target.value)}
               />
             </div>
 
-            <div className="px-4 py-4 gap-2  mt-10 flex flex-wrap border-[1px] rounded-xl">
-              {groupMembers.map((member, index) => {
-                return (
-                  <div className="mt-3 px-4 py-2 rounded-full bg-slate-300 dark:bg-neutral-800" key={index}>
-                    {member.userId}
-                  </div>
-                )
-              })}
-              <div
-                className="mt-3 px-4 py-2 rounded-full bg-blue-500"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  setIsPopUpedAddMemberForm(true)
-                }}
-              >
-                add members
+            <div className="mt-10 gap-1 px-10 flex flex-col">
+              <span className="text-lg">Members</span>
+              <div className=" py-4 gap-2   flex flex-wrap border-[1px] rounded-xl">
+                {groupMembers.map((member, index) => {
+                  return (
+                    <div className="mt-3 px-4 py-2 rounded-full bg-slate-300 dark:bg-neutral-800" key={index}>
+                      {member.userId}
+                    </div>
+                  )
+                })}
+                <div
+                  className="mt-3 px-4 py-2 rounded-full bg-blue-500"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setIsPopUpedAddMemberForm(true)
+                  }}
+                >
+                  add members
+                </div>
               </div>
             </div>
 
-            <div className="mt-10 gap-10 flex ">
-              <div
-                className="px-5 py-2 flex flex-1 items-center justify-center rounded-full text-lg border-2 border-red-500 text-red-500"
-                onClick={cancelButtonHandler}
-              >
-                Cancel
-              </div>
-              <div
-                className="px-5 py-2 flex flex-1 items-center justify-center rounded-full text-lg bg-blue-500"
-                onClick={createGroupButtonHandler}
+            <div className="px-10 mt-10 gap-10 flex ">
+              <Button
+                className="px-5 py-2 flex flex-1 items-center justify-center rounded-full text-lg  "
+                onClick={handleCreateButtonClick}
               >
                 Create Group
-              </div>
+              </Button>
             </div>
           </div>
         </div>
@@ -98,7 +99,7 @@ const GroupCreationForm: FC<GroupCreationFormProps> = ({ onOutsideClickHandler }
         <AddMembersFrom
           selectedGroupMembers={groupMembers}
           setGroupMembers={setGroupMembers}
-          onCloseHandler={closePopUpedMemberFormHandler}
+          onCloseHandler={closeAddMemberForm}
         />
       )}
     </>
