@@ -1,5 +1,8 @@
+"use client"
 import VideoCallBottom from "./video-call-bottom/video-call-bottom"
+import VideoCallHeader from "./video-call-header/video-group-call-header"
 import VideoCallViewsContainer from "./video-call-views/video-call-views-container"
+import { DndContext } from "@dnd-kit/core"
 
 const VideoCallContainer = () => {
   return (
@@ -10,9 +13,10 @@ const VideoCallContainer = () => {
           // style={{ width: popMenuType == undefined ? "95vw" : "65vw" }}
           // style={{ minWidth: "65vw" }}
         >
-          {/* <VideoCallHeader /> */}
+          <VideoCallHeader />
           {/* <VideoCallStatus /> */}
-          <VideoCallViewsContainer />
+
+            <VideoCallViewsContainer />
         </div>
 
         <VideoCallBottom />

@@ -675,3 +675,15 @@ export const gettingStartedSettingSetupHandler = async (req: Request, res: Respo
     return res.status(400).json({})
   }
 }
+
+export const searchUserHandler = async (req: Request, res: Response) => {
+  try {
+    const name = req.query.name as string
+    const userId = req.query.userId as string
+
+
+    
+  } catch (error) {
+    return res.status(400).json({})
+  }
+}

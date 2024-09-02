@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { MessageCircle, Plus, Users } from "lucide-react"
 import GroupCreationForm from "../../form/group-creation-form/group-creation-form"
+import FreindRequestForm from "../../form/freind-request-form/freind-request-form"
 
 interface MessengerSidebarProps {
   isInitialRender: boolean
@@ -85,6 +86,7 @@ const MessengerSidebar: FC<MessengerSidebarProps> = ({ isInitialRender }) => {
       </AnimatePresence>
 
       {popUpForm == "newGroup" && <GroupCreationForm handleOutsideClick={() => setPopUpForm(undefined)} />}
+      {popUpForm == "newChat" && <FreindRequestForm handleCloseButtonClick={() => setPopUpForm(undefined)} />}
     </>
   )
 }
