@@ -24,6 +24,10 @@ const VideoCallViewsContainer = () => {
       id: "video3",
       src: "/Asset/video/videocall3.mp4",
     },
+    {
+      id: "video5",
+      src: "/Asset/video/videocall3.mp4",
+    },
   ])
   const [fullscreenVideo, setFullScreenVideo] = useState([
     {
@@ -67,10 +71,10 @@ const VideoCallViewsContainer = () => {
 
   return (
     <>
-      <div className="gap-5 relative  flex">
+      <div className="gap-5 relative flex  h-[80vh]">
         <DndContext onDragEnd={handleDragEnd}>
           <SortableContext items={fullscreenVideo}>
-            <div className="w-full aspect-video rounded-md">
+            <div className="w-[100%] flex justify-center items-center aspect-video overflow-hidden  rounded-md">
               {fullscreenVideo &&
                 fullscreenVideo.length > 0 &&
                 fullscreenVideo.map((video, index) => {
@@ -78,9 +82,9 @@ const VideoCallViewsContainer = () => {
                 })}
             </div>
           </SortableContext>
-          <div className="w-[25%]">
+          <div className="w-[20%]  ">
             <SortableContext items={videoData}>
-              <div className="gap-5 flex flex-col">
+              <div className="gap-5 flex flex-col h-full items-center ">
                 {videoData.map((video, index) => {
                   return <VideoBox id={video.id} src={video.src} key={video.id} />
                 })}
@@ -107,7 +111,7 @@ const VideoBox = ({ id, src }: { id: string; src: string }) => {
   return (
     <div
       key={id}
-      className={`rounded-2xl w-full aspect-video overflow-hidden `}
+      className={`rounded-2xl w-full  overflow-hidden `}
       ref={setNodeRef}
       style={style}
       {...listeners}

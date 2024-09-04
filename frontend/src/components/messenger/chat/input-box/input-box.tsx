@@ -14,6 +14,7 @@ import { useSocketIoContext } from "@/provider/socket-io-provider/socket-io-prov
 import InputSelectionBox from "./input-selection-box/input-selection-box"
 import { Button } from "@/components/ui/button"
 import { Plus, Send, Smile, Sticker } from "lucide-react"
+import { useKeyPress } from "@/hooks/user-key-press/use-key-press"
 //@ts-ignore
 
 type inputPopUpMenuType = "emoji" | "sticker" | "media" | undefined
@@ -38,7 +39,8 @@ const InputBox = () => {
     setInputPopUpMenuType(popUpMenuType)
   }
 
-  const sendButtonHandler = () => {
+  const handleSendButtonClick = () => {
+    if (inputMessage.trim() == "") return
     if (currentChaterDetail == null || currentChaterDetail.chatRoomId == undefined || userDetail == null) return
 
     const details =
@@ -107,6 +109,7 @@ const InputBox = () => {
             type="text"
             value={inputMessage}
             onChange={inputChangeHandler}
+            onKeyDown={(e) => e.key == "Enter" && handleSendButtonClick()}
             className="px-4 py-2 w-full rounded-full text-slate-950  bg-slate-300 outline-none dark:text-slate-50 dark:bg-background-primary"
           />
         </div>
@@ -114,7 +117,7 @@ const InputBox = () => {
           className="relative w-10 bg-background-primary"
           variant={"secondary"}
           rounded
-          onClick={sendButtonHandler}
+          onClick={handleSendButtonClick}
           size={"icon"}
         >
           <Send className="w-5 aspect-square" />

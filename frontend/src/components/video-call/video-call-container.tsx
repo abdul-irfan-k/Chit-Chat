@@ -16,7 +16,7 @@ const VideoCallContainer = () => {
           <VideoCallHeader />
           {/* <VideoCallStatus /> */}
 
-            <VideoCallViewsContainer />
+          <VideoCallViewsContainer />
         </div>
 
         <VideoCallBottom />

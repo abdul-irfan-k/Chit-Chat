@@ -18,7 +18,7 @@ const VideoCallBottom = () => {
     }
   }
 
-  const {callDetail} = useSelector((state:{callRedcuer:callReducerSlate}) => state.callRedcuer)
+  const { callDetail } = useSelector((state: { callRedcuer: callReducerSlate }) => state.callRedcuer)
 
   const popUpMenuOnCloseButtonHandler = () => {
     // setPopMenuType(undefined)
@@ -37,7 +37,10 @@ const VideoCallBottom = () => {
           )}
           {popMenuType == "info" && (
             <div className="py-10 px-5 flex-1 h-full">
-              <VideoCallInfo onCloseButtonHandler={popUpMenuOnCloseButtonHandler} referenceId={callDetail?.referenceId} />
+              <VideoCallInfo
+                onCloseButtonHandler={popUpMenuOnCloseButtonHandler}
+                referenceId={callDetail?.referenceId}
+              />
             </div>
           )}
           {popMenuType == "userList" && (
