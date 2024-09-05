@@ -102,3 +102,14 @@ export const userIntialSettingSetupHandler = async (data: Object, router: AppRou
     }
   } catch (error) {}
 }
+
+export const searchUserHandler = async (data: Object) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { data: response } = await axiosUserInstance.post("/search", data)
+      resolve(response)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}

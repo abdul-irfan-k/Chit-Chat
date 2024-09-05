@@ -678,11 +678,58 @@ export const gettingStartedSettingSetupHandler = async (req: Request, res: Respo
 
 export const searchUserHandler = async (req: Request, res: Response) => {
   try {
-    const name = req.query.name as string
-    const userId = req.query.userId as string
+    const _id = req.user?._id as string
+    const userObjectId = new mongoose.Types.ObjectId(_id)
 
+    const { query } = req.body
 
-    
+    const users = await UserModel.aggregate([
+      {
+        $search: {
+          index: "default", // The name of your search index
+          compound: {
+            should: [
+              {
+                autocomplete: {
+                  query: query, // Replace with your search term
+                  path: "name",
+                  fuzzy: {
+                    maxEdits: 1,
+                  },
+                },
+              },
+              {
+                autocomplete: {
+                  query: query, // Replace with your search term
+                  path: "email",
+                  fuzzy: {
+                    maxEdits: 1,
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        $match: {
+          _id: { $ne: userObjectId },
+        },
+      },
+      {
+        $limit: 10,
+      },
+      {
+        $project: {
+          name: 1,
+          email: 1,
+          _id: 1,
+          profileImageUrl: 1,
+        },
+      },
+    ])
+
+    return res.status(200).json({ users })
   } catch (error) {
     return res.status(400).json({})
   }

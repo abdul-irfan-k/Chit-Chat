@@ -1,4 +1,3 @@
-import path from "path"
 import UserModel from "../src/model/mongoose/user-model"
 import mongoose from "mongoose"
 import ConnectionModel from "../src/model/mongoose/connections-model"
@@ -6,9 +5,11 @@ import ChatRoomModel from "../src/model/mongoose/chat-room-model/chat-room-model
 import { userSeedData } from "./data/user"
 import { chatRoomSeedData } from "./data/chatroom"
 import { connectionSeedData } from "./data/connection"
+import dotEnv from "dotenv"
+dotEnv.config()
 
 const config = {
-  database: "mongodb://127.0.0.1:27017/chit-chat",
+  database: process.env.DATABASE_URL || "",
   dropDatabase: true,
 }
 

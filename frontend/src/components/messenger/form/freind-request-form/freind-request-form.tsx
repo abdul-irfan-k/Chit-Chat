@@ -1,4 +1,6 @@
 import { Button } from "@/components/ui/button"
+import useDebounce from "@/hooks/use-debounce/use-debounce"
+import { searchUserHandler } from "@/redux/actions/user-action/user-action"
 import { X } from "lucide-react"
 import Image from "next/image"
 import React, { FC, useState } from "react"
@@ -9,8 +11,22 @@ interface FreindRequestFormProps {
 
 const FreindRequestForm: React.FC<FreindRequestFormProps> = ({ handleCloseButtonClick }) => {
   const [input, setInput] = useState("")
+  const [users, setUsers] = useState([])
 
   const handleRequestButtonClick = () => {}
+
+  useDebounce(
+    async () => {
+      try {
+        if (input.trim() === "") return
+        const { users } = await searchUserHandler({ query: input })
+        if (users == undefined) return
+        setUsers(users)
+      } catch (error) {}
+    },
+    1000,
+    [input],
+  )
   return (
     <div className="fixed left-0 top-0 w-screen h-screen z-[200]" style={{ background: "rgba(0,0,0,0.9 )" }}>
       <div className="absolute  py-5 w-[35%]  left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] flex flex-col rounded-lg  z-50 dark:bg-background-primary">
@@ -32,48 +48,18 @@ const FreindRequestForm: React.FC<FreindRequestFormProps> = ({ handleCloseButton
         </div>
 
         <div className="mt-5 px-10 gap-5 flex flex-col h-[40vh] overflow-y-scroll">
-          <UserCard
-            name="John Doe"
-            _id="1"
-            profileImageSrc="/Asset/avatar.jpg"
-            isSelected={true}
-            handleCardSelect={() => {}}
-          />
-          <UserCard
-            name="John Doe"
-            _id="1"
-            profileImageSrc="/Asset/avatar.jpg"
-            isSelected={true}
-            handleCardSelect={() => {}}
-          />
-          <UserCard
-            name="John Doe"
-            _id="1"
-            profileImageSrc="/Asset/avatar.jpg"
-            isSelected={true}
-            handleCardSelect={() => {}}
-          />
-          <UserCard
-            name="John Doe"
-            _id="1"
-            profileImageSrc="/Asset/avatar.jpg"
-            isSelected={true}
-            handleCardSelect={() => {}}
-          />
-          <UserCard
-            name="John Doe"
-            _id="1"
-            profileImageSrc="/Asset/avatar.jpg"
-            isSelected={true}
-            handleCardSelect={() => {}}
-          />
-          <UserCard
-            name="John Doe"
-            _id="1"
-            profileImageSrc="/Asset/avatar.jpg"
-            isSelected={true}
-            handleCardSelect={() => {}}
-          />
+          {users.map((user: any) => {
+            return (
+              <UserCard
+                name={user.name}
+                _id={user._id}
+                profileImageSrc={user.profileImageUrl}
+                isSelected={true}
+                handleCardSelect={() => {}}
+                key={user._id}
+              />
+            )
+          })}
         </div>
 
         <div className="px-10 mt-10 gap-10 flex ">

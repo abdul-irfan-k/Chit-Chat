@@ -28,12 +28,14 @@ const AddButton = () => {
 
         {isButtonClicked && (
           <div className="absolute gap-3 px-2 py-2 right-0 translate-y-[-70%] w-36 z-30 flex flex-col  bg-neutral-950 text-sm">
-            <div className="relative flex items-center justify-between">
+            <div
+              className="relative flex items-center justify-between"
+              onClick={() => popUpFromSelectHandler("newChat")}
+            >
               <span>New Chat</span>
               <div
                 className="relative w-10 flex justify-center items-center aspect-square rounded-full"
                 style={{ background: "rgba(28,157,234,.15)" }}
-                onClick={() => popUpFromSelectHandler("newChat")}
               >
                 <ChatIcon className="w-6 aspect-square" width="" height="" />
               </div>
@@ -63,7 +65,7 @@ const AddButton = () => {
       </div>
 
       {/* <SearchBar /> */}
-      {popUpForm == "newGroup" && <GroupCreationForm onOutsideClickHandler={() => setPopUpForm(undefined)} />}
+      {popUpForm == "newGroup" && <GroupCreationForm handleOutsideClick={() => setPopUpForm(undefined)} />}
     </div>
   )
 }

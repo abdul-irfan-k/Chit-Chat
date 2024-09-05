@@ -17,6 +17,7 @@ import {
   loginWithGoogleWithCredintialsHandler,
   logoutUserHandler,
   requestChangePasswordWithOtpHandler,
+  searchUserHandler,
   sendFreindRequestHandler,
   sendVerifyUserEmailHandler,
   signUpUserHandler,
@@ -63,7 +64,7 @@ router.post("/updateUserEmail")
 
 // fetching the user list in search bar
 router.post("/getUserDetailByUserId", checkisLogedInMiddleware, getUserDetailsByUserIdHandler)
-router.get("/search")
+router.post("/search", checkisLogedInMiddleware, searchUserHandler)
 
 // login with social media
 router.post("/googleLoginWithAcessToken", googleLoginWithAcessTokenHandler)
