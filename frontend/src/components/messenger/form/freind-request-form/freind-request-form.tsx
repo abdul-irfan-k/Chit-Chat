@@ -4,6 +4,7 @@ import { searchUserHandler } from "@/redux/actions/user-action/user-action"
 import { X } from "lucide-react"
 import Image from "next/image"
 import React, { FC, useState } from "react"
+import { motion } from "framer-motion"
 
 interface FreindRequestFormProps {
   handleCloseButtonClick(): void
@@ -24,7 +25,7 @@ const FreindRequestForm: React.FC<FreindRequestFormProps> = ({ handleCloseButton
         setUsers(users)
       } catch (error) {}
     },
-    1000,
+    200,
     [input],
   )
   return (
@@ -47,17 +48,39 @@ const FreindRequestForm: React.FC<FreindRequestFormProps> = ({ handleCloseButton
           />
         </div>
 
-        <div className="mt-5 px-10 gap-5 flex flex-col h-[40vh] overflow-y-scroll">
-          {users.map((user: any) => {
+        <div className="mt-5 px-10 gap-5 flex flex-col h-[40vh] overflow-x-hidden overflow-y-scroll">
+          {users.map((user: any, index) => {
             return (
-              <UserCard
-                name={user.name}
-                _id={user._id}
-                profileImageSrc={user.profileImageUrl}
-                isSelected={true}
-                handleCardSelect={() => {}}
+              <motion.div
                 key={user._id}
-              />
+                variants={{
+                  initial: {
+                    x: "10%",
+                    opacity: 0,
+                  },
+                  active(custom) {
+                    return {
+                      x: 0,
+                      opacity: 1,
+                      transition: {
+                        delay: custom * 0.05,
+                      },
+                    }
+                  },
+                }}
+                custom={index}
+                initial="initial"
+                animate="active"
+              >
+                <UserCard
+                  name={user.name}
+                  _id={user._id}
+                  userId={user.userId}
+                  profileImageSrc={user.profileImageUrl}
+                  isSelected={true}
+                  handleCardSelect={() => {}}
+                />
+              </motion.div>
             )
           })}
         </div>
@@ -80,11 +103,12 @@ export default FreindRequestForm
 interface UserCardProps {
   name: string
   _id: string
+  userId: string
   profileImageSrc: string
   isSelected?: boolean
   handleCardSelect(): void
 }
-const UserCard: FC<UserCardProps> = ({ _id, handleCardSelect, name, profileImageSrc, isSelected }) => {
+const UserCard: FC<UserCardProps> = ({ _id, handleCardSelect, name, profileImageSrc, isSelected, userId }) => {
   return (
     <div className="gap-3 relative flex  items-center" onClick={handleCardSelect}>
       <div className="relative  w-10 aspect-square md:w-[10%] ">
@@ -93,7 +117,7 @@ const UserCard: FC<UserCardProps> = ({ _id, handleCardSelect, name, profileImage
 
       <div className="gap-1 flex flex-col  justify-center ">
         <div className="font-medium text-base ">{name}</div>
-        <span>asdf</span>
+        <span>{userId}</span>
       </div>
     </div>
   )

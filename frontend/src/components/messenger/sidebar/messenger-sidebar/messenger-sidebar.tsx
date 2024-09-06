@@ -47,8 +47,8 @@ const MessengerSidebar: FC<MessengerSidebarProps> = ({ isInitialRender }) => {
               </Button>
 
               {isButtonClicked && (
-                <div className="absolute gap-3 px-2 py-2 right-0 translate-y-[-70%] w-36 z-30 flex flex-col  bg-neutral-950 text-sm">
-                  <div className="relative flex items-center justify-between">
+                <div className="absolute gap-3 px-2 py-2 right-0 translate-y-[-70%] w-36 z-30 flex flex-col  bg-background-primary text-sm">
+                  <div className="relative flex items-center justify-end">
                     <span>New Chat</span>
                     <div
                       className="relative w-10 flex justify-center items-center aspect-square rounded-full"
@@ -58,7 +58,7 @@ const MessengerSidebar: FC<MessengerSidebarProps> = ({ isInitialRender }) => {
                       <MessageCircle className="w-6 aspect-square" width="" height="" />
                     </div>
                   </div>
-                  <div className="relative flex items-center justify-between">
+                  <div className="relative flex items-center justify-end">
                     <span>New Group</span>
                     <div
                       className="relative w-10 flex justify-center items-center aspect-square rounded-full"
@@ -68,7 +68,7 @@ const MessengerSidebar: FC<MessengerSidebarProps> = ({ isInitialRender }) => {
                       <Users className="w-6 aspect-square" width="" height="" />
                     </div>
                   </div>
-                  <div className="relative flex items-center justify-between">
+                  <div className="relative flex items-center justify-end">
                     <span>New Contact</span>
                     <div
                       className="relative w-10 flex justify-center items-center aspect-square rounded-full"

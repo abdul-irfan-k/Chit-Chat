@@ -725,6 +725,7 @@ export const searchUserHandler = async (req: Request, res: Response) => {
           email: 1,
           _id: 1,
           profileImageUrl: 1,
+          UserId: 1,
         },
       },
     ])

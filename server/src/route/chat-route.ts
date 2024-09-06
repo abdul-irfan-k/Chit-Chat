@@ -17,15 +17,16 @@ router.all("*", (req, res, next) => {
   next()
 })
 
+router.get("/freindRequests", checkisLogedInMiddleware)
+router.post("/freindRequest", checkisLogedInMiddleware)
+router.put("/freindRequest", checkisLogedInMiddleware)
+
 router.post("/getUserChatRoomId")
 router.post("/getAllChatRoom")
 router.post("/getAllChatUsers", checkisLogedInMiddleware, getAllChatUsersHandler)
 router.post("/getAllChatGroups", checkisLogedInMiddleware, getAllChatGroupsHandler)
 router.post("/changeGroupSetting")
 router.post("/changeGroupDetail")
-
-router.post("/sendMessageToUser")
-router.post("/sendMessageToGroup")
 
 // create the group
 router.post("/createGroup", checkisLogedInMiddleware, createGroupHandler)

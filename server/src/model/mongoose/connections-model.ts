@@ -21,11 +21,23 @@ const connectionSchema = new Schema({
   sendedFreindRequest: [
     {
       userId: { type: Schema.Types.ObjectId },
+      status: {
+        type: String,
+        enum: ["pending", "accepted", "rejected"],
+        default: "pending",
+        required: true,
+      },
     },
   ],
   receivedFreindRequest: [
     {
       userId: { type: Schema.Types.ObjectId },
+      status: {
+        type: String,
+        enum: ["pending", "accepted", "rejected"],
+        default: "pending",
+        required: true,
+      },
     },
   ],
 })
@@ -38,9 +50,11 @@ interface connectionSchemaInterface {
   }[]
   sendedFreindRequest: {
     userId?: Types.ObjectId | undefined
+    status: "pending" | "accepted" | "rejected"
   }[]
   receivedFreindRequest: {
     userId?: Types.ObjectId | undefined
+    status: "pending" | "accepted" | "rejected"
   }[]
   chatRooms: {
     chatRoomId?: Types.ObjectId | undefined

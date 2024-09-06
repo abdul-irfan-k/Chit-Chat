@@ -384,3 +384,45 @@ export const getChatRoomMessageReactionHandler = async (req: Request, res: Respo
     return res.status(400).json({})
   }
 }
+
+export const getFreindRequestsHandler = async (req: Request, res: Response) => {
+  try {
+  } catch (error) {
+    return res.status(400).json({})
+  }
+}
+
+export const postFreindRequestHandler = async (req: Request, res: Response) => {
+  try {
+    const _id = req.user?._id as string
+    const userObjectId = new mongoose.Types.ObjectId(_id)
+    const { freindRequestorId } = req.body
+
+    if (freindRequestorId) return res.status(400).json({})
+    const freindRequestorObjectId = new mongoose.Types.ObjectId(freindRequestorId)
+
+    const userConnections = await ConnectionModel.findOne({ _id: userObjectId })
+    const isContainSendedFreindRequest = userConnections?.sendedFreindRequest.some(
+      (request) => request.userId == freindRequestorId,
+    )
+    if (isContainSendedFreindRequest) return res.status(400).json({ isValid: false })
+    const isContainReceivedFreindRequest = userConnections?.receivedFreindRequest.some(
+      (request) => request.userId == freindRequestorId,
+    )
+    if (isContainReceivedFreindRequest) return res.status(400).json({ isValid: false })
+
+    await ConnectionModel.findOneAndUpdate(
+      { _id: userObjectId },
+      { $push: { sendedFreindRequest: { userId: freindRequestorId, status: "pending" } } },
+    )
+    await ConnectionModel.findOneAndUpdate(
+      { _id: freindRequestorObjectId },
+      { $push: { receivedFreindRequest: { userId: freindRequestorId, status: "pending" } } },
+    )
+    return res.status(200).json({ isValid: true })
+  } catch (error) {
+    return res.status(400).json({})
+  }
+}
+
+export const updateFreindRequestHandler = async (req: Request, res: Response) => {}

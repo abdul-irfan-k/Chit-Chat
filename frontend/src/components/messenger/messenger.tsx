@@ -10,15 +10,10 @@ import SideBar from "./sidebar/sidebar"
 
 const Messenger = () => {
   return (
-    <div className="relative flex gap-5 w-full flex-1 ">
-      <div className="relative  w-full md:w-[50%] lg:w-[35%] xl:w-[34%] ">
-          <SideBar />
-      </div>
-      <div className="hidden w-full md:block">
-        <ChatContainer />
-        <CallLogContainer />
-        <ContactContainer />
-      </div>
+    <div className="hidden w-full md:block">
+      <ChatContainer />
+      <CallLogContainer />
+      <ContactContainer />
     </div>
   )
 }
