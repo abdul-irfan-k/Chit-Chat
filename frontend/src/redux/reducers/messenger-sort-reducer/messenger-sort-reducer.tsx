@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit"
 
 interface chatSort {
   messengerSortType: "chat"
-  subSelectionType: "direct" | "group" | "all"
+  subSelectionType: "direct" | "group"
 }
 
 interface callSort {
@@ -11,8 +11,8 @@ interface callSort {
 }
 
 interface contactSort {
-  messengerSortType: "contact"
-  subSelectionType: "all" | "closeFreinds"
+  messengerSortType: "freinds"
+  subSelectionType: "all" | "sendFreindRequest" | "recivedFreindRequest"
 }
 // export type messengerSortState<T> = messengerSort &  (T extends chatSort ? T & chatSort : T extends callSort ? T & callSort :T &  contactSort)
 export type messengerSortState = chatSort | callSort | contactSort

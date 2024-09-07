@@ -17,32 +17,22 @@ const MessengerSort = () => {
     (state: { messengerSort: messengerSortState }) => state.messengerSort,
   )
 
-  const check = () => console.log("sort", messengerSortType, subSelectionType)
-
-  const messengerPrimarySortHandler = (messengerSort: "chat" | "call" | "contact") => {
+  const handleMessengerSelection = (messengerSort: messengerSortState["messengerSortType"]) => {
     if (messengerSort == "chat")
       dispatch(changeMessengerSortState({ messengerSortType: "chat", subSelectionType: "direct" }))
     if (messengerSort == "call")
       dispatch(changeMessengerSortState({ messengerSortType: "call", subSelectionType: "allCall" }))
-    if (messengerSort == "contact")
-      dispatch(changeMessengerSortState({ messengerSortType: "contact", subSelectionType: "all" }))
+    if (messengerSort == "freinds")
+      dispatch(changeMessengerSortState({ messengerSortType: "freinds", subSelectionType: "all" }))
   }
 
-  const chatSubSortHandler = (subSort: "direct" | "group" | "all") => {
-    dispatch(changeMessengerSortState({ messengerSortType: "chat", subSelectionType: subSort }))
-  }
-  const callSubSortHandler = (subSort: "allCall" | "incomingCall" | "outgoingCall" | "missedCall") => {
-    dispatch(changeMessengerSortState({ messengerSortType: "call", subSelectionType: subSort }))
-  }
-  const contactSubSortHandler = (subSort: "all" | "closeFreinds") => {
-    dispatch(changeMessengerSortState({ messengerSortType: "contact", subSelectionType: subSort }))
+  const handleSubSelection = (subSelectionType: messengerSortState["subSelectionType"]) => {
+    dispatch(changeMessengerSortState({ messengerSortType, subSelectionType }))
   }
 
   return (
     <div className=" relative flex flex-col text-slate-950 dark:text-slate-50">
-      <div className=" font-extrabold text-lg md:text-xl xl:text-2xl " onClick={check}>
-        Chat
-      </div>
+      <div className=" font-extrabold text-lg md:text-xl xl:text-2xl ">Chat</div>
       <div className="text-slate-800 font-normal text-sm md:text-base dark:text-slate-200">Start New Converstion</div>
 
       <div className="mt-10 gap-5 flex justify-between items-center  fill-slate-950 font-medium text-base  dark:fill-slate-50">
@@ -51,7 +41,7 @@ const MessengerSort = () => {
             "relative gap-1  py-2 w-full rounded-full flex justify-center items-center " +
             (messengerSortType != "chat" ? "bg-[#2e3038]" : "")
           }
-          onClick={() => messengerPrimarySortHandler("chat")}
+          onClick={() => handleMessengerSelection("chat")}
           variant={messengerSortType == "chat" ? "secondary" : "ghost"}
         >
           <MessageCircle className="relative w-5 aspect-square " />
@@ -62,7 +52,7 @@ const MessengerSort = () => {
             "relative gap-1  py-2 w-full rounded-full flex justify-center items-center " +
             (messengerSortType != "call" ? "bg-[#2e3038]" : "")
           }
-          onClick={() => messengerPrimarySortHandler("call")}
+          onClick={() => handleMessengerSelection("call")}
           variant={messengerSortType == "call" ? "secondary" : "ghost"}
         >
           <Phone className="aspect-square w-5" />
@@ -71,13 +61,13 @@ const MessengerSort = () => {
         <Button
           className={
             "relative gap-1  py-2 w-full rounded-full flex justify-center items-center " +
-            (messengerSortType != "contact" ? "bg-[#2e3038]" : "")
+            (messengerSortType != "freinds" ? "bg-[#2e3038]" : "")
           }
-          onClick={() => messengerPrimarySortHandler("contact")}
-          variant={messengerSortType == "contact" ? "secondary" : "ghost"}
+          onClick={() => handleMessengerSelection("freinds")}
+          variant={messengerSortType == "freinds" ? "secondary" : "ghost"}
         >
           <Contact className="aspect-square w-5" />
-          <div className=""> Contact</div>
+          <div className=""> Freinds</div>
         </Button>
       </div>
 
@@ -88,7 +78,7 @@ const MessengerSort = () => {
               "gap-1  py-2 w-full rounded-full flex justify-center items-center " +
               (subSelectionType != "direct" ? "bg-[#2e3038]" : "")
             }
-            onClick={() => chatSubSortHandler("direct")}
+            onClick={() => handleSubSelection("direct")}
             variant={subSelectionType == "direct" ? "secondary" : "ghost"}
           >
             Direct
@@ -98,7 +88,7 @@ const MessengerSort = () => {
               "gap-1  py-2 w-full rounded-full flex justify-center items-center " +
               (subSelectionType != "group" ? "bg-[#2e3038]" : "")
             }
-            onClick={() => chatSubSortHandler("group")}
+            onClick={() => handleSubSelection("group")}
             variant={subSelectionType == "group" ? "secondary" : "ghost"}
           >
             Group
@@ -112,7 +102,7 @@ const MessengerSort = () => {
               "gap-1  py-2 w-full rounded-full flex justify-center items-center " +
               (subSelectionType == "allCall" ? "dark:bg-blue-500" : "bg-slate-300 dark:bg-neutral-800")
             }
-            onClick={() => callSubSortHandler("allCall")}
+            onClick={() => handleSubSelection("allCall")}
           >
             <div className="relative w-5 ">
               <CallIcon className="aspect-square" />
@@ -124,7 +114,7 @@ const MessengerSort = () => {
               "gap-1  py-2 w-full rounded-full flex justify-center items-center " +
               (subSelectionType == "incomingCall" ? "dark:bg-blue-500" : "bg-slate-300 dark:bg-neutral-800")
             }
-            onClick={() => callSubSortHandler("incomingCall")}
+            onClick={() => handleSubSelection("incomingCall")}
           >
             <div className="relative w-5 ">
               <CallReceivedIcon className="aspect-square" />
@@ -135,7 +125,7 @@ const MessengerSort = () => {
               "gap-1  py-2 w-full rounded-full flex justify-center items-center " +
               (subSelectionType == "outgoingCall" ? "dark:bg-blue-500" : "bg-slate-300 dark:bg-neutral-800")
             }
-            onClick={() => callSubSortHandler("outgoingCall")}
+            onClick={() => handleSubSelection("outgoingCall")}
           >
             <div className="relative w-5 ">
               <CallMadeIcon className="aspect-square" />
@@ -146,7 +136,7 @@ const MessengerSort = () => {
               "gap-1  py-2 w-full rounded-full flex justify-center items-center " +
               (subSelectionType == "missedCall" ? "dark:bg-blue-500" : "bg-slate-300 dark:bg-neutral-800")
             }
-            onClick={() => callSubSortHandler("missedCall")}
+            onClick={() => handleSubSelection("missedCall")}
           >
             <div className="relative w-5 ">
               <CallMissedIcon className="aspect-square" />
@@ -154,32 +144,38 @@ const MessengerSort = () => {
           </div>
         </div>
       )}
-      {messengerSortType == "contact" && (
+      {messengerSortType == "freinds" && (
         <div className="gap-5 mt-5  flex justify-between items-center fill-slate-950 font-medium text-base dark:fill-slate-50">
-          <div
+          <Button
             className={
               "gap-1  py-2 w-full rounded-full flex justify-center items-center " +
-              (subSelectionType == "all" ? "dark:bg-blue-500" : "bg-slate-300 dark:bg-neutral-800")
+              (subSelectionType != "all" ? "bg-[#2e3038]" : "")
             }
-            onClick={() => contactSubSortHandler("all")}
+            onClick={() => handleSubSelection("all")}
+            variant={subSelectionType == "all" ? "secondary" : "ghost"}
           >
-            <div className="relative w-5 ">
-              <IdBadge className="aspect-square" />
-            </div>
-            <div className=""> All</div>
-          </div>
-          <div
+            freinds
+          </Button>
+          <Button
             className={
               "gap-1  py-2 w-full rounded-full flex justify-center items-center " +
-              (subSelectionType == "closeFreinds" ? "dark:bg-blue-500" : "bg-slate-300 dark:bg-neutral-800")
+              (subSelectionType != "sendFreindRequest" ? "bg-[#2e3038]" : "")
             }
-            onClick={() => contactSubSortHandler("closeFreinds")}
+            onClick={() => handleSubSelection("sendFreindRequest")}
+            variant={subSelectionType == "sendFreindRequest" ? "secondary" : "ghost"}
           >
-            <div className="relative w-5 ">
-              <IdBadge className="aspect-square" />
-            </div>
-            <div className=""> Favorite</div>
-          </div>
+            sent
+          </Button>
+          <Button
+            className={
+              "gap-1  py-2 w-full rounded-full flex justify-center items-center " +
+              (subSelectionType != "recivedFreindRequest" ? "bg-[#2e3038]" : "")
+            }
+            onClick={() => handleSubSelection("recivedFreindRequest")}
+            variant={subSelectionType == "recivedFreindRequest" ? "secondary" : "ghost"}
+          >
+            received
+          </Button>
         </div>
       )}
     </div>

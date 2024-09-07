@@ -13,6 +13,28 @@ import {
   PrivateMessageArgs,
 } from "chit-chat-events"
 
+export const sendedFreindRequestHandler = async (details: any) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { data } = await axiosChatInstance.post("/freindRequest", details)
+      resolve(data)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+export const getFreindsListHandler = async () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { data } = await axiosChatInstance.get("/freinds")
+      resolve(data)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
 export const addAllChatUsers = () => async (dispatch: AppDispatch) => {
   try {
     const { data: usersDeatail } = await axiosChatInstance.post("/getAllChatUsers")

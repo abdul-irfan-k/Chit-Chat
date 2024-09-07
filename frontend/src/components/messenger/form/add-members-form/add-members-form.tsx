@@ -68,47 +68,10 @@ const AddMembersFrom: FC<AddMembersFormProps> = ({ selectedGroupMembers, setGrou
                       onSelectHandler={onMemberSelectHandler}
                       profileImageSrc="/Asset/avatar.jpg"
                       userName="irfan"
-                      
                     />
                   </div>
                 )
               })}
-
-              {/* <AddMembersFromCard
-                userId="kaleel"
-                _id="kaleel"
-                onSelectHandler={onMemberSelectHandler}
-                profileImageSrc="/Asset/avatar.jpg"
-                userName="irfan"
-              />
-              <AddMembersFromCard
-                userId="zuhair"
-                _id="zuhair"
-                onSelectHandler={onMemberSelectHandler}
-                profileImageSrc="/Asset/avatar.jpg"
-                userName="irfan"
-              />
-              <AddMembersFromCard
-                userId="imran"
-                _id="imran"
-                onSelectHandler={onMemberSelectHandler}
-                profileImageSrc="/Asset/avatar.jpg"
-                userName="irfan"
-              />
-              <AddMembersFromCard
-                userId="hashim"
-                _id="hashim"
-                onSelectHandler={onMemberSelectHandler}
-                profileImageSrc="/Asset/avatar.jpg"
-                userName="irfan"
-              />
-              <AddMembersFromCard
-                userId="althaf"
-                _id="althaf"
-                onSelectHandler={onMemberSelectHandler}
-                profileImageSrc="/Asset/avatar.jpg"
-                userName="irfan"
-              /> */}
             </div>
 
             <div className="mt-5">selected users</div>

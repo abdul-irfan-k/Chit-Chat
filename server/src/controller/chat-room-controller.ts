@@ -385,23 +385,18 @@ export const getChatRoomMessageReactionHandler = async (req: Request, res: Respo
   }
 }
 
-export const getFreindRequestsHandler = async (req: Request, res: Response) => {
-  try {
-  } catch (error) {
-    return res.status(400).json({})
-  }
-}
-
 export const postFreindRequestHandler = async (req: Request, res: Response) => {
   try {
     const _id = req.user?._id as string
     const userObjectId = new mongoose.Types.ObjectId(_id)
     const { freindRequestorId } = req.body
 
-    if (freindRequestorId) return res.status(400).json({})
+    if (!freindRequestorId) return res.status(400).json({})
     const freindRequestorObjectId = new mongoose.Types.ObjectId(freindRequestorId)
 
-    const userConnections = await ConnectionModel.findOne({ _id: userObjectId })
+    const userConnections = await ConnectionModel.findOne({ userId: userObjectId })
+    if (!userConnections) return res.status(400).json({})
+
     const isContainSendedFreindRequest = userConnections?.sendedFreindRequest.some(
       (request) => request.userId == freindRequestorId,
     )
@@ -412,17 +407,147 @@ export const postFreindRequestHandler = async (req: Request, res: Response) => {
     if (isContainReceivedFreindRequest) return res.status(400).json({ isValid: false })
 
     await ConnectionModel.findOneAndUpdate(
-      { _id: userObjectId },
+      { userId: userObjectId },
       { $push: { sendedFreindRequest: { userId: freindRequestorId, status: "pending" } } },
     )
     await ConnectionModel.findOneAndUpdate(
-      { _id: freindRequestorObjectId },
-      { $push: { receivedFreindRequest: { userId: freindRequestorId, status: "pending" } } },
+      { userId: freindRequestorObjectId },
+      { $push: { receivedFreindRequest: { userId: userObjectId, status: "pending" } } },
     )
     return res.status(200).json({ isValid: true })
   } catch (error) {
+    console.log(error)
     return res.status(400).json({})
   }
 }
 
-export const updateFreindRequestHandler = async (req: Request, res: Response) => {}
+export const getFreindRequestsHandler = async (req: Request, res: Response) => {
+  try {
+    const _id = req.user?._id as string
+    const userObjectId = new mongoose.Types.ObjectId(_id)
+
+    const sendedFreindRequests = await ConnectionModel.aggregate([
+      { $match: { userId: userObjectId } },
+      { $unwind: "$sendedFreindRequest" },
+      {
+        $lookup: {
+          from: "users",
+          localField: "sendedFreindRequest.userId",
+          foreignField: "_id",
+          pipeline: [{ $project: { name: 1, email: 1, profileImageUrl: 1, _id: 1, userId: 1 } }],
+          as: "userDetails",
+        },
+      },
+      {
+        // Combine sendedFreindRequest status with the user details
+        $addFields: {
+          "sendedFreindRequest.userDetails": { $arrayElemAt: ["$userDetails", 0] },
+        },
+      },
+      {
+        // Group the results back into an array to get the combined sendedFreindRequest array with user details and status
+        $group: {
+          _id: "$_id",
+          sendedFreindRequest: {
+            $push: {
+              userId: "$sendedFreindRequest.userId",
+              status: "$sendedFreindRequest.status",
+              userDetails: "$sendedFreindRequest.userDetails",
+            },
+          },
+        },
+      },
+    ])
+    const receivedFreindRequests = await ConnectionModel.aggregate([
+      { $match: { userId: userObjectId } },
+      { $unwind: "$receivedFreindRequest" },
+      {
+        $lookup: {
+          from: "users",
+          localField: "receivedFreindRequest.userId",
+          foreignField: "_id",
+          pipeline: [{ $project: { name: 1, email: 1, profileImageUrl: 1, _id: 1, userId: 1 } }],
+          as: "userDetails",
+        },
+      },
+      {
+        // Combine receivedFreindRequest status with the user details
+        $addFields: {
+          "receivedFreindRequest.userDetails": { $arrayElemAt: ["$userDetails", 0] },
+        },
+      },
+      {
+        // Group the results back into an array to get the combined receivedFreindRequest array with user details and status
+        $group: {
+          _id: "$_id",
+          receivedFreindRequest: {
+            $push: {
+              userId: "$receivedFreindRequest.userId",
+              status: "$receivedFreindRequest.status",
+              userDetails: "$receivedFreindRequest.userDetails",
+            },
+          },
+        },
+      },
+    ])
+
+    const freinds = await ConnectionModel.aggregate([
+      { $match: { userId: userObjectId } },
+      { $unwind: "$friends" },
+      {
+        $lookup: {
+          from: "users",
+          localField: "friends.userId",
+          foreignField: "_id",
+          pipeline: [{ $project: { name: 1, email: 1, profileImageUrl: 1, _id: 1, userId: 1 } }],
+          as: "userDetails",
+        },
+      },
+      {
+        $addFields: {
+          "friends.userDetails": { $arrayElemAt: ["$userDetails", 0] },
+        },
+      },
+      {
+        $group: {
+          _id: "$_id",
+          friends: {
+            $push: {
+              userId: "$friends.userId",
+              userDetails: "$friends.userDetails",
+            },
+          },
+        },
+      },
+    ])
+    return res.status(200).json({
+      sendedFreindRequests: sendedFreindRequests[0]?.sendedFreindRequest ?? [],
+      receivedFreindRequests: receivedFreindRequests[0]?.receivedFreindRequest ?? [],
+      freinds: freinds[0]?.friends ?? [],
+    })
+  } catch (error) {
+    console.log(error)
+  }
+}
+export const putFreindRequestsHandler = async (req: Request, res: Response) => {
+  try {
+    const _id = req.user?._id as string
+    const userObjectId = new mongoose.Types.ObjectId(_id)
+    const { freindRequestorId, accepted } = req.body
+
+    if (!freindRequestorId) return res.status(400).json({})
+    const freindRequestorObjectId = new mongoose.Types.ObjectId(freindRequestorId)
+
+    const userConnections = await ConnectionModel.findOne({ userId: userObjectId })
+    const freindRequestorConnections = await ConnectionModel.findOne({ userId: freindRequestorObjectId })
+
+    if (!userConnections | !freindRequestorConnections)
+      return res.status(400).json({ message: "user connections not found" })
+
+    if (accepted) {
+      // const userRecievedFreindRequest = userConnections.
+    }
+  } catch (error) {
+    return res.status(400).json({})
+  }
+}

@@ -54,8 +54,7 @@ const ChatList = () => {
             // </Link>
           )
         })}
-      {messengerSortType == "chat" &&
-        subSelectionType == "group" &&
+      {subSelectionType == "group" &&
         groupDetail.map((groupDetail, index) => {
           return (
             // <Link href={`/messenger/${groupDetail.userId}`} key={index}>

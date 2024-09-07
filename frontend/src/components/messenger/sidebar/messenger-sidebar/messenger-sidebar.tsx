@@ -8,6 +8,9 @@ import { Button } from "@/components/ui/button"
 import { MessageCircle, Plus, Users } from "lucide-react"
 import GroupCreationForm from "../../form/group-creation-form/group-creation-form"
 import FreindRequestForm from "../../form/freind-request-form/freind-request-form"
+import { useSelector } from "react-redux"
+import { messengerSortState } from "@/redux/reducers/messenger-sort-reducer/messenger-sort-reducer"
+import FriendsList from "../../freinds-list/freinds-list"
 
 interface MessengerSidebarProps {
   isInitialRender: boolean
@@ -16,11 +19,14 @@ const MessengerSidebar: FC<MessengerSidebarProps> = ({ isInitialRender }) => {
   const [isButtonClicked, setIsButtonClicked] = useState<boolean>(false)
   const [popUpForm, setPopUpForm] = useState<"newChat" | "newGroup" | "newContact" | undefined>(undefined)
 
-  const addButtonClickHandler = () => setIsButtonClicked(!isButtonClicked)
-  const popUpFromSelectHandler = (selectedFrom: "newChat" | "newGroup" | "newContact" | undefined) => {
+  const { messengerSortType } = useSelector((state: { messengerSort: messengerSortState }) => state.messengerSort)
+
+  const handleButtonClick = () => setIsButtonClicked(!isButtonClicked)
+  const handlePopFormSelect = (selectedFrom: "newChat" | "newGroup" | "newContact" | undefined) => {
     if (popUpForm == selectedFrom) return setPopUpForm(undefined)
     else setPopUpForm(selectedFrom)
   }
+
   return (
     <>
       <AnimatePresence>
@@ -35,12 +41,13 @@ const MessengerSidebar: FC<MessengerSidebarProps> = ({ isInitialRender }) => {
           <Recent />
           <div className="mt-10 flex flex-col overflow-y-scroll h-[70vh] no-scrollbar">
             <MessengerSort />
-            <ChatList />
+            {messengerSortType == "chat" && <ChatList />}
+            {messengerSortType == "freinds" && <FriendsList />}
           </div>
           <div>
             <div
               className="absolute bottom-5 rounded-full right-4 w-10 aspect-square bg-blue-500 fill-slate-50 flex items-center justify-center"
-              onClick={addButtonClickHandler}
+              onClick={handleButtonClick}
             >
               <Button className="relative w-full h-full" rounded size={"icon"}>
                 <Plus className="aspect-square w-6" />
@@ -53,7 +60,7 @@ const MessengerSidebar: FC<MessengerSidebarProps> = ({ isInitialRender }) => {
                     <div
                       className="relative w-10 flex justify-center items-center aspect-square rounded-full"
                       style={{ background: "rgba(28,157,234,.15)" }}
-                      onClick={() => popUpFromSelectHandler("newChat")}
+                      onClick={() => handlePopFormSelect("newChat")}
                     >
                       <MessageCircle className="w-6 aspect-square" width="" height="" />
                     </div>
@@ -63,7 +70,7 @@ const MessengerSidebar: FC<MessengerSidebarProps> = ({ isInitialRender }) => {
                     <div
                       className="relative w-10 flex justify-center items-center aspect-square rounded-full"
                       style={{ background: "rgba(28,157,234,.15)" }}
-                      onClick={() => popUpFromSelectHandler("newGroup")}
+                      onClick={() => handlePopFormSelect("newGroup")}
                     >
                       <Users className="w-6 aspect-square" width="" height="" />
                     </div>
@@ -73,7 +80,7 @@ const MessengerSidebar: FC<MessengerSidebarProps> = ({ isInitialRender }) => {
                     <div
                       className="relative w-10 flex justify-center items-center aspect-square rounded-full"
                       style={{ background: "rgba(28,157,234,.15)" }}
-                      onClick={() => popUpFromSelectHandler("newContact")}
+                      onClick={() => handlePopFormSelect("newContact")}
                     >
                       <Users className="w-6 aspect-square" width="" height="" />
                     </div>

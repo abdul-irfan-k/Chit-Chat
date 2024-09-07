@@ -5,6 +5,7 @@ import { X } from "lucide-react"
 import Image from "next/image"
 import React, { FC, useState } from "react"
 import { motion } from "framer-motion"
+import { sendedFreindRequestHandler } from "@/redux/actions/chat-action/chat-action"
 
 interface FreindRequestFormProps {
   handleCloseButtonClick(): void
@@ -12,14 +13,23 @@ interface FreindRequestFormProps {
 
 const FreindRequestForm: React.FC<FreindRequestFormProps> = ({ handleCloseButtonClick }) => {
   const [input, setInput] = useState("")
+  const [debounceInput, setDebounceInput] = useState("")
   const [users, setUsers] = useState([])
+  const [selectedUser, setSelectedUser] = useState(undefined)
 
-  const handleRequestButtonClick = () => {}
+  const handleRequestButtonClick = async () => {
+    if (selectedUser == undefined) return
+    try {
+      const data = await sendedFreindRequestHandler({ freindRequestorId: selectedUser._id })
+    } catch (error) {}
+  }
 
   useDebounce(
     async () => {
       try {
         if (input.trim() === "") return
+        if (input === debounceInput) return
+        setDebounceInput(input)
         const { users } = await searchUserHandler({ query: input })
         if (users == undefined) return
         setUsers(users)
@@ -77,8 +87,8 @@ const FreindRequestForm: React.FC<FreindRequestFormProps> = ({ handleCloseButton
                   _id={user._id}
                   userId={user.userId}
                   profileImageSrc={user.profileImageUrl}
-                  isSelected={true}
-                  handleCardSelect={() => {}}
+                  handleCardClick={() => setSelectedUser({ ...user })}
+                  isSelected={selectedUser?._id === user._id}
                 />
               </motion.div>
             )
@@ -106,11 +116,14 @@ interface UserCardProps {
   userId: string
   profileImageSrc: string
   isSelected?: boolean
-  handleCardSelect(): void
+  handleCardClick(): void
 }
-const UserCard: FC<UserCardProps> = ({ _id, handleCardSelect, name, profileImageSrc, isSelected, userId }) => {
+const UserCard: FC<UserCardProps> = ({ _id, handleCardClick, name, profileImageSrc, isSelected, userId }) => {
   return (
-    <div className="gap-3 relative flex  items-center" onClick={handleCardSelect}>
+    <div
+      className={"gap-3 relative flex  items-center rounded-md " + (isSelected ? "dark:bg-background-secondary" : "")}
+      onClick={handleCardClick}
+    >
       <div className="relative  w-10 aspect-square md:w-[10%] ">
         <Image src={profileImageSrc} alt="user-image" fill className="rounded-3xl" />
       </div>

@@ -5,6 +5,7 @@ import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 import { useAppDispatch } from "@/store"
 import React, { FC, useState } from "react"
 import InfiniteScroll from "react-infinite-scroll-component"
+import CircleSpinner from "../circle-spinner/circle-spinner"
 
 interface MessageInfiniteScrollProps {
   children: React.ReactNode
@@ -47,8 +48,8 @@ const MessageInfiniteScroll: FC<MessageInfiniteScrollProps> = ({
     <InfiniteScroll
       dataLength={totalFetchedMessages != undefined ? totalFetchedMessages : 10}
       loader={
-        <div className="loader" key={0}>
-          Loading ...
+        <div className="loader flex  justify-center mb-5" key={0}>
+          <CircleSpinner />
         </div>
       }
       hasMore
@@ -56,7 +57,7 @@ const MessageInfiniteScroll: FC<MessageInfiniteScrollProps> = ({
       inverse={true}
       next={fetchMoreDataHandler}
       height={500}
-      style={{ display: 'flex', flexDirection: 'column-reverse' }}
+      style={{ display: "flex", flexDirection: "column-reverse" }}
       // style={{ height: "100%", overflowY: "scroll" }}
     >
       {children}

@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc ",
     "dev": "ts-node-dev --respawn --transpile-only  src/server.ts",
-    "predebug": "npm-run-all build ",
+    "predebug": "tsc ",
     "debug": "nodemon --inspect ",
     "format": "npm run prettier",
     "start": "node .",

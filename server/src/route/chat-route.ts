@@ -6,7 +6,9 @@ import {
   getAllChatUsersHandler,
   getChatRoomMessageHandler,
   getChatRoomMessageReactionHandler,
+  getFreindRequestsHandler,
   getGroupChatRoomMessageHandler,
+  postFreindRequestHandler,
 } from "../controller/chat-room-controller"
 import { checkisLogedInMiddleware } from "../middleware/user-middleware"
 
@@ -17,9 +19,10 @@ router.all("*", (req, res, next) => {
   next()
 })
 
-router.get("/freindRequests", checkisLogedInMiddleware)
-router.post("/freindRequest", checkisLogedInMiddleware)
-router.put("/freindRequest", checkisLogedInMiddleware)
+router.get("/freinds", checkisLogedInMiddleware, getFreindRequestsHandler)
+router.post("/freindRequest", checkisLogedInMiddleware, postFreindRequestHandler)
+router.put("/rejectfreindRequest", checkisLogedInMiddleware)
+router.put("/acceptfreindRequest", checkisLogedInMiddleware)
 
 router.post("/getUserChatRoomId")
 router.post("/getAllChatRoom")
