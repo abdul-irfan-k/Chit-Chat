@@ -102,22 +102,20 @@ export const chatUsersListReducer = createSlice({
       state.usersDeatail = updatedUserDetail
     },
     addUserNotification: (state, action) => {
-      const updatedUserDetail = state.usersDeatail.map((userDetail) => {
-        if (userDetail._id == action.payload._id)
-          return {
-            ...userDetail,
-            notification: {
-              ...action.payload.notification,
-              totalNotificationCount:
-                userDetail.notification?.totalNotificationCount != undefined
-                  ? userDetail.notification.totalNotificationCount + 1
-                  : 1,
-            },
-          }
-        else return { ...userDetail }
-      })
+      const userDetail = state.usersDeatail.filter((userDetail) => userDetail._id == action.payload._id)[0]
+      if (userDetail == undefined) return { ...state }
 
-      state.usersDeatail = updatedUserDetail
+      if (state.currentChaterDetail?._id != action.payload._id) {
+        userDetail.notification = {
+          ...action.payload.notification,
+          totalNotificationCount:
+            userDetail.notification?.totalNotificationCount != undefined
+              ? userDetail.notification.totalNotificationCount + 1
+              : 1,
+        }
+      }
+
+      state.usersDeatail = [{ ...userDetail }, ...state.usersDeatail.filter((user) => user._id != action.payload._id)]
     },
     removeUserNotification: (state, action) => {
       const updatedUserDetail = state.usersDeatail.map((userDetail) => {
