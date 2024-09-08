@@ -8,6 +8,7 @@ import MobileChatContainer from "../chat/mobile-chat-container/mobile-chat-conta
 import useMediaQuery from "@/hooks/user-media-query/use-media-query"
 import { messengerSortState } from "@/redux/reducers/messenger-sort-reducer/messenger-sort-reducer"
 import ChatListBox from "./chat-list-box/chat-list-box"
+import { AnimatePresence, motion } from "framer-motion"
 
 const ChatList = () => {
   const { usersDeatail, groupDetail } = useSelector(
@@ -26,34 +27,44 @@ const ChatList = () => {
 
   return (
     <div className="flex flex-col  mt-10 gap-5    w-full   ">
-      {messengerSortType == "chat" &&
-        subSelectionType == "direct" &&
-        usersDeatail.map((userDetail, index) => {
-          return (
-            // <Link href={`/messenger/${userDetail.userId}`} key={index}>
-            <ChatListBox
-              key={index}
-              onClickHandler={() => {
-                dispatch(updateCurrentChaterHandler({ userDetail, isChanged: true }))
-                setIsSelectedUser(true)
-              }}
-              communicatorName={userDetail.name}
-              imageSrc={userDetail.profileImageUrl != undefined ? userDetail.profileImageUrl : "/Asset/avatar.jpg"}
-              lastMessageTime={new Date()}
-              onlineStatus={userDetail.status?.onlineStatus == "online" ? true : false}
-              currentStatus={{ isSendingMessage: false }}
-              newMessage={
-                userDetail.notification?.isAvailableNewNotification
-                  ? {
-                      latestMessage: "hi from new account",
-                      totalNewMessageCount: userDetail.notification.totalNotificationCount,
-                    }
-                  : undefined
-              }
-            />
-            // </Link>
-          )
-        })}
+      <AnimatePresence>
+        {messengerSortType == "chat" &&
+          subSelectionType == "direct" &&
+          usersDeatail.map((userDetail, index) => {
+            return (
+              // <Link href={`/messenger/${userDetail.userId}`} key={index}>
+              <motion.div
+                key={userDetail._id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+                layout
+              >
+                <ChatListBox
+                  onClickHandler={() => {
+                    dispatch(updateCurrentChaterHandler({ userDetail, isChanged: true }))
+                    setIsSelectedUser(true)
+                  }}
+                  communicatorName={userDetail.name}
+                  imageSrc={userDetail.profileImageUrl != undefined ? userDetail.profileImageUrl : "/Asset/avatar.jpg"}
+                  lastMessageTime={new Date()}
+                  onlineStatus={userDetail.status?.onlineStatus == "online" ? true : false}
+                  currentStatus={{ isSendingMessage: false }}
+                  newMessage={
+                    userDetail.notification?.isAvailableNewNotification
+                      ? {
+                          latestMessage: "hi from new account",
+                          totalNewMessageCount: userDetail.notification.totalNotificationCount,
+                        }
+                      : undefined
+                  }
+                />
+              </motion.div>
+              // </Link>
+            )
+          })}
+      </AnimatePresence>
       {subSelectionType == "group" &&
         groupDetail.map((groupDetail, index) => {
           return (

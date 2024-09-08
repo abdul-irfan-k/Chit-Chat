@@ -1,4 +1,4 @@
-import { combineReducers, configureStore } from "@reduxjs/toolkit"
+import { applyMiddleware, combineReducers, configureStore } from "@reduxjs/toolkit"
 import { messengerSortReducer } from "./redux/reducers/messenger-sort-reducer/messenger-sort-reducer"
 import { useDispatch } from "react-redux"
 import { userDetailReducer, userSignUpDetailReducer } from "./redux/reducers/user-redicer/user-reducer"

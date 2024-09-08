@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react"
+import React, { FC, useEffect, useState } from "react"
 import Recent from "../../recent/recent"
 import MessengerSort from "../../messenger-sort/messenger-sort"
 import ChatList from "../../chat-list/chat-list"
@@ -11,6 +11,8 @@ import FreindRequestForm from "../../form/freind-request-form/freind-request-for
 import { useSelector } from "react-redux"
 import { messengerSortState } from "@/redux/reducers/messenger-sort-reducer/messenger-sort-reducer"
 import FriendsList from "../../freinds-list/freinds-list"
+import { useAppDispatch } from "@/store"
+import { addNewMessageNotificationHandler } from "@/redux/actions/chat-action/chat-action"
 
 interface MessengerSidebarProps {
   isInitialRender: boolean
