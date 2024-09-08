@@ -16,7 +16,28 @@ import {
 export const sendedFreindRequestHandler = async (details: any) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const { data } = await axiosChatInstance.post("/freindRequest", details)
+      const { data } = await axiosChatInstance.post("/friendRequest", details)
+      resolve(data)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+export const acceptFriendRequestHandler = async (details: any) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { data } = await axiosChatInstance.put("/acceptfriendRequest", details)
+      resolve(data)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+export const rejectFriendRequestHandler = async (details: any) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { data } = await axiosChatInstance.put("/rejectfriendRequest", details)
       resolve(data)
     } catch (error) {
       reject(error)
@@ -27,7 +48,7 @@ export const sendedFreindRequestHandler = async (details: any) => {
 export const getFreindsListHandler = async () => {
   return new Promise(async (resolve, reject) => {
     try {
-      const { data } = await axiosChatInstance.get("/freinds")
+      const { data } = await axiosChatInstance.get("/friends")
       resolve(data)
     } catch (error) {
       reject(error)

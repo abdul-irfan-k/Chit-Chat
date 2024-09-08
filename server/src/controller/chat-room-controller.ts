@@ -387,28 +387,29 @@ export const getChatRoomMessageReactionHandler = async (req: Request, res: Respo
 
 export const postFreindRequestHandler = async (req: Request, res: Response) => {
   try {
+    console.log("post freind request")
     const _id = req.user?._id as string
     const userObjectId = new mongoose.Types.ObjectId(_id)
-    const { freindRequestorId } = req.body
+    const { friendRequestorId } = req.body
 
-    if (!freindRequestorId) return res.status(400).json({})
-    const freindRequestorObjectId = new mongoose.Types.ObjectId(freindRequestorId)
+    if (!friendRequestorId) return res.status(400).json({})
+    const freindRequestorObjectId = new mongoose.Types.ObjectId(friendRequestorId)
 
     const userConnections = await ConnectionModel.findOne({ userId: userObjectId })
     if (!userConnections) return res.status(400).json({})
 
     const isContainSendedFreindRequest = userConnections?.sendedFreindRequest.some(
-      (request) => request.userId == freindRequestorId,
+      (request) => request.userId == friendRequestorId,
     )
     if (isContainSendedFreindRequest) return res.status(400).json({ isValid: false })
     const isContainReceivedFreindRequest = userConnections?.receivedFreindRequest.some(
-      (request) => request.userId == freindRequestorId,
+      (request) => request.userId == friendRequestorId,
     )
     if (isContainReceivedFreindRequest) return res.status(400).json({ isValid: false })
 
     await ConnectionModel.findOneAndUpdate(
       { userId: userObjectId },
-      { $push: { sendedFreindRequest: { userId: freindRequestorId, status: "pending" } } },
+      { $push: { sendedFreindRequest: { userId: friendRequestorId, status: "pending" } } },
     )
     await ConnectionModel.findOneAndUpdate(
       { userId: freindRequestorObjectId },
@@ -531,23 +532,74 @@ export const getFreindRequestsHandler = async (req: Request, res: Response) => {
 }
 export const putFreindRequestsHandler = async (req: Request, res: Response) => {
   try {
-    const _id = req.user?._id as string
-    const userObjectId = new mongoose.Types.ObjectId(_id)
-    const { freindRequestorId, accepted } = req.body
+    const userId = req.user?._id as string
+    const userObjectId = new mongoose.Types.ObjectId(userId)
+    const { friendRequestorId, isAcceptedFreindRequest } = req.body
 
-    if (!freindRequestorId) return res.status(400).json({})
-    const freindRequestorObjectId = new mongoose.Types.ObjectId(freindRequestorId)
+    if (!friendRequestorId) return res.status(400).json({})
+    const freindRequestorObjectId = new mongoose.Types.ObjectId(friendRequestorId)
 
     const userConnections = await ConnectionModel.findOne({ userId: userObjectId })
     const freindRequestorConnections = await ConnectionModel.findOne({ userId: freindRequestorObjectId })
 
-    if (!userConnections | !freindRequestorConnections)
+    if (!userConnections || !freindRequestorConnections)
       return res.status(400).json({ message: "user connections not found" })
 
-    if (accepted) {
-      // const userRecievedFreindRequest = userConnections.
+    const recievedRequestIndex = userConnections.receivedFreindRequest.findIndex(
+      (request) => request.userId == friendRequestorId,
+    )
+    const sendRequestIndex = freindRequestorConnections.sendedFreindRequest.findIndex(
+      //@ts-ignore
+      (request) => request.userId == userId,
+    )
+    if (recievedRequestIndex < 0 || sendRequestIndex < 0) return res.status(400).json({})
+
+    const status = isAcceptedFreindRequest ? "accepted" : "rejected"
+    userConnections.receivedFreindRequest[recievedRequestIndex].status = status
+    freindRequestorConnections.sendedFreindRequest[sendRequestIndex].status = status
+
+    if (isAcceptedFreindRequest) {
+      const newChatRoom = new ChatRoomModel({ userIds: [userId, friendRequestorId], chatRoomConversations: [] })
+      await newChatRoom.save()
+
+      if (newChatRoom == null) return res.status(400).json({ message: "chatroom not created" })
+      await ConnectionModel.findOneAndUpdate(
+        { userId: userObjectId },
+        {
+          receivedFreindRequest: userConnections.receivedFreindRequest,
+          $push: {
+            friends: { chatRoomId: newChatRoom._id, userId: freindRequestorObjectId },
+          },
+        },
+      )
+
+      await ConnectionModel.findOneAndUpdate(
+        { userId: freindRequestorObjectId },
+        {
+          sendedFreindRequest: freindRequestorConnections.sendedFreindRequest,
+          $push: {
+            friends: { chatRoomId: newChatRoom._id, userId: userObjectId },
+          },
+        },
+      )
+    } else {
+      await ConnectionModel.findOneAndUpdate(
+        { userId: userObjectId },
+        {
+          receivedFreindRequest: userConnections.receivedFreindRequest,
+        },
+      )
+
+      await ConnectionModel.findOneAndUpdate(
+        { userId: freindRequestorObjectId },
+        {
+          sendedFreindRequest: freindRequestorConnections.sendedFreindRequest,
+        },
+      )
     }
+    return res.status(200).json({})
   } catch (error) {
+    console.log(error)
     return res.status(400).json({})
   }
 }

@@ -36,8 +36,12 @@ const FriendsCard: FC<FriendsCardInterface> = ({
 
       {type == "recivedFreindRequest" && status == "pending" && (
         <div className="ml-auto gap-2 flex  items-center">
-          <span className="text-red-400 border-[1px] border-red-400 px-2 py-1 rounded-full">reject</span>
-          <span className="text-blue border-[1px] border-blue px-2 py-1 rounded-full">accept</span>
+          <span className="text-red-400 border-[1px] border-red-400 px-2 py-1 rounded-full" onClick={onRejectHandler}>
+            reject
+          </span>
+          <span className="text-blue border-[1px] border-blue px-2 py-1 rounded-full" onClick={onAcceptHandler}>
+            accept
+          </span>
         </div>
       )}
 

@@ -20,7 +20,7 @@ const FreindRequestForm: React.FC<FreindRequestFormProps> = ({ handleCloseButton
   const handleRequestButtonClick = async () => {
     if (selectedUser == undefined) return
     try {
-      const data = await sendedFreindRequestHandler({ freindRequestorId: selectedUser._id })
+      const data = await sendedFreindRequestHandler({ friendRequestorId: selectedUser._id })
     } catch (error) {}
   }
 

@@ -6,7 +6,11 @@ import useMediaQuery from "@/hooks/user-media-query/use-media-query"
 import { messengerSortState } from "@/redux/reducers/messenger-sort-reducer/messenger-sort-reducer"
 import ChatListBox from "./chat-list-box/chat-list-box"
 import FriendsCard from "./freind-card"
-import { getFreindsListHandler } from "@/redux/actions/chat-action/chat-action"
+import {
+  acceptFriendRequestHandler,
+  getFreindsListHandler,
+  rejectFriendRequestHandler,
+} from "@/redux/actions/chat-action/chat-action"
 
 const FriendsList = () => {
   const [freinds, setFreinds] = useState<any>([])
@@ -29,6 +33,18 @@ const FriendsList = () => {
       } catch (error) {}
     })()
   }, [])
+
+  const handleOnAcceptButtonClick = async (userId: string) => {
+    try {
+      await acceptFriendRequestHandler({ friendRequestorId: userId, isAcceptedFreindRequest: true })
+    } catch (error) {}
+  }
+
+  const handleOnRejectButtonClick = async (userId: string) => {
+    try {
+      await rejectFriendRequestHandler({ friendRequestorId: userId, isAcceptedFreindRequest: false })
+    } catch (error) {}
+  }
   return (
     <div className="flex flex-col  mt-10 gap-5    w-full   ">
       {messengerSortType == "freinds" &&
@@ -75,6 +91,8 @@ const FriendsList = () => {
               {...freinds.userDetails}
               status={freinds.status}
               type="recivedFreindRequest"
+              onAcceptHandler={() => handleOnAcceptButtonClick(freinds.userDetails._id)}
+              onRejectHandler={() => handleOnRejectButtonClick(freinds.userDetails._id)}
             />
             // </Link>
           )
