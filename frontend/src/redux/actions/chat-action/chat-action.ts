@@ -121,7 +121,7 @@ export const getChatRoomMessageHandler =
       const isInitialMessages = skip == 0
       //@ts-ignore
       dispatch(
-        chatRoomMessageAction.addChatRoomMessage({
+        chatRoomMessageAction.addChatRoomInitialMessage({
           messageAndChatRoomDetails: { messages: messageData, totatMessages: data.totalMessages, chatRoomId },
           isInitialMessages,
         }),
@@ -159,7 +159,7 @@ export const sendTextMessageHandler = (args: textMessageArgs, socket: SocketIO) 
   const { chatRoomId, message, senderId, messageChannelType } = args
   message._id = generateUUIDString()
   dispatch(
-    chatRoomMessageAction.addSendedChatRoomMessage({
+    chatRoomMessageAction.addChatRoomMessage({
       chatRoomId: chatRoomId,
       newMessage: {
         messegeChannelType: "outgoingMessage",
@@ -168,6 +168,7 @@ export const sendTextMessageHandler = (args: textMessageArgs, socket: SocketIO) 
           messageType: "textMessage",
         },
       },
+      isSendedMessage: true,
     }),
   )
 
@@ -201,7 +202,7 @@ export const sendAudioMessageHandler =
     const { chatRoomId, message, senderId, messageChannelType, messageSrc } = details
     message._id = generateUUIDString()
     dispatch(
-      chatRoomMessageAction.addSendedChatRoomMessage({
+      chatRoomMessageAction.addChatRoomMessage({
         chatRoomId,
         newMessage: {
           messegeChannelType: "outgoingMessage",
@@ -211,6 +212,7 @@ export const sendAudioMessageHandler =
             audioSrc: messageSrc,
           },
         },
+        isSendedMessage: true,
       }),
     )
     if (messageChannelType == "private")
@@ -242,7 +244,7 @@ export const sendImageMessageHandler =
     const { chatRoomId, formData, message, messageChannelType, senderId } = args
     message._id = generateUUIDString()
     dispatch(
-      chatRoomMessageAction.addSendedChatRoomMessage({
+      chatRoomMessageAction.addChatRoomMessage({
         chatRoomId,
         newMessage: {
           messegeChannelType: "outgoingMessage",
@@ -254,6 +256,7 @@ export const sendImageMessageHandler =
           messageStatus: "notSended",
           messageDeliveryStatus: "notDelivered",
         },
+        isSendedMessage: true,
       }),
     )
 
@@ -305,7 +308,7 @@ export const sendMultipleImageMessageHandler =
       })
     })
 
-    dispatch(chatRoomMessageAction.addSendedChatRoomMultipleMessage({ chatRoomId, newMessage: newMessage }))
+    dispatch(chatRoomMessageAction.addChatRoomMultipleMessage({ chatRoomId, newMessage: newMessage }))
 
     const { data: response } = await axiosUploadInstance.post("/uploadMultipleImage", formData, {
       headers: { "Content-Type": "multipart/form-data" },
@@ -339,7 +342,7 @@ export const sendVideoMessageHandler =
     message._id = generateUUIDString()
 
     dispatch(
-      chatRoomMessageAction.addSendedChatRoomMessage({
+      chatRoomMessageAction.addChatRoomMessage({
         chatRoomId,
         newMessage: {
           messegeChannelType: "outgoingMessage",
@@ -350,6 +353,7 @@ export const sendVideoMessageHandler =
           messageStatus: "notSended",
           messageDeliveryStatus: "notDelivered",
         },
+        isSendedMessage: true,
       }),
     )
     const { data: response } = await axiosUploadInstance.post("/uploadVideo", formData, {
@@ -379,7 +383,7 @@ export const sendGroupPollMessageHandler =
   async (dispatch: AppDispatch) => {
     message._id = generateUUIDString()
     dispatch(
-      chatRoomMessageAction.addSendedChatRoomMessage({
+      chatRoomMessageAction.addChatRoomMessage({
         chatRoomId,
         newMessage: {
           messegeChannelType: "outgoingMessage",
@@ -389,6 +393,7 @@ export const sendGroupPollMessageHandler =
             ...message,
           },
         },
+        isSendedMessage: true,
       }),
     )
     socket.emit("groupMessage:newPollMessage", { chatRoomId, groupId, message, senderId, messageChannelType })
@@ -405,10 +410,11 @@ export const receiveMessageHandler =
     chatRoomId: string
     message: any
     messageType: "textMessage" | "voiceMessage" | "imageMessage" | "videoMessage" | "pollMessage"
+    isSendedMessage?: boolean
   }) =>
   async (dispatch: AppDispatch) => {
     dispatch(
-      chatRoomMessageAction.addSendedChatRoomMessage({
+      chatRoomMessageAction.addChatRoomMessage({
         chatRoomId,
         newMessage: {
           messegeChannelType: "incomingMessage",
@@ -438,7 +444,7 @@ export const recieveMultipleNewImageMessageHandler =
       })
     })
     dispatch(
-      chatRoomMessageAction.addSendedChatRoomMultipleMessage({
+      chatRoomMessageAction.addChatRoomMultipleMessage({
         chatRoomId,
         newMessage: newMessages,
       }),

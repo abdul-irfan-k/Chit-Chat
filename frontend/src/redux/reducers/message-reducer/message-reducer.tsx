@@ -9,7 +9,7 @@ export const chatRoomsMessageReducer = createSlice({
   name: "chatRoomMessageReducer",
   initialState: chatRoomMessagesIntialState,
   reducers: {
-    addChatRoomMessage: (
+    addChatRoomInitialMessage: (
       state,
       action: { payload: { messageAndChatRoomDetails: chatRoomMessages; isInitialMessages: boolean } },
     ) => {
@@ -59,10 +59,13 @@ export const chatRoomsMessageReducer = createSlice({
       )
       state.currentChatRoomMessages = currentChatRoomMessages[0]
     },
-    addSendedChatRoomMessage: (
+    addChatRoomMessage: (
       state,
-      action: { payload: { chatRoomId: string; newMessage: incomingMessage | outGoingMessage } },
+      action: {
+        payload: { chatRoomId: string; newMessage: incomingMessage | outGoingMessage; isSendedMessage?: boolean }
+      },
     ) => {
+      console.log("add chat room messages", action.payload)
       let updatedChatRoomMessage = state.chatRoomMessages.filter(
         (chatRoom) => chatRoom.chatRoomId == action.payload.chatRoomId,
       )[0]
@@ -76,9 +79,10 @@ export const chatRoomsMessageReducer = createSlice({
         ...state.chatRoomMessages.filter((chatRoom) => chatRoom.chatRoomId != action.payload.chatRoomId),
         { ...updatedChatRoomMessage },
       ]
-      state.currentChatRoomMessages = updatedChatRoomMessage
+      if (action.payload.isSendedMessage || state.currentChatRoomMessages?.chatRoomId == action.payload.chatRoomId)
+        state.currentChatRoomMessages = updatedChatRoomMessage
     },
-    addSendedChatRoomMultipleMessage: (
+    addChatRoomMultipleMessage: (
       state,
       action: { payload: { chatRoomId: string; newMessage: Array<messageTypes> } },
     ) => {
