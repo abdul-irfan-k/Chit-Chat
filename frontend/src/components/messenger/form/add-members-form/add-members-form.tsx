@@ -1,158 +1,136 @@
-import { axiosUserInstance } from "@/constants/axios"
+import { Button } from "@/components/ui/button"
 import useDebounce from "@/hooks/use-debounce/use-debounce"
+import { searchUserHandler } from "@/redux/actions/user-action/user-action"
+import { X } from "lucide-react"
 import Image from "next/image"
-import React, { FC, useEffect, useState } from "react"
+import React, { FC, useRef, useState } from "react"
+import { motion } from "framer-motion"
+import { sendedFreindRequestHandler } from "@/redux/actions/chat-action/chat-action"
+import useOutsideClick from "@/hooks/use-outside-click/use-outside-click"
 
 interface AddMembersFormProps {
-  selectedGroupMembers: { userId: string; _id: string }[]
-  setGroupMembers: React.Dispatch<React.SetStateAction<{ userId: string; _id: string }[]>>
-  onCloseHandler(): void
+  handleOutsideClick(): void
 }
-const AddMembersFrom: FC<AddMembersFormProps> = ({ selectedGroupMembers, setGroupMembers, onCloseHandler }) => {
-  const [searchInput, setSearchInput] = useState<String>("")
-  const [searchResult, setSearchResult] = useState<Array<{ name: string; userId: string; _id: string }>>([])
 
-  const onMemberSelectHandler = (userDetail: { userId: string; _id: string }, selected: boolean) => {
-    if (selected) {
-      const isAlreadyAvailableMember = selectedGroupMembers.some((member) => member._id == userDetail._id)
-      if (isAlreadyAvailableMember) return
-      setGroupMembers([...selectedGroupMembers, { _id: userDetail._id, userId: userDetail.userId }])
-    } else {
-      const updatedMembers = selectedGroupMembers.filter((member) => member._id != userDetail._id)
-      setGroupMembers(updatedMembers)
-    }
-  }
+const AddMembersForm: React.FC<AddMembersFormProps> = ({ handleOutsideClick }) => {
+  const addMemberContainr = useRef<HTMLDivElement>(null)
 
-  const [isRequiredToUpdate, setIsRequiredToUpdate] = useState<boolean>(false)
-  const searchInputOnChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // console.log('changed')
-    setSearchInput(e.target.value)
-    setIsRequiredToUpdate(true)
+  const [input, setInput] = useState("")
+  const [debounceInput, setDebounceInput] = useState("")
+  const [users, setUsers] = useState([])
+  const [selectedUser, setSelectedUser] = useState(undefined)
+
+  const handleRequestButtonClick = async () => {
+    if (selectedUser == undefined) return
+    try {
+      const data = await sendedFreindRequestHandler({ friendRequestorId: selectedUser._id })
+    } catch (error) {}
   }
 
   useDebounce(
     async () => {
-      if (!isRequiredToUpdate) return
-      const { data } = await axiosUserInstance.post("/getUserDetailByUserId")
-      setIsRequiredToUpdate(false)
-      setSearchResult([...data])
+      try {
+        if (input.trim() === "") return
+        if (input === debounceInput) return
+        setDebounceInput(input)
+        const { users } = await searchUserHandler({ query: input })
+        if (users == undefined) return
+        setUsers(users)
+      } catch (error) {}
     },
-    500,
-    [searchInput],
+    200,
+    [input],
   )
+
+  useOutsideClick(addMemberContainr, () => handleOutsideClick())
   return (
-    <div className="fixed left-0 top-0 w-screen h-screen z-30" style={{ background: "rgba(0,0,0,0.97 )" }}>
-      <div className="h-full w-[50%] mx-auto my-10 flex flex-col">
-        <div className="px-3 py-3 rounded-full  bg-neutral-950 border-[1px] border-slate-400">
-          <div className="flex-1">
-            <input
-              type="text"
-              className="w-full px-3 bg-transparent border-none outline-none text-slate-50"
-              placeholder="search the freinds "
-              onChange={searchInputOnChangeHandler}
-            />
-          </div>
+    <div className="fixed left-0 top-0 w-screen h-screen z-[200]" style={{ background: "rgba(0,0,0,0.9 )" }}>
+      <div
+        className="absolute  py-5 w-[35%]  left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] flex flex-col rounded-lg  z-50 dark:bg-background-primary"
+        ref={addMemberContainr}
+      >
+        <div className="px-10 mt-0 flex-1 border-b-[3px] border-neutral-800">
+          <input
+            type="text"
+            placeholder="Enter the username"
+            className="px-4 py-2  rounded-md  outline-none w-full text-base border-none bg-background-secondary   dark:text-slate-50"
+            onChange={(e) => setInput(e.target.value)}
+          />
         </div>
 
-        <div className="mt-10 px-6 py-6 rounded-3xl  bg-neutral-950">
-          <div className="mt-2">
-            {/* <SearchUserList /> */}
-
-            <div className="mt-3 gap-3 flex flex-col h-[50vh] overflow-y-scroll no-scrollbar">
-              {searchResult.map((result, index) => {
-                return (
-                  <div key={index}>
-                    <AddMembersFromCard
-                      userId={result.userId}
-                      _id={result._id}
-                      onSelectHandler={onMemberSelectHandler}
-                      profileImageSrc="/Asset/avatar.jpg"
-                      userName="irfan"
-                    />
-                  </div>
-                )
-              })}
-            </div>
-
-            <div className="mt-5">selected users</div>
-            <div className=" gap-2  mt-2 flex flex-wrap  rounded-xl">
-              {selectedGroupMembers.map((member, index) => {
-                return (
-                  <div className="px-4 py-2 rounded-full bg-slate-300 dark:bg-neutral-800" key={index}>
-                    {member.userId}
-                  </div>
-                )
-              })}
-            </div>
-            <div className="gap-5 mt-5 flex items-center ">
-              <div
-                className="px-5 py-2 flex  items-center justify-center rounded-full text-lg border-2 border-red-500 text-red-500"
-                onClick={() => {
-                  setGroupMembers([])
-                  onCloseHandler()
+        <div className="mt-5 px-10 gap-5 flex flex-col h-[40vh] overflow-x-hidden overflow-y-scroll">
+          {users.map((user: any, index) => {
+            return (
+              <motion.div
+                key={user._id}
+                variants={{
+                  initial: {
+                    x: "10%",
+                    opacity: 0,
+                  },
+                  active(custom) {
+                    return {
+                      x: 0,
+                      opacity: 1,
+                      transition: {
+                        delay: custom * 0.05,
+                      },
+                    }
+                  },
                 }}
+                custom={index}
+                initial="initial"
+                animate="active"
               >
-                Cancel
-              </div>
-              <div
-                className="px-5 py-2 flex  items-center justify-center rounded-full text-lg bg-blue-500"
-                onClick={onCloseHandler}
-              >
-                Add
-              </div>
-            </div>
-          </div>
+                <UserCard
+                  name={user.name}
+                  _id={user._id}
+                  userId={user.userId}
+                  profileImageSrc={user.profileImageUrl}
+                  handleCardClick={() => setSelectedUser({ ...user })}
+                  isSelected={selectedUser?._id === user._id}
+                />
+              </motion.div>
+            )
+          })}
+        </div>
+
+        <div className="px-10 mt-10 gap-10 flex ">
+          <Button
+            className="px-5 py-2 flex flex-1 items-center justify-center rounded-full text-lg  "
+            onClick={handleRequestButtonClick}
+          >
+            add members
+          </Button>
         </div>
       </div>
     </div>
   )
 }
 
-export default AddMembersFrom
+export default AddMembersForm
 
-interface addMembersFromCardProps {
-  userName: string
-  userId: string
+interface UserCardProps {
+  name: string
   _id: string
+  userId: string
   profileImageSrc: string
-  isHovered?: boolean
-  onSelectHandler(userDetail: { userId: string; _id: string }, selected: boolean): void
+  isSelected?: boolean
+  handleCardClick(): void
 }
-const AddMembersFromCard: FC<addMembersFromCardProps> = ({
-  userId,
-  isHovered,
-  profileImageSrc,
-  onSelectHandler,
-  _id,
-}) => {
-  const [isChecked, setIsChecked] = useState<boolean>(false)
-
+const UserCard: FC<UserCardProps> = ({ _id, handleCardClick, name, profileImageSrc, isSelected, userId }) => {
   return (
     <div
-      className="gap-2 py-1 flex items-center  rounded-full"
-      style={{ background: isHovered ? "rgb(23 23 23 / var(--tw-bg-opacity))" : "" }}
-      onClick={() => {
-        onSelectHandler({ _id, userId }, !isChecked)
-        setIsChecked(!isChecked)
-      }}
+      className={"gap-3 relative flex  items-center rounded-md " + (isSelected ? "dark:bg-background-secondary" : "")}
+      onClick={handleCardClick}
     >
-      <div className="relative w-10 aspect-square rounded-md overflow-hidden">
-        <Image alt="profile image" src={profileImageSrc} fill />
+      <div className="relative  w-10 aspect-square md:w-[10%] ">
+        <Image src={profileImageSrc} alt="user-image" fill className="rounded-3xl" />
       </div>
-      <span className="font-medium">{userId}</span>
-      <div className="ml-auto">
-        <input
-          type="checkbox"
-          id="topping"
-          name="topping"
-          value="Paneer"
-          checked={isChecked}
-          onChange={(e) => {
-            setIsChecked(e.target.checked)
-            onSelectHandler({ _id, userId }, e.target.checked)
-          }}
-          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
-        />
+
+      <div className="gap-1 flex flex-col  justify-center ">
+        <div className="font-medium text-base ">{name}</div>
+        <span>{userId}</span>
       </div>
     </div>
   )

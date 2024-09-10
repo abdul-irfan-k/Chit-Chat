@@ -8,17 +8,6 @@ import UserModel from "../model/mongoose/user-model"
 import GroupChatRoomModel from "../model/mongoose/chat-room-model/group-chat-room-model"
 import MessageReactionModel from "../model/mongoose/message-model/message-reaction-model"
 
-export const sendMessageToUserHandler = async (req: Request, res: Response) => {
-  try {
-    const { _id } = req.user as userInterface
-    const { chatRoomId, message } = req.body
-    await textMessageModel.createNewMessageInChatRoom({ chatRoomId, message, postedByUser: _id })
-    return res.status(200).json({ isValid: true, isSaved: true })
-  } catch (error) {
-    console.log(error)
-  }
-}
-
 export const getAllChatUsersHandler = async (req: Request, res: Response) => {
   try {
     const { _id } = req.user as userInterface
@@ -197,12 +186,44 @@ export const getChatRoomMessageHandler = async (req: Request, res: Response) => 
   }
 }
 
+export const getGroupDetailHandler = async (req: Request, res: Response) => {
+  try {
+    const { groupsId } = req.params
+    const groupObjectId = new mongoose.Types.ObjectId(groupsId)
+
+    const groups = await GroupModel.findOne({ _id: groupObjectId })
+    if (groups == null) return res.status(400).json({})
+
+    const groupWithUserDetails = await GroupModel.aggregate([
+      {
+        $match: { _id: groupObjectId },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "members.userId",
+          foreignField: "_id",
+          pipeline: [{ $project: { name: 1, email: 1, profileImageUrl: 1, _id: 1, userId: 1 } }],
+          as: "membersDetails",
+        },
+      },
+      {
+        $addFields: {
+          membersDetails: "$membersDetails",
+        },
+      },
+    ])
+
+    const group = groupWithUserDetails[0] ?? {}
+    return res.status(200).json({ ...group })
+  } catch (error) {}
+}
 // creating the group
 export const createGroupHandler = async (req: Request, res: Response) => {
   try {
     const { _id } = req.user as userInterface
     const { name, members, description, groupImage } = req.body
-    groupMembers.push({ userId: _id })
+    members.push({ userId: _id })
 
     const newChatRoom = new GroupChatRoomModel({})
     await newChatRoom.save()

@@ -7,6 +7,7 @@ const groupSchema = new Schema(
     groupImage: { type: String },
     adminsDetail: [{ userId: { type: Schema.Types.ObjectId } }],
     members: [{ userId: { type: Schema.Types.ObjectId } }],
+    totalMembers: { type: Number, default: 0 },
     blockedMemberss: [{ userId: { type: Schema.Types.ObjectId } }],
     setting: {
       adminOnlyMessaging: { type: Boolean, default: false },
@@ -35,6 +36,7 @@ interface groupSchemaInterface {
     userId?: Types.ObjectId | undefined
   }[]
   chatRoomId: Types.ObjectId
+  totalMembers: number
   setting?:
     | {
         adminOnlyMessaging: boolean

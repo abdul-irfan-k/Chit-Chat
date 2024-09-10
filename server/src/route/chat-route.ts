@@ -8,6 +8,7 @@ import {
   getChatRoomMessageReactionHandler,
   getFreindRequestsHandler,
   getGroupChatRoomMessageHandler,
+  getGroupDetailHandler,
   groupAddMembersHandler,
   groupRemoveMemberHandler,
   postFreindRequestHandler,
@@ -36,7 +37,8 @@ router.post("/getAllChatGroups", checkisLogedInMiddleware, getAllChatGroupsHandl
 router.post("/changeGroupSetting")
 router.post("/changeGroupDetail")
 
-// create the group
+// ######## Group Routes ########
+router.get("/groups/:groupId", checkisLogedInMiddleware, getGroupDetailHandler)
 router.post("/groups", checkisLogedInMiddleware, createGroupHandler)
 
 router.put("/groups/:groupId", checkisLogedInMiddleware, adminOnlyAccess, updateGroupHandler)

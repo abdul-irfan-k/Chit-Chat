@@ -6,17 +6,25 @@ import { createGroupHandler } from "@/redux/actions/chat-action/chat-action"
 import useOutsideClick from "@/hooks/use-outside-click/use-outside-click"
 import { Button } from "@/components/ui/button"
 import { X } from "lucide-react"
+import Image from "next/image"
+import { AddIcon } from "@/constants/icon-constant"
 
 interface GroupCreationFormProps {
   handleOutsideClick(): void
+  handleCloseButtonClick(): void
 }
-const GroupCreationForm: FC<GroupCreationFormProps> = ({ handleOutsideClick }) => {
+const GroupCreationForm: FC<GroupCreationFormProps> = ({ handleOutsideClick, handleCloseButtonClick }) => {
   const dispatch = useAppDispatch()
+
+  const inputRef = useRef<HTMLInputElement>(null)
+
   const [groupName, setGroupName] = useState<string>("")
   const [groupMembers, setGroupMembers] = useState<Array<{ userId: string; _id: string }>>([])
   const [isPopUpedAddMemberForm, setIsPopUpedAddMemberForm] = useState<boolean>(false)
 
   const groupCreationFormRef = useRef<HTMLDivElement>(null)
+  const [selectedImage, setSelectedImage] = useState<File | undefined>(undefined)
+  const [selectedimageUrl, setSelectedImageUrl] = useState<string | undefined>(undefined)
 
   const onMemberSelectHandler = () => {}
   const closeAddMemberForm = () => {
@@ -27,12 +35,20 @@ const GroupCreationForm: FC<GroupCreationFormProps> = ({ handleOutsideClick }) =
     const members = groupMembers.map((member) => {
       return { userId: member._id }
     })
-    console.log("members", members)
     dispatch(createGroupHandler({ groupName, groupMembers: members }))
   }
 
-  const handleCloseButtonClick = () => {
-    handleOutsideClick()
+  const addImageButtonHandler = () => {
+    if (inputRef == null || inputRef.current == null) return
+    inputRef.current.click()
+  }
+
+  const handleInputFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const filesCollection = event.target.files && event.target.files
+    if (!filesCollection) return
+    setSelectedImage(event.target.files[0])
+    const url = URL.createObjectURL(event.target.files[0])
+    setSelectedImageUrl(url)
   }
 
   return (
@@ -49,6 +65,23 @@ const GroupCreationForm: FC<GroupCreationFormProps> = ({ handleOutsideClick }) =
               <Button onClick={handleCloseButtonClick} rounded size={"icon"}>
                 <X className="relative w-5 aspect-square" />
               </Button>
+            </div>
+
+            <div
+              className="relative ml-10 mt-10 w-[20%] aspect-square rounded-full overflow-hidden "
+              style={{ background: "rgba(255,255,255,0.1)" }}
+              onClick={addImageButtonHandler}
+            >
+              {selectedimageUrl != undefined && <Image src={selectedimageUrl} alt="profile image" fill />}
+              <div className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] ">
+                <div className="relative ">
+                  <AddIcon width="" height="" className="w-10 aspect-square" />
+                </div>
+              </div>
+
+              <div className="absolute">
+                <input type="file" style={{ display: "none" }} ref={inputRef} onChange={handleInputFileChange} />
+              </div>
             </div>
 
             <div className="px-10 mt-10 flex-1 border-b-[3px] border-neutral-800">
@@ -99,7 +132,7 @@ const GroupCreationForm: FC<GroupCreationFormProps> = ({ handleOutsideClick }) =
         <AddMembersFrom
           selectedGroupMembers={groupMembers}
           setGroupMembers={setGroupMembers}
-          onCloseHandler={closeAddMemberForm}
+          handleOutsideClick={closeAddMemberForm}
         />
       )}
     </>

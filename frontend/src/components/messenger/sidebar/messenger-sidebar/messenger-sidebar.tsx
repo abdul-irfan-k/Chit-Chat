@@ -11,7 +11,7 @@ import { useSelector } from "react-redux"
 import { messengerSortState } from "@/redux/reducers/messenger-sort-reducer/messenger-sort-reducer"
 import FriendsList from "../../freinds-list/freinds-list"
 import { useAppDispatch } from "@/store"
-import { addNewMessageNotificationHandler } from "@/redux/actions/chat-action/chat-action"
+import Link from "next/link"
 
 interface MessengerSidebarProps {
   isInitialRender: boolean
@@ -66,7 +66,7 @@ const MessengerSidebar: FC<MessengerSidebarProps> = ({ isInitialRender }) => {
                       <MessageCircle className="w-6 aspect-square" width="" height="" />
                     </div>
                   </div>
-                  <div className="relative flex items-center justify-end">
+                  <Link className="relative flex items-center justify-end" href={"/messenger/group/create"}>
                     <span>New Group</span>
                     <div
                       className="relative w-10 flex justify-center items-center aspect-square rounded-full"
@@ -75,7 +75,7 @@ const MessengerSidebar: FC<MessengerSidebarProps> = ({ isInitialRender }) => {
                     >
                       <Users className="w-6 aspect-square" width="" height="" />
                     </div>
-                  </div>
+                  </Link>
                   <div className="relative flex items-center justify-end">
                     <span>New Contact</span>
                     <div
@@ -93,7 +93,6 @@ const MessengerSidebar: FC<MessengerSidebarProps> = ({ isInitialRender }) => {
         </motion.div>
       </AnimatePresence>
 
-      {popUpForm == "newGroup" && <GroupCreationForm handleOutsideClick={() => setPopUpForm(undefined)} />}
       {popUpForm == "newChat" && <FreindRequestForm handleCloseButtonClick={() => setPopUpForm(undefined)} />}
     </>
   )
