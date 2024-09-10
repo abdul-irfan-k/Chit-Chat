@@ -201,17 +201,19 @@ export const getChatRoomMessageHandler = async (req: Request, res: Response) => 
 export const createGroupHandler = async (req: Request, res: Response) => {
   try {
     const { _id } = req.user as userInterface
-    const { groupName, groupMembers }: { groupName: string; groupMembers: Array<{ userId: string }> } = req.body
+    const { name, members, description, groupImage } = req.body
     groupMembers.push({ userId: _id })
 
     const newChatRoom = new GroupChatRoomModel({})
     await newChatRoom.save()
 
+    if (newChatRoom == null) return res.status(400).json({})
     const newGroup = new GroupModel({
-      name: groupName,
+      name,
       adminsDetail: [{ userId: _id }],
-      member: groupMembers,
+      members,
       chatRoomId: newChatRoom._id,
+      groupImage,
     })
     await newGroup.save()
 
@@ -221,6 +223,41 @@ export const createGroupHandler = async (req: Request, res: Response) => {
   } catch (error) {
     return res.status(400).json({})
   }
+}
+
+export const updateGroupHandler = async (req: Request, res: Response) => {
+  try {
+    const { groupId } = req.body
+    const groupObjectId = new mongoose.Types.ObjectId(groupId)
+
+    const group = await GroupModel.findOneAndUpdate({ _id: groupObjectId }, { ...req.body }, { new: true })
+    return res.status(200).json({ group })
+  } catch (error) {
+    return res.status(400).json({})
+  }
+}
+
+export const groupAddMembersHandler = async (req: Request, res: Response) => {
+  try {
+    const { members, groupId } = req.body
+    const groupObjectId = new mongoose.Types.ObjectId(groupId)
+
+    const group = await GroupModel.findOneAndUpdate({ _id: groupObjectId }, { members }, { new: true })
+    return res.status(200).json({ group })
+  } catch (error) {}
+}
+
+export const groupRemoveMemberHandler = async (req: Request, res: Response) => {
+  try {
+    const { member, groupId } = req.body
+    const groupObjectId = new mongoose.Types.ObjectId(groupId)
+
+    const group = await GroupModel.findOneAndUpdate(
+      { _id: groupObjectId },
+      { $pull: { members: { userId: member.userId } } },
+    )
+    return res.status(200).json({ group })
+  } catch (error) {}
 }
 
 export const acceptGroupHandler = async (req: Request, res: Response) => {
@@ -238,6 +275,16 @@ export const acceptGroupHandler = async (req: Request, res: Response) => {
   } catch (error) {
     return res.status(400).json({})
   }
+}
+
+export const leaveGroupHandler = async (req: Request, res: Response) => {
+  try {
+  } catch (error) {}
+}
+
+export const updateGroupSettingHandler = async (req: Request, res: Response) => {
+  try {
+  } catch (error) {}
 }
 
 // get group chat room messages

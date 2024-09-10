@@ -9,7 +9,6 @@ export const userSocketIntialization = async (socket: Socket) => {
   const ip = getSocketIp(socket)
 
   socket.on("socket:join", async ({ userId }) => {
-    console.log("join", socket.id)
     // const id = new mongoose.Types.ObjectId(_id)
     await SocketModel.create({
       socketId: socket.id,

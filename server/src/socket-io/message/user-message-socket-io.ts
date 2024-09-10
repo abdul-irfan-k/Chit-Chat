@@ -53,7 +53,6 @@ const userMessageSocketIo = (io: Server, socket: SocketIo) => {
       const cloudinaryUpload = await cloudinaryFileUploadHandler(filepath, { resource_type: "auto" })
       if (!cloudinaryUpload.isSuccess || cloudinaryUpload.url == undefined) return
 
-      console.log("url ", cloudinaryUpload.url)
       const newVoiceMessage = new voiceMessageModel({
         audioSrc: cloudinaryUpload.url,
         postedByUser: senderId,

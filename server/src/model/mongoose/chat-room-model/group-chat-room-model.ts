@@ -48,7 +48,7 @@ groupChatRoomSchema.statics.initiateChat = async function (groupId: string) {
 
 interface addChatConversation {
   messageId: string
-  messageType:  "textMessage" | "voiceMessage"|"imageMessage"|"pollMessage"
+  messageType: "textMessage" | "voiceMessage" | "imageMessage" | "pollMessage"
   chatRoomId: string
 }
 groupChatRoomSchema.statics.addChatConversation = async function ({

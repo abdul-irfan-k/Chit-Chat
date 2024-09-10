@@ -4,13 +4,15 @@ const groupSchema = new Schema(
   {
     name: { type: String, required: true },
     discription: { type: String, default: "" },
+    groupImage: { type: String },
     adminsDetail: [{ userId: { type: Schema.Types.ObjectId } }],
-    member: [{ userId: { type: Schema.Types.ObjectId } }],
-    blockedMember: [{ userId: { type: Schema.Types.ObjectId } }],
+    members: [{ userId: { type: Schema.Types.ObjectId } }],
+    blockedMemberss: [{ userId: { type: Schema.Types.ObjectId } }],
     setting: {
-      isAdminOnlySendMessage: { type: Boolean, default: false },
-      isAllowedJoinByUrl: { type: Boolean, default: true },
-      isHidingMembersNumber: { type: Boolean, default: false },
+      adminOnlyMessaging: { type: Boolean, default: false },
+      adminOnlyChangeSetting: { type: Boolean, default: false },
+      allowJoinByUrl: { type: Boolean, default: true },
+      hideMemberPhoneNumber: { type: Boolean, default: false },
     },
     chatRoomId: { type: Schema.Types.ObjectId, required: true },
   },
@@ -22,21 +24,22 @@ const groupSchema = new Schema(
 interface groupSchemaInterface {
   name: string
   discription: string
+  groupImage: string
   adminsDetail: {
     userId?: Types.ObjectId | undefined
   }[]
-  member: {
+  members: {
     userId?: Types.ObjectId | undefined
   }[]
-  blockedMember: {
+  blockedMembers: {
     userId?: Types.ObjectId | undefined
   }[]
   chatRoomId: Types.ObjectId
   setting?:
     | {
-        isAdminOnlySendMessage: boolean
-        isAllowedJoinByUrl: boolean
-        isHidingMembersNumber: boolean
+        adminOnlyMessaging: boolean
+        allowJoinByUrl: boolean
+        hideMemberPhoneNumber: boolean
       }
     | undefined
 }
