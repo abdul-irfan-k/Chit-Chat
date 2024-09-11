@@ -3,7 +3,6 @@ import React, { FC, useRef, useState } from "react"
 import AddMembersFrom from "../add-members-form/add-members-form"
 import { useAppDispatch } from "@/store"
 import { createGroupHandler } from "@/redux/actions/chat-action/chat-action"
-import useOutsideClick from "@/hooks/use-outside-click/use-outside-click"
 import { Button } from "@/components/ui/button"
 import { X } from "lucide-react"
 import Image from "next/image"
@@ -13,29 +12,25 @@ interface GroupCreationFormProps {
   handleOutsideClick(): void
   handleCloseButtonClick(): void
 }
-const GroupCreationForm: FC<GroupCreationFormProps> = ({ handleOutsideClick, handleCloseButtonClick }) => {
+const GroupCreationForm: FC<GroupCreationFormProps> = ({ handleCloseButtonClick }) => {
   const dispatch = useAppDispatch()
 
   const inputRef = useRef<HTMLInputElement>(null)
-
-  const [groupName, setGroupName] = useState<string>("")
-  const [groupMembers, setGroupMembers] = useState<Array<{ userId: string; _id: string }>>([])
-  const [isPopUpedAddMemberForm, setIsPopUpedAddMemberForm] = useState<boolean>(false)
-
   const groupCreationFormRef = useRef<HTMLDivElement>(null)
-  const [selectedImage, setSelectedImage] = useState<File | undefined>(undefined)
+
+  const [selectedImage, setSelectedImage] = useState<FormData | undefined>(undefined)
+  const [name, setName] = useState<string>("")
+  const [members, setMembers] = useState<Array<{ name: string; _id: string; profileImageUrl: string }>>([])
+  const [isPopUpedAddMemberForm, setIsPopUpedAddMemberForm] = useState<boolean>(false)
   const [selectedimageUrl, setSelectedImageUrl] = useState<string | undefined>(undefined)
 
-  const onMemberSelectHandler = () => {}
-  const closeAddMemberForm = () => {
-    setIsPopUpedAddMemberForm(false)
-  }
   const handleCreateButtonClick = (event: React.MouseEvent) => {
     event.stopPropagation()
-    const members = groupMembers.map((member) => {
+    //@ts-ignore
+    const members = members.map((member) => {
       return { userId: member._id }
     })
-    dispatch(createGroupHandler({ groupName, groupMembers: members }))
+    dispatch(createGroupHandler({ name, members: members }))
   }
 
   const addImageButtonHandler = () => {
@@ -46,9 +41,14 @@ const GroupCreationForm: FC<GroupCreationFormProps> = ({ handleOutsideClick, han
   const handleInputFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const filesCollection = event.target.files && event.target.files
     if (!filesCollection) return
-    setSelectedImage(event.target.files[0])
     const url = URL.createObjectURL(event.target.files[0])
     setSelectedImageUrl(url)
+
+    //@ts-ignore
+    const formData = new FormData()
+    formData.append("image", filesCollection[0])
+
+    setSelectedImage(formData)
   }
 
   return (
@@ -90,17 +90,23 @@ const GroupCreationForm: FC<GroupCreationFormProps> = ({ handleOutsideClick, han
                 type="text"
                 placeholder="Enter Group Name"
                 className="px-4 py-2 border-none rounded-md  outline-none w-full text-base border-none bg-background-secondary   dark:text-slate-50"
-                onChange={(e) => setGroupName(e.target.value)}
+                onChange={(e) => setName(e.target.value)}
               />
             </div>
 
             <div className="mt-10 gap-1 px-10 flex flex-col">
               <span className="text-lg">Members</span>
               <div className=" py-4 gap-2   flex flex-wrap border-[1px] rounded-xl">
-                {groupMembers.map((member, index) => {
+                {members.map((member, index) => {
                   return (
-                    <div className="mt-3 px-4 py-2 rounded-full bg-slate-300 dark:bg-neutral-800" key={index}>
-                      {member.userId}
+                    <div
+                      className="mt-3 px-4 py-2 gap-1 flex  rounded-full bg-slate-300 dark:bg-background-secondary"
+                      key={index}
+                    >
+                      <div className="relative w-8 aspect-square rounded-full overflow-hidden">
+                        <Image src={member.profileImageUrl} alt="profile image" fill />
+                      </div>
+                      {member.name}
                     </div>
                   )
                 })}
@@ -130,9 +136,9 @@ const GroupCreationForm: FC<GroupCreationFormProps> = ({ handleOutsideClick, han
 
       {isPopUpedAddMemberForm && (
         <AddMembersFrom
-          selectedGroupMembers={groupMembers}
-          setGroupMembers={setGroupMembers}
-          handleOutsideClick={closeAddMemberForm}
+          members={members}
+          setMembers={setMembers}
+          handleOutsideClick={() => setIsPopUpedAddMemberForm(false)}
         />
       )}
     </>
