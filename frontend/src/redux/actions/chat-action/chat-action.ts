@@ -77,8 +77,20 @@ export const addAllChatGroups = () => async (dispatch: AppDispatch) => {
 
 export const createGroupHandler = (details: Object) => async (dispatch: AppDispatch) => {
   try {
-    const { data } = await axiosChatInstance.post("/createGroup", details)
-  } catch (error) {}
+    const { formData } = details
+    const { data: response } = await axiosUploadInstance.post("/uploadSingleImage", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    })
+    if (response.fileUrl) {
+      const { data: group } = await axiosChatInstance.post("/groups", {
+        name: details.name,
+        members: details.members,
+        groupImage: response.fileUrl,
+      })
+    }
+  } catch (error) {
+    console.log("error", error)
+  }
 }
 
 export const updateCurrentChaterHandler = (details: any) => async (dispatch: AppDispatch) => {

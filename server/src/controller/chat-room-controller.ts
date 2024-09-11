@@ -222,8 +222,12 @@ export const getGroupDetailHandler = async (req: Request, res: Response) => {
 export const createGroupHandler = async (req: Request, res: Response) => {
   try {
     const { _id } = req.user as userInterface
+    const userObjectId = new mongoose.Types.ObjectId(_id)
+
     const { name, members, description, groupImage } = req.body
     members.push({ userId: _id })
+
+    const membersObjectId = members.map((member: { userId: string }) => new mongoose.Types.ObjectId(member.userId))
 
     const newChatRoom = new GroupChatRoomModel({})
     await newChatRoom.save()
@@ -231,14 +235,19 @@ export const createGroupHandler = async (req: Request, res: Response) => {
     if (newChatRoom == null) return res.status(400).json({})
     const newGroup = new GroupModel({
       name,
-      adminsDetail: [{ userId: _id }],
-      members,
+      adminsDetail: [{ userId: userObjectId }],
+      members: membersObjectId,
       chatRoomId: newChatRoom._id,
       groupImage,
     })
     await newGroup.save()
 
     GroupChatRoomModel.findOneAndUpdate({ _id: newChatRoom._id }, { groupId: newGroup._id })
+
+    await ConnectionModel.updateMany(
+      { userId: { $in: membersObjectId } },
+      { $push: { groups: { groupId: newGroup._id, chatRoomId: newChatRoom._id } } },
+    )
 
     return res.status(200).json({ isValid: true, chatRoomId: newChatRoom._id })
   } catch (error) {

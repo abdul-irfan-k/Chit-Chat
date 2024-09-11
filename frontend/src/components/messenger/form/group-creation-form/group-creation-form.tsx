@@ -25,12 +25,11 @@ const GroupCreationForm: FC<GroupCreationFormProps> = ({ handleCloseButtonClick 
   const [selectedimageUrl, setSelectedImageUrl] = useState<string | undefined>(undefined)
 
   const handleCreateButtonClick = (event: React.MouseEvent) => {
-    event.stopPropagation()
     //@ts-ignore
-    const members = members.map((member) => {
+    const membersUpdatedData = members.map((member) => {
       return { userId: member._id }
     })
-    dispatch(createGroupHandler({ name, members: members }))
+    dispatch(createGroupHandler({ name, members: membersUpdatedData, formData: selectedImage }))
   }
 
   const addImageButtonHandler = () => {
@@ -39,14 +38,13 @@ const GroupCreationForm: FC<GroupCreationFormProps> = ({ handleCloseButtonClick 
   }
 
   const handleInputFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const filesCollection = event.target.files && event.target.files
-    if (!filesCollection) return
+    if (!event.target.files[0]) return
     const url = URL.createObjectURL(event.target.files[0])
     setSelectedImageUrl(url)
 
     //@ts-ignore
     const formData = new FormData()
-    formData.append("image", filesCollection[0])
+    formData.append("image", event.target.files[0])
 
     setSelectedImage(formData)
   }
