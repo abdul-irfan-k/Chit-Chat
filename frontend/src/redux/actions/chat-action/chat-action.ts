@@ -172,7 +172,7 @@ export const getGroupChatRoomMessageHandler =
       if (data == undefined) return dispatch(chatRoomMessageAction.removeCurrentChaterMessage({}))
 
       const messageData = data[0].messages.map((elm: any) => {
-        const messegeChannelType = elm.postedByUser == myUserId ? "outgoingMessage" : "incomingMessage"
+        const messegeChannelType = elm.postedByUser._id == myUserId ? "outgoingMessage" : "incomingMessage"
         return { messageData: { ...elm, messageSendedTime: new Date(elm.createdAt) }, messegeChannelType }
       })
 
