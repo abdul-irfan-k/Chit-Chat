@@ -8,7 +8,7 @@ const groupSchema = new Schema(
     adminsDetail: [{ userId: { type: Schema.Types.ObjectId } }],
     members: [{ userId: { type: Schema.Types.ObjectId } }],
     totalMembers: { type: Number, default: 0 },
-    blockedMemberss: [{ userId: { type: Schema.Types.ObjectId } }],
+    blockedMembers: [{ userId: { type: Schema.Types.ObjectId } }],
     setting: {
       adminOnlyMessaging: { type: Boolean, default: false },
       adminOnlyChangeSetting: { type: Boolean, default: false },

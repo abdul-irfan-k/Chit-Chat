@@ -70,7 +70,7 @@ export const addAllChatUsers = () => async (dispatch: AppDispatch) => {
 
 export const addAllChatGroups = () => async (dispatch: AppDispatch) => {
   try {
-    // const { data } = await axiosChatInstance.post("/getAllChatGroups")
+    const { data } = await axiosChatInstance.post("/getAllChatGroups")
     // console.log("all chat groups", data)
   } catch (error) {}
 }

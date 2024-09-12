@@ -58,17 +58,56 @@ export const getAllChatGroupsHandler = async (req: Request, res: Response) => {
   try {
     const { _id } = req.user as userInterface
     const userObjectId = new mongoose.Types.ObjectId(_id)
-    // const allNewChatGroup = await GroupModel.find({member:{$elemMatch: {userId:userObjectId }}})
-    const allNewChatGroup = await GroupModel.aggregate([
-      { $match: { member: { $elemMatch: { userId: userObjectId } } } },
+
+    const allChatGroups = await ConnectionModel.aggregate([
+      { $match: { userId: userObjectId } },
+      { $unwind: "$groups" },
+      {
+        $lookup: {
+          from: "groups", // The 'users' collection name in MongoDB
+          localField: "groups.groupId",
+          foreignField: "_id",
+          pipeline: [
+            {
+              $project: {
+                name: 1,
+                discription: 1,
+                groupImage: 1,
+                totalMembers: 1,
+                setting: 1,
+                adminsDetail: 1,
+              },
+            },
+            {
+              $addFields: {
+                isAdmin: { $in: [userObjectId, "$adminsDetail.userId"] },
+              },
+            },
+          ],
+          as: "groupsDetails",
+        },
+      },
+      { $unwind: "$groupsDetails" },
       {
         $addFields: {
-          isAdmin: { $in: [userObjectId, "$adminsDetail.userId"] },
+          "groupsDetails.chatRoomId": "$groups.chatRoomId",
+          // "groupsDetails.isAdmin": { $in: [userObjectId, "$groups.adminsDetail"] },
+          // "groupsDetails.isAdmin": "$groups.names",
         },
+      },
+      {
+        $group: {
+          _id: "$_id",
+          groupsDetails: { $push: "$groupsDetails" },
+        },
+      },
+
+      {
+        $project: { groupsDetails: 1 },
       },
     ])
 
-    return res.status(200).json(allNewChatGroup)
+    return res.status(200).json(allChatGroups)
   } catch (error) {
     console.log(error)
     return res.status(400).json({})
@@ -227,8 +266,12 @@ export const createGroupHandler = async (req: Request, res: Response) => {
     const { name, members, description, groupImage } = req.body
     members.push({ userId: _id })
 
-    const membersObjectId = members.map((member: { userId: string }) => new mongoose.Types.ObjectId(member.userId))
+    console.log(members)
+    const membersObjectId = members.map((member: { userId: string }) => ({
+      userId: new mongoose.Types.ObjectId(member.userId),
+    }))
 
+    console.log(membersObjectId)
     const newChatRoom = new GroupChatRoomModel({})
     await newChatRoom.save()
 
@@ -244,13 +287,16 @@ export const createGroupHandler = async (req: Request, res: Response) => {
 
     GroupChatRoomModel.findOneAndUpdate({ _id: newChatRoom._id }, { groupId: newGroup._id })
 
+    const membersObjectIds = members.map((member: { userId: string }) => new mongoose.Types.ObjectId(member.userId))
+
     await ConnectionModel.updateMany(
-      { userId: { $in: membersObjectId } },
+      { userId: { $in: membersObjectIds } },
       { $push: { groups: { groupId: newGroup._id, chatRoomId: newChatRoom._id } } },
     )
 
     return res.status(200).json({ isValid: true, chatRoomId: newChatRoom._id })
   } catch (error) {
+    console.log(error)
     return res.status(400).json({})
   }
 }
