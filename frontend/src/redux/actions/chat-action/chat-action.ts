@@ -59,10 +59,8 @@ export const getFreindsListHandler = async () => {
 export const addAllChatUsers = () => async (dispatch: AppDispatch) => {
   try {
     const { data: usersDeatail } = await axiosChatInstance.post("/getAllChatUsers")
-    // dispatch(chatUserListAction.addIntialAllUserList(usersDeatail))
-    // const { data: groupDetail } = await axiosChatInstance.post("/getAllChatGroups")
-    // console.log("user details", usersDeatail)
-    dispatch(chatUserListAction.addIntialAllUserAndGroupList({ usersDeatail, groupDetail: [] }))
+    const { data: groupDetail } = await axiosChatInstance.post("/getAllChatGroups")
+    dispatch(chatUserListAction.addIntialAllUserAndGroupList({ usersDeatail, groupDetail }))
   } catch (error) {
     console.log("eror", error)
   }
@@ -70,7 +68,7 @@ export const addAllChatUsers = () => async (dispatch: AppDispatch) => {
 
 export const addAllChatGroups = () => async (dispatch: AppDispatch) => {
   try {
-    const { data } = await axiosChatInstance.post("/getAllChatGroups")
+    // const { data } = await axiosChatInstance.post("/getAllChatGroups")
     // console.log("all chat groups", data)
   } catch (error) {}
 }
@@ -91,6 +89,21 @@ export const createGroupHandler = (details: Object) => async (dispatch: AppDispa
   } catch (error) {
     console.log("error", error)
   }
+}
+
+export const updateGroupSettingHandler = (details: any) => async (dispatch: AppDispatch) => {
+  try {
+    dispatch(
+      chatUserListAction.updateGroupSetting({
+        setting: { ...details.groupSetting },
+        _id: details.groupId,
+      }),
+    )
+
+    const { data } = await axiosChatInstance.put(`/groups/${details.groupId}/settings`, {
+      groupSetting: details.groupSetting,
+    })
+  } catch (error) {}
 }
 
 export const updateCurrentChaterHandler = (details: any) => async (dispatch: AppDispatch) => {

@@ -1,11 +1,12 @@
 import useDebounce from "@/hooks/use-debounce/use-debounce"
 import { useSocketIoContext } from "@/provider/socket-io-provider/socket-io-provider"
-import { chatUserListAction } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
+import { chatUserListAction, groupSetting } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import { useAppDispatch } from "@/store"
 import Image from "next/image"
 import React, { FC, useState } from "react"
 import { motion } from "framer-motion"
 import { EditIcon } from "@/constants/icon-constant"
+import { updateGroupSettingHandler } from "@/redux/actions/chat-action/chat-action"
 
 interface CurrentChatingGroupProfileProps {
   _id: string
@@ -13,13 +14,9 @@ interface CurrentChatingGroupProfileProps {
   profileImageSrc: string
   description: string
   isAdmin?: boolean
-  setting: setting
+  setting: groupSetting
 }
-interface setting {
-  isAdminOnlySendMessage: boolean
-  isAllowedJoinByUrl: boolean
-  isHidingMembersNumber: boolean
-}
+
 const CurrentChatingGroupProfile: FC<CurrentChatingGroupProfileProps> = ({
   _id,
   description,
@@ -28,16 +25,17 @@ const CurrentChatingGroupProfile: FC<CurrentChatingGroupProfileProps> = ({
   isAdmin,
   setting,
 }) => {
-  const [groupSetting, setGroupSetting] = useState<setting>(setting)
+  const [groupSetting, setGroupSetting] = useState<groupSetting>(setting)
   const [initialRender, setInitialRender] = useState<boolean>(true)
 
   const dispatch = useAppDispatch()
   const onGroupSettingChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setGroupSetting({ ...setting, [e.target.name]: e.target.checked })
+    console.log(groupSetting, e.target.checked)
+    setGroupSetting({ ...groupSetting, [e.target.name]: e.target.checked })
     dispatch(
-      chatUserListAction.updateGroupSetting({
-        setting: { ...groupSetting, isAdminOnlySendMessage: e.target.checked },
-        _id,
+      updateGroupSettingHandler({
+        groupSetting: { ...groupSetting, [e.target.name]: e.target.checked },
+        groupId: _id,
       }),
     )
     setInitialRender(false)
@@ -54,7 +52,7 @@ const CurrentChatingGroupProfile: FC<CurrentChatingGroupProfileProps> = ({
   return (
     <motion.div
       key={"chaterProfile"}
-      className="fixed  right-0 top-0 h-screen w-[25vw]  overflow-y-scroll    bg-slate-200 dark:bg-neutral-950 z-[70] no-scrollbar"
+      className="fixed  right-0 top-0 h-screen w-[25vw]  overflow-y-scroll    bg-slate-200 dark:bg-background-primary z-[70] no-scrollbar"
       initial={{ translateX: "100%" }}
       animate={{ translateX: "0%" }}
       exit={{ translateX: "100%" }}
@@ -70,31 +68,61 @@ const CurrentChatingGroupProfile: FC<CurrentChatingGroupProfileProps> = ({
       </div>
 
       <div className="mt-10">
-        <div className="px-5 flex justify-between">
-          <span>Admin Only Send Message</span>
+        <div className="mt-3 px-5 flex justify-between">
+          <span>Allow join by url</span>
           <label className="relative inline-flex items-center mb-5 cursor-pointer">
             <input
               type="checkbox"
               value=""
               className="sr-only peer"
-              name="isAdminOnlySendMessage"
-              checked={groupSetting.isAdminOnlySendMessage}
+              name="allowJoinByUrl"
+              checked={groupSetting.allowJoinByUrl}
               onChange={onGroupSettingChangeHandler}
             />
             <div className="w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
           </label>
         </div>
         <div className="mt-3 px-5 flex justify-between">
-          <span>Media File Links</span>
+          <span>Hide Phone Numbers</span>
           <label className="relative inline-flex items-center mb-5 cursor-pointer">
-            <input type="checkbox" value="" className="sr-only peer" />
+            <input
+              type="checkbox"
+              value=""
+              className="sr-only peer"
+              name="hideMemberPhoneNumber"
+              checked={groupSetting.hideMemberPhoneNumber}
+              onChange={onGroupSettingChangeHandler}
+            />
+            <div className="w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+          </label>
+        </div>
+        <div className="px-5 flex justify-between">
+          <span>Admin only send message</span>
+          <label className="relative inline-flex items-center mb-5 cursor-pointer">
+            <input
+              type="checkbox"
+              value=""
+              className="sr-only peer"
+              name="adminOnlyMessaging"
+              checked={groupSetting.adminOnlyMessaging}
+              onChange={onGroupSettingChangeHandler}
+              disabled={!isAdmin}
+            />
             <div className="w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
           </label>
         </div>
         <div className="mt-3 px-5 flex justify-between">
-          <span>Disappear Message</span>
+          <span>Admin only change setting</span>
           <label className="relative inline-flex items-center mb-5 cursor-pointer">
-            <input type="checkbox" value="" className="sr-only peer" />
+            <input
+              type="checkbox"
+              value=""
+              className="sr-only peer"
+              name="adminOnlyChangeSetting"
+              checked={groupSetting.adminOnlyChangeSetting}
+              onChange={onGroupSettingChangeHandler}
+              disabled={!isAdmin}
+            />
             <div className="w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
           </label>
         </div>

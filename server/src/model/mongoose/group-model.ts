@@ -40,6 +40,7 @@ interface groupSchemaInterface {
   setting?:
     | {
         adminOnlyMessaging: boolean
+        adminOnlyChangeSetting: boolean
         allowJoinByUrl: boolean
         hideMemberPhoneNumber: boolean
       }

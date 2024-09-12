@@ -14,6 +14,7 @@ import {
   postFreindRequestHandler,
   putFreindRequestsHandler,
   updateGroupHandler,
+  updateGroupSettingHandler,
 } from "../controller/chat-room-controller"
 import { checkisLogedInMiddleware } from "../middleware/user-middleware"
 import { adminOnlyAccess } from "../middleware/group-admin"
@@ -42,7 +43,7 @@ router.get("/groups/:groupId", checkisLogedInMiddleware, getGroupDetailHandler)
 router.post("/groups", checkisLogedInMiddleware, createGroupHandler)
 
 router.put("/groups/:groupId", checkisLogedInMiddleware, adminOnlyAccess, updateGroupHandler)
-router.put("/groups/:groupId/settings", checkisLogedInMiddleware, adminOnlyAccess)
+router.put("/groups/:groupId/settings", checkisLogedInMiddleware, adminOnlyAccess, updateGroupSettingHandler)
 router.post("/groups/:groupId/addMembers", checkisLogedInMiddleware, adminOnlyAccess, groupAddMembersHandler)
 router.post("/groups/:groupId/removeMembers", checkisLogedInMiddleware, adminOnlyAccess, groupRemoveMemberHandler)
 router.delete("/groups/:groupId", checkisLogedInMiddleware, adminOnlyAccess)

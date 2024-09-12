@@ -56,7 +56,7 @@ const ChatContainer = () => {
                 <>
                   {currentChaterDetail.currentChaterType == "user" && <InputBox />}
                   {currentChaterDetail.currentChaterType == "group" &&
-                  currentChaterDetail.setting.isAdminOnlySendMessage ? (
+                  !currentChaterDetail.setting.adminOnlyMessaging ? (
                     <InputBox />
                   ) : (
                     currentChaterDetail.isAdmin && <InputBox />

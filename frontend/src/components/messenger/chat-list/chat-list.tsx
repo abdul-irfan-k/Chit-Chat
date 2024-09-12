@@ -72,16 +72,12 @@ const ChatList = () => {
             <ChatListBox
               key={index}
               onClickHandler={() => {
-                console.log("current chating group detaail", groupDetail)
-
                 dispatch(updateCurrentChatingGroupHandler({ groupDetail: groupDetail, isChanged: true }))
-
                 setIsSelectedUser(true)
               }}
               communicatorName={groupDetail.name}
-              imageSrc="/Asset/avatar.jpg"
+              imageSrc={groupDetail.groupImage}
               lastMessageTime={new Date()}
-              onlineStatus={groupDetail.status?.onlineStatus == "online" ? true : false}
               currentStatus={{ isSendingMessage: false }}
               newMessage={
                 groupDetail.notification?.isAvailableNewNotification

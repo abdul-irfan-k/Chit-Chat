@@ -30,15 +30,16 @@ interface currentChaterUserDetail extends chatUserDetail {
   currentChaterType: "user"
 }
 export interface groupSetting {
-  isAdminOnlySendMessage: boolean
-  isAllowedJoinByUrl: boolean
-  isHidingMembersNumber: boolean
+  adminOnlyMessaging: boolean
+  allowJoinByUrl: boolean
+  hideMemberPhoneNumber: boolean
+  adminOnlyChangeSetting: boolean
 }
 interface chatGroupDetails {
   _id: string
   name: string
-  groupImageUrl?: string
-  chatRoomId?: string
+  groupImage: string
+  chatRoomId: string
   isAdmin: boolean
   setting: groupSetting
   discription: string

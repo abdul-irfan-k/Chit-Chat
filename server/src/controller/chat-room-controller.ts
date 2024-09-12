@@ -107,7 +107,7 @@ export const getAllChatGroupsHandler = async (req: Request, res: Response) => {
       },
     ])
 
-    return res.status(200).json(allChatGroups)
+    return res.status(200).json(allChatGroups[0]?.groupsDetails)
   } catch (error) {
     console.log(error)
     return res.status(400).json({})
@@ -281,7 +281,9 @@ export const createGroupHandler = async (req: Request, res: Response) => {
       adminsDetail: [{ userId: userObjectId }],
       members: membersObjectId,
       chatRoomId: newChatRoom._id,
+      totalMembers: members.length,
       groupImage,
+      setting: { adminOnlyMessaging: false, allowJoinByUrl: false, hideMemberPhoneNumber: false },
     })
     await newGroup.save()
 
@@ -307,6 +309,18 @@ export const updateGroupHandler = async (req: Request, res: Response) => {
     const groupObjectId = new mongoose.Types.ObjectId(groupId)
 
     const group = await GroupModel.findOneAndUpdate({ _id: groupObjectId }, { ...req.body }, { new: true })
+    return res.status(200).json({ group })
+  } catch (error) {
+    return res.status(400).json({})
+  }
+}
+
+export const updateGroupSettingHandler = async (req: Request, res: Response) => {
+  try {
+    const { groupId } = req.params
+    const { groupSetting } = req.body
+    const groupObjectId = new mongoose.Types.ObjectId(groupId)
+    const group = await GroupModel.findOneAndUpdate({ _id: groupObjectId }, { setting: groupSetting }, { new: true })
     return res.status(200).json({ group })
   } catch (error) {
     return res.status(400).json({})
@@ -354,11 +368,6 @@ export const acceptGroupHandler = async (req: Request, res: Response) => {
 }
 
 export const leaveGroupHandler = async (req: Request, res: Response) => {
-  try {
-  } catch (error) {}
-}
-
-export const updateGroupSettingHandler = async (req: Request, res: Response) => {
   try {
   } catch (error) {}
 }
