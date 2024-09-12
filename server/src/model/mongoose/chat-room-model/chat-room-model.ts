@@ -1,7 +1,6 @@
 import { Model, Schema, model } from "mongoose"
 
 interface chatRoomSchemaInterface {
-  UserIds: string[]
   chatRoomConversations: chatRoomConversationsInterface
 }
 
@@ -17,7 +16,6 @@ const chatRoomConversationsSchema = new Schema({
 
 const chatRoomSchema = new Schema(
   {
-    userIds: { type: [String] },
     chatRoomConversations: {
       type: [chatRoomConversationsSchema],
       default: [],

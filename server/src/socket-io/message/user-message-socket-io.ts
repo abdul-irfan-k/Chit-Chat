@@ -1,16 +1,18 @@
 import { Server } from "socket.io"
+import mongoose from "mongoose"
+import fs from "fs"
+import { v4 as uuidv4 } from "uuid"
+import path from "path"
+
 import { getRedisSocketCached } from "../../model/redis/redis"
-import ChatRoomModel from "../../model/mongoose/chat-room-model/chat-room-model"
 import textMessageModel from "../../model/mongoose/message-model/text-message-model"
 import { cloudinaryFileUploadHandler } from "../../config/cloudinary"
-import fs from "fs"
-import path from "path"
-import { v4 as uuidv4 } from "uuid"
 import { dirpath } from "../../server"
-import voiceMessageModel from "../../model/mongoose/message-model/voice-message-model"
 import { SocketIo } from "../../types/socket-io/socket-io"
+
+import ChatRoomModel from "../../model/mongoose/chat-room-model/chat-room-model"
+import voiceMessageModel from "../../model/mongoose/message-model/voice-message-model"
 import ImageMessageModel from "../../model/mongoose/message-model/image-message-model"
-import mongoose from "mongoose"
 import PollMessageModel from "../../model/mongoose/message-model/poll-message-model"
 import VideoMessageModel from "../../model/mongoose/message-model/video-message-model"
 import MessageReactionModel from "../../model/mongoose/message-model/message-reaction-model"
@@ -20,7 +22,6 @@ const userMessageSocketIo = (io: Server, socket: SocketIo) => {
     try {
       const receiver = await getRedisSocketCached(receiverId)
 
-      ChatRoomModel.initiateChat([receiverId, senderId])
       if (receiver != null) {
         socket.to(receiver.socketId).emit("message:receiveTextMessage", { message, chatRoomId, receiverId, senderId })
       }

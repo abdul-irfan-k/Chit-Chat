@@ -1,8 +1,9 @@
-import { Model, Types } from "mongoose"
-import { Schema, model } from "mongoose"
+import { Model, Types, Schema, model } from "mongoose"
+import { v4 as uuidv4 } from "uuid"
 
 const pollMessageSchema = new Schema(
   {
+    _id: { type: String, default: uuidv4 },
     title: { type: String, required: true },
     options: [{ title: { type: String }, votedMembers: [{ userId: { type: String } }] }],
     totalVotedMembers: { type: Number, default: 0 },
@@ -24,6 +25,7 @@ interface optionInterface {
   title?: string | undefined
 }
 interface pollMessageSchemaInterface {
+  _id: string
   title: string
   totalVotedMembers: number
   options: optionInterface[]
@@ -64,7 +66,7 @@ pollMessageSchema.statics.updateVotedMember = async function ({
     } else return { votedMembers: [...option.votedMembers], _id: option._id, title: option.title }
   })
   // console.log("updated options", updatedOptions)
-  await this.findOneAndUpdate({ _id }, {  options: updatedOptions  },{new:true})
+  await this.findOneAndUpdate({ _id }, { options: updatedOptions }, { new: true })
   debugger
 }
 

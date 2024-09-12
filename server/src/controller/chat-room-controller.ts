@@ -5,7 +5,6 @@ import GroupModel from "../model/mongoose/group-model"
 import mongoose from "mongoose"
 import ConnectionModel from "../model/mongoose/connections-model"
 import UserModel from "../model/mongoose/user-model"
-import GroupChatRoomModel from "../model/mongoose/chat-room-model/group-chat-room-model"
 import MessageReactionModel from "../model/mongoose/message-model/message-reaction-model"
 
 export const getAllChatUsersHandler = async (req: Request, res: Response) => {
@@ -272,7 +271,7 @@ export const createGroupHandler = async (req: Request, res: Response) => {
     }))
 
     console.log(membersObjectId)
-    const newChatRoom = new GroupChatRoomModel({})
+    const newChatRoom = new ChatRoomModel({})
     await newChatRoom.save()
 
     if (newChatRoom == null) return res.status(400).json({})
@@ -286,8 +285,6 @@ export const createGroupHandler = async (req: Request, res: Response) => {
       setting: { adminOnlyMessaging: false, allowJoinByUrl: false, hideMemberPhoneNumber: false },
     })
     await newGroup.save()
-
-    GroupChatRoomModel.findOneAndUpdate({ _id: newChatRoom._id }, { groupId: newGroup._id })
 
     const membersObjectIds = members.map((member: { userId: string }) => new mongoose.Types.ObjectId(member.userId))
 
@@ -378,7 +375,7 @@ export const getGroupChatRoomMessageHandler = async (req: Request, res: Response
     const { chatRoomId } = req.body
     console.log("chatRoomId", chatRoomId)
     const chatRoomObjectId = new mongoose.Types.ObjectId(chatRoomId)
-    const chatRoomMessages = await GroupChatRoomModel.aggregate([
+    const chatRoomMessages = await ChatRoomModel.aggregate([
       { $match: { _id: chatRoomObjectId } },
       { $unwind: "$chatRoomConversations" },
       {
@@ -492,10 +489,6 @@ export const getChatRoomMessageReactionHandler = async (req: Request, res: Respo
 
     const arrayStartingFrom = -(skip + 1) * step
 
-    // const chatRoomMessageReactions = await ChatRoomModel.findOne(
-    //   { _id: chatRoomObjectId },
-    //   { chatRoomConversations: { $slice: [arrayStartingFrom, limit] } },
-    // )
     console.log(arrayStartingFrom, limit)
     const chatRoomMessageReactions = await ChatRoomModel.aggregate([
       { $match: { _id: chatRoomObjectId } },
@@ -691,7 +684,7 @@ export const putFreindRequestsHandler = async (req: Request, res: Response) => {
     freindRequestorConnections.sendedFreindRequest[sendRequestIndex].status = status
 
     if (isAcceptedFreindRequest) {
-      const newChatRoom = new ChatRoomModel({ userIds: [userId, friendRequestorId], chatRoomConversations: [] })
+      const newChatRoom = new ChatRoomModel({ chatRoomConversations: [] })
       await newChatRoom.save()
 
       if (newChatRoom == null) return res.status(400).json({ message: "chatroom not created" })
