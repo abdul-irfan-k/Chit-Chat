@@ -129,7 +129,7 @@ export const getChatRoomMessageHandler =
   }) =>
   async (dispatch: AppDispatch) => {
     try {
-      const { data } = await axiosChatInstance.post("/getChatRoomMessage", {
+      const { data } = await axiosChatInstance.post("/chatroom/messages", {
         chatRoomId,
         skip,
         step,
@@ -159,19 +159,31 @@ export const getChatRoomMessageHandler =
   }
 
 export const getGroupChatRoomMessageHandler =
-  ({ chatRoomId, myUserId }: { chatRoomId: string; myUserId: string }) =>
+  ({ chatRoomId, myUserId, skip = 0, step = 10, limit = 10 }: { chatRoomId: string; myUserId: string }) =>
   async (dispatch: AppDispatch) => {
     try {
-      const { data } = await axiosChatInstance.post("/getGroupChatRoomMessage", { chatRoomId })
+      const { data } = await axiosChatInstance.post("/groupChatroom/messages", {
+        chatRoomId,
+        skip,
+        step,
+        limit,
+        sort: "ACCENDING",
+      })
       if (data == undefined) return dispatch(chatRoomMessageAction.removeCurrentChaterMessage({}))
 
-      const newData = data[0].messages.map((elm: any) => {
+      const messageData = data[0].messages.map((elm: any) => {
         const messegeChannelType = elm.postedByUser == myUserId ? "outgoingMessage" : "incomingMessage"
         return { messageData: { ...elm, messageSendedTime: new Date(elm.createdAt) }, messegeChannelType }
       })
 
+      const isInitialMessages = skip == 0
       //@ts-ignore
-      dispatch(chatRoomMessageAction.addChatRoomMessage({ messages: newData, isInitialMessages: true }))
+      dispatch(
+        chatRoomMessageAction.addChatRoomInitialMessage({
+          messageAndChatRoomDetails: { messages: messageData, totatMessages: data.totalMessages, chatRoomId },
+          isInitialMessages,
+        }),
+      )
       dispatch(chatRoomMessageAction.addMessageAvailableChatRooms({ chatRoomId }))
     } catch (error) {
       console.log(error)

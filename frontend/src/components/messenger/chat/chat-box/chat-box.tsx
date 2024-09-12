@@ -61,11 +61,15 @@ const ChatBox = () => {
                         message.messegeChannelType == "incomingMessage"
                           ? currentChaterDetail.currentChaterType == "user" && currentChaterDetail.profileImageUrl
                             ? currentChaterDetail.profileImageUrl
-                            : "/Asset/avatar.jpg"
+                            : message.messageData.postedByUser?.profileImageUrl
                           : userDetail.profileImageUrl
                       }
                       userName={
-                        message.messegeChannelType == "incomingMessage" ? currentChaterDetail.name : userDetail?.name
+                        message.messegeChannelType == "incomingMessage"
+                          ? currentChaterDetail.currentChaterType == "user"
+                            ? currentChaterDetail.name
+                            : message.messageData.postedByUser?.name
+                          : userDetail?.name
                       }
                       _id={message.messageData._id}
                       reactions={message.messageData.reactions}

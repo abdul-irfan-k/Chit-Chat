@@ -52,8 +52,8 @@ router.post("/groups/:groupId/joinByUrl")
 router.post("/groups/:groupId/join", checkisLogedInMiddleware)
 router.post("/group/:groupId/leave", checkisLogedInMiddleware)
 
-router.post("/getChatRoomMessage", checkisLogedInMiddleware, getChatRoomMessageHandler)
-router.post("/getGroupChatRoomMessage", checkisLogedInMiddleware, getGroupChatRoomMessageHandler)
+router.post("/chatroom/messages", checkisLogedInMiddleware, getChatRoomMessageHandler)
+router.post("/groupChatroom/messages", checkisLogedInMiddleware, getGroupChatRoomMessageHandler)
 router.post("/getChatRoomMessageReaction", getChatRoomMessageReactionHandler)
 router.post("/getGroupChatRoomMessageReaction", checkisLogedInMiddleware)
 

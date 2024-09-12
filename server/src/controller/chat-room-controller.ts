@@ -372,11 +372,16 @@ export const leaveGroupHandler = async (req: Request, res: Response) => {
 // get group chat room messages
 export const getGroupChatRoomMessageHandler = async (req: Request, res: Response) => {
   try {
-    const { chatRoomId } = req.body
-    console.log("chatRoomId", chatRoomId)
+    const { chatRoomId, skip, step, limit, sort } = req.body
     const chatRoomObjectId = new mongoose.Types.ObjectId(chatRoomId)
+
+    const arrayStartingFrom = skip != undefined ? -(skip + 1) * step : -1
+    const messageLimit = limit != undefined ? limit : 10
+
+    const messageSort = sort != undefined && sort == "ACCENDING" ? -1 : 1
     const chatRoomMessages = await ChatRoomModel.aggregate([
       { $match: { _id: chatRoomObjectId } },
+      { $project: { chatRoomConversations: { $slice: ["$chatRoomConversations", arrayStartingFrom, messageLimit] } } },
       { $unwind: "$chatRoomConversations" },
       {
         $group: {
@@ -401,11 +406,11 @@ export const getGroupChatRoomMessageHandler = async (req: Request, res: Response
                 imageMessageIds: {
                   $cond: { if: { $eq: ["$$message.type", "imageMessage"] }, then: "$$message.id", else: "$$REMOVE" },
                 },
-                pollMessageIds: {
-                  $cond: { if: { $eq: ["$$message.type", "pollMessage"] }, then: "$$message.id", else: "$$REMOVE" },
-                },
                 videoMessageIds: {
                   $cond: { if: { $eq: ["$$message.type", "videoMessage"] }, then: "$$message.id", else: "$$REMOVE" },
+                },
+                pollMessageIds: {
+                  $cond: { if: { $eq: ["$$message.type", "pollMessage"] }, then: "$$message.id", else: "$$REMOVE" },
                 },
               },
             },
@@ -417,7 +422,25 @@ export const getGroupChatRoomMessageHandler = async (req: Request, res: Response
         $lookup: {
           from: "textmessages",
           let: { messageIds: "$allMessages.textMessageIds" },
-          pipeline: [{ $match: { $expr: { $in: ["$_id", "$$messageIds"] } } }],
+          pipeline: [
+            { $match: { $expr: { $in: ["$_id", "$$messageIds"] } } },
+            // { $project: { userObjectId: { $toObjectId: "$postedByUser" } } }
+            {
+              $addFields: { postedByUser: { $toObjectId: "$postedByUser" } },
+            },
+            {
+              $lookup: {
+                from: "users",
+                localField: "postedByUser",
+                foreignField: "_id",
+                pipeline: [{ $project: { _id: 1, name: 1, profileImageUrl: 1 } }],
+                as: "postedByUser",
+              },
+            },
+            {
+              $addFields: { postedByUser: { $arrayElemAt: ["$postedByUser", 0] } },
+            },
+          ],
           as: "textMessage",
         },
       },
@@ -440,7 +463,7 @@ export const getGroupChatRoomMessageHandler = async (req: Request, res: Response
       {
         $lookup: {
           from: "videomessages",
-          let: { videoMessageIds: "$allMessages.imageMessageIds" },
+          let: { videoMessageIds: "$allMessages.videoMessageIds" },
           pipeline: [{ $match: { $expr: { $in: ["$_id", "$$videoMessageIds"] } } }],
           as: "videoMessage",
         },
@@ -456,9 +479,7 @@ export const getGroupChatRoomMessageHandler = async (req: Request, res: Response
 
       {
         $addFields: {
-          messages: {
-            $concatArrays: ["$textMessage", "$voiceMessage", "$imageMessage", "$videoMessage", "$pollMessage"],
-          },
+          messages: { $concatArrays: ["$textMessage", "$voiceMessage", "$imageMessage", "$videoMessage"] },
         },
       },
       {
@@ -466,14 +487,22 @@ export const getGroupChatRoomMessageHandler = async (req: Request, res: Response
           messages: {
             $sortArray: {
               input: "$messages",
-              sortBy: { createdAt: 1 },
+              sortBy: { createdAt: messageSort },
             },
           },
         },
       },
     ])
 
-    return res.status(200).json(chatRoomMessages)
+    let totalMessages: undefined | number = undefined
+    if (skip == 0) {
+      const messageSizeData = await ChatRoomModel.aggregate([
+        { $match: { _id: chatRoomObjectId } },
+        { $project: { totalMessages: { $size: "$chatRoomConversations" } } },
+      ])
+      if (messageSizeData[0].totalMessages != undefined) totalMessages = messageSizeData[0].totalMessages
+    }
+    return res.status(200).json({ ...chatRoomMessages, totalMessages })
   } catch (error) {
     console.log(error)
     return res.status(400).json({ isValid: false })
