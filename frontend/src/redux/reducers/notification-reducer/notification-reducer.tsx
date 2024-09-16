@@ -50,4 +50,4 @@ export const notificationReducer = createSlice({
   },
 })
 
-export const callRequestNotificationReducerAction = notificationReducer.actions
+export const notificationReducerAction = notificationReducer.actions

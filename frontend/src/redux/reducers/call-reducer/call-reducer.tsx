@@ -9,7 +9,7 @@ interface videoDevice {
 }
 
 export interface callSetting {
-  callType: "videoCall" | "voiceCall"
+  mediaType: "audio" | "video"
   availabeAudioDevices?: audioDevice[]
   availabeVideoDevices?: videoDevice[]
   currentSelectedAudioDevice?: audioDevice
@@ -29,8 +29,8 @@ interface privateCallDetail {
   callRoomId: string
   chatRoomId: string
   referenceId?: string
-  callType: "audioCall" | "videoCall"
-  callChannelType: "private"
+  mediaType: "audio" | "video"
+  callType: "private"
   avilableTotalUserCount?: number
   myDetail: {
     peerId: string
@@ -45,8 +45,8 @@ interface privateCallDetail {
 interface groupCallDetail {
   callRoomId: string
   referenceId: string
-  callType: "audioCall" | "videoCall"
-  callChannelType: "group"
+  mediaType: "audio" | "video"
+  callType: "group"
   avilableTotalUserCount?: number
   myDetail: {
     peerId: string
@@ -76,15 +76,17 @@ interface peerDetail extends userBasicDetail {
 interface joinRequestedUserDetail extends userBasicDetail {}
 
 interface privateCallRequest {
-  callType: "audioCall" | "videoCall"
-  callChannelType: "private"
-  isCalling: boolean
+  callRoomId: string
+  mediaType: "audio" | "video"
+  callType: "private"
   communicatorsDetail: userBasicDetail
+  requestType: "incoming" | "outgoing"
 }
 interface groupCallRequest {
-  isCalling: boolean
-  callType: "audioCall" | "videoCall"
-  callChannelType: "group"
+  callRoomId: string
+  requestType: "incoming" | "outgoing"
+  mediaType: "audio" | "video"
+  callType: "group"
   communicatorsDetail: userBasicDetail[]
 }
 
@@ -116,7 +118,7 @@ export const callRedcuer = createSlice({
   name: "callReducer",
   initialState: callReducerIntialState,
   reducers: {
-    addIntialCallData: (state, action: { payload: callReducerSlate; type: string }) => {
+    addIntialCallData: (state, action: { payload: callReducerState; type: string }) => {
       return { ...state, ...action.payload, isChanged: true }
     },
     addCallData: (state, action) => {

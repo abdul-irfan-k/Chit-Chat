@@ -38,7 +38,7 @@ const VideoCallRequestMenuFullSize: FC<VideoCallRequestMenuFullSizeProps> = ({ c
       <div className="fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] z-50 w-[50vw] h-[70vh] ">
         <div className="relative h-full">
           <div className="top-0 absolute w-full h-full bg-black   z-20">
-            {callRequestorDetail?.callChannelType == "private" && (
+            {callRequestorDetail?.callType == "private" && (
               //@ts-ignore
               <Image
                 src={callRequestorDetail?.communicatorsDetail.profileImageUrl}
@@ -50,7 +50,7 @@ const VideoCallRequestMenuFullSize: FC<VideoCallRequestMenuFullSizeProps> = ({ c
           </div>
           <div className="relative px-5 py-5 flex justify-between items-center z-30">
             <div className="text-lg font-medium ">
-              {callRequestorDetail?.callChannelType == "private" ? callRequestorDetail?.communicatorsDetail?.name : ""}
+              {callRequestorDetail?.callType == "private" ? callRequestorDetail?.communicatorsDetail?.name : ""}
             </div>
             <div className="relative fill-slate-950 dark:fill-slate-50">
               <FullScreenIcon width="" height="" className="aspect-square w-8" />

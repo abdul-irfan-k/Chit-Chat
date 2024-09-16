@@ -40,6 +40,11 @@ const CallRoomSchema = new Schema(
       enum: ["private", "group"], // Enum for call type
       required: true,
     },
+    mediaType: {
+      type: String,
+      enum: ["audio", "video"], // Media type for the call (audio or video)
+      required: true,
+    },
     startTime: { type: Date },
     endTime: { type: Date },
     duration: { type: Number },

@@ -18,7 +18,7 @@ import {
   recieveVideoMessageHandler,
 } from "@/redux/actions/chat-action/chat-action"
 import { chatUsersListReducerState } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
-import { callRequestNotificationReducerAction } from "@/redux/reducers/notification-reducer/notification-reducer"
+import { notificationReducerAction } from "@/redux/reducers/notification-reducer/notification-reducer"
 import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 import { useAppDispatch } from "@/store"
 import React, { useEffect } from "react"
@@ -90,8 +90,10 @@ const SocketIoChatUserEventProvider = () => {
       dispatch(onGroupSettingChangeHandler({ groupDetail, setting }))
     })
 
-    socket.on("privateCall:requestCallAccept", (data) => {
-      dispatch(callRequestNotificationReducerAction.addCallNotification(data))
+    socket.on("privateCall:receive", (data) => {
+      dispatch(
+        callReducerAction.addCallRequest({ ...data, communicatorsDetail: data.callerDetails, requestType: "incoming" }),
+      )
     })
 
     socket.on("privateCall:start", async (data) => {
@@ -99,7 +101,7 @@ const SocketIoChatUserEventProvider = () => {
       router.push("/video-call")
       dispatch(addCallSettingHandler())
       await dispatch(callReducerAction.removeCallRequest)
-      await dispatch(callRequestNotificationReducerAction.removeCallNotification)
+      await dispatch(notificationReducerAction.removeCallNotification)
     })
 
     socket.on("groupCall:joinRequestRejected", () => {})

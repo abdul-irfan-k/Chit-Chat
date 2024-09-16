@@ -5,13 +5,12 @@ import { useSelector } from "react-redux"
 import { callNotificationReducerSlate } from "@/redux/reducers/notification-reducer/notification-reducer"
 import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 import { useSocketIoContext } from "@/provider/socket-io-provider/socket-io-provider"
+import { callReducerState } from "@/redux/reducers/call-reducer/call-reducer"
 
 const CallNotificationContainer = () => {
   const [isPopUpedNotification, setIsPopUpedNotification] = useState(false)
-  const { isAvailableCallNotification, callNotificationData } = useSelector(
-    (state: { notificationReducer: callNotificationReducerSlate }) => state.notificationReducer,
-  )
-  const {socket} = useSocketIoContext()
+  const { callRequestDetail } = useSelector((state: { callRedcuer: callReducerState }) => state.callRedcuer)
+  const { socket } = useSocketIoContext()
   const { userDetail } = useSelector((state: { userDetail: userDetailState }) => state.userDetail)
 
   const outSideClickHandler = () => {
@@ -19,24 +18,26 @@ const CallNotificationContainer = () => {
   }
 
   useEffect(() => {
-    if (isAvailableCallNotification) {
-      console.log("available call notifcation ", callNotificationData)
+    if (callRequestDetail) {
       return setIsPopUpedNotification(true)
     } else setIsPopUpedNotification(false)
-  }, [isAvailableCallNotification])
+  }, [callRequestDetail])
 
   const callAcceptHandler = () => {
-    if ( userDetail == null) return
-    socket.emit("privateCall:acceptRequest", { callRoomId: callNotificationData?.callRoomId, userId: userDetail._id })
+    if (userDetail == null) return
+    socket.emit("privateCall:acceptRequest", { callRoomId: callRequestDetail?.callRoomId, userId: userDetail._id })
   }
-  const callDeclineHandler = () => {}
+  const callDeclineHandler = () => {
+    if (userDetail == null) return
+    socket.emit("privateCall:end", { callRoomId: callRequestDetail?.callRoomId, userId: userDetail._id })
+  }
 
   return (
     <div>
       <div className="fixed left-[50%] top-5 translate-x-[-50%] w-[40%] z-40">
-        {isAvailableCallNotification && (
+        {callRequestDetail && callRequestDetail.requestType == "incoming" && (
           <AudioCallNotification
-            userName={callNotificationData?.userDetail?.name}
+            userName={callRequestDetail.communicatorsDetail.name}
             outSideClickHandler={outSideClickHandler}
             callAcceptHandler={callAcceptHandler}
             callDeclineHandler={callDeclineHandler}

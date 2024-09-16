@@ -8,7 +8,7 @@ import { chatUsersListReducerState } from "@/redux/reducers/chat-user-reducer/ch
 import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 import { ArrowLeftIcon, PhoneIcon, SearchIcon, VideoIcon, VolumeHighIcon } from "@/constants/icon-constant"
 import { useSocketIoContext } from "@/provider/socket-io-provider/socket-io-provider"
-import { videoCallRequestHandler } from "@/redux/actions/call-action/call-action"
+import { callRequestHandler } from "@/redux/actions/call-action/call-action"
 import { generateUUIDString } from "@/util/uuid"
 
 interface ChatProfileInstance {
@@ -40,9 +40,9 @@ const ChatProfile: FC<ChatProfileInstance> = ({ name, profileImageSrc, currentSt
         callType: "private",
       })
       dispatch(
-        videoCallRequestHandler({
+        callRequestHandler({
           isCalling: true,
-          callChannelType: "private",
+          callType: "private",
           callType: "videoCall",
           communicatorsDetail: { ...currentChaterDetail },
         }),

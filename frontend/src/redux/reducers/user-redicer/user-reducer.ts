@@ -31,7 +31,7 @@ export const userSignUpDetailReducer = createSlice({
 export const userSignUpAction = userSignUpDetailReducer.actions
 
 // userdetail reducer
-interface userDetail {
+export interface userDetail {
   _id: string
   name: string
   userId: string

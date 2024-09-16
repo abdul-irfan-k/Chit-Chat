@@ -5,28 +5,33 @@ import { v4 as uuidv4 } from "uuid"
 import mongoose from "mongoose"
 
 const callSocketIo = (socket: Socket) => {
-  socket.on("privateCall:intialise", async ({ callRoomId, chatRoomId, callerDetails, receiverId, callType }) => {
-    try {
-      const participants = [callerDetails._id, receiverId].map((userId) => new mongoose.Types.ObjectId(userId))
-      const callRoom = new MeetingModel({
-        _id: callRoomId,
-        chatRoomId,
-        userId: callerDetails._id,
-        callType,
-        participants,
-        callIntiatorUserId: new mongoose.Types.ObjectId(callerDetails._id),
-      })
-      await callRoom.save()
-      const reciever = await getRedisSocketCached(receiverId)
-      socket.to(reciever.socketId).emit("privateCall:requestCallAccept", {
-        callRoomId: callRoom._id,
-        chatRoomId,
-        callerDetails,
-      })
-    } catch (error) {
-      console.log("error", error)
-    }
-  })
+  socket.on(
+    "privateCall:intialise",
+    async ({ callRoomId, chatRoomId, callerDetails, receiverId, callType, mediaType }) => {
+      try {
+        const participants = [callerDetails._id, receiverId].map((userId) => new mongoose.Types.ObjectId(userId))
+        const callRoom = new MeetingModel({
+          _id: callRoomId,
+          chatRoomId,
+          callType,
+          participants,
+          mediaType,
+          callIntiatorUserId: new mongoose.Types.ObjectId(callerDetails._id),
+        })
+        await callRoom.save()
+        const reciever = await getRedisSocketCached(receiverId)
+        socket.to(reciever.socketId).emit("privateCall:receive", {
+          callRoomId: callRoom._id,
+          chatRoomId,
+          callerDetails,
+          mediaType,
+          callType,
+        })
+      } catch (error) {
+        console.log("error", error)
+      }
+    },
+  )
 
   socket.on("privateCall:rejectRequest", async (callRoomId, userId) => {
     const callRoom = await MeetingModel.updateOne({ callRoomId }, { callStatus: "failed" }, { new: true })
@@ -44,7 +49,7 @@ const callSocketIo = (socket: Socket) => {
     try {
       const startTime = new Date()
       const callRoom = await MeetingModel.updateOne({ callRoomId }, { callStatus: "accepted", startTime })
-      if (callRoom == null) return console.log("no room found")
+      if (callRoom == null) return
       const chatRoomUserDetails = await callRoom.participants.map((userId: string) => {
         const peerId = uuidv4()
         return {
@@ -61,7 +66,7 @@ const callSocketIo = (socket: Socket) => {
             callRoomId: callRoom._id,
             chatRoomId: callRoom.chatRoomId,
             callType: callRoom.callType,
-            callChannelType: "single",
+            callType: "single",
             callRoomUserDetails: chatRoomUserDetails,
           })
         } else {

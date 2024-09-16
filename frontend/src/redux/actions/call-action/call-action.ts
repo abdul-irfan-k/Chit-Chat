@@ -1,6 +1,10 @@
 import { axiosMeetingInstance } from "@/constants/axios"
+import { SocketIO } from "@/provider/socket-io-provider/socket-io-provider"
 import { callReducerAction, callReducerState } from "@/redux/reducers/call-reducer/call-reducer"
+import { userDetail } from "@/redux/reducers/user-redicer/user-reducer"
 import { AppDispatch } from "@/store"
+import { generateUUIDString } from "@/util/uuid"
+//@ts-ignore
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context"
 
 export const addInitialCallDataHandler = (data: any, id: string) => async (dispatch: AppDispatch) => {
@@ -14,7 +18,7 @@ export const addInitialCallDataHandler = (data: any, id: string) => async (dispa
         callRoomId: data.callRoomId,
         chatRoomId: data.chatRoomId,
         callType: data.callType,
-        callChannelType: data.callChannelType,
+        callType: data.callType,
         myDetail,
         communicatorsDetail,
       },
@@ -68,7 +72,7 @@ export const addCallDataHandler =
       callReducerAction.addCallData({
         isAvailableCallRoom: true,
         callDetail: {
-          callChannelType: "group",
+          callType: "group",
           callRoomId,
           communicatorsDetail: [...callRoomAvailableUsers],
           myDetail: {
@@ -89,7 +93,7 @@ export const createGroupMeetingHandler =
           isAvailableCallRoom: true,
           isChanged: true,
           callDetail: {
-            callChannelType: "group",
+            callType: "group",
             callRoomId: data.callRoomId,
             communicatorsDetail: [],
             myDetail: { peerId: data.peerId, userId: meetingDetail.userId },
@@ -127,7 +131,7 @@ export const joinGroupCallHandler =
         isAvailableCallRoom: true,
         isChanged: true,
         callDetail: {
-          callChannelType: "group",
+          callType: "group",
           callRoomId: details.callRoomId,
           communicatorsDetail: details.callRoomAvailableUsers,
           myDetail: { peerId: details.peerId, userId: details.userId },
@@ -147,18 +151,27 @@ export const addGroupCallJoinRequestedUser =
     dispatch(callReducerAction.addJoinRequestedUser({ userName, userId }))
   }
 
-export const videoCallRequestHandler =
-  (details: callReducerState["callRequestDetail"]) => async (dispatch: AppDispatch) => {
-    dispatch(callReducerAction.addCallRequest(details))
-    dispatch(
-      callReducerAction.addCallSetting({
-        isAllowedScreenShare: false,
-        isAllowedCamara: true,
-        isAllowedMicrophone: false,
-        callType: "videoCall",
-      }),
-    )
+export const callInitialiseHandler =
+  (
+    callRequest: callReducerState["callRequestDetail"] & { callerDetails: userDetail; chatRoomId: string },
+    socket: SocketIO,
+  ) =>
+  async (dispatch: AppDispatch) => {
+    callRequest.callRoomId = generateUUIDString()
+    dispatch(callReducerAction.addCallRequest({ ...callRequest, requestType: "outgoing" }))
+
+    if (callRequest.callType == "private") {
+      //@ts-ignore
+      socket.emit("privateCall:intialise", {
+        ...callRequest,
+      })
+    }
   }
+export const callRequestAcceptHandler = (data) => async (dispatch: AppDispatch) => {
+  dispatch(callReducerAction.addCallRequest({ ...data }))
+}
+
+export const callRequestRejectHandler = (data) => async (dispatch: AppDispatch) => {}
 
 export const videoCallRequestRemoveHandler = () => async (dispatch: AppDispatch) => {
   dispatch(callReducerAction.removeCallRequest({}))
