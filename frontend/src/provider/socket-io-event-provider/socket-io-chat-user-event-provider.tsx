@@ -103,6 +103,9 @@ const SocketIoChatUserEventProvider = () => {
       await dispatch(callReducerAction.removeCallRequest)
       await dispatch(notificationReducerAction.removeCallNotification)
     })
+    socket.on("privateCall:ended", (data) => {
+      dispatch(callReducerAction.removeCallRequest())
+    })
 
     socket.on("groupCall:joinRequestRejected", () => {})
 

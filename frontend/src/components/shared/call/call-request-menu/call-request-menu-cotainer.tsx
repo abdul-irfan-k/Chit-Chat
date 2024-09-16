@@ -10,9 +10,9 @@ const CallRequestMenuCotainer = () => {
 
   return (
     <div>
-      {callRequestDetail != undefined && callRequestDetail.isCalling && (
+      {callRequestDetail != undefined && callRequestDetail.requestType == "outgoing" && (
         <>
-          {callRequestDetail?.callType == "videoCall" && callRequestDetail.callType == "private" && (
+          {callRequestDetail?.mediaType == "video" && callRequestDetail.callType == "private" && (
             <>
               <VideoCallRequestMenuFullSize callRequestorDetail={callRequestDetail} />
             </>

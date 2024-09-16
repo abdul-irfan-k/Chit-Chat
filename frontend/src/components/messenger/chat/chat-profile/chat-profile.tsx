@@ -8,7 +8,7 @@ import { chatUsersListReducerState } from "@/redux/reducers/chat-user-reducer/ch
 import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 import { ArrowLeftIcon, PhoneIcon, SearchIcon, VideoIcon, VolumeHighIcon } from "@/constants/icon-constant"
 import { useSocketIoContext } from "@/provider/socket-io-provider/socket-io-provider"
-import { callRequestHandler } from "@/redux/actions/call-action/call-action"
+import { callInitialiseHandler, callRequestHandler } from "@/redux/actions/call-action/call-action"
 import { generateUUIDString } from "@/util/uuid"
 
 interface ChatProfileInstance {
@@ -27,25 +27,22 @@ const ChatProfile: FC<ChatProfileInstance> = ({ name, profileImageSrc, currentSt
 
   const dispatch = useAppDispatch()
 
-  const videoCallIconClickHandler = (e: MouseEvent<HTMLDivElement, MouseEvent>) => {
+  const callInitiate = (e: MouseEvent<HTMLDivElement, MouseEvent>, mediaType: "audio" | "video") => {
     e.stopPropagation()
 
-    const callRoomId = generateUUIDString()
     if (currentChaterDetail?.currentChaterType == "user") {
-      socket.emit("privateCall:intialise", {
-        callRoomId,
-        callerDetails: userDetail,
-        chatRoomId: currentChaterDetail?.chatRoomId,
-        receiverId: currentChaterDetail?._id,
-        callType: "private",
-      })
       dispatch(
-        callRequestHandler({
-          isCalling: true,
-          callType: "private",
-          callType: "videoCall",
-          communicatorsDetail: { ...currentChaterDetail },
-        }),
+        callInitialiseHandler(
+          {
+            callType: "private",
+            mediaType,
+            callerDetails: userDetail,
+            chatRoomId: currentChaterDetail.chatRoomId,
+            requestType: "outgoing",
+            communicatorsDetail: { ...currentChaterDetail },
+          },
+          socket,
+        ),
       )
     }
   }
@@ -87,11 +84,14 @@ const ChatProfile: FC<ChatProfileInstance> = ({ name, profileImageSrc, currentSt
       <div className="ml-auto relative flex items-center justify-center w-10 aspect-square bg-slate-300 rounded-full dark:bg-slate-800">
         <SearchIcon className="aspect-square p-3" />
       </div>
-      <div className="ml-3 relative flex items-center justify-center w-10 aspect-square bg-slate-300 rounded-full dark:bg-slate-800">
+      <div
+        className="ml-3 relative flex items-center justify-center w-10 aspect-square bg-slate-300 rounded-full dark:bg-slate-800"
+        onClick={(e) => callInitiate(e, "audio")}
+      >
         <PhoneIcon className="aspect-square p-3" />
       </div>
       <div
-        onClick={videoCallIconClickHandler}
+        onClick={(e) => callInitiate(e, "video")}
         className="ml-3 relative flex items-center justify-center w-10 aspect-square bg-slate-300 rounded-full dark:bg-slate-800"
       >
         <VideoIcon className="aspect-square p-3" />

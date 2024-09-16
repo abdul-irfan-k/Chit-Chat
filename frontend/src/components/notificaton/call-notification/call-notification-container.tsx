@@ -1,13 +1,16 @@
 "use client"
 import React, { useEffect, useState } from "react"
 import AudioCallNotification from "./audio-call-notification/audio-call-notification"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { callNotificationReducerSlate } from "@/redux/reducers/notification-reducer/notification-reducer"
 import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 import { useSocketIoContext } from "@/provider/socket-io-provider/socket-io-provider"
-import { callReducerState } from "@/redux/reducers/call-reducer/call-reducer"
+import { callReducerAction, callReducerState } from "@/redux/reducers/call-reducer/call-reducer"
+import { useAppDispatch } from "@/store"
 
 const CallNotificationContainer = () => {
+  const dispatch = useAppDispatch()
+
   const [isPopUpedNotification, setIsPopUpedNotification] = useState(false)
   const { callRequestDetail } = useSelector((state: { callRedcuer: callReducerState }) => state.callRedcuer)
   const { socket } = useSocketIoContext()
@@ -30,6 +33,7 @@ const CallNotificationContainer = () => {
   const callDeclineHandler = () => {
     if (userDetail == null) return
     socket.emit("privateCall:end", { callRoomId: callRequestDetail?.callRoomId, userId: userDetail._id })
+    dispatch(callReducerAction.removeCallRequest())
   }
 
   return (

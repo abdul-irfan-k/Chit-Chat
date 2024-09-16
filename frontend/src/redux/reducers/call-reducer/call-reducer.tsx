@@ -172,7 +172,7 @@ export const callRedcuer = createSlice({
     addCallRequest: (state, action: { payload: callReducerState["callRequestDetail"] }) => {
       return { ...state, callRequestDetail: action.payload }
     },
-    removeCallRequest: (state, action) => {
+    removeCallRequest: (state) => {
       return { ...state, callRequestDetail: undefined }
     },
   },

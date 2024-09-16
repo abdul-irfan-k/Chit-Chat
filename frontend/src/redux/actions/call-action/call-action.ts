@@ -164,6 +164,7 @@ export const callInitialiseHandler =
       //@ts-ignore
       socket.emit("privateCall:intialise", {
         ...callRequest,
+        receiverId: callRequest.communicatorsDetail._id,
       })
     }
   }
