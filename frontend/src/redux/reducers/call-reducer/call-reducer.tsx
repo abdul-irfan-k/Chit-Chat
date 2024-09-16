@@ -78,17 +78,14 @@ interface joinRequestedUserDetail extends userBasicDetail {}
 interface privateCallRequest {
   callType: "audioCall" | "videoCall"
   callChannelType: "private"
+  isCalling: boolean
   communicatorsDetail: userBasicDetail
 }
 interface groupCallRequest {
+  isCalling: boolean
   callType: "audioCall" | "videoCall"
   callChannelType: "group"
   communicatorsDetail: userBasicDetail[]
-}
-
-interface callRequest {
-  isCalling: boolean
-  callRequestData?: privateCallRequest | groupCallRequest
 }
 
 export type callReducerState = {
@@ -107,7 +104,7 @@ export type callReducerState = {
     latestJoinRequestor?: joinRequestedUserDetail
     allJoinRequestors: joinRequestedUserDetail[]
   }
-  callRequestDetail?: callRequest
+  callRequestDetail?: privateCallRequest | groupCallRequest
 }
 const callReducerIntialState: callReducerState = {
   callDetail: undefined,
@@ -170,7 +167,7 @@ export const callRedcuer = createSlice({
         }
       }
     },
-    addCallRequest: (state, action: { payload: callRequest }) => {
+    addCallRequest: (state, action: { payload: callReducerState["callRequestDetail"] }) => {
       return { ...state, callRequestDetail: action.payload }
     },
     removeCallRequest: (state, action) => {

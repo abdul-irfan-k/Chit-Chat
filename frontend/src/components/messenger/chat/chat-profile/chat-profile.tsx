@@ -9,6 +9,7 @@ import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 import { ArrowLeftIcon, PhoneIcon, SearchIcon, VideoIcon, VolumeHighIcon } from "@/constants/icon-constant"
 import { useSocketIoContext } from "@/provider/socket-io-provider/socket-io-provider"
 import { videoCallRequestHandler } from "@/redux/actions/call-action/call-action"
+import { generateUUIDString } from "@/util/uuid"
 
 interface ChatProfileInstance {
   name: string
@@ -28,20 +29,22 @@ const ChatProfile: FC<ChatProfileInstance> = ({ name, profileImageSrc, currentSt
 
   const videoCallIconClickHandler = (e: MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation()
+
+    const callRoomId = generateUUIDString()
     if (currentChaterDetail?.currentChaterType == "user") {
       socket.emit("privateCall:intialise", {
-        userDetail: userDetail,
-        chatRoomId: currentChaterDetail?.chatRoom?.chatRoomId,
+        callRoomId,
+        callerDetails: userDetail,
+        chatRoomId: currentChaterDetail?.chatRoomId,
         receiverId: currentChaterDetail?._id,
+        callType: "private",
       })
       dispatch(
         videoCallRequestHandler({
           isCalling: true,
-          callRequestData: {
-            callChannelType: "private",
-            callType: "videoCall",
-            communicatorsDetail: { ...currentChaterDetail },
-          },
+          callChannelType: "private",
+          callType: "videoCall",
+          communicatorsDetail: { ...currentChaterDetail },
         }),
       )
     }

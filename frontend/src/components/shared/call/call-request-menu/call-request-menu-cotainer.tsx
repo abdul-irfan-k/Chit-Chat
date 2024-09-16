@@ -8,17 +8,15 @@ import { callReducerState } from "@/redux/reducers/call-reducer/call-reducer"
 const CallRequestMenuCotainer = () => {
   const { callRequestDetail } = useSelector((state: { callRedcuer: callReducerState }) => state.callRedcuer)
 
-  
   return (
     <div>
       {callRequestDetail != undefined && callRequestDetail.isCalling && (
         <>
-          {callRequestDetail.callRequestData?.callType == "videoCall" &&
-            callRequestDetail.callRequestData.callChannelType == "private" && (
-              <>
-                <VideoCallRequestMenuFullSize userDetail={callRequestDetail.callRequestData.communicatorsDetail} />
-              </>
-            )}
+          {callRequestDetail?.callType == "videoCall" && callRequestDetail.callChannelType == "private" && (
+            <>
+              <VideoCallRequestMenuFullSize callRequestorDetail={callRequestDetail} />
+            </>
+          )}
         </>
       )}
     </div>

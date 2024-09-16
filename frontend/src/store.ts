@@ -12,17 +12,17 @@ import { userSettingReducer } from "./redux/reducers/user-setting-reducer/user-s
 import { callLogsReducer } from "./redux/reducers/call-log-reducer/call-log-reducer"
 
 const combinedReducers = combineReducers({
-  messengerSort: messengerSortReducer.reducer,
-  userSignUpDetail: userSignUpDetailReducer.reducer,
-  chatUsersList: chatUsersListReducer.reducer,
-  userDetail: userDetailReducer.reducer,
-  chatRoomsMessageReducer: chatRoomsMessageReducer.reducer,
-  callRequestReducer: callRequestReducer.reducer,
-  notificationReducer: notificationReducer.reducer,
-  callRedcuer: callRedcuer.reducer,
-  sidebarSort: sidebarSortReducer.reducer,
-  userSetting: userSettingReducer.reducer,
   callLogs: callLogsReducer.reducer,
+  callRedcuer: callRedcuer.reducer,
+  callRequestReducer: callRequestReducer.reducer,
+  chatUsersList: chatUsersListReducer.reducer,
+  chatRoomsMessageReducer: chatRoomsMessageReducer.reducer,
+  messengerSort: messengerSortReducer.reducer,
+  notificationReducer: notificationReducer.reducer,
+  sidebarSort: sidebarSortReducer.reducer,
+  userSignUpDetail: userSignUpDetailReducer.reducer,
+  userDetail: userDetailReducer.reducer,
+  userSetting: userSettingReducer.reducer,
 })
 
 export const store = configureStore({

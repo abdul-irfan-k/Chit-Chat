@@ -2,14 +2,17 @@
 import { CallEndIcon, FullScreenIcon, MicIcon, VideoCamIcon } from "@/constants/icon-constant"
 import { PeerVideoRefContext } from "@/provider/peer-js-video-provider.tsx/peer-js-video-provider"
 import { changeCallSettingHandler, videoCallRequestRemoveHandler } from "@/redux/actions/call-action/call-action"
+import { callReducerState } from "@/redux/reducers/call-reducer/call-reducer"
 import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 import { useAppDispatch } from "@/store"
 import Image from "next/image"
 import React, { FC, useContext, useState } from "react"
 import { useSelector } from "react-redux"
 
-interface VideoCallRequestMenuFullSizeProps {}
-const VideoCallRequestMenuFullSize: FC<VideoCallRequestMenuFullSizeProps> = () => {
+interface VideoCallRequestMenuFullSizeProps {
+  callRequestorDetail: callReducerState["callRequestDetail"]
+}
+const VideoCallRequestMenuFullSize: FC<VideoCallRequestMenuFullSizeProps> = ({ callRequestorDetail }) => {
   const [isAllowedVideoRecording, setIsAllowedVideoRecording] = useState<boolean>(false)
   const [isAllowedVoiceRecording, setIsAllowedVoiceRecording] = useState<boolean>(false)
   const dispatch = useAppDispatch()
@@ -35,10 +38,20 @@ const VideoCallRequestMenuFullSize: FC<VideoCallRequestMenuFullSizeProps> = () =
       <div className="fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] z-50 w-[50vw] h-[70vh] ">
         <div className="relative h-full">
           <div className="top-0 absolute w-full h-full bg-black   z-20">
-            <Image src={"/Asset/nature.jpg"} alt="image" fill className="opacity-[0.45]" />
+            {callRequestorDetail?.callChannelType == "private" && (
+              //@ts-ignore
+              <Image
+                src={callRequestorDetail?.communicatorsDetail.profileImageUrl}
+                alt="image"
+                fill
+                // className="opacity-[0.45]"
+              />
+            )}
           </div>
           <div className="relative px-5 py-5 flex justify-between items-center z-30">
-            <div className="text-lg font-medium ">{userDetail?.name}</div>
+            <div className="text-lg font-medium ">
+              {callRequestorDetail?.callChannelType == "private" ? callRequestorDetail?.communicatorsDetail?.name : ""}
+            </div>
             <div className="relative fill-slate-950 dark:fill-slate-50">
               <FullScreenIcon width="" height="" className="aspect-square w-8" />
             </div>
@@ -49,7 +62,7 @@ const VideoCallRequestMenuFullSize: FC<VideoCallRequestMenuFullSizeProps> = () =
               {userDetail?.profileImageUrl && <Image src={userDetail?.profileImageUrl} alt="image" fill />}
             </div>
           ) : (
-            <div className="absolute left-5 bottom-5 w-[20%] aspect-[3/4] z-30">
+            <div className="absolute left-5 bottom-[-10%] w-[25%] aspect-[3/4] z-30">
               <video
                 autoPlay
                 className="w-full h-full"
