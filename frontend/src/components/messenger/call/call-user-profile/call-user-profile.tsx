@@ -6,15 +6,15 @@ import { FC } from "react"
 
 interface CallUserProfileProps {
   name: string
-  profileImageSrc: string
+  profileImageUrl: string
   phoneNumber: string
 }
 
-const CallUserProfile: FC<CallUserProfileProps> = ({ name, profileImageSrc, phoneNumber }) => {
+const CallUserProfile: FC<CallUserProfileProps> = ({ name, profileImageUrl, phoneNumber }) => {
   return (
     <div className=" gap-1 w-full  p-8 flex flex-col items-center rounded-md bg-slate-200 fill-slate-950 dark:bg-background-primary dark:fill-slate-50">
       <div className="relative w-[35%] aspect-square">
-        <Image src={profileImageSrc} alt="user-image" fill className="rounded-full" />
+        <Image src={profileImageUrl} alt="user-image" fill className="rounded-full" />
       </div>
       <div className="font-medium text-lg text-slate-950 dark:text-slate-50">{name}</div>
       <div className="font-medium  text-slate-700 dark:text-slate-200">{phoneNumber}</div>

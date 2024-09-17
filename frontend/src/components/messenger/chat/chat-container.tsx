@@ -15,7 +15,7 @@ import { AnimatePresence } from "framer-motion"
 const ChatContainer = () => {
   const { messengerSortType } = useSelector((state: { messengerSort: messengerSortState }) => state.messengerSort)
   const { currentChaterDetail, isCurrentChatingWithGroup } = useSelector(
-    (state: { chatUsersList: chatUsersListReducerState }) => state.chatUsersList,
+    (state: { chatUserAndGroupList: chatUsersListReducerState }) => state.chatUserAndGroupList,
   )
   const [showChaterToggleProfile, setShowChaterToggleProfile] = useState<boolean>(false)
 

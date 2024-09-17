@@ -32,7 +32,7 @@ const SocketIoChatUserEventProvider = () => {
 
   const { socket } = useSocketIoContext()
   const { currentChaterDetail } = useSelector(
-    (state: { chatUsersList: chatUsersListReducerState }) => state.chatUsersList,
+    (state: { chatUserAndGroupList: chatUsersListReducerState }) => state.chatUserAndGroupList,
   )
   const { userDetail, isLogedIn } = useSelector((state: { userDetail: userDetailState }) => state.userDetail)
 

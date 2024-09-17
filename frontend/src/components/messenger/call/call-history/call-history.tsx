@@ -27,29 +27,36 @@ const CallHistory: FC<CallHistoryProps> = ({ callHistoryData }) => {
 export default CallHistory
 
 interface CallHistoryCard {
-  callType: "incomingCall" | "outgoingCall" | "missedCall"
-  callStreamType?: "audioCall" | "videoCall"
-  duration: string | undefined
-  time: Date
+  _id: string
+  callType: "private" | "group"
+  mediaType: "audio" | "video"
+  isMissedCall: boolean
+  isIncomingCall: boolean
+  startTime: string
+  endTime: string
+  duration: string
 }
-const CallHistoryCard: FC<CallHistoryCard> = ({ callType, callStreamType, duration, time }) => {
+const CallHistoryCard: FC<CallHistoryCard> = ({
+  callType,
+  _id,
+  duration,
+  endTime,
+  isIncomingCall,
+  isMissedCall,
+  mediaType,
+  startTime,
+}) => {
   return (
     <div className="gap-2 px-10 py-5 rounded-sm flex items-center bg-background-primary fill-slate-950  dark:fill-slate-50">
       <div className="relative w-8 aspect-square flex justify-center items-center">
-        {callType == "incomingCall" && <PhoneIncoming className="w-5 aspect-square" height="" width="" />}
-        {callType == "outgoingCall" && <PhoneOutgoing className="w-5 aspect-square" height="" width="" />}
-        {callType == "missedCall" && <PhoneMissed className="w-5 aspect-square" height="" width="" />}
+        {isMissedCall ? <PhoneMissed /> : isIncomingCall ? <PhoneIncoming /> : <PhoneOutgoing />}
       </div>
       <div className="font-medium text-lg text-slate-950 dark:text-slate-50">
-        {callType == "incomingCall"
-          ? "Incoming Call"
-          : callType == "outgoingCall"
-            ? "Outgoing Call"
-            : callType == "missedCall"
-              ? "Missed Call"
-              : ""}
+        {isMissedCall ? "Missed Call" : isIncomingCall ? "Incoming Call" : "Outgoing Call"}
       </div>
-      <div className="ml-auto text-sm text-slate-800 dark:text-slate-200">{time.toLocaleDateString()}</div>
+      <div className="ml-auto text-sm text-slate-800 dark:text-slate-200">
+        {new Date(startTime).toLocaleDateString()}
+      </div>
     </div>
   )
 }

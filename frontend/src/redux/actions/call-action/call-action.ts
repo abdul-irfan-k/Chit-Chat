@@ -14,6 +14,16 @@ export const getAllCallLogsHandler = () => async (dispatch: AppDispatch) => {
     dispatch(callLogsReducerAction.addCallLogs(data))
   } catch (error) {}
 }
+export const getChatRoomCallLogs = async (chatRoomId: string) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const data = await axiosMeetingInstance.get(`/callLogs/${chatRoomId}`)
+      resolve(data)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
 
 export const addInitialCallDataHandler = (data: any, id: string) => async (dispatch: AppDispatch) => {
   const myDetail = data.callRoomUserDetails.filter((userDetail) => userDetail.userId === id)[0]

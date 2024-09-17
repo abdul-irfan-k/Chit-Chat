@@ -25,7 +25,7 @@ const MessageContextMenu: FC<MessageContextMenuProps> = ({
 }) => {
   const dispatch = useAppDispatch()
   const { currentChaterDetail } = useSelector(
-    (state: { chatUsersList: chatUsersListReducerState }) => state.chatUsersList,
+    (state: { chatUserAndGroupList: chatUsersListReducerState }) => state.chatUserAndGroupList,
   )
   const { userDetail } = useSelector((state: { userDetail: userDetailState }) => state.userDetail)
   const { socket } = useSocketIoContext()

@@ -26,7 +26,7 @@ const PollCreationBox = () => {
 
   const { userDetail } = useSelector((state: { userDetail: userDetailState }) => state.userDetail)
   const { currentChaterDetail } = useSelector(
-    (state: { chatUsersList: chatUsersListReducerState }) => state.chatUsersList,
+    (state: { chatUserAndGroupList: chatUsersListReducerState }) => state.chatUserAndGroupList,
   )
 
   const { socket } = useSocketIoContext()

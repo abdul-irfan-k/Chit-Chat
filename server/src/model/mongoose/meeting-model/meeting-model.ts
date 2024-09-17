@@ -3,6 +3,7 @@ import { v4 as uuidV4 } from "uuid"
 
 interface CallRoomSchemaInterface {
   _id: string
+  chatRoomId:string
   participants: Types.ObjectId[]
   callCurrentStatus?: string
   callStatus?: string

@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit"
 import { userDetail } from "../user-redicer/user-reducer"
 
-interface callLog {
+export interface callLog {
   _id: string
   callType: "private" | "group"
   isMissedCall: boolean
@@ -11,12 +11,13 @@ interface callLog {
   endTime: string
   duration: string
   callIntiatorUserId: string
-  participants: userDetail[]
+  participants: Array<userDetail & { chatRoomId: string }>
 }
 
 export type callLogsReducerState = {
   callLogs: Array<callLog>
   isInitial: boolean
+  selectedCallLogMember?: userDetail & { chatRoomId: string }
 }
 
 const callLogsReducerIntialState: callLogsReducerState = {
@@ -35,9 +36,9 @@ export const callLogsReducer = createSlice({
       const updatedCallLogs = state.callLogs.filter((callLog) => callLog._id != action.payload._id)
       return { ...state, callLogs: [...updatedCallLogs] }
     },
-    // deleteParticularUserAllCallLogs:(state,action:{payload:{}}) => {
-
-    // }
+    selectCallLogMember: (state, action: { payload: userDetail | undefined }) => {
+      return { ...state, selectedCallLogMember: action.payload }
+    },
   },
 })
 

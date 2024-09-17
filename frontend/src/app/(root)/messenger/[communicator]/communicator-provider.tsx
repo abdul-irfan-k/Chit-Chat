@@ -14,11 +14,11 @@ const CommunicatorProvider = () => {
 
   const { userDetail } = useSelector((state: { userDetail: userDetailState }) => state.userDetail)
   const { currentChaterDetail, isCurrentChatingWithGroup } = useSelector(
-    (state: { chatUsersList: chatUsersListReducerState }) => state.chatUsersList,
+    (state: { chatUserAndGroupList: chatUsersListReducerState }) => state.chatUserAndGroupList,
   )
 
   const { messageAvailableChatRoom } = useSelector(
-    (state: { chatRoomsMessageReducer: chatRoomMessagesReducerSlate }) => state.chatRoomsMessageReducer,
+    (state: { messageReducer: chatRoomMessagesReducerSlate }) => state.messageReducer,
   )
 
   useEffect(() => {
@@ -41,18 +41,7 @@ const CommunicatorProvider = () => {
       )
     }
   }, [currentChaterDetail?._id])
-  // useEffect(() => {
-  //   const isAlreadAvailableMessage = messageAvailableChatRoom.some(
-  //     (chatRoom) => chatRoom.chatRoomId == currentChaterDetail?.chatRoom?.chatRoomId,
-  //   )
-  //   if (isAlreadAvailableMessage) {
-  //     dispatch(chatRoomMessageAction.addCurrentChaterMessage({ chatRoomId: currentChaterDetail?.chatRoom?.chatRoomId }))
-  //     return
-  //   }
-  //   dispatch(
-  //     getChatRoomMessageHandler({ chatRoomId: currentChaterDetail?.chatRoom?.chatRoomId, myUserId: userDetail?._id }),
-  //   )
-  // }, [router])
+
   return <></>
 }
 

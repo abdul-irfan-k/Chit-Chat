@@ -12,7 +12,7 @@ import { AnimatePresence, motion } from "framer-motion"
 
 const ChatList = () => {
   const { usersDeatail, groupDetail } = useSelector(
-    (state: { chatUsersList: chatUsersListReducerState }) => state.chatUsersList,
+    (state: { chatUserAndGroupList: chatUsersListReducerState }) => state.chatUserAndGroupList,
   )
   const { messengerSortType, subSelectionType } = useSelector(
     (state: { messengerSort: messengerSortState }) => state.messengerSort,

@@ -9,16 +9,22 @@ import ChatProfile from "../chat-profile/chat-profile"
 interface MobileChatContainerProps {
   backButtonHandler(): void
 }
-const MobileChatContainer:FC<MobileChatContainerProps> = ({backButtonHandler}) => {
-  const { currentChaterDetail } = useSelector((state: { chatUsersList: chatUsersListReducerState }) => state.chatUsersList)
+const MobileChatContainer: FC<MobileChatContainerProps> = ({ backButtonHandler }) => {
+  const { currentChaterDetail } = useSelector(
+    (state: { chatUserAndGroupList: chatUsersListReducerState }) => state.chatUserAndGroupList,
+  )
 
   return (
     <div className="top-0 left-0 fixed flex flex-col items-center h-screen w-screen bg-white z-20 dark:bg-black">
       <div className="relative flex flex-col justify-center  w-screen mx-auto ">
         <div className="pt-4 px-2 flex">
           {/* <MobileChatProfile currentStatus="ofline" profileImageSrc="/Asset/avatar.jpg" {...currentChaterDetail} backButtonHandler={backButtonHandler} /> */}
-          <ChatProfile currentStatus="ofline" profileImageSrc="/Asset/avatar.jpg" {...currentChaterDetail} backButtonHandler={backButtonHandler} />
-        
+          <ChatProfile
+            currentStatus="ofline"
+            profileImageSrc="/Asset/avatar.jpg"
+            {...currentChaterDetail}
+            backButtonHandler={backButtonHandler}
+          />
         </div>
         <div className="h-[80vh]">
           <ChatBox />

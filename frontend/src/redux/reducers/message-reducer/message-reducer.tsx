@@ -5,7 +5,7 @@ const chatRoomMessagesIntialState: chatRoomMessagesReducerSlate = {
   messageAvailableChatRoom: [],
 }
 
-export const chatRoomsMessageReducer = createSlice({
+export const messageReducer = createSlice({
   name: "chatRoomMessageReducer",
   initialState: chatRoomMessagesIntialState,
   reducers: {
@@ -201,7 +201,7 @@ export const chatRoomsMessageReducer = createSlice({
     },
   },
 })
-export const chatRoomMessageAction = chatRoomsMessageReducer.actions
+export const chatRoomMessageAction = messageReducer.actions
 
 export interface messageReaction {
   reactions?: {

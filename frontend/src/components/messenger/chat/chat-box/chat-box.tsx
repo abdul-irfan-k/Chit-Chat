@@ -14,10 +14,10 @@ import { AnimatePresence, motion } from "framer-motion"
 
 const ChatBox = () => {
   const { currentChatRoomMessages } = useSelector(
-    (state: { chatRoomsMessageReducer: chatRoomMessagesReducerSlate }) => state.chatRoomsMessageReducer,
+    (state: { messageReducer: chatRoomMessagesReducerSlate }) => state.messageReducer,
   )
   const { currentChaterDetail } = useSelector(
-    (state: { chatUsersList: chatUsersListReducerState }) => state.chatUsersList,
+    (state: { chatUserAndGroupList: chatUsersListReducerState }) => state.chatUserAndGroupList,
   )
   const { userDetail } = useSelector((state: { userDetail: userDetailState }) => state.userDetail)
 

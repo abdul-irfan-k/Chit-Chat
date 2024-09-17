@@ -1,6 +1,7 @@
-import { callLogsReducerState } from "@/redux/reducers/call-log-reducer/call-log-reducer"
+import { callLogsReducerAction, callLogsReducerState } from "@/redux/reducers/call-log-reducer/call-log-reducer"
 import { messengerSortState } from "@/redux/reducers/messenger-sort-reducer/messenger-sort-reducer"
 import { userDetail } from "@/redux/reducers/user-redicer/user-reducer"
+import { useAppDispatch } from "@/store"
 import { AnimatePresence, motion } from "framer-motion"
 import { Phone, Video } from "lucide-react"
 import Image from "next/image"
@@ -8,12 +9,18 @@ import React, { FC } from "react"
 import { useSelector } from "react-redux"
 
 const CallLogList = () => {
+  const dispatch = useAppDispatch()
+
   const { callLogs, isInitial: isInitialCallLogs } = useSelector(
     (state: { callLogs: callLogsReducerState }) => state.callLogs,
   )
   const { messengerSortType, subSelectionType } = useSelector(
     (state: { messengerSort: messengerSortState }) => state.messengerSort,
   )
+
+  const selectCallLogMemberHandler = (userDetail?: userDetail) => {
+    dispatch(callLogsReducerAction.selectCallLogMember(userDetail))
+  }
   return (
     <div className="flex flex-col  mt-10 gap-5    w-full   ">
       <AnimatePresence>
@@ -29,7 +36,7 @@ const CallLogList = () => {
                 transition={{ duration: 0.3 }}
                 layout
               >
-                <CallLogCard {...callLog} />
+                <CallLogCard {...callLog} onClickHandler={() => selectCallLogMemberHandler(callLog.participants[0])} />
               </motion.div>
             )
           })}
@@ -47,7 +54,10 @@ const CallLogList = () => {
                   transition={{ duration: 0.3 }}
                   layout
                 >
-                  <CallLogCard {...callLog} />
+                  <CallLogCard
+                    {...callLog}
+                    onClickHandler={() => selectCallLogMemberHandler(callLog.participants[0])}
+                  />
                 </motion.div>
               )
             })}
@@ -65,7 +75,10 @@ const CallLogList = () => {
                   transition={{ duration: 0.3 }}
                   layout
                 >
-                  <CallLogCard {...callLog} />
+                  <CallLogCard
+                    {...callLog}
+                    onClickHandler={() => selectCallLogMemberHandler(callLog.participants[0])}
+                  />
                 </motion.div>
               )
             })}
@@ -83,7 +96,10 @@ const CallLogList = () => {
                   transition={{ duration: 0.3 }}
                   layout
                 >
-                  <CallLogCard {...callLog} />
+                  <CallLogCard
+                    {...callLog}
+                    onClickHandler={() => selectCallLogMemberHandler(callLog.participants[0])}
+                  />
                 </motion.div>
               )
             })}
@@ -105,6 +121,7 @@ interface CallLogCardProps {
   duration: string
   callIntiatorUserId: string
   participants: userDetail[]
+  onClickHandler(): void
 }
 
 const CallLogCard: FC<CallLogCardProps> = ({
@@ -118,9 +135,10 @@ const CallLogCard: FC<CallLogCardProps> = ({
   mediaType,
   startTime,
   participants,
+  onClickHandler,
 }) => {
   return (
-    <div className="gap-3 relative flex  items-center">
+    <div className="gap-3 relative flex  items-center" onClick={onClickHandler}>
       <div className="relative  w-14 aspect-square md:w-[20%] ">
         {participants.length == 1 && (
           <Image src={participants[0].profileImageUrl} alt="user-image" fill className="rounded-3xl" />
