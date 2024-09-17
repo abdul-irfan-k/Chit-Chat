@@ -1,32 +1,21 @@
 import { createSlice } from "@reduxjs/toolkit"
+import { userDetail } from "../user-redicer/user-reducer"
 
 interface callLog {
   _id: string
-  callType: "audioCall" | "videoCall"
-  callDirection: "incomingCall" | "outgoingCall" | "incomingMissedCall" | "outgoingMissedCall"
-  callStartTime: string
-  callEndTime: string
-  callDuration: string
-  callInitiator: userBasicDetail
+  callType: "private" | "group"
+  isMissedCall: boolean
+  mediaType: "audio" | "video"
+  isIncomingCall: boolean
+  startTime: string
+  endTime: string
+  duration: string
+  callIntiatorUserId: string
+  participants: userDetail[]
 }
 
-interface userBasicDetail {
-  _id: string
-  profileImageUrl: string
-}
-
-interface privateCallLogParticipantsDetail extends userBasicDetail {}
-interface privateCallLog extends callLog {
-  callMode: "private"
-  participants: privateCallLogParticipantsDetail
-}
-interface groupCallLog extends callLog {
-  callMode: "group"
-}
-
-type callLogs = privateCallLog | groupCallLog
 export type callLogsReducerState = {
-  callLogs: Array<callLogs>
+  callLogs: Array<callLog>
   isInitial: boolean
 }
 
@@ -39,8 +28,8 @@ export const callLogsReducer = createSlice({
   name: "callLogsReducer",
   initialState: callLogsReducerIntialState,
   reducers: {
-    addCallLogs: (state, action: { payload: callLogsReducerState }) => {
-      return { ...state, callLogs: [...state.callLogs, ...action.payload.callLogs] }
+    addCallLogs: (state, action: { payload: callLogsReducerState["callLogs"] }) => {
+      return { ...state, callLogs: [...state.callLogs, ...action.payload], isInitial: false }
     },
     deleteCallLogs: (state, action: { payload: { _id: string } }) => {
       const updatedCallLogs = state.callLogs.filter((callLog) => callLog._id != action.payload._id)

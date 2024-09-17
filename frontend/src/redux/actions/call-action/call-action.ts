@@ -1,11 +1,19 @@
 import { axiosMeetingInstance } from "@/constants/axios"
 import { SocketIO } from "@/provider/socket-io-provider/socket-io-provider"
+import { callLogsReducerAction } from "@/redux/reducers/call-log-reducer/call-log-reducer"
 import { callReducerAction, callReducerState } from "@/redux/reducers/call-reducer/call-reducer"
 import { userDetail } from "@/redux/reducers/user-redicer/user-reducer"
 import { AppDispatch } from "@/store"
 import { generateUUIDString } from "@/util/uuid"
 //@ts-ignore
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context"
+
+export const getAllCallLogsHandler = () => async (dispatch: AppDispatch) => {
+  try {
+    const { data } = await axiosMeetingInstance.get("/callLogs")
+    dispatch(callLogsReducerAction.addCallLogs(data))
+  } catch (error) {}
+}
 
 export const addInitialCallDataHandler = (data: any, id: string) => async (dispatch: AppDispatch) => {
   const myDetail = data.callRoomUserDetails.filter((userDetail) => userDetail.userId === id)[0]

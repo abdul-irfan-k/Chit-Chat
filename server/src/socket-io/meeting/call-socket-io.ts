@@ -93,7 +93,7 @@ const callSocketIo = (socket: Socket) => {
           socket.to(receiver.socketId).emit("privateCall:ended", { callRoomId })
         })
       if (callRoom.callCurrentStatus == "initiated") {
-        await MeetingModel.updateOne({ _id: callRoomId }, { callStatus: "failed" })
+        await MeetingModel.updateOne({ _id: callRoomId }, { callStatus: "failed", endTime })
       } else {
         const endTime = new Date()
         const duration = endTime.getTime() - callRoom.startTime.getTime()

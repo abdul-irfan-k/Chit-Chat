@@ -26,7 +26,7 @@ import {
   verifyUserEmailHandler,
   verifyUserIsLogedInHandler,
 } from "../controller/user-controller"
-import { checkisLogedInMiddleware } from "../middleware/user-middleware"
+import { verifyUserLoggedIn } from "../middleware/user-middleware"
 const router = express.Router()
 
 const storage = multer.diskStorage({
@@ -42,42 +42,35 @@ const upload = multer({ storage })
 
 router.post("/signUp", signUpUserHandler)
 router.post("/login", loginUserHandler)
-router.post("/logout", checkisLogedInMiddleware, logoutUserHandler)
+router.post("/logout", verifyUserLoggedIn, logoutUserHandler)
 
-router.post("/verifyUserIsLogedIn", checkisLogedInMiddleware, verifyUserIsLogedInHandler)
-router.post("/getUserDetail", checkisLogedInMiddleware, getUserDetailHandler)
+router.post("/verifyUserIsLogedIn", verifyUserLoggedIn, verifyUserIsLogedInHandler)
+router.post("/getUserDetail", verifyUserLoggedIn, getUserDetailHandler)
 
-router.post("/checkUserIdAvilable", checkUserIdAvilableHandler)
+router.post("/sendVerifyEmail", verifyUserLoggedIn, sendVerifyUserEmailHandler)
+router.post("/verifyEmail", verifyUserLoggedIn, verifyUserEmailHandler)
 
-router.post("/sendVerifyEmail", checkisLogedInMiddleware, sendVerifyUserEmailHandler)
-router.post("/verifyEmail", checkisLogedInMiddleware, verifyUserEmailHandler)
-
-router.post("/changePassword", checkisLogedInMiddleware, changePasswordHanldler)
-router.post("/changePasswordWithOtp", checkisLogedInMiddleware, changePasswordWithOtpHandler)
-router.post("/requestChangePasswordWithOtp", checkisLogedInMiddleware, requestChangePasswordWithOtpHandler)
+router.post("/changePassword", verifyUserLoggedIn, changePasswordHanldler)
+router.post("/changePasswordWithOtp", verifyUserLoggedIn, changePasswordWithOtpHandler)
+router.post("/requestChangePasswordWithOtp", verifyUserLoggedIn, requestChangePasswordWithOtpHandler)
 router.post("/forgotPassword", requestChangePasswordWithOtpHandler)
 
 // update user details
-router.post("/updateUserProfile", checkisLogedInMiddleware, upload.single("profileImage"), updateUserProfileHandler)
-router.post("/updateUserDetail", checkisLogedInMiddleware, upload.single("profileImage"), updateUserDetailHandler)
+router.post("/updateUserProfile", verifyUserLoggedIn, upload.single("profileImage"), updateUserProfileHandler)
+router.post("/updateUserDetail", verifyUserLoggedIn, upload.single("profileImage"), updateUserDetailHandler)
 router.post("/updateUserEmail")
 
 // fetching the user list in search bar
-router.post("/getUserDetailByUserId", checkisLogedInMiddleware, getUserDetailsByUserIdHandler)
-router.post("/search", checkisLogedInMiddleware, searchUserHandler)
+router.post("/getUserDetailByUserId", verifyUserLoggedIn, getUserDetailsByUserIdHandler)
+router.post("/search", verifyUserLoggedIn, searchUserHandler)
 
 // login with social media
 router.post("/googleLoginWithAcessToken", googleLoginWithAcessTokenHandler)
 router.post("/loginWithGoogleWithCredintials", loginWithGoogleWithCredintialsHandler)
 router.post("/loginWithGithub", loginWithGithubHandler)
 
-// send the freind list
-router.post("/sendFreindRequest", checkisLogedInMiddleware, sendFreindRequestHandler)
-router.post("/acceptFreindRequest", checkisLogedInMiddleware, acceptFreindRequestHandler) // accept the freind request
-router.post("/rejectFreindRequest", checkisLogedInMiddleware) // reject freind request
-
 // welco0me page setting setup
-router.post("/gettingStartedSettingSetup", checkisLogedInMiddleware, gettingStartedSettingSetupHandler)
+router.post("/gettingStartedSettingSetup", verifyUserLoggedIn, gettingStartedSettingSetupHandler)
 
-router.post("/updateSetting", checkisLogedInMiddleware)
+router.post("/updateSetting", verifyUserLoggedIn)
 export default router

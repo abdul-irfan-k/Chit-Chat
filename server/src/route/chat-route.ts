@@ -16,7 +16,7 @@ import {
   updateGroupHandler,
   updateGroupSettingHandler,
 } from "../controller/chat-room-controller"
-import { checkisLogedInMiddleware } from "../middleware/user-middleware"
+import { verifyUserLoggedIn } from "../middleware/user-middleware"
 import { adminOnlyAccess } from "../middleware/group-admin"
 
 const router = express.Router()
@@ -26,35 +26,31 @@ router.all("*", (req, res, next) => {
   next()
 })
 
-router.get("/friends", checkisLogedInMiddleware, getFreindRequestsHandler)
-router.post("/friendRequest", checkisLogedInMiddleware, postFreindRequestHandler)
-router.put("/acceptfriendRequest", checkisLogedInMiddleware, putFreindRequestsHandler)
-router.put("/rejectfriendRequest", checkisLogedInMiddleware, putFreindRequestsHandler)
+router.get("/friends", verifyUserLoggedIn, getFreindRequestsHandler)
+router.post("/friendRequest", verifyUserLoggedIn, postFreindRequestHandler)
+router.put("/acceptfriendRequest", verifyUserLoggedIn, putFreindRequestsHandler)
+router.put("/rejectfriendRequest", verifyUserLoggedIn, putFreindRequestsHandler)
 
-router.post("/getUserChatRoomId")
-router.post("/getAllChatRoom")
-router.post("/getAllChatUsers", checkisLogedInMiddleware, getAllChatUsersHandler)
-router.post("/getAllChatGroups", checkisLogedInMiddleware, getAllChatGroupsHandler)
-router.post("/changeGroupSetting")
-router.post("/changeGroupDetail")
+router.post("/getAllChatUsers", verifyUserLoggedIn, getAllChatUsersHandler)
+router.post("/getAllChatGroups", verifyUserLoggedIn, getAllChatGroupsHandler)
 
 // ######## Group Routes ########
-router.get("/groups/:groupId", checkisLogedInMiddleware, getGroupDetailHandler)
-router.post("/groups", checkisLogedInMiddleware, createGroupHandler)
+router.get("/groups/:groupId", verifyUserLoggedIn, getGroupDetailHandler)
+router.post("/groups", verifyUserLoggedIn, createGroupHandler)
 
-router.put("/groups/:groupId", checkisLogedInMiddleware, adminOnlyAccess, updateGroupHandler)
-router.put("/groups/:groupId/settings", checkisLogedInMiddleware, adminOnlyAccess, updateGroupSettingHandler)
-router.post("/groups/:groupId/addMembers", checkisLogedInMiddleware, adminOnlyAccess, groupAddMembersHandler)
-router.post("/groups/:groupId/removeMembers", checkisLogedInMiddleware, adminOnlyAccess, groupRemoveMemberHandler)
-router.delete("/groups/:groupId", checkisLogedInMiddleware, adminOnlyAccess)
+router.put("/groups/:groupId", verifyUserLoggedIn, adminOnlyAccess, updateGroupHandler)
+router.put("/groups/:groupId/settings", verifyUserLoggedIn, adminOnlyAccess, updateGroupSettingHandler)
+router.post("/groups/:groupId/addMembers", verifyUserLoggedIn, adminOnlyAccess, groupAddMembersHandler)
+router.post("/groups/:groupId/removeMembers", verifyUserLoggedIn, adminOnlyAccess, groupRemoveMemberHandler)
+router.delete("/groups/:groupId", verifyUserLoggedIn, adminOnlyAccess)
 
 router.post("/groups/:groupId/joinByUrl")
-router.post("/groups/:groupId/join", checkisLogedInMiddleware)
-router.post("/group/:groupId/leave", checkisLogedInMiddleware)
+router.post("/groups/:groupId/join", verifyUserLoggedIn)
+router.post("/group/:groupId/leave", verifyUserLoggedIn)
 
-router.post("/chatroom/messages", checkisLogedInMiddleware, getChatRoomMessageHandler)
-router.post("/groupChatroom/messages", checkisLogedInMiddleware, getGroupChatRoomMessageHandler)
+router.post("/chatroom/messages", verifyUserLoggedIn, getChatRoomMessageHandler)
+router.post("/groupChatroom/messages", verifyUserLoggedIn, getGroupChatRoomMessageHandler)
 router.post("/getChatRoomMessageReaction", getChatRoomMessageReactionHandler)
-router.post("/getGroupChatRoomMessageReaction", checkisLogedInMiddleware)
+router.post("/getGroupChatRoomMessageReaction", verifyUserLoggedIn)
 
 export default router

@@ -8,7 +8,7 @@ import { useSelector } from "react-redux"
 import { CallIcon, CallMadeIcon, CallMissedIcon, CallReceivedIcon } from "@/constants/icon-constant"
 import { changeMessengerSortState } from "@/redux/actions/messenger-action/messenger-action"
 import { useAppDispatch } from "@/store"
-import { Contact, MessageCircle, Phone } from "lucide-react"
+import { Contact, MessageCircle, Phone, PhoneIncoming, PhoneMissed, PhoneOutgoing } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 const MessengerSort = () => {
@@ -97,51 +97,49 @@ const MessengerSort = () => {
       )}
       {messengerSortType == "call" && (
         <div className="gap-5 mt-5  flex justify-between items-center fill-slate-950 font-medium text-base dark:fill-slate-50">
-          <div
+          <Button
             className={
               "gap-1  py-2 w-full rounded-full flex justify-center items-center " +
-              (subSelectionType == "allCall" ? "dark:bg-blue-500" : "bg-slate-300 dark:bg-neutral-800")
+              (subSelectionType != "allCall" ? "bg-[#2e3038]" : "")
             }
             onClick={() => handleSubSelection("allCall")}
+            variant={subSelectionType == "allCall" ? "secondary" : "ghost"}
           >
-            <div className="relative w-5 ">
-              <CallIcon className="aspect-square" />
-            </div>
-            <div className=""> All</div>
-          </div>
-          <div
+            <Phone className="aspect-square w-5" />
+            All
+          </Button>
+
+          <Button
             className={
               "gap-1  py-2 w-full rounded-full flex justify-center items-center " +
-              (subSelectionType == "incomingCall" ? "dark:bg-blue-500" : "bg-slate-300 dark:bg-neutral-800")
+              (subSelectionType != "incomingCall" ? "bg-[#2e3038]" : "")
             }
             onClick={() => handleSubSelection("incomingCall")}
+            variant={subSelectionType == "incomingCall" ? "secondary" : "ghost"}
           >
-            <div className="relative w-5 ">
-              <CallReceivedIcon className="aspect-square" />
-            </div>
-          </div>
-          <div
+            <PhoneIncoming className="aspect-square w-5" />
+          </Button>
+
+          <Button
             className={
               "gap-1  py-2 w-full rounded-full flex justify-center items-center " +
-              (subSelectionType == "outgoingCall" ? "dark:bg-blue-500" : "bg-slate-300 dark:bg-neutral-800")
+              (subSelectionType != "outgoingCall" ? "bg-[#2e3038]" : "")
             }
             onClick={() => handleSubSelection("outgoingCall")}
+            variant={subSelectionType == "outgoingCall" ? "secondary" : "ghost"}
           >
-            <div className="relative w-5 ">
-              <CallMadeIcon className="aspect-square" />
-            </div>
-          </div>
-          <div
+            <PhoneOutgoing className="aspect-square w-5" />
+          </Button>
+          <Button
             className={
               "gap-1  py-2 w-full rounded-full flex justify-center items-center " +
-              (subSelectionType == "missedCall" ? "dark:bg-blue-500" : "bg-slate-300 dark:bg-neutral-800")
+              (subSelectionType != "missedCall" ? "bg-[#2e3038]" : "")
             }
             onClick={() => handleSubSelection("missedCall")}
+            variant={subSelectionType == "missedCall" ? "secondary" : "ghost"}
           >
-            <div className="relative w-5 ">
-              <CallMissedIcon className="aspect-square" />
-            </div>
-          </div>
+            <PhoneMissed className="aspect-square w-5" />
+          </Button>
         </div>
       )}
       {messengerSortType == "freinds" && (

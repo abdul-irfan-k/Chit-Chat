@@ -118,7 +118,7 @@ export const callRedcuer = createSlice({
   name: "callReducer",
   initialState: callReducerIntialState,
   reducers: {
-    addIntialCallData: (state, action: { payload: callReducerState; type: string }) => {
+    addIntialCallData: (state, action: { payload: callReducerState }) => {
       return { ...state, ...action.payload, isChanged: true }
     },
     addCallData: (state, action) => {

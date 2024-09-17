@@ -12,6 +12,7 @@ import { messengerSortState } from "@/redux/reducers/messenger-sort-reducer/mess
 import FriendsList from "../../freinds-list/freinds-list"
 import { useAppDispatch } from "@/store"
 import Link from "next/link"
+import CallLogList from "../../call-log-list/call-log-list"
 
 interface MessengerSidebarProps {
   isInitialRender: boolean
@@ -44,6 +45,7 @@ const MessengerSidebar: FC<MessengerSidebarProps> = ({ isInitialRender }) => {
             <MessengerSort />
             {messengerSortType == "chat" && <ChatList />}
             {messengerSortType == "freinds" && <FriendsList />}
+            {messengerSortType == "call" && <CallLogList />}
           </div>
           <div>
             <div

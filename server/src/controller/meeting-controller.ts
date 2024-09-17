@@ -35,16 +35,31 @@ export const findMeetingByCodeHandler = (req: Request, res: Response) => {
 
 export const getAllCallLogsHandler = async (req: Request, res: Response) => {
   try {
-    // const { _id } = req.user as userInterface
-    const { skip, step, limit, sort, _id } = req.body
+    const { _id } = req.user as userInterface
     const userObjectId = new mongoose.Types.ObjectId(_id)
 
     const callLogs = await CallRoomModel.aggregate([
+      { $match: { $expr: { $in: [userObjectId, "$participants"] } } },
       {
-        $match: {
-          $expr: { $in: [_id, "$participants"] },
+        $lookup: {
+          from: "users",
+          localField: "participants",
+          foreignField: "_id",
+          as: "participants",
+          pipeline: [
+            { $match: { _id: { $ne: userObjectId } } },
+            { $project: { name: 1, _id: 1, userId: 1, profileImageUrl: 1 } },
+          ],
         },
       },
+      {
+        $addFields: {
+          isIncomingCall: { $cond: [{ $eq: [userObjectId, "$callIntiatorUserId"] }, true, false] },
+          startTime: "$createdAt",
+          isMissedCall: { $cond: [{ $eq: ["$callStatus", "ended"] }, false, true] },
+        },
+      },
+      { $sort: { createdAt: -1 } },
     ])
     return res.json(callLogs)
   } catch (error) {

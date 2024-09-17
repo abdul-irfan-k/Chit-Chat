@@ -56,7 +56,7 @@ export const getFreindsListHandler = async () => {
   })
 }
 
-export const addAllChatUsers = () => async (dispatch: AppDispatch) => {
+export const getAllChatuserAndGroupHandler = () => async (dispatch: AppDispatch) => {
   try {
     const { data: usersDeatail } = await axiosChatInstance.post("/getAllChatUsers")
     const { data: groupDetail } = await axiosChatInstance.post("/getAllChatGroups")
@@ -64,13 +64,6 @@ export const addAllChatUsers = () => async (dispatch: AppDispatch) => {
   } catch (error) {
     console.log("eror", error)
   }
-}
-
-export const addAllChatGroups = () => async (dispatch: AppDispatch) => {
-  try {
-    // const { data } = await axiosChatInstance.post("/getAllChatGroups")
-    // console.log("all chat groups", data)
-  } catch (error) {}
 }
 
 export const createGroupHandler = (details: Object) => async (dispatch: AppDispatch) => {
