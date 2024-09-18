@@ -1,5 +1,10 @@
-import { axiosUserInstance } from "@/constants/axios"
-import { userDetailAction, userDetailState, userSignUpAction } from "@/redux/reducers/user-redicer/user-reducer"
+import { axiosUploadInstance, axiosUserInstance } from "@/constants/axios"
+import {
+  userDetail,
+  userDetailAction,
+  userDetailState,
+  userSignUpAction,
+} from "@/redux/reducers/user-redicer/user-reducer"
 import { AppDispatch } from "@/store"
 import axios from "axios"
 //@ts-ignore
@@ -113,3 +118,17 @@ export const searchUserHandler = async (data: Object) => {
     }
   })
 }
+
+export const updateUserHandler =
+  (data: Partial<Omit<userDetail, "_id">> & { _id: string; formData?: FormData }) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(userDetailAction.updateUserDetail(data))
+      if (data.formData) {
+        const { data: response } = await axiosUploadInstance.post("/uploadSingleImage", data.formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        })
+        data.profileImageUrl = response.fileUrl
+      }
+      await axiosUserInstance.put(`/users/${data._id}`, data)
+    } catch (error) {}
+  }

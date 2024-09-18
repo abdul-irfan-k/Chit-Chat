@@ -1,7 +1,10 @@
 "use client"
+import { Button } from "@/components/ui/button"
 import { axiosUserInstance } from "@/constants/axios"
 import { AddIcon, ArrowBackIcon, CallIcon, CorrectIcon } from "@/constants/icon-constant"
+import { updateUserHandler } from "@/redux/actions/user-action/user-action"
 import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
+import { useAppDispatch } from "@/store"
 import Image from "next/image"
 import React, { FC, useRef, useState } from "react"
 import { useSelector } from "react-redux"
@@ -11,10 +14,12 @@ interface SettingEditProfileProps {
   backButtonHandler(): void
 }
 const SettingEditProfile: FC<SettingEditProfileProps> = ({ backButtonHandler, userDetail }) => {
+  const dispatch = useAppDispatch()
+
   const inputRef = useRef<HTMLInputElement>(null)
 
   const [updatedUserDetail, setUpdatedUserDetail] = useState({
-    firstName: userDetail != null && userDetail.name.split(" ")[0] != undefined ? userDetail.name : "",
+    firstName: userDetail != null && userDetail.name.split(" ")[0] != undefined ? userDetail.name.split(" ")[0] : "",
     lastName: userDetail != null && userDetail.name.split(" ")[1] != undefined ? userDetail.name.split(" ")[1] : "",
   })
   const [selectedImage, setSelectedImage] = useState<File | undefined>(undefined)
@@ -37,31 +42,32 @@ const SettingEditProfile: FC<SettingEditProfileProps> = ({ backButtonHandler, us
     setUpdatedUserDetail({ ...updatedUserDetail, [e.target.name]: e.target.value })
   const submitButtonHandler = async () => {
     try {
-      if (selectedImage == undefined) return
-      const formData = new FormData()
-      formData.append("profileImage", selectedImage)
+      let formData: FormData | undefined = undefined
+      const details: any = {
+        _id: userDetail?._id,
+        name: updatedUserDetail.firstName + " " + updatedUserDetail.lastName,
+      }
+      if (selectedImage) {
+        formData = new FormData()
+        formData.append("profileImage", selectedImage)
+        details.profileImageUrl = selectedimageUrl
+        details.formData = formData
+      }
 
-      const fullName = updatedUserDetail.firstName + " " + updatedUserDetail.lastName
-      console.log("full name", fullName)
-      formData.append("name", fullName)
-
-      const { data } = await axiosUserInstance.post("/updateUserDetail", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      })
+      dispatch(updateUserHandler(details))
     } catch (error) {
       console.log(error)
     }
   }
 
   return (
-    <div className="overflow-y-scroll h-screen no-scrollbar ">
+    <div className="relative overflow-y-scroll h-screen no-scrollbar ">
       <div className="fixed gap-3 py-2 flex items-center bg-neutral-950 z-[20] w-full">
         <div className="w-6 aspect-square" onClick={backButtonHandler}>
           <ArrowBackIcon className="w-6 aspect-square" />
         </div>
         <span className="font-semibold text-xl">Edit Profile</span>
       </div>
-
       <div className="flex flex-col pt-5">
         <div className="relative  flex items-center justify-center py-10">
           <div className="relative w-[33%] aspect-square rounded-full overflow-hidden" onClick={addImageButtonHandler}>
@@ -112,13 +118,24 @@ const SettingEditProfile: FC<SettingEditProfileProps> = ({ backButtonHandler, us
           </div>
         </div>
 
-        <div
+        {/* <div
           className="fixed w-14 aspect-square bg-blue-500 flex items-center justify-center rounded-full bottom-10 right-0"
           onClick={submitButtonHandler}
-        >
-          <CorrectIcon className="w-8 aspect-square" width="" height="" />
-        </div>
+          ></div> */}
       </div>
+
+      <Button
+        className="fixed w-14  h-14 aspect-square  bottom-10 right-0 bg-blue"
+        rounded
+        size={"icon"}
+        disabled={
+          userDetail?.name == updatedUserDetail.firstName + " " + updatedUserDetail.lastName &&
+          selectedImage == undefined
+        }
+        onClick={submitButtonHandler}
+      >
+        <CorrectIcon className="w-8 aspect-square " width="" height="" />
+      </Button>
     </div>
   )
 }

@@ -57,7 +57,7 @@ router.post("/forgotPassword", requestChangePasswordWithOtpHandler)
 
 // update user details
 router.post("/updateUserProfile", verifyUserLoggedIn, upload.single("profileImage"), updateUserProfileHandler)
-router.post("/updateUserDetail", verifyUserLoggedIn, upload.single("profileImage"), updateUserDetailHandler)
+router.put("/users/:userId", verifyUserLoggedIn, upload.single("profileImage"), updateUserDetailHandler)
 router.post("/updateUserEmail")
 
 // fetching the user list in search bar

@@ -60,7 +60,9 @@ export const userDetailReducer = createSlice({
       state.isLogedIn = action.payload.isLogedIn
       if (action.payload.userDetail != null) state.userDetail = { ...action.payload.userDetail }
     },
-    updateUserDetail: (state, action) => {},
+    updateUserDetail: (state, action: { payload: Partial<userDetail> }) => {
+      return { ...state, userDetail: { ...state.userDetail, ...action.payload } }
+    },
     removeUserDetail: (state, action) => {
       state = null
     },
