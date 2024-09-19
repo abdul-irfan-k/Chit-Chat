@@ -7,6 +7,7 @@ import React, { FC, useState } from "react"
 import { motion } from "framer-motion"
 import { EditIcon } from "@/constants/icon-constant"
 import { updateGroupSettingHandler } from "@/redux/actions/chat-action/chat-action"
+import { Button } from "@/components/ui/button"
 
 interface CurrentChatingGroupProfileProps {
   _id: string
@@ -27,6 +28,7 @@ const CurrentChatingGroupProfile: FC<CurrentChatingGroupProfileProps> = ({
 }) => {
   const [groupSetting, setGroupSetting] = useState<groupSetting>(setting)
   const [initialRender, setInitialRender] = useState<boolean>(true)
+  const [menuSelection, setMenuSelection] = useState<"members" | "media" | "links">("members")
 
   const dispatch = useAppDispatch()
   const onGroupSettingChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -129,40 +131,63 @@ const CurrentChatingGroupProfile: FC<CurrentChatingGroupProfileProps> = ({
       </div>
 
       <div className="mt-5 gap-2 px-5 flex items-center">
-        <div className="px-4 py-2 text-base rounded-full bg-sky-200 text-blue-500">Media</div>
-        <div className="px-4 py-2 text-base rounded-full">Files</div>
-        <div className="px-4 py-2 text-base rounded-full">Linkes</div>
+        <Button
+          variant={menuSelection == "members" ? "default" : "transparent"}
+          className=" px-4 py-2 w-fit"
+          rounded
+          onClick={() => setMenuSelection("members")}
+        >
+          Members
+        </Button>
+        <Button
+          variant={menuSelection == "media" ? "default" : "transparent"}
+          className=" px-4 py-2 w-fit"
+          rounded
+          onClick={() => setMenuSelection("media")}
+        >
+          Files
+        </Button>
+        <Button
+          variant={menuSelection == "links" ? "default" : "transparent"}
+          className=" px-4 py-2 w-fit"
+          rounded
+          onClick={() => setMenuSelection("links")}
+        >
+          Links
+        </Button>
       </div>
 
-      <div className="gap-1 gap-y-3 mt-5 px-5  flex flex-wrap justify-between">
-        <div className="relative w-[32%] aspect-square rounded-md overflow-hidden">
-          <Image src={"/Asset/nature.jpg"} alt="image" fill />
+      {menuSelection == "media" && (
+        <div className="gap-1 gap-y-3 mt-5 px-5  flex flex-wrap justify-between">
+          <div className="relative w-[32%] aspect-square rounded-md overflow-hidden">
+            <Image src={"/Asset/nature.jpg"} alt="image" fill />
+          </div>
+          <div className="relative w-[32%] aspect-square rounded-md overflow-hidden">
+            <Image src={"/Asset/nature.jpg"} alt="image" fill />
+          </div>
+          <div className="relative w-[32%] aspect-square rounded-md overflow-hidden">
+            <Image src={"/Asset/nature.jpg"} alt="image" fill />
+          </div>
+          <div className="relative w-[32%] aspect-square rounded-md overflow-hidden">
+            <Image src={"/Asset/nature.jpg"} alt="image" fill />
+          </div>
+          <div className="relative w-[32%] aspect-square rounded-md overflow-hidden">
+            <Image src={"/Asset/nature.jpg"} alt="image" fill />
+          </div>
+          <div className="relative w-[32%] aspect-square rounded-md overflow-hidden">
+            <Image src={"/Asset/nature.jpg"} alt="image" fill />
+          </div>
+          <div className="relative w-[32%] aspect-square rounded-md overflow-hidden">
+            <Image src={"/Asset/nature.jpg"} alt="image" fill />
+          </div>
+          <div className="relative w-[32%] aspect-square rounded-md overflow-hidden">
+            <Image src={"/Asset/nature.jpg"} alt="image" fill />
+          </div>
+          <div className="relative w-[32%] aspect-square rounded-md overflow-hidden">
+            <Image src={"/Asset/nature.jpg"} alt="image" fill />
+          </div>
         </div>
-        <div className="relative w-[32%] aspect-square rounded-md overflow-hidden">
-          <Image src={"/Asset/nature.jpg"} alt="image" fill />
-        </div>
-        <div className="relative w-[32%] aspect-square rounded-md overflow-hidden">
-          <Image src={"/Asset/nature.jpg"} alt="image" fill />
-        </div>
-        <div className="relative w-[32%] aspect-square rounded-md overflow-hidden">
-          <Image src={"/Asset/nature.jpg"} alt="image" fill />
-        </div>
-        <div className="relative w-[32%] aspect-square rounded-md overflow-hidden">
-          <Image src={"/Asset/nature.jpg"} alt="image" fill />
-        </div>
-        <div className="relative w-[32%] aspect-square rounded-md overflow-hidden">
-          <Image src={"/Asset/nature.jpg"} alt="image" fill />
-        </div>
-        <div className="relative w-[32%] aspect-square rounded-md overflow-hidden">
-          <Image src={"/Asset/nature.jpg"} alt="image" fill />
-        </div>
-        <div className="relative w-[32%] aspect-square rounded-md overflow-hidden">
-          <Image src={"/Asset/nature.jpg"} alt="image" fill />
-        </div>
-        <div className="relative w-[32%] aspect-square rounded-md overflow-hidden">
-          <Image src={"/Asset/nature.jpg"} alt="image" fill />
-        </div>
-      </div>
+      )}
     </motion.div>
   )
 }

@@ -226,9 +226,8 @@ export const getChatRoomMessageHandler = async (req: Request, res: Response) => 
 
 export const getGroupDetailHandler = async (req: Request, res: Response) => {
   try {
-    const { groupsId } = req.params
-    const groupObjectId = new mongoose.Types.ObjectId(groupsId)
-
+    const { groupId } = req.params
+    const groupObjectId = new mongoose.Types.ObjectId(groupId)
     const groups = await GroupModel.findOne({ _id: groupObjectId })
     if (groups == null) return res.status(400).json({})
 
@@ -242,12 +241,12 @@ export const getGroupDetailHandler = async (req: Request, res: Response) => {
           localField: "members.userId",
           foreignField: "_id",
           pipeline: [{ $project: { name: 1, email: 1, profileImageUrl: 1, _id: 1, userId: 1 } }],
-          as: "membersDetails",
+          as: "members",
         },
       },
       {
         $addFields: {
-          membersDetails: "$membersDetails",
+          members: "$members",
         },
       },
     ])

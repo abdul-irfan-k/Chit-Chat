@@ -84,10 +84,19 @@ export const createGroupHandler = (details: Object) => async (dispatch: AppDispa
   }
 }
 
+export const getGroupDetailsHandler = (groupId: string) => async (dispatch: AppDispatch) => {
+  try {
+    const { data } = await axiosChatInstance.get(`/groups/${groupId}`)
+    dispatch(
+      chatUserListAction.updateGroup({ _id: groupId, members: data.members, isGroupMemberDetailsAvailable: true }),
+    )
+  } catch (error) {}
+}
+
 export const updateGroupSettingHandler = (details: any) => async (dispatch: AppDispatch) => {
   try {
     dispatch(
-      chatUserListAction.updateGroupSetting({
+      chatUserListAction.updateGroup({
         setting: { ...details.groupSetting },
         _id: details.groupId,
       }),
@@ -144,7 +153,6 @@ export const getChatRoomMessageHandler =
           isInitialMessages,
         }),
       )
-      dispatch(chatRoomMessageAction.addMessageAvailableChatRooms({ chatRoomId }))
     } catch (error) {
       console.log(error)
       return dispatch(chatRoomMessageAction.removeCurrentChaterMessage({}))
@@ -177,7 +185,6 @@ export const getGroupChatRoomMessageHandler =
           isInitialMessages,
         }),
       )
-      dispatch(chatRoomMessageAction.addMessageAvailableChatRooms({ chatRoomId }))
     } catch (error) {
       console.log(error)
       return dispatch(chatRoomMessageAction.removeCurrentChaterMessage({}))
@@ -530,7 +537,7 @@ export const messageReactionHandler = (args: reactMeessageArgs, socket: SocketIO
 export const onGroupSettingChangeHandler =
   ({ groupDetail, setting }: { groupDetail: { _id: string }; setting: groupSetting }) =>
   async (dispatch: AppDispatch) => {
-    dispatch(chatUserListAction.updateGroupSetting({ _id: groupDetail._id, setting }))
+    dispatch(chatUserListAction.updateGroup({ _id: groupDetail._id, setting }))
   }
 
 export const addNewMessageNotificationHandler =

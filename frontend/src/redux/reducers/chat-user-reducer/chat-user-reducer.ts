@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit"
+import { userDetail } from "../user-redicer/user-reducer"
 
 interface chatRoomNotification {
   notificationType: "newMessage"
@@ -43,6 +44,8 @@ interface chatGroupDetails {
   isAdmin: boolean
   setting: groupSetting
   discription: string
+  isGroupMemberDetailsAvailable: boolean
+  members: this["isGroupMemberDetailsAvailable"] extends true ? userDetail[] : undefined
 }
 
 interface currentChatingGroupDetail extends chatGroupDetails {
@@ -135,14 +138,14 @@ export const chatUsersListReducer = createSlice({
       state.currentChaterDetail = { ...action.payload.groupDetail, currentChaterType: "group" }
       state.isCurrentChatingWithGroup = true
     },
-    updateGroupSetting: (state, action: { payload: { setting: groupSetting; _id: string } }) => {
+    updateGroup: (state, action: { payload: Partial<Omit<chatGroupDetails, "_id">> & { _id: string } }) => {
       const updatedRequiredGroup = state.groupDetail.filter((group) => group._id == action.payload._id)[0]
       state.groupDetail = [
         ...state.groupDetail.filter((group) => group._id != action.payload._id),
-        { ...updatedRequiredGroup, setting: action.payload.setting },
+        { ...updatedRequiredGroup, ...action.payload },
       ]
       if (state.currentChaterDetail != null && state.currentChaterDetail.currentChaterType == "group") {
-        state.currentChaterDetail = { ...state.currentChaterDetail, setting: action.payload.setting }
+        state.currentChaterDetail = { ...state.currentChaterDetail, ...action.payload }
       }
     },
   },

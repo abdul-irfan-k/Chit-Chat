@@ -9,8 +9,15 @@ import useMediaQuery from "@/hooks/user-media-query/use-media-query"
 import { messengerSortState } from "@/redux/reducers/messenger-sort-reducer/messenger-sort-reducer"
 import ChatListBox from "./chat-list-box/chat-list-box"
 import { AnimatePresence, motion } from "framer-motion"
+import { useRouter } from "next/navigation"
 
 const ChatList = () => {
+  const dispatch = useAppDispatch()
+
+  const router = useRouter()
+
+  const isMobile = useMediaQuery(768)
+
   const { usersDeatail, groupDetail } = useSelector(
     (state: { chatUserAndGroupList: chatUsersListReducerState }) => state.chatUserAndGroupList,
   )
@@ -18,9 +25,7 @@ const ChatList = () => {
     (state: { messengerSort: messengerSortState }) => state.messengerSort,
   )
   const [isSelectedUser, setIsSelectedUser] = useState<boolean>(false)
-  const dispatch = useAppDispatch()
 
-  const isMobile = useMediaQuery(768)
   const mobileBackButtonHandler = () => {
     setIsSelectedUser(false)
   }
@@ -42,9 +47,10 @@ const ChatList = () => {
                 layout
               >
                 <ChatListBox
-                  onClickHandler={() => {
-                    dispatch(updateCurrentChaterHandler({ userDetail, isChanged: true }))
+                  onClickHandler={async () => {
+                    await dispatch(updateCurrentChaterHandler({ userDetail, isChanged: true }))
                     setIsSelectedUser(true)
+                    router.push(`/messenger/chat/${userDetail._id}`)
                   }}
                   communicatorName={userDetail.name}
                   imageSrc={userDetail.profileImageUrl != undefined ? userDetail.profileImageUrl : "/Asset/avatar.jpg"}
@@ -71,9 +77,10 @@ const ChatList = () => {
             // <Link href={`/messenger/${groupDetail.userId}`} key={index}>
             <ChatListBox
               key={index}
-              onClickHandler={() => {
+              onClickHandler={async () => {
                 dispatch(updateCurrentChatingGroupHandler({ groupDetail: groupDetail, isChanged: true }))
                 setIsSelectedUser(true)
+                await router.push(`/messenger/group/${groupDetail._id}`)
               }}
               communicatorName={groupDetail.name}
               imageSrc={groupDetail.groupImage}

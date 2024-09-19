@@ -1,7 +1,7 @@
-"use client"
 import Messenger from "@/components/messenger/messenger"
+import React from "react"
 
-const MessengerPage = () => {
+const UserMessengerPage = () => {
   return (
     <>
       <Messenger />
@@ -9,4 +9,4 @@ const MessengerPage = () => {
   )
 }
 
-export default MessengerPage
+export default UserMessengerPage

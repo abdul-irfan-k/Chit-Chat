@@ -23,10 +23,10 @@ const CommunicatorProvider = () => {
 
   useEffect(() => {
     const isAlreadAvailableMessage = messageAvailableChatRoom.some(
-      (chatRoom) => chatRoom.chatRoomId == currentChaterDetail?.chatRoom?.chatRoomId,
+      (chatRoom) => chatRoom.chatRoomId == currentChaterDetail?.chatRoomId,
     )
     if (isAlreadAvailableMessage) {
-      dispatch(chatRoomMessageAction.addCurrentChaterMessage({ chatRoomId: currentChaterDetail?.chatRoom?.chatRoomId }))
+      dispatch(chatRoomMessageAction.addCurrentChaterMessage({ chatRoomId: currentChaterDetail?.chatRoomId }))
       return
     }
 

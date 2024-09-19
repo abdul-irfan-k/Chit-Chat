@@ -49,7 +49,7 @@ const SettingEditProfile: FC<SettingEditProfileProps> = ({ backButtonHandler, us
       }
       if (selectedImage) {
         formData = new FormData()
-        formData.append("profileImage", selectedImage)
+        formData.append("image", selectedImage)
         details.profileImageUrl = selectedimageUrl
         details.formData = formData
       }

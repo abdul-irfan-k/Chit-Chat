@@ -13,12 +13,17 @@ export const messageReducer = createSlice({
       state,
       action: { payload: { messageAndChatRoomDetails: chatRoomMessages; isInitialMessages: boolean } },
     ) => {
-      if (action.payload.isInitialMessages)
+      if (action.payload.isInitialMessages) {
         return {
           ...state,
           chatRoomMessages: [{ ...action.payload.messageAndChatRoomDetails, totalFetchedMessages: 10 }],
           currentChatRoomMessages: { ...action.payload.messageAndChatRoomDetails, totalFetchedMessages: 10 },
+          messageAvailableChatRoom: [
+            ...state.messageAvailableChatRoom,
+            { chatRoomId: action.payload.messageAndChatRoomDetails.chatRoomId },
+          ],
         }
+      }
 
       const oldMessages = state.chatRoomMessages.filter(
         (chatRoom) => chatRoom.chatRoomId == action.payload.messageAndChatRoomDetails.chatRoomId,
@@ -95,13 +100,6 @@ export const messageReducer = createSlice({
         { ...updatedChatRoomMessage },
       ]
       state.currentChatRoomMessages = updatedChatRoomMessage
-    },
-    addMessageAvailableChatRooms: (state, action) => {
-      const isAlreadAvailableMessage = state.messageAvailableChatRoom.some(
-        (chatRoom) => chatRoom.chatRoomId == action.payload.chatRoomId,
-      )
-      if (isAlreadAvailableMessage) return { ...state }
-      state.messageAvailableChatRoom = [...state.messageAvailableChatRoom, action.payload]
     },
     updateMessageStatus: (
       state,

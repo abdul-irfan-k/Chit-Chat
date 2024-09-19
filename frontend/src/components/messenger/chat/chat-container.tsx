@@ -26,7 +26,6 @@ const ChatContainer = () => {
         <div
           className="py-5 relative  h-full flex flex-col  w-[90%]"
           onDragEnter={() => {
-            console.log("on drag enter")
             setIsDroppingFile(true)
           }}
           onDragLeave={() => setIsDroppingFile(false)}
