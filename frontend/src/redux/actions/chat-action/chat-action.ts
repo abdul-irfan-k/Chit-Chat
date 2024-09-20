@@ -523,7 +523,7 @@ type reactMeessageArgs = PrivateMessageActionArgs["reactMessage"] | GroupMessage
 export const messageReactionHandler = (args: reactMeessageArgs, socket: SocketIO) => async (dispatch: AppDispatch) => {
   try {
     const { chatRoomId, message, messageChannelType, senderId } = args
-    // dispatch(chatRoomMessageAction.updateMessageReaction({ chatRoomId, userId: senderId, message }))
+    dispatch(chatRoomMessageAction.updateMessageReaction({ chatRoomId, userId: senderId, message }))
     if (messageChannelType == "private") {
       socket.emit("message:reactMessage", {
         chatRoomId,

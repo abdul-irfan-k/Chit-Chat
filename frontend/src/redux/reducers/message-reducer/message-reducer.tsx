@@ -157,7 +157,7 @@ export const messageReducer = createSlice({
               ...message,
               messageData: {
                 ...message.messageData,
-                reactions: [{ ...action.payload.message, usersId: [{ userId: action.payload.userId }] }],
+                reactions: [{ ...action.payload.message, usersId: [action.payload.userId] }],
               },
             }
           }
@@ -165,15 +165,18 @@ export const messageReducer = createSlice({
           const updatedReaction: messageReaction["reactions"] = []
           message.messageData.reactions.forEach((reaction) => {
             if (reaction.emoji == action.payload.message.emoji) return updatedReaction.push({ ...reaction })
-            const oldReactionIndex = reaction.usersId.findIndex((user) => user.userId == action.payload.userId)
+            const oldReactionIndex = reaction.usersId.findIndex((userId) => userId == action.payload.userId)
             if (oldReactionIndex != -1) {
               if (reaction.usersId.length > 1)
-                return updatedReaction.push({ ...reaction, usersId: reaction.usersId.slice(oldReactionIndex, 1) })
+                return updatedReaction.push({
+                  ...reaction,
+                  usersId: [...reaction.usersId.filter((userId) => userId != action.payload.userId)],
+                })
 
               if (reaction.emojiId == action.payload.message.emoji)
                 return updatedReaction.push({
                   ...reaction,
-                  usersId: [...reaction.usersId, { userId: action.payload.userId }],
+                  usersId: [...reaction.usersId, action.payload.userId],
                 })
             } else updatedReaction.push({ ...reaction })
           })
@@ -182,7 +185,7 @@ export const messageReducer = createSlice({
             (reaction) => reaction.emojiId == action.payload.message.emojiId,
           )
           if (isAlreadyHaveNewReaction == -1) {
-            updatedReaction.push({ ...action.payload.message, usersId: [{ userId: action.payload.userId }] })
+            updatedReaction.push({ ...action.payload.message, usersId: [action.payload.userId] })
           }
 
           return { ...message, messageData: { ...message.messageData, reactions: updatedReaction } }
@@ -204,9 +207,7 @@ export interface messageReaction {
   reactions?: {
     emoji: string
     emojiId: string
-    usersId: {
-      userId: string
-    }[]
+    usersId: []
   }[]
 }
 interface messageBasicDetails {
