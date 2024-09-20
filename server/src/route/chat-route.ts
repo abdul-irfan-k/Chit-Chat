@@ -50,7 +50,7 @@ router.post("/group/:groupId/leave", verifyUserLoggedIn)
 
 router.post("/chatroom/messages", verifyUserLoggedIn, getChatRoomMessageHandler)
 router.post("/groupChatroom/messages", verifyUserLoggedIn, getGroupChatRoomMessageHandler)
-router.post("/getChatRoomMessageReaction", getChatRoomMessageReactionHandler)
+router.post("/chatroom/messages/reaction", verifyUserLoggedIn, getChatRoomMessageReactionHandler)
 router.post("/getGroupChatRoomMessageReaction", verifyUserLoggedIn)
 
 export default router

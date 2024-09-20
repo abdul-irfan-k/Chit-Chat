@@ -208,6 +208,26 @@ export const getChatRoomMessageHandler = async (req: Request, res: Response) => 
       },
     ])
 
+    const chatRoomMessageReactions = await ChatRoomModel.aggregate([
+      { $match: { _id: chatRoomObjectId } },
+      { $project: { chatRoomConversations: { $slice: ["$chatRoomConversations", arrayStartingFrom, limit] } } },
+      {
+        $lookup: {
+          from: "messagereactions",
+          let: { messageIds: "$chatRoomConversations" },
+          pipeline: [{ $match: { $expr: { $in: ["$messageId", "$$messageIds.messageId"] } } }],
+          as: "messageReaction",
+        },
+      },
+    ])
+
+    chatRoomMessages[0].messages = chatRoomMessages[0].messages.map((messages) => {
+      const messageReaction = chatRoomMessageReactions[0].messageReaction.find(
+        (reaction) => reaction.messageId == messages._id,
+      )
+      return { ...messages, reactions: messageReaction?.reactions ?? [] }
+    })
+
     let totalMessages: undefined | number = undefined
     if (skip == 0) {
       const messageSizeData = await ChatRoomModel.aggregate([
@@ -493,6 +513,26 @@ export const getGroupChatRoomMessageHandler = async (req: Request, res: Response
       },
     ])
 
+    const chatRoomMessageReactions = await ChatRoomModel.aggregate([
+      { $match: { _id: chatRoomObjectId } },
+      { $project: { chatRoomConversations: { $slice: ["$chatRoomConversations", arrayStartingFrom, limit] } } },
+      {
+        $lookup: {
+          from: "messagereactions",
+          let: { messageIds: "$chatRoomConversations" },
+          pipeline: [{ $match: { $expr: { $in: ["$messageId", "$$messageIds.messageId"] } } }],
+          as: "messageReaction",
+        },
+      },
+    ])
+
+    chatRoomMessages[0].messages = chatRoomMessages[0].messages.map((messages) => {
+      const messageReaction = chatRoomMessageReactions[0].messageReaction.find(
+        (reaction) => reaction.messageId == messages._id,
+      )
+      return { ...messages, reactions: messageReaction?.reactions ?? [] }
+    })
+
     let totalMessages: undefined | number = undefined
     if (skip == 0) {
       const messageSizeData = await ChatRoomModel.aggregate([
@@ -525,13 +565,21 @@ export const getChatRoomMessageReactionHandler = async (req: Request, res: Respo
         $lookup: {
           from: "messagereactions",
           let: { messageIds: "$chatRoomConversations" },
-          pipeline: [{ $match: { $expr: { $in: ["$_id", "$$messageIds.messageId"] } } }],
+          pipeline: [{ $match: { $expr: { $in: ["$messageId", "$$messageIds.messageId"] } } }],
           as: "messageReaction",
         },
       },
     ])
+    chatRoomMessageReactions[0].chatRoomConversations = chatRoomMessageReactions[0].chatRoomConversations.map(
+      (conversation) => {
+        const messageReaction = chatRoomMessageReactions[0].messageReaction.find(
+          (reaction) => reaction.messageId == conversation.messageId,
+        )
+        return { ...conversation, reactions: messageReaction?.reactions ?? [] }
+      },
+    )
 
-    return res.status(200).json({ chatRoomMessageReactions })
+    return res.status(200).json({ chatRoomConversations: chatRoomMessageReactions[0].chatRoomConversations })
   } catch (error) {
     console.log(error)
     return res.status(400).json({})

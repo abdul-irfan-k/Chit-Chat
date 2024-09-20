@@ -156,7 +156,6 @@ const userMessageSocketIo = (io: Server, socket: SocketIo) => {
 
   socket.on("message:reactMessage", async ({ chatRoomId, message, receiverId, senderId }) => {
     try {
-      console.log("message:reactMessage", chatRoomId, message, receiverId, senderId)
       const userObjectId = new mongoose.Types.ObjectId(senderId)
       const messageReactions = await MessageReactionModel.findOne({ messageId: message._id })
       if (messageReactions == null) {
@@ -167,7 +166,6 @@ const userMessageSocketIo = (io: Server, socket: SocketIo) => {
         await newMessageReaction.save()
         return
       }
-      console.log("message reactions", messageReactions)
       const isUserAlreadyReactedForMessage = messageReactions.reactions.some(
         (reaction) => reaction.usersId.indexOf(senderId) !== -1,
       )

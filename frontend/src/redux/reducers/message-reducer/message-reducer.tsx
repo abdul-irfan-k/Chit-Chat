@@ -70,7 +70,6 @@ export const messageReducer = createSlice({
         payload: { chatRoomId: string; newMessage: incomingMessage | outGoingMessage; isSendedMessage?: boolean }
       },
     ) => {
-      console.log("add chat room messages", action.payload)
       let updatedChatRoomMessage = state.chatRoomMessages.filter(
         (chatRoom) => chatRoom.chatRoomId == action.payload.chatRoomId,
       )[0]

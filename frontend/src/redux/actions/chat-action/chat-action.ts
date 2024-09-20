@@ -147,12 +147,14 @@ export const getChatRoomMessageHandler =
 
       const isInitialMessages = skip == 0
       //@ts-ignore
-      dispatch(
+      await dispatch(
         chatRoomMessageAction.addChatRoomInitialMessage({
           messageAndChatRoomDetails: { messages: messageData, totatMessages: data.totalMessages, chatRoomId },
           isInitialMessages,
         }),
       )
+
+      // await axiosChatInstance.post("chatroom/messages/reaction", { chatRoomId, skip, step, limit })
     } catch (error) {
       console.log(error)
       return dispatch(chatRoomMessageAction.removeCurrentChaterMessage({}))
