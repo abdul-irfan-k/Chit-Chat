@@ -29,6 +29,7 @@ const CommunicatorProvider = () => {
   }, [pathName, currentChaterDetail?._id])
 
   useEffect(() => {
+    if (currentChaterDetail == null || userDetail == null) return
     const isAlreadAvailableMessage = messageAvailableChatRoom.some(
       (chatRoom) => chatRoom.chatRoomId == currentChaterDetail?.chatRoomId,
     )
@@ -38,6 +39,7 @@ const CommunicatorProvider = () => {
     }
 
     if (currentChaterDetail?.currentChaterType == "user") {
+      //@ts-ignore
       dispatch(getChatRoomMessageHandler({ chatRoomId: currentChaterDetail.chatRoomId, myUserId: userDetail?._id }))
     } else {
       dispatch(
