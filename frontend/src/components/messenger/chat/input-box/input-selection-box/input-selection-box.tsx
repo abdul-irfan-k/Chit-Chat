@@ -4,7 +4,7 @@ import PreviewSelectedImage from "../image-selection/image-selection"
 import { axiosUploadInstance } from "@/constants/axios"
 import { useSocketIoContext } from "@/provider/socket-io-provider/socket-io-provider"
 import { useSelector } from "react-redux"
-import { chatUsersListReducerState } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
+import { chatUserAndGroupReducerState } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 import ImageSelection from "../image-selection/image-selection"
 import PollCreationBox from "../poll-creation-box/poll-creation-box"
@@ -18,7 +18,7 @@ interface InputSelectionBoxProps {
 }
 const InputSelectionBox: FC<InputSelectionBoxProps> = ({ outsideClickHandler, isActive }) => {
   const { currentChaterDetail } = useSelector(
-    (state: { chatUserAndGroupList: chatUsersListReducerState }) => state.chatUserAndGroupList,
+    (state: { chatUserAndGroupList: chatUserAndGroupReducerState }) => state.chatUserAndGroupList,
   )
   const { userDetail } = useSelector((state: { userDetail: userDetailState }) => state.userDetail)
 

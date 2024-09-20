@@ -1,6 +1,6 @@
 import useDebounce from "@/hooks/use-debounce/use-debounce"
 import { useSocketIoContext } from "@/provider/socket-io-provider/socket-io-provider"
-import { chatUserListAction, groupSetting } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
+import { chatUserAndGroupReducerState, groupSetting } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import { useAppDispatch } from "@/store"
 import Image from "next/image"
 import React, { FC, useState } from "react"
@@ -8,22 +8,19 @@ import { motion } from "framer-motion"
 import { EditIcon } from "@/constants/icon-constant"
 import { updateGroupSettingHandler } from "@/redux/actions/chat-action/chat-action"
 import { Button } from "@/components/ui/button"
+import { ArrowLeft, UserRoundPlus } from "lucide-react"
 
-interface CurrentChatingGroupProfileProps {
-  _id: string
-  name: string
-  profileImageSrc: string
-  description: string
-  isAdmin?: boolean
-  setting: groupSetting
-}
+type CurrentChatingGroupProfileProps = chatUserAndGroupReducerState["groupDetail"][0]
 
 const CurrentChatingGroupProfile: FC<CurrentChatingGroupProfileProps> = ({
-  _id,
-  description,
   name,
-  profileImageSrc,
+  _id,
+  chatRoomId,
+  discription,
+  groupImage,
   isAdmin,
+  isGroupMemberDetailsAvailable,
+  members,
   setting,
 }) => {
   const [groupSetting, setGroupSetting] = useState<groupSetting>(setting)
@@ -60,10 +57,10 @@ const CurrentChatingGroupProfile: FC<CurrentChatingGroupProfileProps> = ({
       exit={{ translateX: "100%" }}
     >
       <div className="absolute right-3 top-3">
-        <EditIcon />
+        <ArrowLeft />
       </div>
       <div className="relative mt-10 mx-auto w-[40%] aspect-square overflow-hidden rounded-full">
-        <Image src={profileImageSrc} fill alt="profile image" />
+        <Image src={groupImage} fill alt="profile image" />
       </div>
       <div className="mt-5 flex flex-col items-center">
         <span className="text-xl font-bold">{name}</span>
@@ -157,6 +154,24 @@ const CurrentChatingGroupProfile: FC<CurrentChatingGroupProfileProps> = ({
         </Button>
       </div>
 
+      {menuSelection == "members" && (
+        <div className="gap-1 gap-y-3 mt-5 px-5  flex flex-col justify-between">
+          {members != undefined &&
+            members.map((member) => {
+              return (
+                <div className={"pl-2 gap-3 relative flex items-center rounded-md "}>
+                  <div className="relative w-10 aspect-square md:w-[10%]">
+                    <Image src={member.profileImageUrl} alt="user-image" fill className="rounded-3xl" />
+                  </div>
+
+                  <div className="gap-1 flex flex-col justify-center">
+                    <div className=" text-base">{member.name}</div>
+                  </div>
+                </div>
+              )
+            })}
+        </div>
+      )}
       {menuSelection == "media" && (
         <div className="gap-1 gap-y-3 mt-5 px-5  flex flex-wrap justify-between">
           <div className="relative w-[32%] aspect-square rounded-md overflow-hidden">
@@ -188,6 +203,9 @@ const CurrentChatingGroupProfile: FC<CurrentChatingGroupProfileProps> = ({
           </div>
         </div>
       )}
+      <Button className="absolute bottom-5 right-5 w-14 h-14 aspect-square" rounded size={"icon"}>
+        <UserRoundPlus className="aspect-square w-6" />
+      </Button>
     </motion.div>
   )
 }

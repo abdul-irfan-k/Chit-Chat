@@ -4,7 +4,7 @@ import Image from "next/image"
 import { FC, MouseEvent, useEffect } from "react"
 import { useSelector } from "react-redux"
 import { useAppDispatch } from "@/store"
-import { chatUsersListReducerState } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
+import { chatUserAndGroupReducerState } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 import { ArrowLeftIcon, PhoneIcon, SearchIcon, VideoIcon, VolumeHighIcon } from "@/constants/icon-constant"
 import { useSocketIoContext } from "@/provider/socket-io-provider/socket-io-provider"
@@ -21,7 +21,7 @@ interface ChatProfileInstance {
 const ChatProfile: FC<ChatProfileInstance> = ({ name, profileImageSrc, currentStatus, backButtonHandler }) => {
   const { socket } = useSocketIoContext()
   const { currentChaterDetail } = useSelector(
-    (state: { chatUserAndGroupList: chatUsersListReducerState }) => state.chatUserAndGroupList,
+    (state: { chatUserAndGroupList: chatUserAndGroupReducerState }) => state.chatUserAndGroupList,
   )
   const { userDetail } = useSelector((state: { userDetail: userDetailState }) => state.userDetail)
 

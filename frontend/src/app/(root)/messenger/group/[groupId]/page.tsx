@@ -1,7 +1,7 @@
 "use client"
 import Messenger from "@/components/messenger/messenger"
 import { getGroupDetailsHandler } from "@/redux/actions/chat-action/chat-action"
-import { chatUsersListReducerState } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
+import { chatUserAndGroupReducerState } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import { useAppDispatch } from "@/store"
 import React, { use, useEffect } from "react"
 import { useSelector } from "react-redux"
@@ -9,7 +9,7 @@ import { useSelector } from "react-redux"
 const GroupPage = ({ params }: { params: { groupId: string } }) => {
   const dispatch = useAppDispatch()
   const { groupDetail, currentChaterDetail } = useSelector(
-    (state: { chatUserAndGroupList: chatUsersListReducerState }) => state.chatUserAndGroupList,
+    (state: { chatUserAndGroupList: chatUserAndGroupReducerState }) => state.chatUserAndGroupList,
   )
 
   useEffect(() => {

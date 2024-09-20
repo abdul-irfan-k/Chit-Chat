@@ -1,6 +1,6 @@
 "use client"
 import { getChatRoomMessageHandler, getGroupChatRoomMessageHandler } from "@/redux/actions/chat-action/chat-action"
-import { chatUsersListReducerState } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
+import { chatUserAndGroupReducerState } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import { chatRoomMessageAction, chatRoomMessagesReducerSlate } from "@/redux/reducers/message-reducer/message-reducer"
 import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 import { useAppDispatch } from "@/store"
@@ -14,7 +14,7 @@ const CommunicatorProvider = () => {
 
   const { userDetail } = useSelector((state: { userDetail: userDetailState }) => state.userDetail)
   const { currentChaterDetail, isCurrentChatingWithGroup } = useSelector(
-    (state: { chatUserAndGroupList: chatUsersListReducerState }) => state.chatUserAndGroupList,
+    (state: { chatUserAndGroupList: chatUserAndGroupReducerState }) => state.chatUserAndGroupList,
   )
 
   const { messageAvailableChatRoom } = useSelector(

@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useSelector } from "react-redux"
 import { useAppDispatch } from "@/store"
 import { sendTextMessageHandler } from "@/redux/actions/chat-action/chat-action"
-import { chatUsersListReducerState } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
+import { chatUserAndGroupReducerState } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 import VoiceRecorder from "@/components/shared/voice-recorder/voice-recorder"
 import { useSocketIoContext } from "@/provider/socket-io-provider/socket-io-provider"
@@ -26,7 +26,7 @@ const InputBox = () => {
 
   const { socket } = useSocketIoContext()
   const { currentChaterDetail } = useSelector(
-    (state: { chatUserAndGroupList: chatUsersListReducerState }) => state.chatUserAndGroupList,
+    (state: { chatUserAndGroupList: chatUserAndGroupReducerState }) => state.chatUserAndGroupList,
   )
   const { userDetail } = useSelector((state: { userDetail: userDetailState }) => state.userDetail)
 

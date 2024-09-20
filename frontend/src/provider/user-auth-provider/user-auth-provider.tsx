@@ -1,7 +1,7 @@
 "use client"
 import { getAllChatuserAndGroupHandler, getIntialOnlineChatUsers } from "@/redux/actions/chat-action/chat-action"
 import { checkUserIsLogedIn } from "@/redux/actions/user-action/user-action"
-import { chatUsersListReducerState } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
+import { chatUserAndGroupReducerState } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 import { useAppDispatch } from "@/store"
 import React, { FC, useEffect } from "react"

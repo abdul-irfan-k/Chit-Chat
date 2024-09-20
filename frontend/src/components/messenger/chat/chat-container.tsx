@@ -5,7 +5,7 @@ import ChatBox from "./chat-box/chat-box"
 import ChatProfile from "./chat-profile/chat-profile"
 import InputBox from "./input-box/input-box"
 import { messengerSortState } from "@/redux/reducers/messenger-sort-reducer/messenger-sort-reducer"
-import { chatUsersListReducerState } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
+import { chatUserAndGroupReducerState } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import { useEffect, useState } from "react"
 import CurrentChaterFullScreenProfile from "./current-chater-full-screen-profile/current-chater-full-screen-profile"
 import CurrentChatingGroupProfile from "./current-chating-group-profile/current-chating-group-profile"
@@ -15,7 +15,7 @@ import { AnimatePresence } from "framer-motion"
 const ChatContainer = () => {
   const { messengerSortType } = useSelector((state: { messengerSort: messengerSortState }) => state.messengerSort)
   const { currentChaterDetail, isCurrentChatingWithGroup } = useSelector(
-    (state: { chatUserAndGroupList: chatUsersListReducerState }) => state.chatUserAndGroupList,
+    (state: { chatUserAndGroupList: chatUserAndGroupReducerState }) => state.chatUserAndGroupList,
   )
   const [showChaterToggleProfile, setShowChaterToggleProfile] = useState<boolean>(false)
 
@@ -84,12 +84,7 @@ const ChatContainer = () => {
           />
         )}
         {showChaterToggleProfile && currentChaterDetail != null && currentChaterDetail.currentChaterType == "group" && (
-          <CurrentChatingGroupProfile
-            profileImageSrc="/Asset/avatar.jpg"
-            name={currentChaterDetail.name}
-            isChatingWithGroup={isCurrentChatingWithGroup}
-            {...currentChaterDetail}
-          />
+          <CurrentChatingGroupProfile {...currentChaterDetail} />
         )}
       </AnimatePresence>
     </>

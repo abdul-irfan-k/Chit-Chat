@@ -1,6 +1,6 @@
 "use client"
 import { updateCurrentChaterHandler, updateCurrentChatingGroupHandler } from "@/redux/actions/chat-action/chat-action"
-import { chatUsersListReducerState } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
+import { chatUserAndGroupReducerState } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import { useAppDispatch } from "@/store"
 import { useState } from "react"
 import { useSelector } from "react-redux"
@@ -19,7 +19,7 @@ const ChatList = () => {
   const isMobile = useMediaQuery(768)
 
   const { usersDeatail, groupDetail } = useSelector(
-    (state: { chatUserAndGroupList: chatUsersListReducerState }) => state.chatUserAndGroupList,
+    (state: { chatUserAndGroupList: chatUserAndGroupReducerState }) => state.chatUserAndGroupList,
   )
   const { messengerSortType, subSelectionType } = useSelector(
     (state: { messengerSort: messengerSortState }) => state.messengerSort,

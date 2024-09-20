@@ -3,7 +3,7 @@ import MobileChatProfile from "./mobile-chat-profile/mobile-chat-profile"
 import ChatBox from "../chat-box/chat-box"
 import InputBox from "../input-box/input-box"
 import { useSelector } from "react-redux"
-import { chatUsersListReducerState } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
+import { chatUserAndGroupReducerState } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import ChatProfile from "../chat-profile/chat-profile"
 
 interface MobileChatContainerProps {
@@ -11,7 +11,7 @@ interface MobileChatContainerProps {
 }
 const MobileChatContainer: FC<MobileChatContainerProps> = ({ backButtonHandler }) => {
   const { currentChaterDetail } = useSelector(
-    (state: { chatUserAndGroupList: chatUsersListReducerState }) => state.chatUserAndGroupList,
+    (state: { chatUserAndGroupList: chatUserAndGroupReducerState }) => state.chatUserAndGroupList,
   )
 
   return (

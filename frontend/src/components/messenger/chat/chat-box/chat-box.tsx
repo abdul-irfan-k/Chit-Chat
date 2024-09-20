@@ -4,7 +4,7 @@ import TextMessage from "./text-message/text-message"
 import { chatRoomMessagesReducerSlate } from "@/redux/reducers/message-reducer/message-reducer"
 import { useEffect } from "react"
 import VoiceMessage from "./voice-message/voice-message"
-import { chatUsersListReducerState } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
+import { chatUserAndGroupReducerState } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 import ImageMessage from "./image-message/image-message"
 import PollMessage from "./poll-message/poll-message"
@@ -17,7 +17,7 @@ const ChatBox = () => {
     (state: { messageReducer: chatRoomMessagesReducerSlate }) => state.messageReducer,
   )
   const { currentChaterDetail } = useSelector(
-    (state: { chatUserAndGroupList: chatUsersListReducerState }) => state.chatUserAndGroupList,
+    (state: { chatUserAndGroupList: chatUserAndGroupReducerState }) => state.chatUserAndGroupList,
   )
   const { userDetail } = useSelector((state: { userDetail: userDetailState }) => state.userDetail)
 

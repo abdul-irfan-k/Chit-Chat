@@ -45,7 +45,7 @@ interface chatGroupDetails {
   setting: groupSetting
   discription: string
   isGroupMemberDetailsAvailable: boolean
-  members: this["isGroupMemberDetailsAvailable"] extends true ? userDetail[] : undefined
+  members?: userDetail[]
 }
 
 interface currentChatingGroupDetail extends chatGroupDetails {
@@ -61,8 +61,8 @@ interface chatUsersListReducer {
   isCurrentChatingWithGroup: boolean
 }
 
-export type chatUsersListReducerState = chatUsersListReducer
-const chatUserListInitialState: chatUsersListReducerState = {
+export type chatUserAndGroupReducerState = chatUsersListReducer
+const chatUserListInitialState: chatUserAndGroupReducerState = {
   usersDeatail: [],
   groupDetail: [],
   isChanged: false,
@@ -151,4 +151,4 @@ export const chatUsersListReducer = createSlice({
   },
 })
 
-export const chatUserListAction = chatUsersListReducer.actions
+export const chatUserAndGroupAction = chatUsersListReducer.actions

@@ -3,7 +3,7 @@ import { generateUUIDString } from "@/util/uuid"
 import { axiosChatInstance, axiosUploadInstance } from "@/constants/axios"
 import { AppDispatch } from "@/store"
 import { chatRoomMessageAction, messageTypes } from "@/redux/reducers/message-reducer/message-reducer"
-import { chatUserListAction, groupSetting } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
+import { chatUserAndGroupAction, groupSetting } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import { SocketIO } from "@/provider/socket-io-provider/socket-io-provider"
 import {
   GroupMessageActionArgs,
@@ -60,7 +60,7 @@ export const getAllChatuserAndGroupHandler = () => async (dispatch: AppDispatch)
   try {
     const { data: usersDeatail } = await axiosChatInstance.post("/getAllChatUsers")
     const { data: groupDetail } = await axiosChatInstance.post("/getAllChatGroups")
-    dispatch(chatUserListAction.addIntialAllUserAndGroupList({ usersDeatail, groupDetail }))
+    dispatch(chatUserAndGroupAction.addIntialAllUserAndGroupList({ usersDeatail, groupDetail }))
   } catch (error) {
     console.log("eror", error)
   }
@@ -88,7 +88,7 @@ export const getGroupDetailsHandler = (groupId: string) => async (dispatch: AppD
   try {
     const { data } = await axiosChatInstance.get(`/groups/${groupId}`)
     dispatch(
-      chatUserListAction.updateGroup({ _id: groupId, members: data.members, isGroupMemberDetailsAvailable: true }),
+      chatUserAndGroupAction.updateGroup({ _id: groupId, members: data.members, isGroupMemberDetailsAvailable: true }),
     )
   } catch (error) {}
 }
@@ -96,7 +96,7 @@ export const getGroupDetailsHandler = (groupId: string) => async (dispatch: AppD
 export const updateGroupSettingHandler = (details: any) => async (dispatch: AppDispatch) => {
   try {
     dispatch(
-      chatUserListAction.updateGroup({
+      chatUserAndGroupAction.updateGroup({
         setting: { ...details.groupSetting },
         _id: details.groupId,
       }),
@@ -109,10 +109,10 @@ export const updateGroupSettingHandler = (details: any) => async (dispatch: AppD
 }
 
 export const updateCurrentChaterHandler = (details: any) => async (dispatch: AppDispatch) => {
-  dispatch(chatUserListAction.updateCurrentUser(details))
+  dispatch(chatUserAndGroupAction.updateCurrentUser(details))
 }
 export const updateCurrentChatingGroupHandler = (details: any) => async (dispatch: AppDispatch) => {
-  dispatch(chatUserListAction.updateCurrentChatingGroup(details))
+  dispatch(chatUserAndGroupAction.updateCurrentChatingGroup(details))
 }
 
 export const getChatRoomMessageHandler =
@@ -537,14 +537,14 @@ export const messageReactionHandler = (args: reactMeessageArgs, socket: SocketIO
 export const onGroupSettingChangeHandler =
   ({ groupDetail, setting }: { groupDetail: { _id: string }; setting: groupSetting }) =>
   async (dispatch: AppDispatch) => {
-    dispatch(chatUserListAction.updateGroup({ _id: groupDetail._id, setting }))
+    dispatch(chatUserAndGroupAction.updateGroup({ _id: groupDetail._id, setting }))
   }
 
 export const addNewMessageNotificationHandler =
   ({ _id }: { _id: string }) =>
   async (dispatch: AppDispatch) => {
     dispatch(
-      chatUserListAction.addUserNotification({
+      chatUserAndGroupAction.addUserNotification({
         _id,
         notification: { notificationType: "newMessage", totalNotificationCount: 1, isAvailableNewNotification: true },
       }),
@@ -554,7 +554,7 @@ export const addNewMessageNotificationHandler =
 export const getIntialOnlineChatUsers = (socket: Socket) => async (dispatch: AppDispatch) => {
   try {
     socket.emit("status:getOnlineUsers", (onlineUsers: any) => {
-      dispatch(chatUserListAction.addintialOnlineUsers({ onlineUsers }))
+      dispatch(chatUserAndGroupAction.addintialOnlineUsers({ onlineUsers }))
     })
   } catch (error) {}
 }

@@ -6,7 +6,7 @@ import {
   sendMultipleImageMessageHandler,
   sendVideoMessageHandler,
 } from "@/redux/actions/chat-action/chat-action"
-import { chatUsersListReducerState } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
+import { chatUserAndGroupReducerState } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 import { useAppDispatch } from "@/store"
 import { Images } from "lucide-react"
@@ -16,7 +16,7 @@ import { Socket } from "socket.io-client"
 
 interface ImageSelectionProps {
   userDetail: userDetailState["userDetail"]
-  currentChaterDetail: chatUsersListReducerState["currentChaterDetail"]
+  currentChaterDetail: chatUserAndGroupReducerState["currentChaterDetail"]
 }
 const ImageSelection: FC<ImageSelectionProps> = ({ userDetail, currentChaterDetail }) => {
   const dispatch = useAppDispatch()

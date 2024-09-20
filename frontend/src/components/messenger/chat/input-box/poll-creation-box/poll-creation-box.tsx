@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button"
 import { ArrowLeftIcon, PersonIcon } from "@/constants/icon-constant"
 import { useSocketIoContext } from "@/provider/socket-io-provider/socket-io-provider"
 import { sendGroupPollMessageHandler } from "@/redux/actions/chat-action/chat-action"
-import { chatUsersListReducerState } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
+import { chatUserAndGroupReducerState } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 import { useAppDispatch } from "@/store"
 import { Vote, X } from "lucide-react"
@@ -26,7 +26,7 @@ const PollCreationBox = () => {
 
   const { userDetail } = useSelector((state: { userDetail: userDetailState }) => state.userDetail)
   const { currentChaterDetail } = useSelector(
-    (state: { chatUserAndGroupList: chatUsersListReducerState }) => state.chatUserAndGroupList,
+    (state: { chatUserAndGroupList: chatUserAndGroupReducerState }) => state.chatUserAndGroupList,
   )
 
   const { socket } = useSocketIoContext()

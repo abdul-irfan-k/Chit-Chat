@@ -1,6 +1,6 @@
 "use client"
 import { getChatRoomMessageHandler } from "@/redux/actions/chat-action/chat-action"
-import { chatUsersListReducerState } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
+import { chatUserAndGroupReducerState } from "@/redux/reducers/chat-user-reducer/chat-user-reducer"
 import { userDetailState } from "@/redux/reducers/user-redicer/user-reducer"
 import { useAppDispatch } from "@/store"
 import React, { FC, useState } from "react"
@@ -10,7 +10,7 @@ import CircleSpinner from "../circle-spinner/circle-spinner"
 interface MessageInfiniteScrollProps {
   children: React.ReactNode
   userDetail: userDetailState["userDetail"]
-  currentChaterDetail: chatUsersListReducerState["currentChaterDetail"]
+  currentChaterDetail: chatUserAndGroupReducerState["currentChaterDetail"]
   totatMessages?: number
   totalFetchedMessages?: number
 }
@@ -24,9 +24,12 @@ const MessageInfiniteScroll: FC<MessageInfiniteScrollProps> = ({
   const dispatch = useAppDispatch()
 
   const [num, setNum] = useState(10)
-  const [hasMore, setHasMore] = useState(false)
+  const [hasMore, setHasMore] = useState(true)
   const fetchMoreDataHandler = () => {
-    console.log("fetch more data handler")
+    if (totalFetchedMessages >= totatMessages) {
+      setHasMore(false)
+      return
+    }
     const skip = totalFetchedMessages != undefined ? Math.floor(totalFetchedMessages / 10) : 1
     if (currentChaterDetail?.currentChaterType == "user" && userDetail != null) {
       dispatch(
@@ -52,7 +55,7 @@ const MessageInfiniteScroll: FC<MessageInfiniteScrollProps> = ({
           <CircleSpinner />
         </div>
       }
-      hasMore
+      hasMore={hasMore}
       // isReverse
       inverse={true}
       next={fetchMoreDataHandler}
