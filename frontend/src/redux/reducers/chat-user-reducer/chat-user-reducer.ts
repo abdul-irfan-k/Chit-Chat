@@ -74,9 +74,6 @@ export const chatUsersListReducer = createSlice({
   name: "chatUserListReducer",
   initialState: chatUserListInitialState,
   reducers: {
-    addIntialAllUserList: (state, action) => {
-      // return { isChanged: true, usersDeatail: [...action.payload] }
-    },
     addIntialAllUserAndGroupList: (state, action) => {
       // console.log('action',action.payload)
       return {
@@ -147,6 +144,9 @@ export const chatUsersListReducer = createSlice({
       if (state.currentChaterDetail != null && state.currentChaterDetail.currentChaterType == "group") {
         state.currentChaterDetail = { ...state.currentChaterDetail, ...action.payload }
       }
+    },
+    addGroup: (state, action: { payload: chatUsersListReducer["groupDetail"] }) => {
+      return { ...state, groupDetail: [...state.groupDetail, action.payload] }
     },
   },
 })

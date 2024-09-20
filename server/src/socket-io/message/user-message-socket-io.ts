@@ -156,21 +156,44 @@ const userMessageSocketIo = (io: Server, socket: SocketIo) => {
 
   socket.on("message:reactMessage", async ({ chatRoomId, message, receiverId, senderId }) => {
     try {
-      const messageObjectId = new mongoose.Types.ObjectId(message._id)
+      console.log("message:reactMessage", chatRoomId, message, receiverId, senderId)
       const userObjectId = new mongoose.Types.ObjectId(senderId)
-      const messageReactions = await MessageReactionModel.findOrCreateMessageReactionModel(messageObjectId)
-
-      const isAlreadyReactedForMessage = messageReactions.reactions.some(
-        (reaction) => reaction.usersId.indexOf({ userId: userObjectId }) !== -1,
+      const messageReactions = await MessageReactionModel.findOne({ messageId: message._id })
+      if (messageReactions == null) {
+        const newMessageReaction = new MessageReactionModel({
+          messageId: message._id,
+          reactions: [{ emoji: message.emoji, emojiId: message.emojiId, usersId: [userObjectId] }],
+        })
+        await newMessageReaction.save()
+        return
+      }
+      console.log("message reactions", messageReactions)
+      const isUserAlreadyReactedForMessage = messageReactions.reactions.some(
+        (reaction) => reaction.usersId.indexOf(senderId) !== -1,
+      )
+      const messageReactionsIndex = messageReactions.reactions.findIndex(
+        (reaction) => reaction.emojiId == message.emojiId,
       )
 
-      if (!isAlreadyReactedForMessage) {
-        const updatedMessageReaction = await MessageReactionModel.findOneAndUpdate(
-          { messageId: messageObjectId },
-          { reactions: [{ emoji: message.emoji, emojiId: message.emojiId, usersId: [userObjectId] }] },
-        )
+      if (isUserAlreadyReactedForMessage) {
+        messageReactions.reactions = messageReactions.reactions.map((reaction) => {
+          const userIndex = reaction.usersId.indexOf(senderId)
+          if (userIndex !== -1) {
+            return { ...reaction, usersId: [...reaction.usersId.filter((userId) => userId != senderId)] }
+          }
+          return { ...reaction }
+        })
       }
-    } catch (error) {}
+      if (messageReactionsIndex == -1) {
+        messageReactions.reactions.push({ emoji: message.emoji, emojiId: message.emojiId, usersId: [userObjectId] })
+      } else {
+        messageReactions.reactions[messageReactionsIndex].usersId.push(userObjectId)
+      }
+      messageReactions.reactions = messageReactions.reactions.filter((reaction) => reaction.usersId.length != 0)
+      await MessageReactionModel.findOneAndUpdate({ messageId: message._id }, { reactions: messageReactions.reactions })
+    } catch (error) {
+      console.log(error)
+    }
   })
 }
 

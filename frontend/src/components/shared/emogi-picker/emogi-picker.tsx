@@ -12,9 +12,10 @@ interface EmogiPickerProps {
 const EmogiPicker: FC<EmogiPickerProps> = ({ emojiSelectHandler, isActive }) => {
   const onEmojiSelectHandler = (data: any) => {
     const emoji = data.native
-    emojiSelectHandler((val) => {
-      return val + emoji
-    })
+    console.log(data)
+    // emojiSelectHandler((val) => {
+    //   return val + emoji
+    // })
   }
 
   return (

@@ -49,18 +49,26 @@ const MessageContextMenu: FC<MessageContextMenuProps> = ({
 
   const messageReactionButtonHandler = (emojiId: string, emoji: string) => {
     if (messageDetail == undefined || userDetail == null) return contextMenu?.setShowContextMenu(false)
-    if (currentChaterDetail?.currentChaterType == "user")
-      dispatch(
-        messageReactionHandler(
-          {
-            chatRoomId: currentChaterDetail.chatRoom.chatRoomId,
-            message: { ...messageDetail, emoji, emojiId },
-            receiverId: currentChaterDetail._id,
-            senderId: userDetail._id,
-          },
-          socket,
-        ),
-      )
+    const args = {}
+    if (currentChaterDetail?.currentChaterType == "user") {
+      args.receiverId = currentChaterDetail._id
+      args.messageChannelType = "private"
+    } else {
+      args.groupId = currentChaterDetail._id
+      args.messageChannelType = "group"
+    }
+    dispatch(
+      messageReactionHandler(
+        //@ts-ignore
+        {
+          chatRoomId: currentChaterDetail?.chatRoomId,
+          message: { emoji, emojiId, _id: messageDetail._id },
+          senderId: userDetail._id,
+          ...args,
+        },
+        socket,
+      ),
+    )
   }
 
   const copyButtonHandler = (content: string) => {

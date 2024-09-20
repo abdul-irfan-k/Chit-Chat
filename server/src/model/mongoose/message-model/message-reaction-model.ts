@@ -2,13 +2,13 @@ import { Model, Schema, Types, model, Document } from "mongoose"
 
 const messageReactionSchema = new Schema(
   {
-    messageId: { type: Schema.Types.ObjectId, required: true },
+    messageId: { type: String, required: true },
     reactions: [
       {
         reactionType: { type: String },
         emoji: { type: String, required: true },
         emojiId: { type: String, required: true },
-        usersId: [{ userId: { type: Schema.Types.ObjectId, required: true } }],
+        usersId: [{ type: Schema.Types.ObjectId, ref: "User", required: true }],
       },
     ],
   },
@@ -16,30 +16,15 @@ const messageReactionSchema = new Schema(
 )
 
 interface messageReaction {
-  messageId: Types.ObjectId
+  messageId: string
   reactions: {
-    reactionType?: string
     emoji: string
     emojiId: string
-    usersId: {
-      userId: Types.ObjectId;
-  }[]
+    usersId: Types.ObjectId[]
   }[]
 }
 
-interface MessageReactionDocument extends Model<messageReaction> {
-  findOrCreateMessageReactionModel(messageId: Types.ObjectId): Promise<messageReaction>
-}
-
-messageReactionSchema.statics.findOrCreateMessageReactionModel = async function (messageId) {
-  const messageReaction = await this.findOne({ messageId })
-  if (!messageReaction) return messageReaction
-
-  const newMessageReaction = new this({ messageId, reactions: [] })
-  await newMessageReaction.save()
-
-  return newMessageReaction
-}
+interface MessageReactionDocument extends Model<messageReaction> {}
 
 const MessageReactionModel = model<messageReaction, MessageReactionDocument>("messageReaction", messageReactionSchema)
 export default MessageReactionModel

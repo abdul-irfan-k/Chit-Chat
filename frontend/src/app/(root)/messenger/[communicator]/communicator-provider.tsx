@@ -9,7 +9,7 @@ import React, { useEffect } from "react"
 import { useSelector } from "react-redux"
 
 const CommunicatorProvider = () => {
-  const router = usePathname()
+  const pathName = usePathname()
   const dispatch = useAppDispatch()
 
   const { userDetail } = useSelector((state: { userDetail: userDetailState }) => state.userDetail)
@@ -20,6 +20,13 @@ const CommunicatorProvider = () => {
   const { messageAvailableChatRoom } = useSelector(
     (state: { messageReducer: chatRoomMessagesReducerSlate }) => state.messageReducer,
   )
+  useEffect(() => {
+    if (!pathName.includes("/chat/") || !pathName.includes("/group/") || currentChaterDetail?._id) return
+    const chatRoomId = pathName.split("/").pop()
+    if (chatRoomId == "chat" || chatRoomId == "group" || !chatRoomId) return
+
+    // dispatch(getChatRoomMessageHandler({ chatRoomId: chatRoomId }))
+  }, [pathName, currentChaterDetail?._id])
 
   useEffect(() => {
     const isAlreadAvailableMessage = messageAvailableChatRoom.some(
