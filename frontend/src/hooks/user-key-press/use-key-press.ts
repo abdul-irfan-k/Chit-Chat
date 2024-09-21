@@ -8,6 +8,7 @@ export function useKeyPress(callback: () => void, keyCodes: string[]): void {
   }
 
   useEffect(() => {
+    if (typeof window == "undefined") return
     window.addEventListener("keydown", handler)
     return () => {
       window.removeEventListener("keydown", handler)
