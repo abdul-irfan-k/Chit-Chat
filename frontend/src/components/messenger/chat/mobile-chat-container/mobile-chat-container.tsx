@@ -17,7 +17,7 @@ const MobileChatContainer: FC<MobileChatContainerProps> = ({ backButtonHandler }
   return (
     <div className="top-0 left-0 fixed flex flex-col items-center h-screen w-screen bg-white z-20 dark:bg-black">
       <div className="relative flex flex-col justify-center  w-screen mx-auto ">
-        <div className="pt-4 px-2 flex">
+        <div className="pt-2  flex">
           {/* <MobileChatProfile currentStatus="ofline" profileImageSrc="/Asset/avatar.jpg" {...currentChaterDetail} backButtonHandler={backButtonHandler} /> */}
           <ChatProfile
             currentStatus="ofline"

@@ -122,7 +122,9 @@ const InputBox = () => {
         >
           <Send className="w-5 aspect-square" />
         </Button>
-        <VoiceRecorder />
+        <div>
+          <VoiceRecorder />
+        </div>
       </div>
     </div>
   )

@@ -54,11 +54,11 @@ const GroupCreationForm: FC<GroupCreationFormProps> = ({ handleCloseButtonClick 
       {!isPopUpedAddMemberForm && (
         <div className="fixed left-0 top-0 w-screen h-screen z-[200]" style={{ background: "rgba(0,0,0,0.9 )" }}>
           <div
-            className="absolute  py-5 w-[50%]  left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] flex flex-col rounded-lg  z-50 dark:bg-background-primary"
+            className="absolute  py-5 w-[90%] max-w-[700px] left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] flex flex-col rounded-lg  z-50 dark:bg-background-primary"
             ref={groupCreationFormRef}
           >
-            <div className="px-10  py-5 flex justify-between bg-background-secondary">
-              <span className="text-2xl font-medium">Create Group</span>
+            <div className="px-5  py-2 flex justify-between bg-background-secondary md:px-10 md:py-5">
+              <span className="text-xl font-medium md:text-2xl">Create Group</span>
 
               <Button onClick={handleCloseButtonClick} rounded size={"icon"}>
                 <X className="relative w-5 aspect-square" />
@@ -66,7 +66,7 @@ const GroupCreationForm: FC<GroupCreationFormProps> = ({ handleCloseButtonClick 
             </div>
 
             <div
-              className="relative ml-10 mt-10 w-[20%] aspect-square rounded-full overflow-hidden "
+              className="relative ml-10 mt-10 w-[40%] max-w-[200px] aspect-square rounded-full overflow-hidden "
               style={{ background: "rgba(255,255,255,0.1)" }}
               onClick={addImageButtonHandler}
             >
@@ -82,7 +82,7 @@ const GroupCreationForm: FC<GroupCreationFormProps> = ({ handleCloseButtonClick 
               </div>
             </div>
 
-            <div className="px-10 mt-10 flex-1 border-b-[3px] border-neutral-800">
+            <div className="px-5 mt-10 flex-1 border-b-[3px] border-neutral-800 md:px-10">
               <span className="text-lg">Group Name</span>
               <input
                 type="text"
@@ -92,7 +92,7 @@ const GroupCreationForm: FC<GroupCreationFormProps> = ({ handleCloseButtonClick 
               />
             </div>
 
-            <div className="mt-10 gap-1 px-10 flex flex-col">
+            <div className="mt-10 gap-1 px-5 flex flex-col md:px-10">
               <span className="text-lg">Members</span>
               <div className=" py-4 gap-2   flex flex-wrap border-[1px] rounded-xl">
                 {members.map((member, index) => {
@@ -120,7 +120,7 @@ const GroupCreationForm: FC<GroupCreationFormProps> = ({ handleCloseButtonClick 
               </div>
             </div>
 
-            <div className="px-10 mt-10 gap-10 flex ">
+            <div className="px-5 mt-10 gap-10 flex  md:px-10">
               <Button
                 className="px-5 py-2 flex flex-1 items-center justify-center rounded-full text-lg  "
                 onClick={handleCreateButtonClick}

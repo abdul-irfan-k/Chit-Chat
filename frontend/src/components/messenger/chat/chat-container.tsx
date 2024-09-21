@@ -24,7 +24,7 @@ const ChatContainer = () => {
     <>
       {messengerSortType == "chat" && (
         <div
-          className="py-5 relative  h-full flex flex-col  w-[90%]"
+          className=" relative  h-full flex flex-col  w-[90%] md:py-5"
           onDragEnter={() => {
             setIsDroppingFile(true)
           }}

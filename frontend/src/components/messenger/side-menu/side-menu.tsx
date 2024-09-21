@@ -39,7 +39,7 @@ const SideMenu = () => {
   }
 
   return (
-    <div className="  py-10 h-[100vh] bg-background-primary border-r-[1px] dark:border-neutral-600   md:flex   md:flex-col ">
+    <div className="hidden  py-10 h-[100vh] bg-background-primary border-r-[1px] dark:border-neutral-600   md:flex   md:flex-col ">
       <div className="relative w-10 mx-auto aspect-square">
         <Image alt="logo" src={"/Asset/logo.png"} fill />
       </div>

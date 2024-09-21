@@ -48,7 +48,7 @@ const ChatProfile: FC<ChatProfileInstance> = ({ name, profileImageSrc, currentSt
   }
 
   return (
-    <div className="w-full py-4 px-4    rounded-md flex items-center bg-slate-200 fill-slate-950 dark:bg-background-primary dark:fill-slate-50 md:p-5">
+    <div className="w-full p-2     rounded-md flex items-center bg-slate-200 fill-slate-950 dark:bg-background-primary dark:fill-slate-50 md:p-5">
       <div className="block md:hidden">
         <div
           className=" relative flex items-center justify-center w-10 aspect-square bg-slate-300 rounded-full dark:bg-slate-800"
