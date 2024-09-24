@@ -26,6 +26,7 @@ import { useSelector } from "react-redux"
 import { useRouter } from "next/navigation"
 import { useSocketIoContext } from "../socket-io-provider/socket-io-provider"
 import { callReducerAction } from "@/redux/reducers/call-reducer/call-reducer"
+import { chatRoomMessageAction } from "@/redux/reducers/message-reducer/message-reducer"
 const SocketIoChatUserEventProvider = () => {
   const dispatch = useAppDispatch()
   const router = useRouter()
@@ -81,8 +82,12 @@ const SocketIoChatUserEventProvider = () => {
       )
     })
 
-    socket.on("message:deleteMessage", ({ chatRoomId, message }) => {
-      dispatch(onChaterdeleteMessageHandler({ chatRoomId, message }))
+    socket.on("message:deleteMessage", (data) => {
+      dispatch(onChaterdeleteMessageHandler(data))
+    })
+
+    socket.on("message:reactMessage", ({ chatRoomId, senderId, message }) => {
+      dispatch(chatRoomMessageAction.updateMessageReaction({ chatRoomId, userId: senderId, message }))
     })
 
     // group controll

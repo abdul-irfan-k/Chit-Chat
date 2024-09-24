@@ -20,6 +20,7 @@ import MessageReactionModel from "../../model/mongoose/message-model/message-rea
 const userMessageSocketIo = (io: Server, socket: SocketIo) => {
   socket.on("message:newTextMessage", async ({ message, chatRoomId, receiverId, senderId }, callback) => {
     try {
+      console.log("reciver id ", receiverId)
       const receiver = await getRedisSocketCached(receiverId)
 
       if (receiver != null) {
@@ -127,7 +128,7 @@ const userMessageSocketIo = (io: Server, socket: SocketIo) => {
     })
   })
 
-  socket.on("message:deleteMessage", async ({ chatRoomId, message, receiverId, senderId }) => {
+  socket.on("message:deleteMessage", async ({ chatRoomId, message, receiverId, senderId, messageChannelType }) => {
     try {
       const messageObjectId = new mongoose.Types.ObjectId(message._id)
       const chatRoomObjectId = new mongoose.Types.ObjectId(chatRoomId)
@@ -145,19 +146,30 @@ const userMessageSocketIo = (io: Server, socket: SocketIo) => {
         { $pull: { chatRoomConversations: { messageId: message._id, messageType: message.messageType } } },
       )
 
+      await MessageReactionModel.deleteOne({ messageId: message._id })
+
       const receiver = await getRedisSocketCached(receiverId)
       if (receiver != null) {
-        socket.to(receiver.socketId).emit("message:deleteMessage", { chatRoomId, message, receiverId, senderId })
+        socket
+          .to(receiver.socketId)
+          .emit("message:deleteMessage", { chatRoomId, message, receiverId, senderId, messageChannelType })
       }
     } catch (error) {
       console.log(error)
     }
   })
 
-  socket.on("message:reactMessage", async ({ chatRoomId, message, receiverId, senderId }) => {
+  socket.on("message:reactMessage", async ({ chatRoomId, message, receiverId, senderId, messageChannelType }) => {
     try {
       const userObjectId = new mongoose.Types.ObjectId(senderId)
       const messageReactions = await MessageReactionModel.findOne({ messageId: message._id })
+
+      const receiver = await getRedisSocketCached(receiverId)
+      if (receiver != null) {
+        socket
+          .to(receiver.socketId)
+          .emit("message:reactMessage", { message, chatRoomId, receiverId, senderId, messageChannelType })
+      }
       if (messageReactions == null) {
         const newMessageReaction = new MessageReactionModel({
           messageId: message._id,
@@ -167,6 +179,7 @@ const userMessageSocketIo = (io: Server, socket: SocketIo) => {
         return
       }
       const isUserAlreadyReactedForMessage = messageReactions.reactions.some(
+        //@ts-ignore
         (reaction) => reaction.usersId.indexOf(senderId) !== -1,
       )
       const messageReactionsIndex = messageReactions.reactions.findIndex(
@@ -175,8 +188,10 @@ const userMessageSocketIo = (io: Server, socket: SocketIo) => {
 
       if (isUserAlreadyReactedForMessage) {
         messageReactions.reactions = messageReactions.reactions.map((reaction) => {
+          //@ts-ignore
           const userIndex = reaction.usersId.indexOf(senderId)
           if (userIndex !== -1) {
+            //@ts-ignore
             return { ...reaction, usersId: [...reaction.usersId.filter((userId) => userId != senderId)] }
           }
           return { ...reaction }
@@ -188,7 +203,13 @@ const userMessageSocketIo = (io: Server, socket: SocketIo) => {
         messageReactions.reactions[messageReactionsIndex].usersId.push(userObjectId)
       }
       messageReactions.reactions = messageReactions.reactions.filter((reaction) => reaction.usersId.length != 0)
-      await MessageReactionModel.findOneAndUpdate({ messageId: message._id }, { reactions: messageReactions.reactions })
+      const updatedMessageReaction = await MessageReactionModel.findOneAndUpdate(
+        { messageId: message._id },
+        { reactions: messageReactions.reactions },
+        { new: true },
+      )
+
+      if (updatedMessageReaction == null) return
     } catch (error) {
       console.log(error)
     }

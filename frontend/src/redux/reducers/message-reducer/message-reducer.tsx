@@ -126,19 +126,20 @@ export const messageReducer = createSlice({
       ]
     },
     deleteMessageFromChatRoom: (state, action: { payload: { chatRoomId: string; message: { _id: string } } }) => {
-      const chatRoomMessages = state.chatRoomMessages.filter(
-        (chatRoom) => chatRoom.chatRoomId == action.payload.chatRoomId,
-      )[0]
-      const updatedAllMessageOfChatRoom = chatRoomMessages.messages.filter(
+      const chatRoom = state.chatRoomMessages.filter((chatRoom) => chatRoom.chatRoomId == action.payload.chatRoomId)[0]
+      const updatedAllMessageOfChatRoom = chatRoom.messages.filter(
         (message) => message.messageData._id != action.payload.message._id,
       )
 
       state.chatRoomMessages = [
         ...state.chatRoomMessages.filter((chatRoom) => chatRoom.chatRoomId != action.payload.chatRoomId),
-        { chatRoomId: action.payload.chatRoomId, messages: updatedAllMessageOfChatRoom },
+        { ...chatRoom, messages: updatedAllMessageOfChatRoom },
       ]
 
-      state.currentChatRoomMessages = { chatRoomId: action.payload.chatRoomId, messages: updatedAllMessageOfChatRoom }
+      if (state.currentChatRoomMessages?.chatRoomId == action.payload.chatRoomId) {
+        state.currentChatRoomMessages = { chatRoomId: action.payload.chatRoomId, messages: updatedAllMessageOfChatRoom }
+      }
+      return { ...state }
     },
     updateMessageReaction: (
       state,

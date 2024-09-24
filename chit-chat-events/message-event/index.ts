@@ -116,7 +116,7 @@ export interface GroupMessageArgs {
 export interface GroupMessageActionArgs {
   deleteMessage: deleteGroupMessageArgs & GroupMessageBasicDetail
   reactMessage: reactMessage & GroupMessageBasicDetail
-  pollMessageVoteUpdate: groupPollMessageVoteUpdateArgs
+  pollMessageVoteUpdate: PollMessageArgs
 }
 
 type ExcludeMessageChannelType<T> = Omit<T, "messageChannelType">
@@ -211,4 +211,6 @@ export interface ServerToClientMessageEvents {
 
   "message:deleteMessage": (response: PrivateMessageActionArgs["deleteMessage"]) => void
   "groupMessage:deleteMessage": (response: GroupMessageActionArgs["deleteMessage"]) => void
+  "message:reactMessage": (response: PrivateMessageActionArgs["reactMessage"]) => void
+  "groupMessage:reactMessage": (response: GroupMessageActionArgs["reactMessage"]) => void
 }

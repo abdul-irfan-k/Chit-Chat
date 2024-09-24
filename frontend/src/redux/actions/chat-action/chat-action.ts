@@ -491,7 +491,7 @@ export const recieveMultipleNewImageMessageHandler =
   }
 
 export const onChaterdeleteMessageHandler =
-  ({ chatRoomId, message }: { chatRoomId: string; message: { _id: string } }) =>
+  ({ chatRoomId, message }: PrivateMessageActionArgs["deleteMessage"] | GroupMessageActionArgs["deleteMessage"]) =>
   async (dispatch: AppDispatch) => {
     dispatch(chatRoomMessageAction.deleteMessageFromChatRoom({ chatRoomId, message }))
   }
@@ -526,11 +526,7 @@ export const messageReactionHandler = (args: reactMeessageArgs, socket: SocketIO
     dispatch(chatRoomMessageAction.updateMessageReaction({ chatRoomId, userId: senderId, message }))
     if (messageChannelType == "private") {
       socket.emit("message:reactMessage", {
-        chatRoomId,
-        message,
-        receiverId: args.receiverId,
-        senderId,
-        messageChannelType,
+        ...args,
       })
     }
   } catch (error) {
