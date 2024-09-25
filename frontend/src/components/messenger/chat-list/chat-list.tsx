@@ -48,7 +48,7 @@ const ChatList = () => {
               >
                 <ChatListBox
                   onClickHandler={async () => {
-                    await router.push(`/messenger/chat/${userDetail._id}`)
+                    // await router.push(`/messenger/chat/${userDetail._id}`)
                     await dispatch(updateCurrentChaterHandler({ userDetail, isChanged: true }))
                     setIsSelectedUser(true)
                   }}

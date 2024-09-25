@@ -16,7 +16,10 @@ export const messageReducer = createSlice({
       if (action.payload.isInitialMessages) {
         return {
           ...state,
-          chatRoomMessages: [{ ...action.payload.messageAndChatRoomDetails, totalFetchedMessages: 10 }],
+          chatRoomMessages: [
+            ...state.chatRoomMessages,
+            { ...action.payload.messageAndChatRoomDetails, totalFetchedMessages: 10 },
+          ],
           currentChatRoomMessages: { ...action.payload.messageAndChatRoomDetails, totalFetchedMessages: 10 },
           messageAvailableChatRoom: [
             ...state.messageAvailableChatRoom,
