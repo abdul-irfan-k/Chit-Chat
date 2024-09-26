@@ -36,4 +36,4 @@ next-env.d.ts
 
 
 .env
-.sync.sh
+sync.sh
