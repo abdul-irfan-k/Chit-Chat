@@ -1,20 +1,21 @@
+import config from "@/config/config"
 import axios from "axios"
 
 export const axiosUserInstance = axios.create({
-  baseURL: "http://localhost:8000/user/",
+  baseURL: `${config.apiUrl}/user/`,
   withCredentials: true,
 })
 
 export const axiosChatInstance = axios.create({
-  baseURL: "http://localhost:8000/chat/",
+  baseURL: `${config.apiUrl}/chat/`,
   withCredentials: true,
 })
 export const axiosMeetingInstance = axios.create({
-  baseURL: "http://localhost:8000/meeting/",
+  baseURL: `${config.apiUrl}/meeting/`,
   withCredentials: true,
 })
 
 export const axiosUploadInstance = axios.create({
-  baseURL: "http://localhost:8000/upload/",
+  baseURL: `${config.apiUrl}/upload/`,
   withCredentials: true,
 })
