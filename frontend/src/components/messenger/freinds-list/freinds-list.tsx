@@ -55,7 +55,6 @@ const FriendsList = () => {
             <FriendsCard
               key={index}
               onClickHandler={() => {}}
-              key={index}
               {...freinds.userDetails}
               status={"accepted"}
               type="freind"
@@ -71,7 +70,6 @@ const FriendsList = () => {
             <FriendsCard
               key={index}
               onClickHandler={() => {}}
-              key={index}
               {...freinds.userDetails}
               status={freinds.status}
               type="sentFreindRequest"
@@ -86,7 +84,6 @@ const FriendsList = () => {
             // <Link href={`/messenger/${freinds.userId}`} key={index}>
             <FriendsCard
               onClickHandler={() => {}}
-              key={index}
               {...freinds.userDetails}
               status={freinds.status}
               type="recivedFreindRequest"

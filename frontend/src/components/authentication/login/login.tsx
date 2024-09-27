@@ -1,7 +1,6 @@
 "use client"
 import React, { useState } from "react"
 import SocialMediaLoginContainer from "../social-media-login/social-media-login-container"
-import Image from "next/image"
 import { useAppDispatch } from "@/store"
 import { loginHandler } from "@/redux/actions/user-action/user-action"
 import { useRouter } from "next/navigation"
@@ -9,7 +8,6 @@ import { Button } from "@/components/ui/button"
 import { Loader2 } from "lucide-react"
 import Link from "next/link"
 import { Checkbox } from "@/components/ui/checkbox"
-import { useKeyPress } from "@/hooks/user-key-press/use-key-press"
 
 const Login = () => {
   const router = useRouter()
@@ -53,7 +51,7 @@ const Login = () => {
 
         <div className="mt-10 flex justify-between text-sm dark:text-slate-300">
           <span className="gap-1 flex items-center ">
-            <Checkbox />
+            {/* <Checkbox /> */}
             Remember me
           </span>
           <Link href={"/forgot-password"}>

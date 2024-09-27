@@ -35,7 +35,7 @@ const SideMenu = () => {
 
   const handleSignOutButtonClick = async () => {
     await logoutHandler()
-    window.location.href = window.location.origin
+    router.push("/login")
   }
 
   return (

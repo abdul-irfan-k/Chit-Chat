@@ -87,7 +87,7 @@ export const chatUsersListReducer = createSlice({
 
     addintialOnlineUsers: (state, action) => {
       const updatedUserDetail = state.usersDeatail.map((userDetail) => {
-        const onlineStatus = action.payload.onlineUsers.some((onlineUser) => onlineUser.userId == userDetail._id)
+        const onlineStatus = action.payload.onlineUsers.some((onlineUser: any) => onlineUser.userId == userDetail._id)
           ? "online"
           : "ofline"
         return { ...userDetail, status: { onlineStatus } }

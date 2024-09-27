@@ -148,7 +148,7 @@ const CallLogCard: FC<CallLogCardProps> = ({
       <div className="gap-1 flex flex-col  justify-center ">
         <div className="font-medium text-base ">
           {participants.map((participant) => {
-            return <span>{participant.name} </span>
+            return <span key={participant._id}>{participant.name} </span>
           })}
         </div>
 

@@ -159,7 +159,7 @@ const CurrentChatingGroupProfile: FC<CurrentChatingGroupProfileProps> = ({
           {members != undefined &&
             members.map((member) => {
               return (
-                <div className={"pl-2 gap-3 relative flex items-center rounded-md "}>
+                <div className={"pl-2 gap-3 relative flex items-center rounded-md "} key={member._id}>
                   <div className="relative w-10 aspect-square md:w-[10%]">
                     <Image src={member.profileImageUrl} alt="user-image" fill className="rounded-3xl" />
                   </div>

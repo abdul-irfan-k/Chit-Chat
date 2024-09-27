@@ -180,6 +180,7 @@ export const messageReducer = createSlice({
               if (reaction.emojiId == action.payload.message.emoji)
                 return updatedReaction.push({
                   ...reaction,
+                  //@ts-ignore
                   usersId: [...reaction.usersId, action.payload.userId],
                 })
             } else updatedReaction.push({ ...reaction })
@@ -196,7 +197,7 @@ export const messageReducer = createSlice({
         } else return { ...message }
       })
       state.chatRoomMessages = [
-        ...state.chatRoomMessages.filter((chatroom) => chatroom.chatRoomId != action.payload.chatRoomId),
+        ...state.chatRoomMessages.filter((chatroom: any) => chatroom.chatRoomId != action.payload.chatRoomId),
         { chatRoomId: action.payload.chatRoomId, messages: updatedAllMessageOfChatRoom },
       ]
       if (state.currentChatRoomMessages?.chatRoomId == action.payload.chatRoomId) {

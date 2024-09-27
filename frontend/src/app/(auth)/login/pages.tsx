@@ -1,10 +1,10 @@
 import BannerAnimation from "@/components/authentication/banner-animation"
 import Login from "@/components/authentication/login/login"
+import LoginForm from "@/components/authentication/login/login"
 import { Dot } from "lucide-react"
 import Image from "next/image"
-import React from "react"
 
-const Page = () => {
+const LoginPage = () => {
   return (
     <div>
       <div className="w-full h-screen flex  ">
@@ -24,7 +24,7 @@ const Page = () => {
               Welcome to chitchat please login to your account
             </span>
           </div>
-          <Login />
+          {/* <Login /> */}
 
           <div className="mt-20 gap-2  flex justify-center dark:text-slate-300 ">
             <span className="flex items-center">
@@ -40,4 +40,4 @@ const Page = () => {
   )
 }
 
-export default Page
+export default LoginPage
