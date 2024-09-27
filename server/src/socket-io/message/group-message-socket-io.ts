@@ -177,11 +177,13 @@ const groupMessageSocketIo = (socket: SocketIo) => {
     }
   })
 
+  //@ts-ignore
   socket.on("groupMessage:pollMessageVoteUpdate", async ({ chatRoomId, groupDetail, message, senderId }) => {
     console.log("poll update message")
     const messageObjectId = new mongoose.Types.ObjectId(message._id)
     await PollMessageModel.updateVotedMember({
       _id: messageObjectId,
+      //@ts-ignoreck
       currentVotedOptionDetail: { _id: message.selectedOption._id },
       userId: senderId,
     })

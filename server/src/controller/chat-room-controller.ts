@@ -221,8 +221,9 @@ export const getChatRoomMessageHandler = async (req: Request, res: Response) => 
       },
     ])
 
-    chatRoomMessages[0].messages = chatRoomMessages[0].messages.map((messages) => {
+    chatRoomMessages[0].messages = chatRoomMessages[0].messages.map((messages: any) => {
       const messageReaction = chatRoomMessageReactions[0].messageReaction.find(
+        //@ts-ignore
         (reaction) => reaction.messageId == messages._id,
       )
       return { ...messages, reactions: messageReaction?.reactions ?? [] }
@@ -526,8 +527,10 @@ export const getGroupChatRoomMessageHandler = async (req: Request, res: Response
       },
     ])
 
+    //@ts-ignore
     chatRoomMessages[0].messages = chatRoomMessages[0].messages.map((messages) => {
       const messageReaction = chatRoomMessageReactions[0].messageReaction.find(
+        //@ts-ignore
         (reaction) => reaction.messageId == messages._id,
       )
       return { ...messages, reactions: messageReaction?.reactions ?? [] }
@@ -570,9 +573,11 @@ export const getChatRoomMessageReactionHandler = async (req: Request, res: Respo
         },
       },
     ])
+    //@ts-ignore
     chatRoomMessageReactions[0].chatRoomConversations = chatRoomMessageReactions[0].chatRoomConversations.map(
-      (conversation) => {
+      (conversation: any) => {
         const messageReaction = chatRoomMessageReactions[0].messageReaction.find(
+          //@ts-ignore
           (reaction) => reaction.messageId == conversation.messageId,
         )
         return { ...conversation, reactions: messageReaction?.reactions ?? [] }

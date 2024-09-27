@@ -85,7 +85,6 @@ const FriendsList = () => {
           return (
             // <Link href={`/messenger/${freinds.userId}`} key={index}>
             <FriendsCard
-              key={index}
               onClickHandler={() => {}}
               key={index}
               {...freinds.userDetails}

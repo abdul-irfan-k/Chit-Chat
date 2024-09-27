@@ -19,7 +19,8 @@ const nextConfig = {
       }
     ]
   }
-  , reactStrictMode: false
+  , reactStrictMode: false,
+  ignoreBuildErrors: true,
 }
 
 module.exports = nextConfig

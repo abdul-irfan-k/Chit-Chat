@@ -2,8 +2,7 @@ import { ClientToServerEvents, ServerToClientEvents } from "chit-chat-events"
 import { Socket, io } from "socket.io-client"
 
 const serverPort = process.env.SERVER_PORT || 8000
-// const serverUrl = process.env.NODE_ENV === 'production'? process.env.SERVER_URL : `http://localhost:${serverPort}`
-const serverUrl = `http://localhost:${serverPort}`
+const serverUrl = process.env.NODE_ENV === "production" ? process.env.SERVER_URL : `http://localhost:${serverPort}`
 
 export class SocketClient {
   socket?: Socket<ServerToClientEvents, ClientToServerEvents>

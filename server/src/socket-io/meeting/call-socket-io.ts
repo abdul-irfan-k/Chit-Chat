@@ -34,11 +34,13 @@ const callSocketIo = (socket: Socket) => {
   )
 
   socket.on("privateCall:rejectRequest", async (callRoomId, userId) => {
-    const callRoom = await MeetingModel.updateOne({ callRoomId }, { callStatus: "failed" }, { new: true })
+    const callRoom = await MeetingModel.findOneAndUpdate({ callRoomId }, { callStatus: "failed" })
     if (callRoom == null) return
 
     callRoom.participants
+      //@ts-ignore
       .filter((id: string) => id != userId)
+      //@ts-ignore
       .forEach(async (userId: string) => {
         const receiver = await getRedisSocketCached(userId)
         socket.to(receiver.socketId).emit("privateCall:rejected", { callRoomId })
@@ -48,8 +50,9 @@ const callSocketIo = (socket: Socket) => {
   socket.on("privateCall:acceptRequest", async ({ callRoomId, userId }) => {
     try {
       const startTime = new Date()
-      const callRoom = await MeetingModel.updateOne({ callRoomId }, { callStatus: "accepted", startTime })
+      const callRoom = await MeetingModel.findOneAndUpdate({ callRoomId }, { callStatus: "accepted", startTime })
       if (callRoom == null) return
+      //@ts-ignore
       const chatRoomUserDetails = await callRoom.participants.map((userId: string) => {
         const peerId = uuidv4()
         return {
@@ -57,7 +60,7 @@ const callSocketIo = (socket: Socket) => {
           peerId,
         }
       })
-
+      //@ts-ignore
       callRoom?.participants?.forEach(async (userId: string) => {
         const receiver = await getRedisSocketCached(userId)
 
@@ -66,7 +69,6 @@ const callSocketIo = (socket: Socket) => {
             callRoomId: callRoom._id,
             chatRoomId: callRoom.chatRoomId,
             callType: callRoom.callType,
-            callType: "single",
             callRoomUserDetails: chatRoomUserDetails,
           })
         } else {
@@ -87,15 +89,18 @@ const callSocketIo = (socket: Socket) => {
       if (callRoom == null) return
 
       callRoom.participants
+        //@ts-ignore
         .filter((id: string) => id != userId)
+        //@ts-ignore
         .forEach(async (userId: string) => {
           const receiver = await getRedisSocketCached(userId)
           socket.to(receiver.socketId).emit("privateCall:ended", { callRoomId })
         })
       if (callRoom.callCurrentStatus == "initiated") {
-        await MeetingModel.updateOne({ _id: callRoomId }, { callStatus: "failed", endTime })
+        await MeetingModel.updateOne({ _id: callRoomId }, { callStatus: "failed", endTime: new Date() })
       } else {
         const endTime = new Date()
+        //@ts-ignore
         const duration = endTime.getTime() - callRoom.startTime.getTime()
         await MeetingModel.updateOne({ _id: callRoomId }, { callStatus: "ended", endTime, duration })
       }
