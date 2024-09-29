@@ -1,6 +1,4 @@
 import BannerAnimation from "@/components/authentication/banner-animation"
-import Login from "@/components/authentication/login/login"
-import LoginForm from "@/components/authentication/login/login"
 import { Dot } from "lucide-react"
 import Image from "next/image"
 

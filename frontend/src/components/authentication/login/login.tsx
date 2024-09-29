@@ -1,13 +1,13 @@
 "use client"
 import React, { useState } from "react"
-import SocialMediaLoginContainer from "../social-media-login/social-media-login-container"
+// import SocialMediaLoginContainer from "../social-media-login/social-media-login-container"
 import { useAppDispatch } from "@/store"
 import { loginHandler } from "@/redux/actions/user-action/user-action"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Loader2 } from "lucide-react"
 import Link from "next/link"
-import { Checkbox } from "@/components/ui/checkbox"
+// import { Checkbox } from "@/components/ui/checkbox"
 
 const Login = () => {
   const router = useRouter()
@@ -70,7 +70,7 @@ const Login = () => {
 
         <div className="mt-10 flex flex-col justify-center items-center dark:text-slate-300">
           <span>Or Connect With</span>
-          <SocialMediaLoginContainer />
+          {/* <SocialMediaLoginContainer /> */}
         </div>
       </div>
     </div>

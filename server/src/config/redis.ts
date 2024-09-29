@@ -1,7 +1,7 @@
 import { createClient } from "redis"
 
 export const redisClient = createClient({
-  password: "irfan7676",
+  password: process.env.REDIS_PASSWORD || "",
 })
 
 export const connectRedis = async () => {
