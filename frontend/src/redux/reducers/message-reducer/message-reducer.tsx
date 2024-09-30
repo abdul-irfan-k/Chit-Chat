@@ -53,7 +53,10 @@ export const messageReducer = createSlice({
             messages: [...currentChatRoomMessages.messages],
           },
         ],
-        currentChatRoomMessages,
+        currentChatRoomMessages: {
+          ...action.payload.messageAndChatRoomDetails,
+          messages: [...currentChatRoomMessages.messages],
+        },
       }
       // return {...state}
     },

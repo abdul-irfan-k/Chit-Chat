@@ -157,7 +157,7 @@ export const getChatRoomMessageHandler =
       // await axiosChatInstance.post("chatroom/messages/reaction", { chatRoomId, skip, step, limit })
     } catch (error) {
       console.log(error)
-      return dispatch(chatRoomMessageAction.removeCurrentChaterMessage({}))
+      // return dispatch(chatRoomMessageAction.removeCurrentChaterMessage({}))
     }
   }
 

@@ -36,7 +36,7 @@ const MessageInfiniteScroll: FC<MessageInfiniteScrollProps> = ({
     if (currentChaterDetail?.currentChaterType == "user" && userDetail != null) {
       dispatch(
         getChatRoomMessageHandler({
-          chatRoomId: currentChaterDetail?.chatRoom?.chatRoomId,
+          chatRoomId: currentChaterDetail?.chatRoomId,
           myUserId: userDetail?._id,
           limit: 10,
           skip: 1,
