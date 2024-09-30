@@ -11,7 +11,6 @@ interface CurrentChaterFullScreenProfileProps {
   currentStatus: "online" | "ofline"
   profileImageSrc: string
   description?: string
-  isChatingWithGroup?: boolean
   isAdmin?: boolean
   closeButtonHanlder(): void
 }
@@ -25,14 +24,13 @@ const CurrentChaterFullScreenProfile: FC<CurrentChaterFullScreenProfileProps> = 
   name,
   profileImageSrc,
   description,
-  isChatingWithGroup,
   isAdmin,
   closeButtonHanlder,
 }) => {
   return (
     <motion.div
       key={"chaterProfile"}
-      className="fixed  right-0 top-0 h-screen w-[25vw]  overflow-y-scroll    bg-slate-200 dark:bg-background-primary z-[70] no-scrollbar"
+      className="fixed   top-0 h-screen w-screen  overflow-y-scroll    bg-slate-200 dark:bg-background-primary z-[70] no-scrollbar md:max-w-[380px] md:right-0"
       initial={{ translateX: "100%" }}
       animate={{ translateX: "0%" }}
       exit={{ translateX: "100%" }}

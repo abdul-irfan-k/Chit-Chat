@@ -167,9 +167,8 @@ const groupMessageSocketIo = (socket: SocketIo) => {
 
       if (pollMessage == null) return
       ChatRoomModel.addChatConversation({
-        chatRoomId,
+        chatRoomId: chatRoomId,
         messageId: pollMessage._id,
-        //@ts-ignore
         messageType: "pollMessage",
       })
     } catch (error) {
@@ -180,9 +179,8 @@ const groupMessageSocketIo = (socket: SocketIo) => {
   //@ts-ignore
   socket.on("groupMessage:pollMessageVoteUpdate", async ({ chatRoomId, groupDetail, message, senderId }) => {
     console.log("poll update message")
-    const messageObjectId = new mongoose.Types.ObjectId(message._id)
     await PollMessageModel.updateVotedMember({
-      _id: messageObjectId,
+      _id: message._id,
       //@ts-ignoreck
       currentVotedOptionDetail: { _id: message.selectedOption._id },
       userId: senderId,

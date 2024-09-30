@@ -12,7 +12,7 @@ import VideoMessage from "./video-message/video-message"
 import MessageInfiniteScroll from "@/components/shared/infinite-scroll/infinite-scroll"
 import { AnimatePresence, motion } from "framer-motion"
 
-const ChatBox = () => {
+const ChatBox = ({ height }: { height?: string | number }) => {
   const { currentChatRoomMessages } = useSelector(
     (state: { messageReducer: chatRoomMessagesReducerSlate }) => state.messageReducer,
   )
@@ -22,13 +22,14 @@ const ChatBox = () => {
   const { userDetail } = useSelector((state: { userDetail: userDetailState }) => state.userDetail)
 
   return (
-    <div className="relative px-10 h-full   md:h-[70vh] ">
+    <div className="relative  h-full   md:h-[height] px-2 sm:px-3 md:px-10 ">
       {userDetail != null && currentChaterDetail != null && (
         <MessageInfiniteScroll
           currentChaterDetail={currentChaterDetail}
           userDetail={userDetail}
           totalFetchedMessages={currentChatRoomMessages?.totalFetchedMessages}
           totatMessages={currentChatRoomMessages?.totatMessages}
+          height={height}
         >
           <AnimatePresence mode="popLayout">
             {currentChatRoomMessages?.messages.map((message, index) => {
@@ -131,27 +132,26 @@ const ChatBox = () => {
                       }
                     />
                   )}
-                  {/* 
-
-                 
 
                   {message.messageData.messageType == "pollMessage" && (
                     <PollMessage
                       messegeChannelType={message.messegeChannelType}
-                      options={message.messageData.options}
-                      title={message.messageData.title}
                       time={new Date()}
                       userImageSrc={
                         message.messegeChannelType == "incomingMessage"
                           ? currentChaterDetail.currentChaterType == "user" && currentChaterDetail.profileImageUrl
                             ? currentChaterDetail.profileImageUrl
-                            : "/Asset/avatar.jpg"
+                            : message.messageData.postedByUser?.profileImageUrl
                           : userDetail.profileImageUrl
                       }
                       userName={
-                        message.messegeChannelType == "incomingMessage" ? currentChaterDetail?.name : userDetail?.name
+                        message.messegeChannelType == "incomingMessage"
+                          ? currentChaterDetail.currentChaterType == "user"
+                            ? currentChaterDetail.name
+                            : message.messageData.postedByUser?.name
+                          : userDetail?.name
                       }
-                      _id={message.messageData._id}
+                      {...message.messageData}
                       userAndChaterDetails={{
                         chatRoomId:
                           currentChaterDetail.currentChaterType == "user"
@@ -161,8 +161,6 @@ const ChatBox = () => {
                       }}
                     />
                   )}
-
-                  */}
                 </motion.div>
               )
             })}

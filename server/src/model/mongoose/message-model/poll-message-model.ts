@@ -1,11 +1,14 @@
 import { Model, Types, Schema, model } from "mongoose"
 import { v4 as uuidv4 } from "uuid"
+import { string } from "zod"
 
 const pollMessageSchema = new Schema(
   {
     _id: { type: String, default: uuidv4 },
     title: { type: String, required: true },
-    options: [{ title: { type: String }, votedMembers: [{ userId: { type: String } }] }],
+    options: [
+      { _id: { type: String, default: uuidv4 }, title: { type: String }, votedMembers: [{ userId: { type: String } }] },
+    ],
     totalVotedMembers: { type: Number, default: 0 },
     chatRoomId: { type: String, required: true },
     postedByUser: { type: String, required: true },

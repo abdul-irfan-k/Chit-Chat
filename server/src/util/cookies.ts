@@ -11,11 +11,15 @@ export const assignCookiesHandler = ({ res, token, tokenName, expires }: assignC
     typeof expires !== "string"
       ? expires
       : expires == "1d"
-      ? new Date(Date.now() + 1000 * 60 * 60 * 24)
-      : new Date(Date.now() + 1000 * 60 * 60)
+        ? new Date(Date.now() + 1000 * 60 * 60 * 24 * 7)
+        : new Date(Date.now() + 1000 * 60 * 60 * 24 * 7)
 
   res.cookie(tokenName, token, {
     httpOnly: true,
+    secure: process.env.NODE_ENV != "DEVELOPMENT",
+    // secure: true,
     expires: expire,
+    // sameSite: "none",
+    // domain: ".chit-chat.abdulirfan.me",
   })
 }

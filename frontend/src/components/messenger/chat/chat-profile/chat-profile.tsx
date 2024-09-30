@@ -16,9 +16,16 @@ interface ChatProfileInstance {
   profileImageSrc: string
   currentStatus: "online" | "ofline"
   backButtonHandler?(): void
+  onClickHandler?(): void
 }
 
-const ChatProfile: FC<ChatProfileInstance> = ({ name, profileImageSrc, currentStatus, backButtonHandler }) => {
+const ChatProfile: FC<ChatProfileInstance> = ({
+  name,
+  profileImageSrc,
+  currentStatus,
+  backButtonHandler,
+  onClickHandler,
+}) => {
   const { socket } = useSocketIoContext()
   const { currentChaterDetail } = useSelector(
     (state: { chatUserAndGroupList: chatUserAndGroupReducerState }) => state.chatUserAndGroupList,
@@ -48,7 +55,10 @@ const ChatProfile: FC<ChatProfileInstance> = ({ name, profileImageSrc, currentSt
   }
 
   return (
-    <div className="w-full p-2     rounded-md flex items-center bg-slate-200 fill-slate-950 dark:bg-background-primary dark:fill-slate-50 md:p-5">
+    <div
+      className="w-full    rounded-md flex items-center bg-slate-200 fill-slate-950 dark:bg-background-primary dark:fill-slate-50 p-5 sm:p-3 md:p-5"
+      onClick={onClickHandler}
+    >
       <div className="block md:hidden">
         <div
           className=" relative flex items-center justify-center w-10 aspect-square bg-slate-300 rounded-full dark:bg-slate-800"
@@ -81,18 +91,18 @@ const ChatProfile: FC<ChatProfileInstance> = ({ name, profileImageSrc, currentSt
           <VolumeHighIcon className="aspect-square p-3" />
         </div>
       </div>
-      <div className="ml-auto relative flex items-center justify-center w-10 aspect-square bg-slate-300 rounded-full dark:bg-slate-800">
+      <div className="ml-auto mr-3 relative flex items-center justify-center w-10 aspect-square bg-slate-300 rounded-full dark:bg-slate-800">
         <SearchIcon className="aspect-square p-3" />
       </div>
       <div
-        className="ml-3 relative flex items-center justify-center w-10 aspect-square bg-slate-300 rounded-full dark:bg-slate-800"
+        className="mr-3 relative flex items-center justify-center w-10 aspect-square bg-slate-300 rounded-full dark:bg-slate-800"
         onClick={(e) => callInitiate(e, "audio")}
       >
         <PhoneIcon className="aspect-square p-3" />
       </div>
       <div
         onClick={(e) => callInitiate(e, "video")}
-        className="ml-3 relative flex items-center justify-center w-10 aspect-square bg-slate-300 rounded-full dark:bg-slate-800"
+        className=" relative flex items-center justify-center w-10 aspect-square bg-slate-300 rounded-full dark:bg-slate-800"
       >
         <VideoIcon className="aspect-square p-3" />
       </div>

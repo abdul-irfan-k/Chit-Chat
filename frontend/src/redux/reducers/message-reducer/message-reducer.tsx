@@ -244,7 +244,7 @@ interface videoMessage extends messageReaction, messageBasicDetails {
   videoSrc: string
 }
 
-interface pollMessage extends messageReaction, messageBasicDetails {
+export interface pollMessage extends messageReaction, messageBasicDetails {
   messageType: "pollMessage"
   title: string
   options: {

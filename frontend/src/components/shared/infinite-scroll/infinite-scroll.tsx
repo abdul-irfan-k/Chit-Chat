@@ -13,6 +13,7 @@ interface MessageInfiniteScrollProps {
   currentChaterDetail: chatUserAndGroupReducerState["currentChaterDetail"]
   totatMessages?: number
   totalFetchedMessages?: number
+  height?: number | string
 }
 const MessageInfiniteScroll: FC<MessageInfiniteScrollProps> = ({
   children,
@@ -20,6 +21,7 @@ const MessageInfiniteScroll: FC<MessageInfiniteScrollProps> = ({
   userDetail,
   totalFetchedMessages,
   totatMessages,
+  height = 550,
 }) => {
   const dispatch = useAppDispatch()
 
@@ -59,7 +61,7 @@ const MessageInfiniteScroll: FC<MessageInfiniteScrollProps> = ({
       // isReverse
       inverse={true}
       next={fetchMoreDataHandler}
-      height={500}
+      height={height}
       style={{ display: "flex", flexDirection: "column-reverse" }}
       // style={{ height: "100%", overflowY: "scroll" }}
     >

@@ -22,54 +22,55 @@ const ChatContainer = () => {
   const [isDroppingFile, setIsDroppingFile] = useState<boolean>(false)
   return (
     <>
-      {messengerSortType == "chat" && (
-        <div
-          className=" relative  h-full flex flex-col  w-[90%] md:py-5"
-          onDragEnter={() => {
-            setIsDroppingFile(true)
-          }}
-          onDragLeave={() => setIsDroppingFile(false)}
-        >
-          {!isDroppingFile && (
-            <>
-              {currentChaterDetail != null && currentChaterDetail.currentChaterType == "user" && (
-                <div onClick={() => setShowChaterToggleProfile(!showChaterToggleProfile)}>
-                  <ChatProfile
-                    currentStatus="ofline"
-                    profileImageSrc={
-                      currentChaterDetail.profileImageUrl ? currentChaterDetail.profileImageUrl : "/Asset/avatar.jpg"
-                    }
-                    {...currentChaterDetail}
-                  />
-                </div>
-              )}
-              {currentChaterDetail != null && currentChaterDetail.currentChaterType == "group" && (
-                <div onClick={() => setShowChaterToggleProfile(!showChaterToggleProfile)}>
-                  <ChatProfile currentStatus="ofline" profileImageSrc="/Asset/avatar.jpg" {...currentChaterDetail} />
-                </div>
-              )}
+      <div className="hidden md:block">
+        {messengerSortType == "chat" && (
+          <div
+            className=" relative  h-full flex flex-col  w-[95%] md:py-5"
+            onDragEnter={() => {
+              setIsDroppingFile(true)
+            }}
+            onDragLeave={() => setIsDroppingFile(false)}
+          >
+            {!isDroppingFile && (
+              <>
+                {currentChaterDetail != null && currentChaterDetail.currentChaterType == "user" && (
+                  <div onClick={() => setShowChaterToggleProfile(!showChaterToggleProfile)}>
+                    <ChatProfile
+                      currentStatus="ofline"
+                      profileImageSrc={
+                        currentChaterDetail.profileImageUrl ? currentChaterDetail.profileImageUrl : "/Asset/avatar.jpg"
+                      }
+                      {...currentChaterDetail}
+                    />
+                  </div>
+                )}
+                {currentChaterDetail != null && currentChaterDetail.currentChaterType == "group" && (
+                  <div onClick={() => setShowChaterToggleProfile(!showChaterToggleProfile)}>
+                    <ChatProfile currentStatus="ofline" profileImageSrc="/Asset/avatar.jpg" {...currentChaterDetail} />
+                  </div>
+                )}
 
-              {currentChaterDetail != null && <ChatBox />}
+                {currentChaterDetail != null && <ChatBox />}
 
-              {currentChaterDetail != null && (
-                <>
-                  {currentChaterDetail.currentChaterType == "user" && <InputBox />}
-                  {currentChaterDetail.currentChaterType == "group" &&
-                  !currentChaterDetail.setting.adminOnlyMessaging ? (
-                    <InputBox />
-                  ) : (
-                    currentChaterDetail.isAdmin && <InputBox />
-                  )}
-                </>
-              )}
-            </>
-          )}
+                {currentChaterDetail != null && (
+                  <>
+                    {currentChaterDetail.currentChaterType == "user" && <InputBox />}
+                    {currentChaterDetail.currentChaterType == "group" &&
+                    !currentChaterDetail.setting.adminOnlyMessaging ? (
+                      <InputBox />
+                    ) : (
+                      currentChaterDetail.isAdmin && <InputBox />
+                    )}
+                  </>
+                )}
+              </>
+            )}
 
-          {isDroppingFile && <DropZone onDropHandler={(e) => console.log("draged result", e)} />}
-          {/* <DropZone onDropHandler={(e) => console.log("draged result", e)} /> */}
-        </div>
-      )}
-
+            {isDroppingFile && <DropZone onDropHandler={(e) => console.log("draged result", e)} />}
+            {/* <DropZone onDropHandler={(e) => console.log("draged result", e)} /> */}
+          </div>
+        )}
+      </div>
       <AnimatePresence>
         {showChaterToggleProfile && currentChaterDetail != null && currentChaterDetail.currentChaterType == "user" && (
           <CurrentChaterFullScreenProfile
@@ -79,13 +80,12 @@ const ChatContainer = () => {
             name={currentChaterDetail.name}
             currentStatus="ofline"
             chaterType="single"
-            isChatingWithGroup={isCurrentChatingWithGroup}
             closeButtonHanlder={() => setShowChaterToggleProfile(false)}
           />
         )}
-        {showChaterToggleProfile && currentChaterDetail != null && currentChaterDetail.currentChaterType == "group" && (
+        {/* {showChaterToggleProfile && currentChaterDetail != null && currentChaterDetail.currentChaterType == "group" && (
           <CurrentChatingGroupProfile {...currentChaterDetail} />
-        )}
+        )} */}
       </AnimatePresence>
     </>
   )

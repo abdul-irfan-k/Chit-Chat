@@ -444,7 +444,6 @@ export const getGroupChatRoomMessageHandler = async (req: Request, res: Response
           let: { messageIds: "$allMessages.textMessageIds" },
           pipeline: [
             { $match: { $expr: { $in: ["$_id", "$$messageIds"] } } },
-            // { $project: { userObjectId: { $toObjectId: "$postedByUser" } } }
             {
               $addFields: { postedByUser: { $toObjectId: "$postedByUser" } },
             },
@@ -492,14 +491,30 @@ export const getGroupChatRoomMessageHandler = async (req: Request, res: Response
         $lookup: {
           from: "pollmessages",
           let: { pollMessageIds: "$allMessages.pollMessageIds" },
-          pipeline: [{ $match: { $expr: { $in: ["$_id", "$$pollMessageIds"] } } }],
+          pipeline: [
+            { $match: { $expr: { $in: ["$_id", "$$pollMessageIds"] } } },
+            { $addFields: { messageType: "pollMessage" } },
+            { $addFields: { postedByUser: { $toObjectId: "$postedByUser" } } },
+            {
+              $lookup: {
+                from: "users",
+                localField: "postedByUser",
+                foreignField: "_id",
+                pipeline: [{ $project: { _id: 1, name: 1, profileImageUrl: 1 } }],
+                as: "postedByUser",
+              },
+            },
+            { $addFields: { postedByUser: { $arrayElemAt: ["$postedByUser", 0] } } },
+          ],
           as: "pollMessage",
         },
       },
 
       {
         $addFields: {
-          messages: { $concatArrays: ["$textMessage", "$voiceMessage", "$imageMessage", "$videoMessage"] },
+          messages: {
+            $concatArrays: ["$textMessage", "$voiceMessage", "$imageMessage", "$videoMessage", "$pollMessage"],
+          },
         },
       },
       {

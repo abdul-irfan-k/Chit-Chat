@@ -16,7 +16,7 @@ export async function middleware(request: NextRequest) {
   } catch (error) {
     return NextResponse.redirect(new URL("/login", request.url))
   }
-}
+}1
 
 export const config = {
   matcher: ["/", "/messenger", "/messenger/:path*", "/create-video-call"],

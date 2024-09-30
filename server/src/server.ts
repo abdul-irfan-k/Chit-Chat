@@ -31,8 +31,8 @@ import { ClientToServerEvents, ServerToClientEvents } from "chit-chat-events"
 const app: Application = express()
 const server = http.createServer(app)
 const port = process.env.PORT || 8000
-const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000"
-
+const frontendUrl = process.env.FRONTEND_URL
+console.log("frontend url", frontendUrl)
 export const dirpath = path.dirname(__filename)
 
 const corsOptions = {

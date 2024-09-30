@@ -96,13 +96,13 @@ export const loginUserHandler = async (req: Request, res: Response) => {
     const { token: authToken } = await createJwtTokenHandler({
       _id: user._id.toString(),
       email: user.email,
-      expiresIn: "1 days",
+      expiresIn: "7 days",
       tokenType: "authToken",
     })
     const { token: refreshToken } = await createJwtTokenHandler({
       _id: user._id.toString(),
       email: user.email,
-      expiresIn: "1 days",
+      expiresIn: "7 days",
       tokenType: "refreshToken",
     })
 
